@@ -1,0 +1,38 @@
+[
+    {
+        "name": "Industrial Hardening",
+        "quarter": "v1.0",
+        "status": "completed",
+        "desc": "Production-ready channels (7), prompt injection shield, memory hardening, multi-agent routing, LLM queue, E2E testing in CI."
+    },
+    {
+        "name": "Opening to the Outside World",
+        "quarter": "v1.0",
+        "status": "completed",
+        "desc": "Remote access (SSH/Tailscale/reverse proxy), OpenAI-compatible API, trusted device model, CSRF protection, 17 MCP recipes, OpenAPI spec."
+    },
+    {
+        "name": "Native installers + Observability",
+        "quarter": "v1.0",
+        "status": "completed",
+        "desc": "Native .deb / .rpm / signed+notarized .dmg / Homebrew tap / Windows-via-WSL2. Prometheus /metrics, X-Request-ID trace propagation, panic handler with redacted crash reports, daily update checker."
+    },
+    {
+        "name": "Mobile companion (thread-first)",
+        "quarter": "v1.0",
+        "status": "completed",
+        "desc": "Flutter app with QR pairing, inline approval blocks, biometric lock, cross-stack fixture contract (Rust ↔ Flutter), client-side redact for sensitive data."
+    },
+    {
+        "name": "Consumer Polish",
+        "quarter": "Next",
+        "status": "progress",
+        "desc": "Public website redesign, full i18n (EN+IT), documentation site refresh, mobile push notifications, offline message queue, app store publishing."
+    },
+    {
+        "name": "Strategic Expansion",
+        "quarter": "Future",
+        "status": "planned",
+        "desc": "PWA with push notifications, webhook ingress templates, advanced multi-agent routing, UI redesign, voice channels (deferred)."
+    }
+]
