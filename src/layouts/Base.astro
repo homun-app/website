@@ -8,8 +8,8 @@ interface Props {
 }
 
 const {
-	title = "Homun — Personal AI that does the work, on your terms",
-	description = "Homun is a personal AI that does the work — memory, channels, automations and real deliverables like presentations — with local and cloud models side by side, under the permissions you grant.",
+	title = "Homun — Your work. Your models. Your system.",
+	description = "Homun is a model-independent AI work environment for software, research, documents and presentations, powered by compatible cloud, open-source or local models.",
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -25,9 +25,8 @@ const ogImage = new URL("/og.png", Astro.site);
 		<link rel="canonical" href={canonical} />
 		<title>{title}</title>
 		<meta name="description" content={description} />
-		<meta name="theme-color" content="#080b0a" />
+		<meta name="theme-color" content="#050807" />
 		<meta name="color-scheme" content="dark" />
-
 		<meta property="og:type" content="website" />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
@@ -37,42 +36,26 @@ const ogImage = new URL("/og.png", Astro.site);
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
-
-		<noscript
-			><style>
-				.reveal {
-					opacity: 1 !important;
-					transform: none !important;
-				}
-			</style></noscript
-		>
+		<noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
 	</head>
 	<body class="grain antialiased">
 		<slot />
-
 		<script is:inline>
-			// Reveal-on-scroll: progressive enhancement. Without JS (see <noscript>)
-			// or with reduced-motion, everything is shown immediately.
 			(() => {
 				const els = document.querySelectorAll(".reveal");
-				const reduce = window.matchMedia(
-					"(prefers-reduced-motion: reduce)",
-				).matches;
+				const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 				if (!("IntersectionObserver" in window) || reduce) {
 					els.forEach((el) => el.classList.add("in"));
 					return;
 				}
-				const io = new IntersectionObserver(
-					(entries) => {
-						for (const e of entries) {
-							if (e.isIntersecting) {
-								e.target.classList.add("in");
-								io.unobserve(e.target);
-							}
+				const io = new IntersectionObserver((entries) => {
+					for (const entry of entries) {
+						if (entry.isIntersecting) {
+							entry.target.classList.add("in");
+							io.unobserve(entry.target);
 						}
-					},
-					{ rootMargin: "0px 0px -8% 0px", threshold: 0.12 },
-				);
+					}
+				}, { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
 				els.forEach((el) => io.observe(el));
 			})();
 		</script>
