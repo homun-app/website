@@ -1,20 +1,19 @@
 import rss from "@astrojs/rss";
-import { getCollection } from "astro:content";
 import type { APIContext } from "astro";
+import { releases } from "../../lib/product-data";
+
+const id = (version: string) => version.replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase();
 
 export async function GET(context: APIContext) {
-	const entries = await getCollection("changelog");
 	return rss({
 		title: "Homun — Changelog",
-		description: "What's new in Homun.",
+		description: "Published Homun desktop releases.",
 		site: context.site ?? "https://homun.app",
-		items: entries
-			.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-			.map((e) => ({
-				title: e.data.title,
-				pubDate: e.data.date,
-				description: e.data.tags.join(" · "),
-				link: `/changelog/#${e.id}`,
-			})),
+		items: releases.map((release) => ({
+			title: `Homun ${release.version}`,
+			pubDate: new Date(release.publishedAt),
+			description: release.highlights.join(" · ") || "Published Homun desktop release.",
+			link: `/changelog/#${id(release.version)}`,
+		})),
 	});
 }
