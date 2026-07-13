@@ -1,0 +1,37 @@
+import assert from "node:assert/strict";
+import {
+	detectPlatform,
+	groupInstallers,
+	preferredInstaller,
+	RELEASES_PAGE_URL,
+} from "../src/scripts/downloads.mjs";
+
+const assets = [
+	{ name: "Homun-1.2.3-arm64.dmg", browser_download_url: "https://example.test/mac.dmg" },
+	{ name: "Homun-1.2.3-x64.exe", browser_download_url: "https://example.test/win.exe" },
+	{ name: "Homun-1.2.3-x86_64.AppImage", browser_download_url: "https://example.test/linux.AppImage" },
+	{ name: "Homun-1.2.3-amd64.deb", browser_download_url: "https://example.test/linux.deb" },
+	{ name: "Homun-1.2.3-arm64.zip", browser_download_url: "https://example.test/mac.zip" },
+	{ name: "latest-mac.yml", browser_download_url: "https://example.test/latest-mac.yml" },
+	{ name: "Homun-1.2.3-x64.exe.blockmap", browser_download_url: "https://example.test/win.blockmap" },
+];
+
+assert.equal(detectPlatform({ userAgentData: { platform: "macOS" } }), "macos");
+assert.equal(detectPlatform({ userAgentData: { platform: "Windows" } }), "windows");
+assert.equal(detectPlatform({ platform: "Linux x86_64" }), "linux");
+assert.equal(detectPlatform({ platform: "PlayStation" }), "unknown");
+
+const grouped = groupInstallers(assets);
+assert.deepEqual(grouped.macos.map((asset) => asset.name), ["Homun-1.2.3-arm64.dmg"]);
+assert.deepEqual(grouped.windows.map((asset) => asset.name), ["Homun-1.2.3-x64.exe"]);
+assert.deepEqual(grouped.linux.map((asset) => asset.name), [
+	"Homun-1.2.3-x86_64.AppImage",
+	"Homun-1.2.3-amd64.deb",
+]);
+assert.equal(preferredInstaller("macos", grouped)?.name, "Homun-1.2.3-arm64.dmg");
+assert.equal(preferredInstaller("windows", grouped)?.name, "Homun-1.2.3-x64.exe");
+assert.equal(preferredInstaller("linux", grouped)?.name, "Homun-1.2.3-x86_64.AppImage");
+assert.equal(preferredInstaller("unknown", grouped), null);
+assert.equal(RELEASES_PAGE_URL, "https://github.com/homun-app/homun-releases/releases/latest");
+
+console.log("Download resolver contract passed");
