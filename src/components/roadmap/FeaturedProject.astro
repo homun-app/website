@@ -1,0 +1,35 @@
+---
+import type { RoadmapItem } from "../../lib/product-data";
+import RoadmapOrbitIllustration from "../illustrations/RoadmapOrbitIllustration.astro";
+
+interface Props { project: RoadmapItem }
+const { project } = Astro.props;
+const updated = new Date(project.updatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+---
+
+<article class="featured card sheen relative min-h-[26rem] overflow-hidden p-6 sm:p-8">
+	<div class="relative z-10 max-w-[27rem]">
+		<p class="eyebrow">Currently building</p>
+		<p class="mt-5 font-mono text-[11px] uppercase tracking-[.14em] text-faint">{project.area}</p>
+		<h2 class="mt-2 text-3xl font-semibold sm:text-4xl">{project.title}</h2>
+		<p class="mt-4 text-[15px] leading-relaxed text-muted">{project.description}</p>
+		<div class="mt-6 flex flex-wrap gap-2">
+			<span class="pill">{project.progress}% complete</span>
+			<span class="pill">Updated {updated}</span>
+		</div>
+		<div class="mt-5 h-1.5 max-w-sm overflow-hidden rounded-full bg-white/5" aria-label={`${project.progress}% complete`}>
+			<div class="h-full rounded-full bg-gradient-to-r from-accent to-[#6c8fee]" style={`width:${project.progress}%`}></div>
+		</div>
+		<a href={`/roadmap/${project.slug}/`} class="link-accent mt-7 inline-flex items-center gap-2 text-sm font-semibold">
+			Follow the project <span aria-hidden="true">→</span>
+		</a>
+	</div>
+	<div class="art absolute -bottom-10 -right-10 w-[22rem] opacity-60 sm:-bottom-14 sm:right-0 sm:w-[27rem] lg:opacity-85">
+		<RoadmapOrbitIllustration />
+	</div>
+</article>
+
+<style>
+	.featured { background: radial-gradient(circle at 83% 52%, rgba(53, 171, 145, .15), transparent 38%), linear-gradient(145deg, rgba(13, 36, 31, .95), rgba(6, 13, 11, .96)); }
+	@media (max-width: 639px) { .featured { padding-bottom: 13rem; } .art { opacity: .62; } }
+</style>

@@ -1,0 +1,31 @@
+---
+import type { ReleaseItem } from "../../lib/product-data";
+interface Props { release: ReleaseItem }
+const { release } = Astro.props;
+const date = new Date(release.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+const highlights = release.highlights.slice(0, 3);
+---
+
+<aside class="card sheen flex h-full flex-col p-6 sm:p-8">
+	<div class="flex items-center justify-between gap-3">
+		<p class="eyebrow">Latest release</p>
+		<time class="font-mono text-[11px] text-faint">{date}</time>
+	</div>
+	<div class="mt-7 flex items-baseline justify-between gap-4">
+		<h2 class="font-mono text-2xl font-semibold tracking-tight text-cream">{release.version}</h2>
+		<span class="status-dot" aria-label="Published"></span>
+	</div>
+	<ul class="mt-6 space-y-3">
+		{highlights.map((highlight) => (
+			<li class="flex gap-3 text-sm leading-relaxed text-muted"><span class="text-accent-bright">+</span><span>{highlight}</span></li>
+		))}
+	</ul>
+	<div class="mt-auto pt-8">
+		<div class="flex flex-wrap gap-2">
+			{release.platforms.map((platform) => <span class="pill text-[11px]">{platform}</span>)}
+		</div>
+		<a href={`/changelog/#${release.version.replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}`} class="link-accent mt-6 inline-flex items-center gap-2 text-sm font-semibold">
+			Read the changelog <span aria-hidden="true">→</span>
+		</a>
+	</div>
+</aside>

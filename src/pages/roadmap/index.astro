@@ -1,0 +1,61 @@
+---
+import Page from "../../layouts/Page.astro";
+import FeaturedProject from "../../components/roadmap/FeaturedProject.astro";
+import LatestRelease from "../../components/roadmap/LatestRelease.astro";
+import RoadmapJourney from "../../components/roadmap/RoadmapJourney.astro";
+import ReleaseHistory from "../../components/roadmap/ReleaseHistory.astro";
+import CommunityIdeas from "../../components/roadmap/CommunityIdeas.astro";
+import {
+	communityIdeas,
+	featuredProject,
+	latestRelease,
+	releases,
+	roadmapItems,
+	roadmapSyncedAt,
+} from "../../lib/product-data";
+
+const synced = new Date(roadmapSyncedAt).toLocaleDateString("en-US", {
+	month: "short",
+	day: "numeric",
+	year: "numeric",
+});
+---
+
+<Page title="Roadmap — Homun" description="A living view of what Homun is exploring, building, and shipping.">
+	<section class="relative overflow-hidden pb-12 pt-36 sm:pt-44">
+		<div class="atmosphere absolute inset-0 -z-10" aria-hidden="true"></div>
+		<div class="glow left-1/2 top-0 h-80 w-[42rem] -translate-x-1/2 opacity-25" aria-hidden="true"></div>
+		<div class="mx-auto max-w-6xl px-5">
+			<div class="flex flex-wrap items-center justify-between gap-4">
+				<p class="eyebrow reveal">A living product, built in public</p>
+				<p class="reveal flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.12em] text-faint">
+					<span class="status-dot"></span> Synced with GitHub · {synced}
+				</p>
+			</div>
+			<h1 class="reveal text-gradient mt-5 max-w-4xl text-5xl font-semibold sm:text-6xl lg:text-7xl">
+				What we're building.<br />What just shipped.
+			</h1>
+			<p class="reveal mt-6 max-w-2xl text-lg leading-relaxed text-muted">
+				Follow the ideas becoming real parts of Homun, see where they are headed, and discover what changes with every release.
+			</p>
+		</div>
+	</section>
+
+	<section class="pb-16">
+		<div class="mx-auto grid max-w-6xl gap-5 px-5 lg:grid-cols-[1.2fr_.8fr]">
+			{featuredProject && <FeaturedProject project={featuredProject} />}
+			{latestRelease && <LatestRelease release={latestRelease} />}
+		</div>
+	</section>
+
+	<section class="pb-20 pt-5">
+		<div class="mx-auto max-w-6xl px-5"><RoadmapJourney items={roadmapItems} /></div>
+	</section>
+
+	<section class="pb-28">
+		<div class="mx-auto grid max-w-6xl gap-5 px-5 lg:grid-cols-[1.35fr_.65fr]">
+			{releases.length > 0 && <ReleaseHistory releases={releases.slice(0, 4)} />}
+			{communityIdeas.length > 0 && <CommunityIdeas items={communityIdeas} />}
+		</div>
+	</section>
+</Page>

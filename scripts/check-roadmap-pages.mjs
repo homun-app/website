@@ -10,6 +10,8 @@ const rss = await read("changelog/rss.xml");
 const roadmapText = plain(roadmapHtml);
 const changelogText = plain(changelogHtml);
 
+assert.ok(roadmapHtml.includes("data-roadmap-filter"), "Roadmap is missing area filters");
+
 for (const required of [
 	"What we're building. What just shipped.",
 	"Currently building",

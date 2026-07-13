@@ -1,0 +1,79 @@
+---
+import type { RoadmapItem, RoadmapStatus } from "../../lib/product-data";
+interface Props { items: RoadmapItem[] }
+const { items } = Astro.props;
+const stages: { status: RoadmapStatus; label: string; hint: string }[] = [
+	{ status: "exploring", label: "Exploring", hint: "Ideas we are validating" },
+	{ status: "next", label: "Next", hint: "Directions we intend to pursue" },
+	{ status: "building", label: "Building", hint: "Active product work" },
+	{ status: "shipped", label: "Shipped", hint: "Available in Homun" },
+];
+const areas = [...new Set(items.map((item) => item.area))].sort();
+---
+
+<section aria-labelledby="journey-title">
+	<div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+		<div>
+			<p class="eyebrow">From idea to release</p>
+			<h2 id="journey-title" class="mt-3 text-3xl font-semibold sm:text-4xl">The journey</h2>
+		</div>
+		<div class="flex flex-wrap gap-2" aria-label="Filter roadmap by area">
+			<button class="roadmap-filter pill border-accent/40 text-accent-bright" type="button" data-roadmap-filter="all" aria-pressed="true">All</button>
+			{areas.map((area) => <button class="roadmap-filter pill" type="button" data-roadmap-filter={area} aria-pressed="false">{area}</button>)}
+		</div>
+	</div>
+
+	<div class="journey relative mt-9 grid gap-5 lg:grid-cols-4">
+		<div class="path absolute left-[8%] right-[8%] top-[6px] hidden h-px lg:block" aria-hidden="true"></div>
+		{stages.map((stage) => (
+			<div class="stage relative border-l border-line-strong pl-6 lg:border-l-0 lg:pl-0">
+				<span class={`stage-dot stage-dot-${stage.status} absolute -left-[6px] top-0 h-3 w-3 rounded-full border-2 border-bg lg:left-3 lg:top-0`} aria-hidden="true"></span>
+				<div class="pb-5 lg:pt-8">
+					<h3 class="font-mono text-xs font-semibold uppercase tracking-[.14em] text-cream">{stage.label}</h3>
+					<p class="mt-1 text-xs text-faint">{stage.hint}</p>
+				</div>
+				<div class="space-y-3">
+					{items.filter((item) => item.status === stage.status).map((item) => (
+						<a href={`/roadmap/${item.slug}/`} class="project-card card card-hover block p-4" data-roadmap-area={item.area}>
+							<span class="font-mono text-[10px] uppercase tracking-[.12em] text-accent-bright">{item.area}</span>
+							<h4 class="mt-2 text-[15px] font-semibold leading-snug text-cream">{item.title}</h4>
+							<p class="mt-2 text-[12px] leading-relaxed text-faint">{item.description}</p>
+							{item.status === "building" && (
+								<div class="mt-4 h-1 overflow-hidden rounded-full bg-white/5"><span class="block h-full rounded-full bg-accent" style={`width:${item.progress}%`}></span></div>
+							)}
+						</a>
+					))}
+				</div>
+			</div>
+		))}
+	</div>
+</section>
+
+<script>
+	const filters = document.querySelectorAll<HTMLButtonElement>("[data-roadmap-filter]");
+	const cards = document.querySelectorAll<HTMLElement>("[data-roadmap-area]");
+	for (const filter of filters) {
+		filter.addEventListener("click", () => {
+			const selected = filter.dataset.roadmapFilter;
+			for (const button of filters) {
+				const active = button === filter;
+				button.setAttribute("aria-pressed", String(active));
+				button.classList.toggle("text-accent-bright", active);
+				button.classList.toggle("border-accent/40", active);
+			}
+			for (const card of cards) {
+				card.hidden = selected !== "all" && card.dataset.roadmapArea !== selected;
+			}
+		});
+	}
+</script>
+
+<style>
+	.path { background: linear-gradient(90deg, #50dfc5, #688ee9, #cb70c2, #d8b955); opacity: .55; }
+	.stage-dot-exploring { background: #50dfc5; }
+	.stage-dot-next { background: #688ee9; }
+	.stage-dot-building { background: #cb70c2; }
+	.stage-dot-shipped { background: #d8b955; }
+	.project-card[hidden] { display: none; }
+	.roadmap-filter[aria-pressed="true"] { background: color-mix(in srgb, var(--color-accent) 13%, transparent); }
+</style>

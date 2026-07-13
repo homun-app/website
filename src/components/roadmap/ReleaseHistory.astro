@@ -1,0 +1,22 @@
+---
+import type { ReleaseItem } from "../../lib/product-data";
+interface Props { releases: ReleaseItem[] }
+const { releases } = Astro.props;
+const id = (version: string) => version.replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase();
+---
+
+<section class="card p-6 sm:p-7" aria-labelledby="release-history-title">
+	<div class="flex items-center justify-between gap-4">
+		<h2 id="release-history-title" class="text-xl font-semibold">Release history</h2>
+		<a href="/changelog/" class="link-accent text-xs">All versions →</a>
+	</div>
+	<div class="mt-5 divide-y divide-line">
+		{releases.map((release) => (
+			<a href={`/changelog/#${id(release.version)}`} class="group grid gap-2 py-4 sm:grid-cols-[7rem_1fr_auto] sm:items-center sm:gap-4">
+				<strong class="font-mono text-xs text-cream">{release.version}</strong>
+				<span class="text-sm text-muted group-hover:text-cream">{release.highlights[0] ?? "Desktop release"}</span>
+				<time class="font-mono text-[10px] text-faint">{new Date(release.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</time>
+			</a>
+		))}
+	</div>
+</section>

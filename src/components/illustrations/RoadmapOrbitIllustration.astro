@@ -1,0 +1,68 @@
+<div class="roadmap-art" aria-hidden="true">
+	<svg viewBox="0 0 520 360" role="presentation">
+		<defs>
+			<linearGradient id="roadmap-cube-top" x1="0" x2="1">
+				<stop stop-color="#70ebcb" />
+				<stop offset="1" stop-color="#4cbba7" />
+			</linearGradient>
+			<linearGradient id="roadmap-cube-right" x1="0" x2="1">
+				<stop stop-color="#487ce6" />
+				<stop offset="1" stop-color="#263e95" />
+			</linearGradient>
+			<linearGradient id="roadmap-cube-left" x1="0" x2="1">
+				<stop stop-color="#153e35" />
+				<stop offset="1" stop-color="#0c201c" />
+			</linearGradient>
+			<filter id="roadmap-glow" x="-80%" y="-80%" width="260%" height="260%">
+				<feGaussianBlur stdDeviation="12" />
+			</filter>
+		</defs>
+		<ellipse class="orbit orbit-a" cx="264" cy="181" rx="205" ry="102" />
+		<ellipse class="orbit orbit-b" cx="264" cy="181" rx="158" ry="144" />
+		<ellipse cx="264" cy="188" rx="102" ry="46" fill="#47d7b4" opacity=".09" filter="url(#roadmap-glow)" />
+		<g class="core-cube">
+			<path d="M264 101 344 147 264 194 184 147Z" fill="url(#roadmap-cube-top)" />
+			<path d="M184 147 264 194 264 286 184 240Z" fill="url(#roadmap-cube-left)" stroke="#55d4b5" stroke-width="1.2" />
+			<path d="M344 147 264 194 264 286 344 240Z" fill="url(#roadmap-cube-right)" stroke="#6894ef" stroke-width="1.2" />
+			<path d="M231 151 264 132 297 151 264 170Z" fill="#07110f" opacity=".92" />
+			<text x="264" y="238" text-anchor="middle" fill="#edf8f4" font-size="15" font-family="ui-monospace, monospace">HOMUN</text>
+		</g>
+		<g class="satellite satellite-a">
+			<path d="M71 92 99 76 127 92 99 108Z" fill="#69e2c1" />
+			<path d="M71 92 99 108 99 140 71 124Z" fill="#153e35" stroke="#69e2c1" />
+			<path d="M127 92 99 108 99 140 127 124Z" fill="#315bba" stroke="#6d94eb" />
+		</g>
+		<g class="satellite satellite-b">
+			<path d="M400 238 428 222 456 238 428 254Z" fill="#d374c8" />
+			<path d="M400 238 428 254 428 286 400 270Z" fill="#40233e" stroke="#d374c8" />
+			<path d="M456 238 428 254 428 286 456 270Z" fill="#74406e" stroke="#d374c8" />
+		</g>
+		<g class="satellite satellite-c">
+			<path d="M394 70 416 57 438 70 416 83Z" fill="#d7bc57" />
+			<path d="M394 70 416 83 416 108 394 95Z" fill="#453b19" stroke="#d7bc57" />
+			<path d="M438 70 416 83 416 108 438 95Z" fill="#746123" stroke="#d7bc57" />
+		</g>
+		<circle class="runner runner-a" cx="71" cy="181" r="5" fill="#63ddbc" />
+		<circle class="runner runner-b" cx="441" cy="181" r="4" fill="#cf70c5" />
+	</svg>
+</div>
+
+<style>
+	.roadmap-art { width: 100%; filter: drop-shadow(0 22px 48px rgba(0, 0, 0, .38)); }
+	svg { display: block; width: 100%; height: auto; overflow: visible; }
+	.orbit { fill: none; stroke: rgba(88, 218, 187, .3); stroke-width: 1.1; stroke-dasharray: 7 10; transform-origin: 264px 181px; animation: orbit-turn 28s linear infinite; }
+	.orbit-b { stroke: rgba(99, 139, 230, .2); animation-direction: reverse; animation-duration: 34s; }
+	.core-cube { transform-origin: 264px 194px; animation: core-float 6s ease-in-out infinite; }
+	.satellite { transform-box: fill-box; transform-origin: center; animation: satellite-float 5.8s ease-in-out infinite; }
+	.satellite-b { animation-delay: -2.1s; }
+	.satellite-c { animation-delay: -4s; }
+	.runner { transform-origin: 264px 181px; animation: runner-turn 10s linear infinite; filter: drop-shadow(0 0 8px currentColor); }
+	.runner-b { animation-direction: reverse; animation-duration: 14s; }
+	@keyframes orbit-turn { to { transform: rotate(360deg); } }
+	@keyframes core-float { 50% { transform: translateY(-8px); } }
+	@keyframes satellite-float { 50% { transform: translateY(-7px) rotate(4deg); } }
+	@keyframes runner-turn { to { transform: rotate(360deg); } }
+	@media (prefers-reduced-motion: reduce) {
+		.orbit, .core-cube, .satellite, .runner { animation: none; }
+	}
+</style>
