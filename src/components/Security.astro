@@ -1,77 +1,54 @@
 ---
 import { Image } from "astro:assets";
-import Icon from "./Icon.astro";
 import privacy from "../assets/screenshots/privacy.png";
 
-const guarantees = [
-	{
-		icon: "database",
-		title: "Your data is yours",
-		body: "Memory and history live in plain SQLite + files you own — on your machine, or a server you run. You decide what's delegated to a cloud model.",
-	},
-	{
-		icon: "shield",
-		title: "Contracts before actions",
-		body: "The model emits structured output — a plan, a memory write, a risk assessment — that the Rust core validates before acting.",
-	},
-	{
-		icon: "lock",
-		title: "Explicit grants",
-		body: "Permissions are deny-by-default. The contained computer and every connector run behind grants you give, step by step.",
-	},
-	{
-		icon: "eye",
-		title: "A full audit trail",
-		body: "Every action is recorded and inspectable. Cloud models are yours to enable, per provider — local or cloud, your call.",
-	},
+const controls = [
+	{ title: "Choose what leaves the machine", body: "Local and cloud models can coexist; you decide which configured provider handles the work." },
+	{ title: "Grant access explicitly", body: "Local tools and connectors operate through the permissions you approve." },
+	{ title: "Inspect the activity", body: "Plans, tool use and results remain visible while Homun works." },
+	{ title: "Keep local options open", body: "Compatible local models can run on suitable hardware without making a cloud provider the permanent centre of the system." },
 ] as const;
 ---
 
-<section id="security" class="relative scroll-mt-24 overflow-hidden py-24 sm:py-32">
-	<div class="absolute inset-0 -z-10 bg-bg-raised/40"></div>
-	<div class="glow left-[-8rem] bottom-0 h-96 w-96 opacity-25" aria-hidden="true"></div>
-
-	<div class="mx-auto max-w-6xl px-5">
-		<div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-			<div class="reveal order-2 lg:order-1">
-				<div class="relative">
-					<div class="glow left-[-3rem] top-[-2rem] h-56 w-2/3 opacity-30" aria-hidden="true"></div>
-					<div class="device sheen">
-						<Image
-							src={privacy}
-							alt="Homun privacy and security settings — permissions and data controls"
-							widths={[480, 800, 1100]}
-							sizes="(max-width: 1024px) 100vw, 540px"
-							loading="lazy"
-						/>
-					</div>
+<section id="control" class="relative scroll-mt-24 overflow-hidden border-y border-line bg-bg-raised/35 py-24 sm:py-32">
+	<div class="glow -left-40 bottom-0 h-96 w-96 opacity-20" aria-hidden="true"></div>
+	<div class="section-shell grid items-center gap-14 lg:grid-cols-[1.05fr_.95fr] lg:gap-20">
+		<div class="reveal relative">
+			<div class="operator-panel p-2.5">
+				<div class="flex items-center justify-between px-3 py-2.5">
+					<div class="flex items-center gap-2"><span class="status-dot"></span><span class="metric-label">Permission surface</span></div>
+					<span class="font-mono text-[9px] uppercase tracking-wider text-faint">User controlled</span>
+				</div>
+				<div class="device">
+					<Image
+						src={privacy}
+						alt="Homun settings showing local privacy and permission controls"
+						widths={[480, 800, 1100]}
+						sizes="(max-width: 1024px) 100vw, 560px"
+						loading="lazy"
+					/>
 				</div>
 			</div>
+		</div>
 
-			<div class="order-1 lg:order-2">
-				<p class="eyebrow reveal">Control &amp; trust</p>
-				<h2 class="reveal mt-4 text-4xl font-semibold tracking-tight text-cream sm:text-5xl">
-					You stay in control — by architecture, not a setting.
-				</h2>
-				<p class="reveal mt-5 text-lg leading-relaxed text-muted" style="--reveal-delay: 80ms">
-					Trust isn't a toggle you hope users find. It's the architecture: the core
-					won't act without a contract and a grant, and you decide what's delegated
-					to the cloud — and to which model.
-				</p>
+		<div>
+			<p class="eyebrow reveal">Local control</p>
+			<h2 class="reveal mt-4 text-4xl text-cream sm:text-6xl">Your system remains yours to direct.</h2>
+			<p class="reveal mt-6 text-lg leading-relaxed text-muted" style="--reveal-delay: 70ms">
+				Local is an option you can use, not a slogan that hides where the work goes. Homun makes the choice and the access boundary visible.
+			</p>
 
-				<div class="mt-9 grid gap-x-8 gap-y-7 sm:grid-cols-2">
-					{
-						guarantees.map((g, i) => (
-							<div class="reveal" style={`--reveal-delay: ${i * 70}ms`}>
-								<div class="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-line bg-surface text-accent-bright">
-									<Icon name={g.icon} class="h-[1.05rem] w-[1.05rem]" />
-								</div>
-								<h3 class="text-[15px] font-semibold text-cream">{g.title}</h3>
-								<p class="mt-1.5 text-sm leading-relaxed text-faint">{g.body}</p>
-							</div>
-						))
-					}
-				</div>
+			<div class="mt-9 grid gap-x-7 gap-y-7 sm:grid-cols-2">
+				{controls.map((control, index) => (
+					<div class="reveal border-t border-line pt-4" style={`--reveal-delay: ${100 + index * 50}ms`}>
+						<div class="mb-3 flex items-center gap-2">
+							<span class="font-mono text-[9px] text-accent-bright">0{index + 1}</span>
+							<span class="h-px flex-1 bg-line"></span>
+						</div>
+						<h3 class="text-[15px] text-cream">{control.title}</h3>
+						<p class="mt-2 text-sm leading-relaxed text-faint">{control.body}</p>
+					</div>
+				))}
 			</div>
 		</div>
 	</div>
