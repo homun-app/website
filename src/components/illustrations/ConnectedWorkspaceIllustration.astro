@@ -1,0 +1,119 @@
+<div
+	class="connected-workspace"
+	data-illustration="connected-workspace"
+	role="img"
+	aria-label="WhatsApp, Telegram, Composio, MCP and Skills connected through the stable Homun workspace"
+>
+	<div class="scene-label"><span>Connected workspace</span><span>Channels + tools</span></div>
+	<svg viewBox="0 0 680 420" fill="none" aria-hidden="true">
+		<defs>
+			<linearGradient id="connected-core-left" x1="288" y1="172" x2="340" y2="267" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#183b31" />
+				<stop offset="1" stop-color="#0a1713" />
+			</linearGradient>
+			<linearGradient id="connected-core-right" x1="394" y1="172" x2="340" y2="267" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#4278df" />
+				<stop offset="1" stop-color="#1b3267" />
+			</linearGradient>
+		</defs>
+
+		<ellipse cx="340" cy="204" rx="242" ry="126" stroke="#225146" stroke-dasharray="7 10" />
+		<path class="signal-path signal-one" d="M165 116C224 112 255 138 291 170" stroke="#58dfbf" stroke-width="2" />
+		<path class="signal-path signal-two" d="M515 116C456 112 425 138 389 170" stroke="#5789ee" stroke-width="2" />
+		<path class="signal-path signal-three" d="M196 275C241 270 264 247 298 222" stroke="#ef78d8" stroke-width="2" />
+		<path class="signal-path signal-four" d="M484 275C439 270 416 247 382 222" stroke="#f1d070" stroke-width="2" />
+
+		<g class="peripheral peripheral-one">
+			<rect x="43" y="82" width="122" height="68" rx="14" fill="#0b1915" stroke="#55dfc0" stroke-opacity=".78" />
+			<circle cx="65" cy="104" r="7" fill="#55dfc0" fill-opacity=".18" stroke="#55dfc0" />
+			<path d="M61 104h8M65 100v8" stroke="#55dfc0" stroke-linecap="round" />
+			<text x="104" y="118" fill="#eef8f4" font-family="monospace" font-size="12" text-anchor="middle">WHATSAPP</text>
+			<text x="104" y="136" fill="#698079" font-family="monospace" font-size="9" text-anchor="middle">MESSAGE</text>
+		</g>
+		<g class="peripheral peripheral-two">
+			<rect x="515" y="82" width="122" height="68" rx="14" fill="#0b151f" stroke="#5789ee" stroke-opacity=".82" />
+			<path d="m538 109 18-8-6 19-4-6-5 4Z" fill="#78a3f5" />
+			<text x="576" y="118" fill="#eef8f4" font-family="monospace" font-size="12" text-anchor="middle">TELEGRAM</text>
+			<text x="576" y="136" fill="#698079" font-family="monospace" font-size="9" text-anchor="middle">CHANNEL</text>
+		</g>
+		<g class="peripheral peripheral-three">
+			<rect x="52" y="246" width="144" height="68" rx="14" fill="#171018" stroke="#ef78d8" stroke-opacity=".8" />
+			<rect x="70" y="266" width="20" height="20" rx="6" fill="#ef78d8" fill-opacity=".17" stroke="#ef78d8" />
+			<path d="M76 276h8M80 272v8" stroke="#ef78d8" stroke-linecap="round" />
+			<text x="133" y="278" fill="#eef8f4" font-family="monospace" font-size="12" text-anchor="middle">COMPOSIO</text>
+			<text x="133" y="296" fill="#698079" font-family="monospace" font-size="9" text-anchor="middle">CONNECTED APPS</text>
+		</g>
+		<g class="peripheral peripheral-four">
+			<rect x="484" y="246" width="144" height="68" rx="14" fill="#17150b" stroke="#f1d070" stroke-opacity=".78" />
+			<circle cx="507" cy="280" r="10" fill="#f1d070" fill-opacity=".16" stroke="#f1d070" />
+			<path d="M502 280h10M507 275v10" stroke="#f1d070" stroke-linecap="round" />
+			<text x="561" y="278" fill="#eef8f4" font-family="monospace" font-size="12" text-anchor="middle">MCP + SKILLS</text>
+			<text x="561" y="296" fill="#698079" font-family="monospace" font-size="9" text-anchor="middle">MORE TOOLS</text>
+		</g>
+
+		<g class="homun-core">
+			<path d="m288 172 52-31 54 31-54 32Z" fill="#64e1bf" />
+			<path d="M288 172v64l52 31v-63Z" fill="url(#connected-core-left)" stroke="#64e1bf" />
+			<path d="M394 172v64l-54 31v-63Z" fill="url(#connected-core-right)" stroke="#76a2f5" />
+			<path d="m313 191 27-16 28 16-28 17Z" fill="#0b1714" stroke="#d7fff5" stroke-opacity=".55" />
+			<text x="340" y="237" fill="#eef8f4" font-family="monospace" font-size="11" text-anchor="middle">HOMUN</text>
+		</g>
+
+		<g class="action-rail">
+			<rect x="76" y="344" width="528" height="48" rx="14" fill="#081410" stroke="#1c463c" />
+			<circle class="rail-pulse" cx="102" cy="368" r="5" fill="#55dfc0" />
+			<text x="340" y="372" fill="#a8c0ba" font-family="monospace" font-size="10" text-anchor="middle">MESSAGE · SCHEDULE · EVENT  →  CONTEXT + TOOLS  →  ACTION</text>
+		</g>
+	</svg>
+</div>
+
+<style>
+	.connected-workspace {
+		position: relative;
+		overflow: hidden;
+		border: 1px solid var(--color-line-strong);
+		border-radius: 1.35rem;
+		background:
+			radial-gradient(circle at 50% 45%, rgba(80, 223, 197, 0.12), transparent 48%),
+			linear-gradient(155deg, rgba(10, 22, 18, 0.94), rgba(5, 9, 8, 0.98));
+		box-shadow: var(--shadow-lift);
+	}
+
+	.scene-label {
+		position: absolute;
+		inset: 0.95rem 1.05rem auto;
+		display: flex;
+		justify-content: space-between;
+		font-family: var(--font-mono);
+		font-size: 0.56rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-faint);
+	}
+
+	svg { display: block; width: 100%; height: auto; }
+	.peripheral { animation: connected-drift 13s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: center; }
+	.peripheral-two { animation-delay: -3s; }
+	.peripheral-three { animation-delay: -6s; }
+	.peripheral-four { animation-delay: -9s; }
+	.signal-path { animation: connected-signal 7s ease-in-out infinite; }
+	.signal-two { animation-delay: -1.7s; }
+	.signal-three { animation-delay: -3.5s; }
+	.signal-four { animation-delay: -5.2s; }
+	.rail-pulse { animation: connected-pulse 3.6s ease-in-out infinite; }
+
+	@keyframes connected-drift { to { transform: translateY(-4px); } }
+	@keyframes connected-signal { 0%, 100% { opacity: .3; } 50% { opacity: 1; } }
+	@keyframes connected-pulse { 0%, 100% { opacity: .35; } 50% { opacity: 1; filter: drop-shadow(0 0 8px #55dfc0); } }
+
+	@media (max-width: 640px) {
+		.scene-label { font-size: 0.48rem; }
+		.connected-workspace svg { width: 112%; margin-left: -6%; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.peripheral,
+		.signal-path,
+		.rail-pulse { animation: none; }
+	}
+</style>
