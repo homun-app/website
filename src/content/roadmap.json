@@ -1,0 +1,114 @@
+[
+  {
+    "id": "hybrid-memory",
+    "title": "Hybrid memory graph",
+    "status": "shipped",
+    "area": "Memory",
+    "description": "An inspectable graph of entities, relations and decisions, kept in sync with a Markdown wiki you can edit.",
+    "order": 1
+  },
+  {
+    "id": "local-computer",
+    "title": "Contained local computer",
+    "status": "shipped",
+    "area": "Local computer",
+    "description": "A sandboxed browser + shell the agent drives — watch it live over noVNC and take over anytime.",
+    "order": 2
+  },
+  {
+    "id": "channels",
+    "title": "Channels with an approval gate",
+    "status": "shipped",
+    "area": "Channels",
+    "description": "WhatsApp and Telegram flow into memory and drafts, behind an allowlist and an approval gate.",
+    "order": 3
+  },
+  {
+    "id": "automations",
+    "title": "When → Then automations",
+    "status": "shipped",
+    "area": "Automations",
+    "description": "Time- and event-triggered agentic actions, proposed from the routines the apprentice observes.",
+    "order": 4
+  },
+  {
+    "id": "model-routing",
+    "title": "Bring-your-own-model routing",
+    "status": "shipped",
+    "area": "Models",
+    "description": "Local Ollama or any cloud provider, enabled per provider and routed per task by a capability router.",
+    "order": 5
+  },
+  {
+    "id": "apprentice",
+    "title": "The apprentice",
+    "status": "in-progress",
+    "area": "Agent",
+    "description": "The autonomous loop that ties it together — observes your work, learns routines, proposes, and acts under permission. Being integrated now.",
+    "order": 0
+  },
+  {
+    "id": "marketplace",
+    "title": "Plugin & addon marketplace",
+    "status": "in-progress",
+    "area": "Plugins",
+    "description": "A catalog of installable, sandboxed addons — browse on the web, install into the app.",
+    "order": 1
+  },
+  {
+    "id": "long-horizon",
+    "title": "Autonomous multi-step tasks",
+    "status": "in-progress",
+    "area": "Agent",
+    "description": "A plan-driven engine that carries long tasks across many steps, under approvals you grant.",
+    "order": 2
+  },
+  {
+    "id": "mobile",
+    "title": "Mobile companion app",
+    "status": "planned",
+    "area": "Apps",
+    "description": "Homun on your phone, paired securely with the machine that holds your data.",
+    "order": 1
+  },
+  {
+    "id": "chat-branching",
+    "title": "Non-destructive chat branching",
+    "status": "planned",
+    "area": "Chat",
+    "description": "Explore alternate directions in a conversation without losing the original thread.",
+    "order": 2
+  },
+  {
+    "id": "more-connectors",
+    "title": "More native connectors",
+    "status": "planned",
+    "area": "Connectors",
+    "description": "A growing set of first-party integrations, all behind the capability router and explicit grants.",
+    "order": 3
+  },
+  {
+    "id": "event-triggers",
+    "title": "Event-based automations",
+    "status": "planned",
+    "area": "Automations",
+    "description": "Triggers that fire on an event — a new message, email or file — not just on a schedule.",
+    "order": 4
+  },
+  {
+    "id": "shared-spaces",
+    "title": "Shared, permissioned spaces",
+    "status": "exploring",
+    "area": "Collaboration",
+    "description": "Optional spaces for working alongside other people — still local-first, still deny-by-default.",
+    "order": 1
+  },
+  {
+    "id": "voice",
+    "title": "Voice & ambient capture",
+    "status": "exploring",
+    "area": "Input",
+    "description": "Talk to the apprentice, and let it observe more of your workflow — with your permission.",
+    "order": 2
+  }
+]

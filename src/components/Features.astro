@@ -1,0 +1,110 @@
+---
+import FeatureRow from "./FeatureRow.astro";
+import FeatureGrid from "./FeatureGrid.astro";
+import memory from "../assets/screenshots/memory-graph.png";
+import localComputer from "../assets/screenshots/local-computer.png";
+import channels from "../assets/screenshots/channels.png";
+import models from "../assets/screenshots/models-routing.png";
+import automations from "../assets/screenshots/automations.png";
+
+const rows = [
+	{
+		eyebrow: "Memory",
+		title: "A memory you can read, correct, and forget.",
+		lead: "Not an opaque embedding blob — a hybrid store you can actually inspect: SQLite plus a knowledge graph of entities, relations and decisions, kept in sync with a human-readable Markdown wiki.",
+		points: [
+			"An inspectable <span class='text-cream'>graph</span> of entities, relationships and decisions",
+			"A generated <span class='text-cream'>Markdown wiki</span> you read and edit by hand",
+			"Curated contacts pulled from your channels",
+			"<span class='text-cream'>Forget</span> by topic or entity — it's gone for good",
+		],
+		image: memory,
+		alt: "The Homun memory graph of entities and relations",
+		href: "/guides/memory/",
+		reverse: false,
+	},
+	{
+		eyebrow: "The local computer",
+		title: "A real computer it can drive — and you can watch.",
+		lead: "A headed browser and shell inside a sandboxed Docker container. Watch the agent work live over noVNC, and take the controls back at any moment.",
+		points: [
+			"A real, <span class='text-cream'>headed browser + shell</span>, fully contained",
+			"Streamed live over <span class='text-cream'>noVNC</span> — no black box",
+			"Take over anytime; the agent yields control",
+			"Runs only behind an explicit permission grant",
+		],
+		image: localComputer,
+		alt: "The contained local computer running live in Homun",
+		href: "/guides/local-computer/",
+		reverse: true,
+	},
+	{
+		eyebrow: "Channels",
+		title: "Your messages, drafted — never sent without you.",
+		lead: "WhatsApp and Telegram flow inbound into memory and become drafts. An allowlist and an approval gate sit in front of anything that goes out.",
+		points: [
+			"<span class='text-cream'>WhatsApp + Telegram</span> inbound into memory",
+			"Replies arrive as <span class='text-cream'>drafts</span>, not auto-sends",
+			"An <span class='text-cream'>allowlist + approval gate</span> before send",
+			"Contacts and threads enrich what it remembers",
+		],
+		image: channels,
+		alt: "Homun channels — WhatsApp and Telegram with approval gate",
+		href: "/guides/channels/",
+		reverse: false,
+	},
+	{
+		eyebrow: "Models & providers",
+		title: "Bring your own model. Routed per task.",
+		lead: "Local Ollama is the default; cloud is opt-in, per provider. A capability router picks the right model for each task — cheap and local where it can, powerful where it must.",
+		points: [
+			"<span class='text-cream'>Local Ollama</span>, any cloud, or both — your call",
+			"OpenAI, Anthropic & any OpenAI-compatible endpoint, opt-in",
+			"A <span class='text-cream'>capability router</span> picks the model per task",
+			"Enable each provider explicitly — you hold the keys",
+		],
+		image: models,
+		alt: "Homun model routing across local and cloud providers",
+		href: "/guides/models/",
+		reverse: true,
+	},
+	{
+		eyebrow: "Automations",
+		title: "When → Then. Work that runs itself.",
+		lead: "A simple, legible model: a scheduled trigger runs a real agentic action — every morning, every Friday, every hour — using all of Homun's tools. You stay in the loop, and each run can wait for your confirmation.",
+		points: [
+			"A <span class='text-cream'>When → Then</span> rule model anyone can read",
+			"Runs on a <span class='text-cream'>schedule</span> — hourly, daily, weekly",
+			"Each rule runs a real agentic task — skills, browser, memory",
+			"Each run can wait for your <span class='text-cream'>confirmation</span>",
+		],
+		image: automations,
+		alt: "Homun automations — When/Then rules",
+		href: "/guides/automations/",
+		reverse: false,
+	},
+] as const;
+---
+
+<section id="features" class="scroll-mt-24 py-12 sm:py-16">
+	<div class="mx-auto max-w-6xl px-5">
+		<div class="mx-auto max-w-2xl text-center">
+			<p class="eyebrow reveal">Everything, beneath one chat</p>
+			<h2 class="reveal mt-4 text-4xl font-semibold tracking-tight text-cream sm:text-5xl">
+				Operative power, layered on a calm conversation.
+			</h2>
+			<p class="reveal mt-5 text-lg leading-relaxed text-muted" style="--reveal-delay: 80ms">
+				Each capability is real — memory, a computer, channels, automations — and
+				each stays out of the way until you need it.
+			</p>
+		</div>
+
+		<div class="mt-20 space-y-24 sm:space-y-32">
+			{rows.map((r) => <FeatureRow {...r} />)}
+		</div>
+
+		<div class="mt-24 sm:mt-32">
+			<FeatureGrid />
+		</div>
+	</div>
+</section>

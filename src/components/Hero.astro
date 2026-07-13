@@ -1,0 +1,95 @@
+---
+import { Image } from "astro:assets";
+import chat from "../assets/screenshots/chat.png";
+---
+
+<section class="relative overflow-hidden pt-36 pb-20 sm:pt-44 sm:pb-28">
+	<!-- Atmosphere -->
+	<div class="bg-grid absolute inset-0 -z-10" aria-hidden="true"></div>
+	<div
+		class="glow left-1/2 top-[-6rem] h-[34rem] w-[44rem] -translate-x-1/2 opacity-50"
+		aria-hidden="true"
+	>
+	</div>
+
+	<div class="mx-auto max-w-6xl px-5">
+		<div class="mx-auto flex max-w-3xl flex-col items-center text-center">
+			<a href="#features" class="pill reveal mb-7 hover:border-line-strong">
+				<span class="h-1.5 w-1.5 rounded-full bg-accent-glow"></span>
+				Personal AI, on your terms
+				<span class="text-faint">·</span>
+				<span class="text-accent-soft">v1 is here</span>
+			</a>
+
+			<h1
+				class="reveal text-gradient text-balance text-[2.6rem] font-semibold leading-[1.03] sm:text-6xl"
+				style="--reveal-delay: 60ms"
+			>
+				Personal AI that does the work — on your terms.
+			</h1>
+			<p
+				class="reveal mt-6 max-w-xl text-lg leading-relaxed text-muted sm:text-xl"
+				style="--reveal-delay: 140ms"
+			>
+				Homun remembers what matters, drafts across your channels, automates the
+				busywork, and turns it into real deliverables —
+				<span class="text-cream">presentations, drafts, research</span>. Local and
+				cloud models side by side, under the permissions you grant.
+			</p>
+
+			<div
+				class="reveal mt-9 flex flex-col items-center gap-3 sm:flex-row"
+				style="--reveal-delay: 220ms"
+			>
+				<a href="#download" class="btn btn-primary w-full sm:w-auto">
+					<svg viewBox="0 0 24 24" fill="currentColor" class="h-[1.05rem] w-[1.05rem]" aria-hidden="true">
+						<path
+							d="M16.36 12.9c.02 2.6 2.28 3.46 2.3 3.47-.02.06-.36 1.24-1.19 2.46-.72 1.05-1.47 2.1-2.64 2.12-1.16.02-1.53-.69-2.85-.69-1.32 0-1.73.67-2.83.71-1.13.04-1.99-1.13-2.72-2.18-1.48-2.14-2.61-6.05-1.09-8.69.75-1.31 2.1-2.14 3.56-2.16 1.12-.02 2.17.75 2.85.75.68 0 1.96-.93 3.31-.79.56.02 2.15.23 3.17 1.71-.08.05-1.89 1.1-1.87 3.28M14.13 5.6c.6-.73 1.01-1.74.9-2.75-.87.03-1.92.58-2.55 1.31-.56.64-1.05 1.67-.92 2.66.97.07 1.96-.49 2.57-1.22"
+						></path>
+					</svg>
+					Download for macOS
+				</a>
+				<a href="/docs" target="_blank" rel="noopener" class="btn btn-ghost w-full sm:w-auto">
+					Read the docs
+				</a>
+			</div>
+
+			<p class="reveal mt-5 text-sm text-faint" style="--reveal-delay: 280ms">
+				Also for Windows &amp; Linux · or
+				<a href="/guides/self-hosting/" target="_blank" rel="noopener" class="link-accent"
+					>self-host a single container</a
+				>
+			</p>
+		</div>
+
+		<!-- Hero product shot -->
+		<div class="reveal relative mt-16 sm:mt-20" style="--reveal-delay: 200ms">
+			<div
+				class="glow left-1/2 top-1/4 h-72 w-[80%] -translate-x-1/2 opacity-40"
+				aria-hidden="true"
+			>
+			</div>
+			<div class="device sheen mx-auto max-w-5xl">
+				<Image
+					src={chat}
+					alt="The Homun desktop app — a chat conversation with inline code, running on a local model"
+					widths={[640, 1024, 1440, 1920]}
+					sizes="(max-width: 1024px) 100vw, 1024px"
+					loading="eager"
+					fetchpriority="high"
+				/>
+			</div>
+
+			<!-- Floating local + cloud chip -->
+			<div
+				class="absolute -bottom-4 left-4 hidden items-center gap-2 rounded-xl border border-line-strong bg-bg-raised/90 px-3.5 py-2.5 text-sm shadow-xl backdrop-blur-md sm:flex md:-bottom-5 md:left-10"
+			>
+				<span class="relative flex h-2 w-2">
+					<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-glow opacity-60"></span>
+					<span class="relative inline-flex h-2 w-2 rounded-full bg-accent-glow"></span>
+				</span>
+				<span class="font-mono text-xs text-muted">local + cloud · your call</span>
+			</div>
+		</div>
+	</div>
+</section>

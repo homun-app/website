@@ -1,0 +1,69 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import Icon from "./Icon.astro";
+
+interface Props {
+	eyebrow: string;
+	title: string;
+	lead: string;
+	points: string[];
+	image: ImageMetadata;
+	alt: string;
+	href: string;
+	reverse?: boolean;
+}
+
+const { eyebrow, title, lead, points, image, alt, href, reverse = false } =
+	Astro.props;
+---
+
+<div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+	<!-- Copy -->
+	<div class={`reveal ${reverse ? "lg:order-2 lg:pl-6" : "lg:pr-6"}`}>
+		<p class="eyebrow">{eyebrow}</p>
+		<h3 class="mt-4 text-3xl font-semibold tracking-tight text-cream sm:text-4xl">
+			{title}
+		</h3>
+		<p class="mt-4 text-lg leading-relaxed text-muted">{lead}</p>
+		<ul class="mt-7 space-y-3.5">
+			{
+				points.map((pt) => (
+					<li class="flex gap-3 text-[15px] leading-relaxed text-faint">
+						<span class="mt-0.5 flex h-5 w-5 flex-none items-center justify-center rounded-full border border-line-strong text-accent-bright">
+							<Icon name="check" class="h-3 w-3" />
+						</span>
+						<span set:html={pt} />
+					</li>
+				))
+			}
+		</ul>
+		<a
+			href={href}
+			target="_blank"
+			rel="noopener"
+			class="link-accent mt-7 inline-flex items-center gap-1.5 text-sm font-medium no-underline"
+		>
+			Learn more
+			<Icon name="arrowRight" class="h-4 w-4" />
+		</a>
+	</div>
+
+	<!-- Screenshot -->
+	<div class={`reveal relative ${reverse ? "lg:order-1" : ""}`} style="--reveal-delay: 100ms">
+		<div
+			class={`glow h-64 w-2/3 opacity-30 ${reverse ? "right-[-4rem] top-[-2rem]" : "left-[-4rem] top-[-2rem]"}`}
+			aria-hidden="true"
+		>
+		</div>
+		<div class="device sheen">
+			<Image
+				src={image}
+				alt={alt}
+				widths={[480, 800, 1100]}
+				sizes="(max-width: 1024px) 100vw, 540px"
+				loading="lazy"
+			/>
+		</div>
+	</div>
+</div>

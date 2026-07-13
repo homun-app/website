@@ -1,0 +1,76 @@
+---
+import { Image } from "astro:assets";
+import Icon from "./Icon.astro";
+import chat from "../assets/screenshots/chat.png";
+import proactivity from "../assets/screenshots/proactivity.png";
+import skills from "../assets/screenshots/skills-catalog.png";
+import connectors from "../assets/screenshots/connectors-mcp.png";
+
+const cards = [
+	{
+		icon: "chat",
+		title: "Operative chat",
+		body: "Markdown, syntax-highlighted code, diagrams, vision and attachments — with message editing and branching. The stable base loop everything else layers onto.",
+		image: chat,
+		alt: "Homun operative chat with code",
+		span: "lg:col-span-2",
+	},
+	{
+		icon: "sparkles",
+		title: "Proactivity",
+		body: "A supervisor watches for recurring work and surfaces suggestion cards — you decide what becomes an automation.",
+		image: proactivity,
+		alt: "Proactivity suggestion cards",
+		span: "lg:col-span-1",
+	},
+	{
+		icon: "layers",
+		title: "Skills",
+		body: "Installable, sandboxed capabilities from a catalog — extend Homun without trusting it with everything.",
+		image: skills,
+		alt: "The skills catalog",
+		span: "lg:col-span-1",
+	},
+	{
+		icon: "plug",
+		title: "Connectors",
+		body: "Native tools, MCP servers and opt-in managed providers — all behind one capability router, enabled only where you allow it.",
+		image: connectors,
+		alt: "Connectors and MCP servers",
+		span: "lg:col-span-2",
+	},
+] as const;
+---
+
+<div class="grid gap-5 lg:grid-cols-3">
+	{
+		cards.map((c, i) => (
+			<article
+				class={`card card-hover sheen reveal flex flex-col overflow-hidden ${c.span}`}
+				style={`--reveal-delay: ${(i % 2) * 90}ms`}
+			>
+				<div class="p-6 sm:p-7">
+					<div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg border border-line bg-bg-raised text-accent-bright">
+						<Icon name={c.icon} class="h-5 w-5" />
+					</div>
+					<h3 class="text-xl font-semibold text-cream">{c.title}</h3>
+					<p class="mt-2.5 max-w-md text-sm leading-relaxed text-faint">
+						{c.body}
+					</p>
+				</div>
+				<div class="mt-auto px-6 sm:px-7">
+					<div class="overflow-hidden rounded-t-xl border-x border-t border-line-strong">
+						<Image
+							src={c.image}
+							alt={c.alt}
+							widths={[400, 720, 1000]}
+							sizes="(max-width: 1024px) 100vw, 460px"
+							loading="lazy"
+							class="block w-full"
+						/>
+					</div>
+				</div>
+			</article>
+		))
+	}
+</div>

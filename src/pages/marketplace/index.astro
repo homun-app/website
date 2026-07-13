@@ -1,0 +1,77 @@
+---
+import Page from "../../layouts/Page.astro";
+import Icon from "../../components/Icon.astro";
+import { getCollection } from "astro:content";
+
+const addons = (await getCollection("addons")).sort(
+	(a, b) => a.data.order - b.data.order,
+);
+---
+
+<Page
+	title="Marketplace — Homun add-ons"
+	description="Installable, sandboxed add-ons that extend Homun. Free to browse — sign in from the app to install."
+>
+	<section class="relative overflow-hidden pt-36 pb-12 sm:pt-44">
+		<div class="bg-grid absolute inset-0 -z-10" aria-hidden="true"></div>
+		<div class="glow left-1/2 top-0 h-80 w-[40rem] -translate-x-1/2 opacity-30" aria-hidden="true"></div>
+		<div class="mx-auto max-w-6xl px-5">
+			<p class="eyebrow reveal">Marketplace</p>
+			<h1 class="reveal text-gradient mt-4 text-5xl font-semibold sm:text-6xl">
+				Add-ons that extend Homun.
+			</h1>
+			<p class="reveal mt-5 max-w-2xl text-lg leading-relaxed text-muted">
+				Installable, sandboxed capabilities that extend what Homun can do. Free to
+				browse — you sign in from the app only to install one.
+			</p>
+		</div>
+	</section>
+
+	<section class="pb-28">
+		<div class="mx-auto max-w-6xl px-5">
+			<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+				{
+					addons.map((addon, i) => (
+						<a
+							href={`/marketplace/${addon.id}`}
+							class="card card-hover sheen reveal flex flex-col p-6"
+							style={`--reveal-delay: ${(i % 3) * 70}ms`}
+						>
+							<div class="flex items-start justify-between">
+								<span class="flex h-12 w-12 items-center justify-center rounded-xl border border-line bg-bg-raised text-accent-bright">
+									<Icon name={addon.data.icon} class="h-6 w-6" />
+								</span>
+								{addon.data.badge && (
+									<span class="rounded-full border border-accent-deep bg-accent-deep/30 px-2 py-0.5 text-[11px] font-medium text-accent-soft">
+										{addon.data.badge}
+									</span>
+								)}
+							</div>
+							<h2 class="mt-4 text-xl font-semibold text-cream">{addon.data.name}</h2>
+							<p class="mt-0.5 font-mono text-[11px] uppercase tracking-wider text-faint">
+								{addon.data.category}
+							</p>
+							<p class="mt-2.5 text-sm leading-relaxed text-muted">
+								{addon.data.tagline}
+							</p>
+							<div class="mt-auto flex items-center justify-between border-t border-line pt-4">
+								<span class="text-sm font-medium text-accent-bright">
+									{addon.data.price}
+								</span>
+								<span class="inline-flex items-center gap-1 text-xs text-faint">
+									by {addon.data.author}
+									<Icon name="arrowRight" class="h-3.5 w-3.5" />
+								</span>
+							</div>
+						</a>
+					))
+				}
+			</div>
+
+			<p class="mt-12 text-center text-sm text-faint">
+				More add-ons are on the way — see what's coming on the
+				<a href="/roadmap" class="link-accent">roadmap</a>.
+			</p>
+		</div>
+	</section>
+</Page>

@@ -1,0 +1,18 @@
+---
+// Override of Starlight's ThemeProvider. The marketing site is dark espresso, so
+// the docs default to dark too when a visitor has no stored preference. The
+// Auto / Light / Dark toggle keeps working and persists the visitor's choice.
+import Default from "@astrojs/starlight/components/ThemeProvider.astro";
+---
+
+<Default />
+<script is:inline>
+	(() => {
+		try {
+			if (!localStorage.getItem("starlight-theme")) {
+				localStorage.setItem("starlight-theme", "dark");
+				document.documentElement.dataset.theme = "dark";
+			}
+		} catch (_) {}
+	})();
+</script>

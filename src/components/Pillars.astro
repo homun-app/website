@@ -1,0 +1,47 @@
+---
+import Icon from "./Icon.astro";
+
+const pillars = [
+	{
+		icon: "zap",
+		title: "Does real work",
+		body: "Not a chat box. It drafts your messages, runs automations, and turns work into deliverables — presentations, drafts, research — you can actually ship.",
+	},
+	{
+		icon: "cpu",
+		title: "Local and cloud, side by side",
+		body: "Run local Ollama, any cloud provider, or both — a capability router picks the right model per task. You choose what's delegated, and when.",
+	},
+	{
+		icon: "lock",
+		title: "On your terms",
+		body: "Deny-by-default. Every action passes through explicit permissions and an audit trail — you decide what runs, and what's remembered.",
+	},
+	{
+		icon: "graph",
+		title: "A memory that's yours",
+		body: "An inspectable graph plus a Markdown wiki you can read, correct, and forget — living with you, not in an opaque cloud.",
+	},
+] as const;
+---
+
+<section class="relative border-y border-line bg-bg-raised/40">
+	<div class="mx-auto grid max-w-6xl gap-px sm:grid-cols-2 lg:grid-cols-4">
+		{
+			pillars.map((p, i) => (
+				<div
+					class="reveal group relative px-6 py-8 lg:px-7 lg:py-10"
+					style={`--reveal-delay: ${i * 70}ms`}
+				>
+					<div class="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg border border-line bg-surface text-accent-bright transition-colors group-hover:border-line-strong">
+						<Icon name={p.icon} class="h-5 w-5" />
+					</div>
+					<h3 class="text-[15px] font-semibold tracking-tight text-cream">
+						{p.title}
+					</h3>
+					<p class="mt-2 text-sm leading-relaxed text-faint">{p.body}</p>
+				</div>
+			))
+		}
+	</div>
+</section>

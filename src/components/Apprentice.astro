@@ -1,0 +1,67 @@
+---
+import Icon from "./Icon.astro";
+
+const steps = [
+	{
+		icon: "observe",
+		title: "Observes",
+		body: "It watches the work you point it at — your messages, files and routines — without sending any of it away.",
+	},
+	{
+		icon: "graph",
+		title: "Remembers",
+		body: "What matters becomes a verifiable memory graph and a Markdown wiki you can open, read and correct.",
+	},
+	{
+		icon: "sparkles",
+		title: "Proposes",
+		body: "A supervisor surfaces suggestion cards — an automation to create, a reply to send — before you ask.",
+	},
+	{
+		icon: "monitor",
+		title: "Operates",
+		body: "On approval it acts: drives a contained computer, drafts on your channels, runs a task — under contracts you grant.",
+	},
+] as const;
+---
+
+<section id="apprentice" class="relative scroll-mt-24 py-24 sm:py-32">
+	<div class="glow right-[-10rem] top-10 h-80 w-80 opacity-30" aria-hidden="true"></div>
+	<div class="mx-auto max-w-6xl px-5">
+		<div class="max-w-2xl">
+			<p class="eyebrow reveal">Where it's heading</p>
+			<h2 class="reveal mt-4 text-4xl font-semibold tracking-tight text-cream sm:text-5xl">
+				Today it assists. It's growing into an apprentice.
+			</h2>
+			<p class="reveal mt-5 text-lg leading-relaxed text-muted" style="--reveal-delay: 80ms">
+				Right now Homun works on your terms — memory, channels, automations,
+				deliverables. The direction is an <em class="text-cream not-italic">apprentice</em>:
+				it observes your work, learns your routines, proposes, and takes a task
+				end-to-end. That loop is <a href="/roadmap" class="link-accent">on the roadmap</a>.
+			</p>
+		</div>
+
+		<div class="relative mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+			<!-- connecting hairline on large screens -->
+			<div
+				class="absolute left-0 right-0 top-7 -z-10 hidden h-px bg-gradient-to-r from-transparent via-line-strong to-transparent lg:block"
+				aria-hidden="true"
+			>
+			</div>
+			{
+				steps.map((s, i) => (
+					<div class="reveal" style={`--reveal-delay: ${i * 90}ms`}>
+						<div class="relative mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-line-strong bg-surface text-accent-bright">
+							<Icon name={s.icon} class="h-6 w-6" />
+							<span class="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-bg">
+								{i + 1}
+							</span>
+						</div>
+						<h3 class="text-lg font-semibold text-cream">{s.title}</h3>
+						<p class="mt-2 text-sm leading-relaxed text-faint">{s.body}</p>
+					</div>
+				))
+			}
+		</div>
+	</div>
+</section>

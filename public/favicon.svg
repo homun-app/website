@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="646 -2 280 280">
+  <!-- Homun favicon: rounded white tile + brandmark (dark bowl, teal dot). -->
+  <rect x="646" y="-2" width="280" height="280" rx="62" fill="#ffffff"/>
+  <circle cx="786" cy="60" r="34" fill="#157a6e"/>
+  <path d="M721 117V187C721 220.333 742.667 237 786 237C829.333 237 851 220.333 851 187V117"
+    fill="none" stroke="#241a12" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,0 +1,80 @@
+---
+import "@fontsource-variable/inter";
+import "../styles/global.css";
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = "Homun — Personal AI that does the work, on your terms",
+	description = "Homun is a personal AI that does the work — memory, channels, automations and real deliverables like presentations — with local and cloud models side by side, under the permissions you grant.",
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL("/og.png", Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<link rel="canonical" href={canonical} />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta name="theme-color" content="#080b0a" />
+		<meta name="color-scheme" content="dark" />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:site_name" content="Homun" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+
+		<noscript
+			><style>
+				.reveal {
+					opacity: 1 !important;
+					transform: none !important;
+				}
+			</style></noscript
+		>
+	</head>
+	<body class="grain antialiased">
+		<slot />
+
+		<script is:inline>
+			// Reveal-on-scroll: progressive enhancement. Without JS (see <noscript>)
+			// or with reduced-motion, everything is shown immediately.
+			(() => {
+				const els = document.querySelectorAll(".reveal");
+				const reduce = window.matchMedia(
+					"(prefers-reduced-motion: reduce)",
+				).matches;
+				if (!("IntersectionObserver" in window) || reduce) {
+					els.forEach((el) => el.classList.add("in"));
+					return;
+				}
+				const io = new IntersectionObserver(
+					(entries) => {
+						for (const e of entries) {
+							if (e.isIntersecting) {
+								e.target.classList.add("in");
+								io.unobserve(e.target);
+							}
+						}
+					},
+					{ rootMargin: "0px 0px -8% 0px", threshold: 0.12 },
+				);
+				els.forEach((el) => io.observe(el));
+			})();
+		</script>
+	</body>
+</html>

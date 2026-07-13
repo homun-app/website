@@ -1,0 +1,299 @@
+@import "tailwindcss";
+
+/* ════════════════════════════════════════════════════════════════════════
+   Homun — "dark espresso" theme.
+   Warm, green-tinted near-black surfaces · cream type · teal accent (#157A6E,
+   the brandmark's dot). The light app screenshots glow against this ground.
+   Tailwind v4: tokens declared here become utilities (bg-bg, text-cream, …).
+   ════════════════════════════════════════════════════════════════════════ */
+
+@theme {
+	--font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system,
+		"Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+	--font-mono: ui-monospace, "SF Mono", SFMono-Regular, "JetBrains Mono", Menlo,
+		Consolas, monospace;
+
+	/* Espresso neutrals — warm, faintly green near-blacks */
+	--color-bg: #080b0a;
+	--color-bg-raised: #0d1312;
+	--color-surface: #121a18;
+	--color-surface-2: #182220;
+	--color-cream: #f4f1ee;
+	--color-muted: #9fada9;
+	--color-faint: #6c7975;
+
+	/* Hairlines (cream at low alpha — reads as light catching an edge) */
+	--color-line: rgba(244, 241, 238, 0.08);
+	--color-line-strong: rgba(244, 241, 238, 0.16);
+
+	/* Teal accent ramp */
+	--color-accent: #157a6e;
+	--color-accent-bright: #2bae9b;
+	--color-accent-glow: #34c6b0;
+	--color-accent-soft: #a9e7de;
+	--color-accent-deep: #0c5249;
+
+	--ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+	--shadow-lift: 0 24px 60px -24px rgba(0, 0, 0, 0.7);
+}
+
+/* ── Base ──────────────────────────────────────────────────────────────── */
+@layer base {
+	html {
+		scroll-behavior: smooth;
+		-webkit-text-size-adjust: 100%;
+		/* `clip` (not `hidden`) contains the decorative glows without creating a
+		   scroll container — keeps the fixed nav at viewport width on mobile. */
+		overflow-x: clip;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		html {
+			scroll-behavior: auto;
+		}
+	}
+	body {
+		background-color: var(--color-bg);
+		color: var(--color-cream);
+		font-family: var(--font-sans);
+		font-synthesis-weight: none;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		text-rendering: optimizeLegibility;
+		overflow-x: clip;
+	}
+	::selection {
+		background: color-mix(in srgb, var(--color-accent-glow) 35%, transparent);
+		color: #fff;
+	}
+	h1,
+	h2,
+	h3 {
+		letter-spacing: -0.025em;
+		line-height: 1.04;
+		text-wrap: balance;
+		font-weight: 600;
+	}
+	p {
+		text-wrap: pretty;
+	}
+	a {
+		-webkit-tap-highlight-color: transparent;
+	}
+	:focus-visible {
+		outline: 2px solid var(--color-accent-bright);
+		outline-offset: 3px;
+		border-radius: 4px;
+	}
+}
+
+/* ── Typographic helpers ───────────────────────────────────────────────── */
+
+/* Cream → soft-teal vertical fade for big display headings */
+.text-gradient {
+	background: linear-gradient(176deg, #ffffff 4%, #e7efec 46%, #93bcb4 128%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+
+/* Mono micro-label sitting above headings */
+.eyebrow {
+	font-family: var(--font-mono);
+	font-size: 0.72rem;
+	font-weight: 500;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	color: var(--color-accent-bright);
+}
+
+/* ── Surfaces ──────────────────────────────────────────────────────────── */
+
+.card {
+	background: linear-gradient(
+		180deg,
+		var(--color-surface) 0%,
+		var(--color-bg-raised) 100%
+	);
+	border: 1px solid var(--color-line);
+	border-radius: 1rem;
+	position: relative;
+	transition:
+		border-color 0.45s var(--ease-expo),
+		transform 0.45s var(--ease-expo),
+		background 0.45s var(--ease-expo);
+}
+.card-hover:hover {
+	border-color: var(--color-line-strong);
+	transform: translateY(-3px);
+}
+
+/* Full-perimeter gradient hairline — the "lit glass" edge. Brighter at the top,
+   but present all the way round so DARK screenshots keep a defined silhouette
+   against the dark page (the Linear dark-on-dark trick). */
+.sheen::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	padding: 1px;
+	background: linear-gradient(
+		180deg,
+		color-mix(in srgb, var(--color-cream) 26%, transparent) 0%,
+		color-mix(in srgb, var(--color-cream) 9%, transparent) 45%,
+		color-mix(in srgb, var(--color-cream) 13%, transparent) 100%
+	);
+	-webkit-mask:
+		linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+	mask-composite: exclude;
+	pointer-events: none;
+}
+
+/* Screenshot housing — frames the light app captures as glowing screens */
+.device {
+	border: 1px solid var(--color-line-strong);
+	border-radius: 14px;
+	background: var(--color-surface);
+	box-shadow:
+		0 32px 70px -26px rgba(0, 0, 0, 0.82),
+		0 8px 22px -10px rgba(0, 0, 0, 0.6),
+		0 0 0 1px rgba(0, 0, 0, 0.4);
+	overflow: hidden;
+	position: relative;
+}
+.device img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+/* ── Atmosphere ────────────────────────────────────────────────────────── */
+
+/* Soft radial teal light source */
+.glow {
+	position: absolute;
+	border-radius: 9999px;
+	filter: blur(90px);
+	background: radial-gradient(
+		circle at center,
+		color-mix(in srgb, var(--color-accent-glow) 60%, transparent),
+		transparent 68%
+	);
+	pointer-events: none;
+	z-index: 0;
+}
+
+/* Faint masked grid — geometric depth without noise */
+.bg-grid {
+	background-image:
+		linear-gradient(var(--color-line) 1px, transparent 1px),
+		linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
+	background-size: 60px 60px;
+	-webkit-mask-image: radial-gradient(ellipse 75% 60% at 50% 40%, #000 20%, transparent 75%);
+	mask-image: radial-gradient(ellipse 75% 60% at 50% 40%, #000 20%, transparent 75%);
+}
+
+/* Film grain — fixed full-viewport overlay (added in <body class="grain">) */
+.grain::after {
+	content: "";
+	position: fixed;
+	inset: 0;
+	z-index: 60;
+	pointer-events: none;
+	opacity: 0.022;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── Pill / badge ──────────────────────────────────────────────────────── */
+.pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	border: 1px solid var(--color-line-strong);
+	background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+	border-radius: 9999px;
+	padding: 0.35rem 0.8rem;
+	font-size: 0.8rem;
+	color: var(--color-muted);
+	backdrop-filter: blur(8px);
+}
+
+/* ── Buttons ───────────────────────────────────────────────────────────── */
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	border-radius: 0.7rem;
+	padding: 0.7rem 1.15rem;
+	font-size: 0.925rem;
+	font-weight: 550;
+	line-height: 1;
+	white-space: nowrap;
+	transition:
+		transform 0.2s var(--ease-expo),
+		background 0.25s var(--ease-expo),
+		border-color 0.25s var(--ease-expo),
+		box-shadow 0.25s var(--ease-expo);
+}
+.btn:active {
+	transform: translateY(1px);
+}
+.btn-primary {
+	background: linear-gradient(180deg, var(--color-accent-bright), var(--color-accent));
+	color: #04100e;
+	box-shadow:
+		0 0 0 1px color-mix(in srgb, var(--color-accent-glow) 50%, transparent),
+		0 10px 30px -10px color-mix(in srgb, var(--color-accent) 80%, transparent);
+}
+.btn-primary:hover {
+	box-shadow:
+		0 0 0 1px var(--color-accent-glow),
+		0 14px 38px -10px color-mix(in srgb, var(--color-accent-glow) 75%, transparent);
+	transform: translateY(-1px);
+}
+.btn-ghost {
+	background: color-mix(in srgb, var(--color-surface) 60%, transparent);
+	color: var(--color-cream);
+	border: 1px solid var(--color-line-strong);
+}
+.btn-ghost:hover {
+	background: var(--color-surface-2);
+	border-color: color-mix(in srgb, var(--color-cream) 22%, transparent);
+}
+
+/* ── Link with animated underline ──────────────────────────────────────── */
+.link-accent {
+	color: var(--color-accent-bright);
+	text-underline-offset: 0.25em;
+	text-decoration: underline;
+	text-decoration-color: color-mix(in srgb, var(--color-accent-bright) 35%, transparent);
+	transition: text-decoration-color 0.25s var(--ease-expo);
+}
+.link-accent:hover {
+	text-decoration-color: var(--color-accent-bright);
+}
+
+/* ── Scroll reveal (progressive enhancement) ───────────────────────────── */
+.reveal {
+	opacity: 0;
+	transform: translateY(22px);
+	transition:
+		opacity 0.85s var(--ease-expo),
+		transform 0.85s var(--ease-expo);
+	transition-delay: var(--reveal-delay, 0ms);
+	will-change: opacity, transform;
+}
+.reveal.in {
+	opacity: 1;
+	transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+	.reveal {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+}

@@ -1,0 +1,71 @@
+/* Homun espresso theme for Starlight (the /docs section).
+ * Themed natively via Starlight's --sl-color-* variables — NO Tailwind here, so it
+ * stays fully isolated from the marketing site's Tailwind layer. Dark is the
+ * on-brand default; a warm "paper" light variant ships for the toggle. */
+
+@import "@fontsource-variable/inter";
+
+:root {
+	--sl-font: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+		Roboto, Helvetica, sans-serif;
+	--sl-font-mono: ui-monospace, "SF Mono", SFMono-Regular, "JetBrains Mono", Menlo,
+		Consolas, monospace;
+}
+
+/* ── Dark (default): espresso ground, cream text, teal accent ─────────────── */
+:root,
+:root[data-theme="dark"] {
+	--sl-color-accent-low: #0c2e2a;
+	--sl-color-accent: #1f8d80;
+	--sl-color-accent-high: #b6ece3;
+	--sl-color-text-accent: #2bae9b;
+
+	--sl-color-white: #f4f1ee;
+	--sl-color-gray-1: #e6ece9;
+	--sl-color-gray-2: #c2ccc8;
+	--sl-color-gray-3: #9faaa6;
+	--sl-color-gray-4: #6c7975;
+	--sl-color-gray-5: #2b3633;
+	--sl-color-gray-6: #161f1d;
+	--sl-color-black: #080b0a;
+}
+
+/* ── Light: warm paper, ink text ──────────────────────────────────────────── */
+:root[data-theme="light"] {
+	--sl-color-accent-low: #d7ece9;
+	--sl-color-accent: #157a6e;
+	--sl-color-accent-high: #0c5249;
+	--sl-color-text-accent: #0f6b60;
+
+	--sl-color-white: #101917;
+	--sl-color-gray-1: #1f2926;
+	--sl-color-gray-2: #44514d;
+	--sl-color-gray-3: #6c7975;
+	--sl-color-gray-4: #98a39f;
+	--sl-color-gray-5: #d8d3cb;
+	--sl-color-gray-6: #ece8e1;
+	--sl-color-gray-7: #f6f3ec;
+	--sl-color-black: #fbf9f5;
+}
+
+/* ── A few touches to echo the marketing site ─────────────────────────────── */
+.sl-markdown-content :is(h1, h2, h3) {
+	letter-spacing: -0.02em;
+}
+
+/* Frame app screenshots so they read as UI, not loose images. */
+.sl-markdown-content img {
+	border-radius: 0.6rem;
+	border: 1px solid var(--sl-color-gray-5);
+}
+
+/* Teal site title (wordmark dot already teal). */
+.site-title img {
+	height: 1.45rem;
+	width: auto;
+}
+
+/* Inline code gets a faint teal wash. */
+.sl-markdown-content :not(pre) > code {
+	background: color-mix(in srgb, var(--sl-color-accent) 12%, transparent);
+}

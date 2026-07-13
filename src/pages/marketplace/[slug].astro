@@ -1,0 +1,117 @@
+---
+import Page from "../../layouts/Page.astro";
+import Icon from "../../components/Icon.astro";
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+	const addons = await getCollection("addons");
+	return addons.map((addon) => ({ params: { slug: addon.id }, props: { addon } }));
+}
+
+const { addon } = Astro.props;
+const { Content } = await render(addon);
+
+// Resolve the optional screenshot to an optimisable ImageMetadata.
+const images = import.meta.glob<{ default: ImageMetadata }>(
+	"../../assets/screenshots/*.png",
+);
+const shotKey = addon.data.screenshot
+	? `../../assets/screenshots/${addon.data.screenshot}`
+	: null;
+const shot = shotKey && images[shotKey] ? (await images[shotKey]()).default : null;
+
+const meta = [
+	{ label: "Category", value: addon.data.category },
+	{ label: "Price", value: addon.data.price },
+	{ label: "Publisher", value: addon.data.author },
+];
+---
+
+<Page title={`${addon.data.name} — Homun add-ons`} description={addon.data.tagline}>
+	<section class="relative overflow-hidden pt-32 pb-12 sm:pt-40">
+		<div class="glow left-1/4 top-0 h-72 w-[32rem] -translate-x-1/2 opacity-25" aria-hidden="true"></div>
+		<div class="mx-auto max-w-4xl px-5">
+			<a href="/marketplace" class="inline-flex items-center gap-1.5 text-sm text-faint transition-colors hover:text-cream">
+				<Icon name="arrowRight" class="h-4 w-4 rotate-180" />
+				Marketplace
+			</a>
+
+			<div class="mt-8 flex flex-col gap-6 sm:flex-row sm:items-center">
+				<span class="flex h-16 w-16 flex-none items-center justify-center rounded-2xl border border-line-strong bg-surface text-accent-bright">
+					<Icon name={addon.data.icon} class="h-8 w-8" />
+				</span>
+				<div>
+					<div class="flex items-center gap-3">
+						<h1 class="text-3xl font-semibold tracking-tight text-cream sm:text-4xl">
+							{addon.data.name}
+						</h1>
+						{addon.data.badge && (
+							<span class="rounded-full border border-accent-deep bg-accent-deep/30 px-2 py-0.5 text-[11px] font-medium text-accent-soft">
+								{addon.data.badge}
+							</span>
+						)}
+					</div>
+					<p class="mt-1.5 text-lg text-muted">{addon.data.tagline}</p>
+				</div>
+			</div>
+
+			<div class="mt-8 flex flex-wrap items-center gap-3">
+				<a href="/guides/getting-started/" class="btn btn-primary">
+					<Icon name="download" class="h-[1.05rem] w-[1.05rem]" />
+					Get add-on
+				</a>
+				{addon.data.docsHref && (
+					<a href={addon.data.docsHref} class="btn btn-ghost">Documentation</a>
+				)}
+				<span class="text-xs text-faint">Free · sign in from the app to install</span>
+			</div>
+		</div>
+	</section>
+
+	<section class="pb-28">
+		<div class="mx-auto grid max-w-4xl gap-10 px-5 lg:grid-cols-[1fr_15rem]">
+			<div>
+				{shot && (
+					<div class="device sheen mb-8">
+						<Image
+							src={shot}
+							alt={`${addon.data.name} in Homun`}
+							widths={[480, 800, 1100]}
+							sizes="(max-width: 1024px) 100vw, 640px"
+							loading="eager"
+						/>
+					</div>
+				)}
+				<div class="addon-body text-[15px] leading-relaxed text-muted">
+					<Content />
+				</div>
+			</div>
+
+			<aside class="lg:pt-1">
+				<div class="card p-5">
+					<dl class="space-y-3.5">
+						{meta.map((m) => (
+							<div class="flex items-center justify-between gap-4">
+								<dt class="text-xs text-faint">{m.label}</dt>
+								<dd class="text-sm font-medium text-cream">{m.value}</dd>
+							</div>
+						))}
+					</dl>
+				</div>
+				<p class="mt-4 px-1 text-xs leading-relaxed text-faint">
+					Add-ons run sandboxed, under the permissions you grant.
+				</p>
+			</aside>
+		</div>
+	</section>
+</Page>
+
+<style is:global>
+	.addon-body p { margin: 0.7rem 0; }
+	.addon-body ul { margin: 0.8rem 0; padding-left: 1.15rem; list-style: disc; }
+	.addon-body li { margin: 0.3rem 0; }
+	.addon-body strong { color: var(--color-cream); font-weight: 600; }
+	.addon-body em { color: var(--color-cream); font-style: normal; }
+</style>
