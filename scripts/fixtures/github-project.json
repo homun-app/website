@@ -1,0 +1,144 @@
+{
+  "syncedAt": "2026-07-13T12:00:00.000Z",
+  "data": {
+    "organization": {
+      "projectV2": {
+        "items": {
+          "nodes": [
+            {
+              "fieldValues": { "nodes": [
+                { "field": { "name": "Public" }, "name": "Yes" },
+                { "field": { "name": "Public status" }, "name": "Exploring" },
+                { "field": { "name": "Area" }, "name": "Input" },
+                { "field": { "name": "Slug" }, "text": "voice-capture" },
+                { "field": { "name": "Featured" }, "name": "No" },
+                { "field": { "name": "Progress" }, "number": 5 },
+                { "field": { "name": "Public update" }, "text": "Researching private, permissioned capture." },
+                { "field": { "name": "Community" }, "name": "Voting" },
+                { "field": { "name": "Order" }, "number": 1 }
+              ]},
+              "content": {
+                "number": 14,
+                "title": "Voice & ambient capture",
+                "body": "Talk to Homun and let it observe more of your workflow, only with your permission.\n\n## Intended capabilities\n- Voice conversations\n- Permissioned ambient capture",
+                "url": "https://github.com/homun-app/homun/issues/14",
+                "updatedAt": "2026-07-12T09:00:00Z",
+                "reactions": { "totalCount": 184 },
+                "labels": { "nodes": [{ "name": "roadmap" }] }
+              }
+            },
+            {
+              "fieldValues": { "nodes": [
+                { "field": { "name": "Public" }, "name": "Yes" },
+                { "field": { "name": "Public status" }, "name": "Next" },
+                { "field": { "name": "Area" }, "name": "Apps" },
+                { "field": { "name": "Slug" }, "text": "mobile-companion" },
+                { "field": { "name": "Featured" }, "name": "No" },
+                { "field": { "name": "Progress" }, "number": 18 },
+                { "field": { "name": "Target release" }, "text": "Future" },
+                { "field": { "name": "Public update" }, "text": "Defining secure device pairing." },
+                { "field": { "name": "Community" }, "name": "Open" },
+                { "field": { "name": "Order" }, "number": 2 }
+              ]},
+              "content": {
+                "number": 18,
+                "title": "Mobile companion",
+                "body": "A secure mobile companion paired with the machine that holds your data.",
+                "url": "https://github.com/homun-app/homun/issues/18",
+                "updatedAt": "2026-07-11T09:00:00Z",
+                "reactions": { "totalCount": 96 },
+                "labels": { "nodes": [{ "name": "roadmap" }] }
+              }
+            },
+            {
+              "fieldValues": { "nodes": [
+                { "field": { "name": "Public" }, "name": "Yes" },
+                { "field": { "name": "Public status" }, "name": "Building" },
+                { "field": { "name": "Area" }, "name": "Agent" },
+                { "field": { "name": "Slug" }, "text": "apprentice" },
+                { "field": { "name": "Featured" }, "name": "Yes" },
+                { "field": { "name": "Progress" }, "number": 68 },
+                { "field": { "name": "Target release" }, "text": "0.2" },
+                { "field": { "name": "Public update" }, "text": "Integrating the observation and proposal loop." },
+                { "field": { "name": "Community" }, "name": "Open" },
+                { "field": { "name": "Order" }, "number": 3 }
+              ]},
+              "content": {
+                "number": 21,
+                "title": "The Apprentice",
+                "body": "An agent that observes your work, learns routines, and proposes actions under your control.\n\n## Intended capabilities\n- Observe routines\n- Propose useful actions\n- Act only with permission",
+                "url": "https://github.com/homun-app/homun/issues/21",
+                "updatedAt": "2026-07-13T08:00:00Z",
+                "reactions": { "totalCount": 127 },
+                "labels": { "nodes": [{ "name": "roadmap" }] }
+              }
+            },
+            {
+              "fieldValues": { "nodes": [
+                { "field": { "name": "Public" }, "name": "Yes" },
+                { "field": { "name": "Public status" }, "name": "Shipped" },
+                { "field": { "name": "Area" }, "name": "Automations" },
+                { "field": { "name": "Slug" }, "text": "connected-actions" },
+                { "field": { "name": "Featured" }, "name": "No" },
+                { "field": { "name": "Progress" }, "number": 100 },
+                { "field": { "name": "Public update" }, "text": "Available in the desktop app." },
+                { "field": { "name": "Community" }, "name": "Closed" },
+                { "field": { "name": "Order" }, "number": 4 }
+              ]},
+              "content": {
+                "number": 23,
+                "title": "Connected actions",
+                "body": "Channels, triggers, connectors, and skills working together in one controlled action flow.",
+                "url": "https://github.com/homun-app/homun/issues/23",
+                "updatedAt": "2026-07-13T05:40:03Z",
+                "reactions": { "totalCount": 81 },
+                "labels": { "nodes": [{ "name": "roadmap" }] }
+              }
+            },
+            {
+              "fieldValues": { "nodes": [
+                { "field": { "name": "Public" }, "name": "Yes" },
+                { "field": { "name": "Public status" }, "name": "Exploring" },
+                { "field": { "name": "Area" }, "name": "Collaboration" },
+                { "field": { "name": "Slug" }, "text": "shared-spaces" },
+                { "field": { "name": "Featured" }, "name": "No" },
+                { "field": { "name": "Progress" }, "number": 2 },
+                { "field": { "name": "Public update" }, "text": "Validating the permission model." },
+                { "field": { "name": "Community" }, "name": "Voting" },
+                { "field": { "name": "Order" }, "number": 5 }
+              ]},
+              "content": {
+                "number": 24,
+                "title": "Shared spaces",
+                "body": "Optional spaces for working with other people while remaining local-first and deny-by-default.",
+                "url": "https://github.com/homun-app/homun/issues/24",
+                "updatedAt": "2026-07-10T10:00:00Z",
+                "reactions": { "totalCount": 52 },
+                "labels": { "nodes": [{ "name": "roadmap" }] }
+              }
+            },
+            {
+              "fieldValues": { "nodes": [
+                { "field": { "name": "Public" }, "name": "No" },
+                { "field": { "name": "Public status" }, "name": "Building" },
+                { "field": { "name": "Slug" }, "text": "private-internal-work" },
+                { "field": { "name": "Featured" }, "name": "No" },
+                { "field": { "name": "Progress" }, "number": 40 },
+                { "field": { "name": "Order" }, "number": 6 }
+              ]},
+              "content": {
+                "number": 99,
+                "title": "Private internal work",
+                "body": "This must never be exported.",
+                "url": "https://github.com/homun-app/homun/issues/99",
+                "updatedAt": "2026-07-13T08:00:00Z",
+                "reactions": { "totalCount": 0 },
+                "labels": { "nodes": [] }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+[
+  {
+    "tag_name": "v0.1.1055",
+    "name": "0.1.1055",
+    "draft": false,
+    "prerelease": false,
+    "published_at": "2026-07-13T05:40:03Z",
+    "html_url": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1055",
+    "body": "## Highlights\n- Connected actions across channels and tools\n- More reliable local model routing\n\n## Improvements\n- Clearer automation events\n\n## Fixes\n- Desktop stability improvements\n\n## Shipped roadmap projects\nRoadmap: connected-actions",
+    "assets": [
+      { "name": "Homun-0.1.1055-arm64.dmg", "browser_download_url": "https://example.test/Homun.dmg" },
+      { "name": "Homun-0.1.1055-x64.exe", "browser_download_url": "https://example.test/Homun.exe" },
+      { "name": "Homun-0.1.1055-amd64.deb", "browser_download_url": "https://example.test/Homun.deb" },
+      { "name": "Homun-0.1.1055-x86_64.AppImage", "browser_download_url": "https://example.test/Homun.AppImage" }
+    ]
+  },
+  {
+    "tag_name": "v0.1.1054",
+    "name": "0.1.1054",
+    "draft": true,
+    "prerelease": false,
+    "published_at": null,
+    "html_url": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1054",
+    "body": "Draft release",
+    "assets": []
+  }
+]
