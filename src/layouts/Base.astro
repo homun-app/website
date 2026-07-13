@@ -59,5 +59,50 @@ const ogImage = new URL("/og.png", Astro.site);
 				els.forEach((el) => io.observe(el));
 			})();
 		</script>
+		<script is:inline>
+			(() => {
+				const finePointer = window.matchMedia("(pointer: fine)");
+				const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+				if (!finePointer.matches || reducedMotion.matches) return;
+
+				const root = document.documentElement;
+				let currentX = 50;
+				let currentY = 18;
+				let targetX = currentX;
+				let targetY = currentY;
+				let frame = 0;
+
+				const render = () => {
+					currentX += (targetX - currentX) * 0.08;
+					currentY += (targetY - currentY) * 0.08;
+					root.style.setProperty("--pointer-x", `${currentX}%`);
+					root.style.setProperty("--pointer-y", `${currentY}%`);
+					if (
+						Math.abs(targetX - currentX) > 0.05 ||
+						Math.abs(targetY - currentY) > 0.05
+					) {
+						frame = window.requestAnimationFrame(render);
+					} else {
+						frame = 0;
+					}
+				};
+
+				const schedule = () => {
+					if (!frame) frame = window.requestAnimationFrame(render);
+				};
+
+				window.addEventListener("pointermove", (event) => {
+					targetX = (event.clientX / window.innerWidth) * 100;
+					targetY = (event.clientY / window.innerHeight) * 100;
+					schedule();
+				}, { passive: true });
+
+				document.documentElement.addEventListener("mouseleave", () => {
+					targetX = 50;
+					targetY = 18;
+					schedule();
+				});
+			})();
+		</script>
 	</body>
 </html>

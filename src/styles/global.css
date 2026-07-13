@@ -212,13 +212,13 @@
 .atmosphere {
 	background:
 		radial-gradient(
-			ellipse 62% 54% at 50% 4%,
-			rgba(80, 223, 197, 0.12),
+			circle 34rem at var(--pointer-x, 50%) var(--pointer-y, 18%),
+			rgba(80, 223, 197, 0.13),
 			transparent 72%
 		),
 		radial-gradient(
-			ellipse 36% 42% at 86% 62%,
-			rgba(12, 102, 87, 0.09),
+			ellipse 38% 46% at 86% 62%,
+			rgba(12, 102, 87, 0.08),
 			transparent 76%
 		);
 	pointer-events: none;

@@ -8,7 +8,8 @@
     "start": "astro dev",
     "build": "astro build",
     "test:homepage": "node scripts/check-homepage.mjs",
-    "check": "npm run build && npm run test:homepage",
+    "test:marketing-backgrounds": "node scripts/check-marketing-backgrounds.mjs",
+    "check": "npm run build && npm run test:homepage && npm run test:marketing-backgrounds",
     "preview": "astro preview",
     "astro": "astro"
   },
