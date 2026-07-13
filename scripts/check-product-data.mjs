@@ -69,4 +69,18 @@ assert.equal(JSON.parse(await readFile(roadmapPath, "utf8")).items.length, 5);
 assert.equal(JSON.parse(await readFile(releasesPath, "utf8")).items.length, 1);
 await rm(tempRoot, { recursive: true, force: true });
 
+const workflow = await readFile(
+	new URL("../.github/workflows/sync-product-data.yml", import.meta.url),
+	"utf8",
+);
+for (const required of [
+	"workflow_dispatch:",
+	"schedule:",
+	"HOMUN_PROJECT_NUMBER",
+	"npm run sync:product-data",
+	"git diff --quiet -- src/data/roadmap.json src/data/releases.json",
+]) {
+	assert.ok(workflow.includes(required), `Product sync workflow is missing: ${required}`);
+}
+
 console.log("Product data contract passed");
