@@ -7,6 +7,8 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
+    "test:homepage": "node scripts/check-homepage.mjs",
+    "check": "npm run build && npm run test:homepage",
     "preview": "astro preview",
     "astro": "astro"
   },
