@@ -5,12 +5,17 @@ const read = (path) => readFile(new URL(`../dist/${path}`, import.meta.url), "ut
 const plain = (html) => html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
 
 const roadmapHtml = await read("roadmap/index.html");
+const detailHtml = await read("roadmap/apprentice/index.html");
 const changelogHtml = await read("changelog/index.html");
 const rss = await read("changelog/rss.xml");
 const roadmapText = plain(roadmapHtml);
 const changelogText = plain(changelogHtml);
+const detailText = plain(detailHtml);
 
 assert.ok(roadmapHtml.includes("data-roadmap-filter"), "Roadmap is missing area filters");
+for (const required of ["The Apprentice", "Building", "68%", "Discuss on GitHub", "Related releases"]) {
+	assert.ok(detailText.includes(required), `Roadmap detail missing: ${required}`);
+}
 
 for (const required of [
 	"What we're building. What just shipped.",

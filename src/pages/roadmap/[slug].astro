@@ -1,0 +1,85 @@
+---
+import Page from "../../layouts/Page.astro";
+import RoadmapOrbitIllustration from "../../components/illustrations/RoadmapOrbitIllustration.astro";
+import {
+	roadmapItems,
+	releasesForProject,
+	type RoadmapItem,
+} from "../../lib/product-data";
+
+export function getStaticPaths() {
+	return roadmapItems.map((project) => ({ params: { slug: project.slug }, props: { project } }));
+}
+
+interface Props { project: RoadmapItem }
+const { project } = Astro.props;
+const relatedReleases = releasesForProject(project.slug);
+const statusLabel = { exploring: "Exploring", next: "Next", building: "Building", shipped: "Shipped" }[project.status];
+const updated = new Date(project.updatedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+---
+
+<Page title={`${project.title} — Homun Roadmap`} description={project.description}>
+	<section class="relative overflow-hidden pb-12 pt-36 sm:pt-44">
+		<div class="atmosphere absolute inset-0 -z-10" aria-hidden="true"></div>
+		<div class="mx-auto max-w-5xl px-5">
+			<a href="/roadmap/" class="reveal inline-flex items-center gap-2 text-sm text-faint hover:text-cream">← Back to roadmap</a>
+			<div class="mt-9 grid items-center gap-10 lg:grid-cols-[1.1fr_.9fr]">
+				<div>
+					<div class="reveal flex flex-wrap items-center gap-3">
+						<span class="eyebrow">{project.area}</span>
+						<span class="pill text-xs">{statusLabel}</span>
+					</div>
+					<h1 class="reveal text-gradient mt-5 text-5xl font-semibold sm:text-6xl">{project.title}</h1>
+					<p class="reveal mt-6 text-lg leading-relaxed text-muted">{project.description}</p>
+					<div class="reveal mt-7 flex flex-wrap gap-2">
+						<span class="pill">{project.progress}% complete</span>
+						<span class="pill">Updated {updated}</span>
+						{project.targetRelease && <span class="pill">Direction: {project.targetRelease}</span>}
+					</div>
+				</div>
+				<div class="reveal mx-auto w-full max-w-md"><RoadmapOrbitIllustration /></div>
+			</div>
+		</div>
+	</section>
+
+	<section class="pb-28">
+		<div class="mx-auto grid max-w-5xl gap-5 px-5 lg:grid-cols-[1fr_.72fr]">
+			<div class="space-y-5">
+				<article class="card p-6 sm:p-8">
+					<p class="eyebrow">Latest public update</p>
+					<p class="mt-4 text-lg leading-relaxed text-cream">{project.publicUpdate ?? "No public update yet."}</p>
+					<div class="mt-7 h-1.5 overflow-hidden rounded-full bg-white/5" aria-label={`${project.progress}% complete`}>
+						<div class="h-full rounded-full bg-gradient-to-r from-accent to-[#6c8fee]" style={`width:${project.progress}%`}></div>
+					</div>
+				</article>
+
+				<article class="card p-6 sm:p-8">
+					<h2 class="text-2xl font-semibold">Intended capabilities</h2>
+					{project.capabilities.length > 0 ? (
+						<ul class="mt-5 grid gap-3 sm:grid-cols-2">
+							{project.capabilities.map((capability) => <li class="rounded-xl border border-line bg-surface/50 p-4 text-sm leading-relaxed text-muted"><span class="mr-2 text-accent-bright">+</span>{capability}</li>)}
+						</ul>
+					) : <p class="mt-4 text-sm text-faint">Capabilities will be added as the direction becomes clearer.</p>}
+				</article>
+			</div>
+
+			<aside class="space-y-5">
+				<section class="card p-6">
+					<h2 class="text-xl font-semibold">Related releases</h2>
+					{relatedReleases.length > 0 ? (
+						<div class="mt-4 divide-y divide-line">
+							{relatedReleases.map((release) => <a href={`/changelog/#${release.version.replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}`} class="flex items-center justify-between gap-3 py-4 font-mono text-xs text-muted hover:text-cream"><span>{release.version}</span><span>→</span></a>)}
+						</div>
+					) : <p class="mt-4 text-sm leading-relaxed text-faint">No published release is linked to this project yet.</p>}
+				</section>
+
+				<section class="card p-6">
+					<h2 class="text-xl font-semibold">Shape this project</h2>
+					<p class="mt-3 text-sm leading-relaxed text-faint">Read the public context, add a useful example, or vote when discussion is open.</p>
+					<a href={project.githubUrl} target="_blank" rel="noopener" class="btn mt-5 w-full border border-line-strong text-sm text-cream hover:border-accent/50">Discuss on GitHub ↗</a>
+					<p class="mt-3 text-center text-[11px] text-faint">A GitHub account is needed only to participate.</p>
+				</section>
+			</aside>
+		</div>
+	</section>
+</Page>
