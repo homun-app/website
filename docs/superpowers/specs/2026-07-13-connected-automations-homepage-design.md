@@ -45,13 +45,13 @@ Use the same B2 illustration system as the rest of the approved homepage:
 - dark teal atmosphere rather than a grid background;
 - thin technical panels with softly rounded corners;
 - fixed Homun cube or workspace at the centre;
-- small peripheral modules connected by luminous paths;
+- small physical modules and outputs arranged as an isometric miniature;
 - teal as the primary signal colour, with blue, magenta and amber accents;
 - restrained labels in the existing condensed monospace style;
 - slow path pulses and 2–4 px peripheral drift;
 - no laptop, robot, brain or generic SaaS-dashboard metaphor.
 
-The illustration should feel like another part of the adaptable workshop established in the hero, not a new art direction.
+The illustration should feel like another part of the adaptable workshop established in the hero, not a new art direction. Avoid a symmetrical network diagram: the visual must read as a small working scene with an input, a transformation and an output.
 
 ## Section Structure
 
@@ -59,15 +59,16 @@ The illustration should feel like another part of the adaptable workshop establi
 
 Use a split header on desktop: copy on the left and the main illustration on the right. Stack copy above illustration on mobile.
 
-The illustration contains:
+The illustration is a miniature isometric workshop:
 
-- Homun fixed at the centre;
-- WhatsApp and Telegram as message/channel nodes;
-- Composio as the connected-app node;
-- MCP and Skills as extensibility nodes;
-- a lower route labelled `Message · Schedule · Event → Context + Tools → Action`.
+- a WhatsApp message from Jean enters from the left as the primary example;
+- Telegram remains visible as a smaller secondary channel token;
+- Composio and `MCP + Skills` are physical tool modules feeding the work path;
+- Homun is a fixed central machine/workspace rather than another network node;
+- a completed update/reply card leaves on the right;
+- the luminous runway conveys `input → Homun works → useful result` without a labelled flowchart.
 
-The scene explains the architecture at a glance. It should name the concepts directly so the visual does not depend on brand-icon recognition.
+The scene explains the architecture through motion and physical relationships. Keep only short labels needed to identify WhatsApp, Telegram, Composio, MCP and Skills; do not restore the symmetrical orbit, four matching panels or the lower text rail.
 
 ### 2. Automations in motion
 
@@ -121,12 +122,21 @@ The visual must not imply unrestricted automatic sending or invisible access to 
 ## Interaction and Motion
 
 - Keep the central Homun object fixed.
-- Pulse paths slowly to suggest an active workflow.
-- Let peripheral nodes drift by no more than 4 px.
+- Move a small signal along the runway slowly to suggest work progressing.
+- Let the incoming message, tool modules and output card drift by no more than 4 px.
 - Animate story-card paths sequentially with long pauses so the page remains calm.
 - Do not require animation to understand the examples.
 - Disable all non-essential animation under `prefers-reduced-motion: reduce`.
 - Avoid mouse-following motion inside the story cards; the examples should remain legible while reading.
+
+## Hero Typography Correction
+
+The hero title currently uses a `0.98` line height with gradient-clipped text. This compresses the descender of the final `y` in `Your system.` and makes its tip appear cut.
+
+- Increase the hero title line height to `1.04`.
+- Add `0.08em` bottom padding to the title so gradient clipping cannot crop the final descender.
+- Preserve the intentional three-line composition and all existing responsive font sizes.
+- Verify the descender remains visible at desktop, tablet and mobile sizes.
 
 ## Responsive Behaviour
 
@@ -174,7 +184,7 @@ Do not place application screenshots in this homepage section. The illustrations
 Create focused Astro components:
 
 - one section component responsible for copy, layout and guide links;
-- one connected-workspace illustration component;
+- one connected-workspace illustration component rendered as the miniature workshop;
 - one reusable automation-story illustration component driven by a small set of variants.
 
 Do not restore the older full `Features` section. Reuse its copy and existing guide routes only where relevant. Avoid unrelated homepage refactoring.
@@ -189,6 +199,7 @@ Extend the homepage illustration contract so automated checks confirm:
 - all three story examples render;
 - links to Channels, Connectors and Automations guides exist;
 - reduced-motion overrides cover the new animations.
+- the hero title source uses the safe line height and bottom padding required for descenders.
 
 Complete visual QA at desktop, tablet and mobile widths. Confirm:
 
