@@ -56,6 +56,7 @@ for (const marker of [
 	"data-homun-download",
 	"data-download-chooser",
 	"data-download-options",
+	"data-download-action",
 	"Download for another platform",
 	"https://github.com/homun-app/homun-core",
 	"https://github.com/homun-app/homun-releases/releases/latest",

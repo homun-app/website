@@ -85,8 +85,11 @@ function wireDownloadControl(control, platform) {
 		event.preventDefault();
 		if (control.getAttribute("aria-busy") === "true") return;
 		control.setAttribute("aria-busy", "true");
-		const original = control.textContent;
-		control.textContent = "Finding the latest installer…";
+		const statusLabel = control.matches("[data-homun-download]")
+			? control
+			: control.querySelector("[data-download-action]");
+		const original = statusLabel?.textContent;
+		if (statusLabel) statusLabel.textContent = "Finding the latest installer…";
 		try {
 			const grouped = await loadLatestInstallers();
 			const asset = preferredInstaller(platform, grouped);
@@ -95,7 +98,7 @@ function wireDownloadControl(control, platform) {
 			navigateTo(RELEASES_PAGE_URL);
 		} finally {
 			control.removeAttribute("aria-busy");
-			control.textContent = original;
+			if (statusLabel && original) statusLabel.textContent = original;
 		}
 	});
 }
