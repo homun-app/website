@@ -1,0 +1,57 @@
+---
+import { Image } from "astro:assets";
+import chat from "../assets/screenshots/chat.png";
+
+const outcomes = [
+	{ index: "01", title: "Develop software", body: "Explore a codebase, modify files, run checks and keep the project context together." },
+	{ index: "02", title: "Create deliverables", body: "Turn work into documents, presentations, research and structured outputs." },
+	{ index: "03", title: "Operate locally", body: "Use approved tools and applications on the system where the work actually lives." },
+	{ index: "04", title: "Continue the project", body: "Keep ideas, decisions and future work connected beyond a single prompt." },
+] as const;
+---
+
+<section id="product" class="relative scroll-mt-24 overflow-hidden py-24 sm:py-32">
+	<div class="glow -right-48 top-10 h-[30rem] w-[30rem] opacity-18" aria-hidden="true"></div>
+	<div class="section-shell">
+		<div class="grid gap-12 lg:grid-cols-[.85fr_1.15fr] lg:gap-20">
+			<div>
+				<p class="eyebrow reveal">From intention to output</p>
+				<h2 class="reveal mt-4 text-4xl text-cream sm:text-6xl">Real work, not isolated prompts.</h2>
+				<p class="reveal mt-6 max-w-xl text-lg leading-relaxed text-muted" style="--reveal-delay: 70ms">
+					Homun is the place where an idea becomes a project, a project becomes action, and action becomes something you can use.
+				</p>
+			</div>
+
+			<div class="divide-y divide-line border-y border-line">
+				{outcomes.map((outcome, index) => (
+					<article class="reveal grid grid-cols-[2.4rem_1fr] gap-4 py-6 sm:grid-cols-[3rem_13rem_1fr] sm:items-start" style={`--reveal-delay: ${index * 60}ms`}>
+						<span class="font-mono text-[10px] text-accent-bright">{outcome.index}</span>
+						<h3 class="text-lg text-cream">{outcome.title}</h3>
+						<p class="col-start-2 text-sm leading-relaxed text-muted sm:col-start-3">{outcome.body}</p>
+					</article>
+				))}
+			</div>
+		</div>
+
+		<div class="reveal relative mt-16" style="--reveal-delay: 90ms">
+			<div class="operator-panel p-2 sm:p-3">
+				<div class="flex items-center justify-between px-3 py-2.5 sm:px-4">
+					<div class="flex items-center gap-2">
+						<span class="status-dot"></span>
+						<span class="metric-label">Product evidence</span>
+					</div>
+					<span class="font-mono text-[9px] uppercase tracking-wider text-faint">Desktop workspace</span>
+				</div>
+				<div class="device">
+					<Image
+						src={chat}
+						alt="Homun desktop workspace showing a project conversation with code and visible tool activity"
+						widths={[640, 1024, 1440, 1920]}
+						sizes="(max-width: 1152px) 100vw, 1152px"
+						loading="lazy"
+					/>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
