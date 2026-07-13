@@ -32,9 +32,9 @@ const wordmark = `
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   <defs>
     <radialGradient id="glow" cx="50%" cy="2%" r="62%">
-      <stop offset="0%" stop-color="#34c6b0" stop-opacity="0.30"/>
-      <stop offset="55%" stop-color="#157a6e" stop-opacity="0.05"/>
-      <stop offset="100%" stop-color="#34c6b0" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#67efd5" stop-opacity="0.30"/>
+      <stop offset="55%" stop-color="#20a991" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#67efd5" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="ink" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#ffffff"/>
@@ -42,7 +42,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" 
     </linearGradient>
   </defs>
 
-  <rect width="${W}" height="${H}" fill="#080b0a"/>
+  <rect width="${W}" height="${H}" fill="#050807"/>
   <rect width="${W}" height="${H}" fill="url(#glow)"/>
 
   <!-- hairline frame -->
@@ -51,16 +51,16 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" 
 
   ${wordmark}
 
-  <text x="${W / 2}" y="385" text-anchor="middle"
-        font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="62"
-        font-weight="600" letter-spacing="-2" fill="url(#ink)">Personal AI, on your terms.</text>
+  <text x="${W / 2}" y="380" text-anchor="middle"
+        font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="54"
+        font-weight="600" letter-spacing="-2" fill="url(#ink)">Your work. Your models. Your system.</text>
 
   <text x="${W / 2}" y="455" text-anchor="middle"
         font-family="'SF Mono', ui-monospace, Menlo, monospace" font-size="24"
-        letter-spacing="2" fill="#9fada9">DOES THE WORK · LOCAL + CLOUD</text>
+        letter-spacing="2" fill="#9fada9">CLOUD · OPEN SOURCE · LOCAL</text>
 
   <g transform="translate(${W / 2 - 4} 520)">
-    <circle cx="0" cy="0" r="5" fill="#34c6b0"/>
+    <circle cx="0" cy="0" r="5" fill="#50dfc5"/>
   </g>
   <text x="${W / 2 + 16}" y="527" text-anchor="start"
         font-family="'SF Mono', ui-monospace, Menlo, monospace" font-size="22"
