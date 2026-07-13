@@ -1,4 +1,6 @@
 ---
+import EngineTransition from "./illustrations/EngineTransition.astro";
+
 const choices = [
 	{ label: "Cloud", detail: "Use compatible hosted providers when reach and speed matter.", code: "REMOTE" },
 	{ label: "Open source", detail: "Choose models whose weights and ecosystem stay accessible.", code: "OPEN" },
@@ -44,6 +46,10 @@ const choices = [
 					</article>
 				))}
 			</div>
+		</div>
+
+		<div class="reveal mx-auto mt-8 max-w-5xl" style="--reveal-delay: 220ms">
+			<EngineTransition />
 		</div>
 	</div>
 </section>

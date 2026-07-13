@@ -1,0 +1,86 @@
+<div class="engine-transition" data-illustration="engines" aria-hidden="true">
+	<div class="transition-label"><span>Replaceable engines</span><span>Stable workspace</span></div>
+	<svg viewBox="0 0 960 250" fill="none">
+		<defs>
+			<linearGradient id="engine-core" x1="480" y1="45" x2="480" y2="207" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#10231e" />
+				<stop offset="1" stop-color="#09110f" />
+			</linearGradient>
+		</defs>
+		<path class="engine-route" d="M55 133C198 133 248 88 350 119C410 137 434 133 480 126C534 118 573 114 628 128C728 152 800 119 905 119" stroke="#173c33" stroke-width="16" stroke-linecap="round" />
+		<path class="engine-signal" d="M55 133C198 133 248 88 350 119C410 137 434 133 480 126C534 118 573 114 628 128C728 152 800 119 905 119" stroke="#5ce0bf" stroke-width="2" stroke-linecap="round" />
+
+		<g class="engine-module engine-left">
+			<path d="m88 93 48-28 50 29-49 29Z" fill="#64e1bf" />
+			<path d="M88 93v56l49 29v-55Z" fill="#142d25" stroke="#64e1bf" />
+			<path d="M186 94v55l-49 29v-55Z" fill="#346bd7" stroke="#77a2f5" />
+			<text x="137" y="207" fill="#6f8980" font-size="13" font-family="monospace" text-anchor="middle">LOCAL</text>
+		</g>
+
+		<g class="decision-marker">
+			<circle cx="293" cy="111" r="13" fill="#f1d070" />
+			<path d="M286 111h14m-7-7v14" stroke="#132019" stroke-width="2" />
+		</g>
+
+		<g class="engine-core">
+			<rect x="403" y="35" width="156" height="178" rx="24" fill="url(#engine-core)" stroke="#dff0ea" stroke-opacity=".6" stroke-width="2" />
+			<path d="M433 76h78M433 101h96M433 126h63" stroke="#60e1c0" stroke-width="9" stroke-linecap="round" />
+			<path d="M433 166h45M489 166h40" stroke="#70867f" stroke-width="5" stroke-linecap="round" />
+			<text x="481" y="195" fill="#abc1ba" font-size="14" font-family="monospace" text-anchor="middle">HOMUN</text>
+		</g>
+
+		<g class="decision-marker marker-right">
+			<circle cx="675" cy="138" r="13" fill="#5789ee" />
+			<path d="m668 138 5 5 10-12" stroke="#edf3ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+		</g>
+
+		<g class="engine-module engine-right">
+			<path d="m768 81 49-28 51 29-50 30Z" fill="#ef78d8" />
+			<path d="M768 81v57l50 30v-56Z" fill="#32172f" stroke="#ef78d8" />
+			<path d="M868 82v56l-50 30v-56Z" fill="#7e377a" stroke="#f09cdf" />
+			<text x="818" y="198" fill="#a37a9b" font-size="13" font-family="monospace" text-anchor="middle">CLOUD</text>
+		</g>
+	</svg>
+</div>
+
+<style>
+	.engine-transition {
+		position: relative;
+		overflow: hidden;
+		border: 1px solid var(--color-line);
+		border-radius: 1.25rem;
+		background:
+			radial-gradient(ellipse 42% 80% at 50% 50%, rgba(80, 223, 197, 0.1), transparent 72%),
+			linear-gradient(145deg, rgba(9, 20, 17, 0.92), rgba(5, 9, 8, 0.98));
+	}
+
+	.transition-label {
+		position: absolute;
+		inset: 0.9rem 1.1rem auto;
+		display: flex;
+		justify-content: space-between;
+		font-family: var(--font-mono);
+		font-size: 0.58rem;
+		letter-spacing: 0.13em;
+		text-transform: uppercase;
+		color: var(--color-faint);
+	}
+
+	svg { display: block; width: 100%; height: auto; }
+	.engine-module { animation: engine-drift 14s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: center; }
+	.engine-right { animation-delay: -7s; }
+	.engine-signal { animation: engine-signal 6s ease-in-out infinite; }
+
+	@keyframes engine-drift { to { transform: translateY(-4px); } }
+	@keyframes engine-signal { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+
+	@media (max-width: 640px) {
+		.transition-label { font-size: 0.49rem; }
+		.decision-marker { display: none; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.engine-module,
+		.engine-signal { animation: none; }
+	}
+</style>
