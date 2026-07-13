@@ -12,6 +12,7 @@
 		"test:downloads": "node scripts/check-download-routing.mjs",
 		"test:illustrations": "node scripts/check-homepage-illustrations.mjs",
 		"test:product-data": "node scripts/check-product-data.mjs",
+		"test:roadmap": "node scripts/check-roadmap-pages.mjs",
 		"sync:product-data": "node scripts/sync-product-data.mjs",
     "check": "npm run build && npm run test:homepage && npm run test:marketing-backgrounds && npm run test:downloads && npm run test:illustrations",
     "preview": "astro preview",
