@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "syncedAt": "2026-07-13T12:00:00.000Z",
+  "items": [
+    {
+      "version": "v0.1.1055",
+      "name": "0.1.1055",
+      "publishedAt": "2026-07-13T05:40:03Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1055",
+      "highlights": ["Desktop release published for macOS, Windows, and Linux."],
+      "improvements": [],
+      "fixes": [],
+      "platforms": ["Linux", "macOS", "Windows"],
+      "assets": [
+        { "name": "Homun-0.1.1055-arm64.dmg", "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1055/Homun-0.1.1055-arm64.dmg" },
+        { "name": "Homun-0.1.1055-x64.exe", "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1055/Homun-0.1.1055-x64.exe" },
+        { "name": "Homun-0.1.1055-amd64.deb", "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1055/Homun-0.1.1055-amd64.deb" },
+        { "name": "Homun-0.1.1055-x86_64.AppImage", "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1055/Homun-0.1.1055-x86_64.AppImage" }
+      ],
+      "projectSlugs": ["connected-actions"]
+    },
+    {
+      "version": "v0.1.1054",
+      "name": "0.1.1054",
+      "publishedAt": "2026-07-11T07:54:16Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1054",
+      "highlights": ["Desktop release published for macOS, Windows, and Linux."],
+      "improvements": [],
+      "fixes": [],
+      "platforms": ["Linux", "macOS", "Windows"],
+      "assets": [],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1053",
+      "name": "0.1.1053",
+      "publishedAt": "2026-07-11T06:45:55Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1053",
+      "highlights": ["Desktop release published for macOS, Windows, and Linux."],
+      "improvements": [],
+      "fixes": [],
+      "platforms": ["Linux", "macOS", "Windows"],
+      "assets": [],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1050",
+      "name": "0.1.1050",
+      "publishedAt": "2026-06-26T20:43:57Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1050",
+      "highlights": ["Desktop release published for macOS, Windows, and Linux."],
+      "improvements": [],
+      "fixes": [],
+      "platforms": ["Linux", "macOS", "Windows"],
+      "assets": [],
+      "projectSlugs": []
+    }
+  ]
+}
