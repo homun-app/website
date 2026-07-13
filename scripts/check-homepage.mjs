@@ -6,7 +6,7 @@ const text = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
 
 for (const required of [
 	"Your work. Your models. Your system.",
-	"Download without an account",
+	"Start without creating an account.",
 	"Cloud, open source, or local",
 	"Real work, not isolated prompts",
 	"Official Homun plugins. Free at launch.",

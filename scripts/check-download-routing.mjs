@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import {
 	detectPlatform,
 	groupInstallers,
@@ -49,5 +50,17 @@ await assert.rejects(
 	() => loadLatestInstallers(failedFetch, { useCache: false }),
 	/GitHub release request failed: 403/,
 );
+
+const homepage = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
+for (const marker of [
+	"data-homun-download",
+	"data-download-chooser",
+	"data-download-options",
+	"Download for another platform",
+	"https://github.com/homun-app/homun-core",
+	"https://github.com/homun-app/homun-releases/releases/latest",
+]) {
+	assert.ok(homepage.includes(marker), `Homepage is missing download integration: ${marker}`);
+}
 
 console.log("Download resolver contract passed");

@@ -40,6 +40,12 @@ const platformLabels = {
 	unknown: "Download Homun",
 };
 
+const platformNames = {
+	macos: "macOS",
+	windows: "Windows",
+	linux: "Linux",
+};
+
 let installersPromise;
 
 export async function loadLatestInstallers(fetchImpl = fetch, { useCache = true } = {}) {
@@ -65,26 +71,99 @@ function navigateTo(url) {
 	window.location.assign(url);
 }
 
+function installerKind(name) {
+	const lower = name.toLowerCase();
+	if (lower.endsWith(".dmg")) return "DMG";
+	if (lower.endsWith(".exe")) return "EXE";
+	if (lower.endsWith(".appimage")) return "AppImage";
+	if (lower.endsWith(".deb")) return "DEB";
+	return "Installer";
+}
+
+function wireDownloadControl(control, platform) {
+	control.addEventListener("click", async (event) => {
+		event.preventDefault();
+		if (control.getAttribute("aria-busy") === "true") return;
+		control.setAttribute("aria-busy", "true");
+		const original = control.textContent;
+		control.textContent = "Finding the latest installer…";
+		try {
+			const grouped = await loadLatestInstallers();
+			const asset = preferredInstaller(platform, grouped);
+			navigateTo(asset?.browser_download_url ?? RELEASES_PAGE_URL);
+		} catch {
+			navigateTo(RELEASES_PAGE_URL);
+		} finally {
+			control.removeAttribute("aria-busy");
+			control.textContent = original;
+		}
+	});
+}
+
+function appendFallbackLink(list) {
+	const link = document.createElement("a");
+	link.href = RELEASES_PAGE_URL;
+	link.target = "_blank";
+	link.rel = "noopener";
+	link.className = "link-accent px-3 py-2 text-sm";
+	link.textContent = "All releases on GitHub →";
+	list.append(link);
+}
+
+function renderInstallerLinks(list, grouped) {
+	list.replaceChildren();
+	for (const platform of ["macos", "windows", "linux"]) {
+		for (const asset of grouped[platform]) {
+			const link = document.createElement("a");
+			link.href = asset.browser_download_url;
+			link.className = "flex items-center justify-between rounded-xl border border-line bg-bg/45 px-4 py-3 text-sm text-muted transition-colors hover:border-line-strong hover:text-cream";
+			const label = document.createElement("span");
+			label.textContent = `${platformNames[platform]} · ${installerKind(asset.name)}`;
+			const arrow = document.createElement("span");
+			arrow.className = "text-accent-bright";
+			arrow.textContent = "↓";
+			link.append(label, arrow);
+			list.append(link);
+		}
+	}
+	appendFallbackLink(list);
+}
+
 export function initDownloadControls(root = document, navigatorLike = navigator) {
 	const platform = detectPlatform(navigatorLike);
 	for (const control of root.querySelectorAll("[data-homun-download]")) {
 		control.textContent = platformLabels[platform];
-		control.addEventListener("click", async (event) => {
-			event.preventDefault();
-			if (control.getAttribute("aria-busy") === "true") return;
-			control.setAttribute("aria-busy", "true");
-			const original = control.textContent;
-			control.textContent = "Finding the latest installer…";
-			try {
-				const grouped = await loadLatestInstallers();
-				const asset = preferredInstaller(platform, grouped);
-				navigateTo(asset?.browser_download_url ?? RELEASES_PAGE_URL);
-			} catch {
-				navigateTo(RELEASES_PAGE_URL);
-			} finally {
-				control.removeAttribute("aria-busy");
-				control.textContent = original;
-			}
-		});
+		wireDownloadControl(control, platform);
 	}
-}
+	for (const control of root.querySelectorAll("[data-download-platform]")) {
+		wireDownloadControl(control, control.dataset.downloadPlatform);
+	}
+
+	const chooser = root.querySelector("[data-download-chooser]");
+	const options = root.querySelector("[data-download-options]");
+	const list = root.querySelector("[data-download-list]");
+	const status = root.querySelector("[data-download-status]");
+	if (!chooser || !options || !list || !status) return;
+
+	chooser.addEventListener("click", async () => {
+		const opening = options.hidden;
+		options.hidden = !opening;
+		chooser.setAttribute("aria-expanded", String(opening));
+		if (!opening || list.dataset.loaded === "true") return;
+
+		chooser.setAttribute("aria-busy", "true");
+		status.textContent = "Finding the latest installers…";
+		try {
+			const grouped = await loadLatestInstallers();
+			renderInstallerLinks(list, grouped);
+			list.dataset.loaded = "true";
+			status.textContent = "Choose the installer that matches your system.";
+		} catch {
+			list.replaceChildren();
+			appendFallbackLink(list);
+			status.textContent = "The installer list could not be loaded. Open all releases on GitHub.";
+		} finally {
+			chooser.removeAttribute("aria-busy");
+		}
+	});
+	}
