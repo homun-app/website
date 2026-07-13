@@ -15,10 +15,51 @@ for (const marker of [
 	assert.ok(homepage.includes(marker), `Homepage is missing illustration contract: ${marker}`);
 }
 
+for (const marker of [
+	'data-illustration="connected-workspace"',
+	'data-illustration="automation-whatsapp"',
+	'data-illustration="automation-gmail-brief"',
+	'data-illustration="automation-invoice"',
+]) {
+	assert.ok(homepage.includes(marker), `Homepage is missing connected-action illustration: ${marker}`);
+}
+
+for (const content of [
+	"From a message to real action.",
+	"Two ways to begin. Countless ways to continue.",
+	"WhatsApp",
+	"Telegram",
+	"Composio",
+	"MCP",
+	"Skills",
+	"Schedule",
+	"Event",
+]) {
+	assert.ok(homepage.includes(content), `Homepage is missing connected-action content: ${content}`);
+}
+
+for (const href of [
+	'href="/guides/channels/"',
+	'href="/guides/connectors/"',
+	'href="/guides/automations/"',
+]) {
+	assert.ok(homepage.includes(href), `Homepage is missing connected-action guide link: ${href}`);
+}
+
+const workPosition = homepage.indexOf('id="product"');
+const connectedPosition = homepage.indexOf('id="connected-action"');
+const controlPosition = homepage.indexOf('id="control"');
+assert.ok(
+	workPosition < connectedPosition && connectedPosition < controlPosition,
+	"Connected action must render between product proof and control",
+);
+
 for (const component of [
 	"WorkshopIllustration.astro",
 	"EngineTransition.astro",
 	"EcosystemIllustration.astro",
+	"ConnectedWorkspaceIllustration.astro",
+	"AutomationStoryIllustration.astro",
 ]) {
 	const source = await readFile(
 		new URL(`../src/components/illustrations/${component}`, import.meta.url),
