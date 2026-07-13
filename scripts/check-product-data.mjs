@@ -40,6 +40,16 @@ assert.deepEqual(releases.items[0].projectSlugs, ["connected-actions"]);
 assert.doesNotThrow(() => validateSnapshot(roadmap, releases));
 assert.doesNotThrow(() => validateSnapshot(checkedInRoadmap, checkedInReleases));
 
+const releaseWithoutNotes = structuredClone(releaseFixture);
+releaseWithoutNotes[0].body = null;
+const normalizedWithoutNotes = normalizeReleases(
+	releaseWithoutNotes,
+	roadmap.items,
+	projectFixture.syncedAt,
+);
+assert.deepEqual(normalizedWithoutNotes.items[0].highlights, []);
+assert.deepEqual(normalizedWithoutNotes.items[0].projectSlugs, []);
+
 const duplicate = structuredClone(roadmap);
 duplicate.items.push({ ...duplicate.items[0] });
 assert.throws(() => validateSnapshot(duplicate, releases), /Duplicate roadmap slug/);

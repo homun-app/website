@@ -104,7 +104,7 @@ export async function fetchProductData(config, fetchImpl = fetch) {
 	}
 	projectPayload.syncedAt = syncedAt;
 	const releasePayload = await githubRequest(
-		`https://api.github.com/repos/${config.releasesRepo}/releases?per_page=50`,
+		`https://api.github.com/repos/${config.releasesRepo}/releases?per_page=100`,
 		config.token,
 		{},
 		fetchImpl,

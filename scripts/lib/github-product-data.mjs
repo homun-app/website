@@ -96,7 +96,7 @@ function platformsForAssets(assets = []) {
 }
 
 function projectSlugsFromBody(body = "", knownSlugs) {
-	const match = body.match(/^Roadmap:\s*(.+)$/im);
+	const match = String(body ?? "").match(/^Roadmap:\s*(.+)$/im);
 	if (!match) return [];
 	return match[1]
 		.split(",")
