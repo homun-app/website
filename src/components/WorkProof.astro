@@ -1,36 +1,36 @@
 ---
 import { Image } from "astro:assets";
 import chat from "../assets/screenshots/chat.png";
+import WorkSpotIllustration from "./illustrations/WorkSpotIllustration.astro";
 
 const outcomes = [
-	{ index: "01", title: "Develop software", body: "Explore a codebase, modify files, run checks and keep the project context together." },
-	{ index: "02", title: "Create deliverables", body: "Turn work into documents, presentations, research and structured outputs." },
-	{ index: "03", title: "Operate locally", body: "Use approved tools and applications on the system where the work actually lives." },
-	{ index: "04", title: "Continue the project", body: "Keep ideas, decisions and future work connected beyond a single prompt." },
+	{ index: "01", kind: "code", title: "Develop software", body: "Explore a codebase, modify files, run checks and keep the project context together." },
+	{ index: "02", kind: "deliverables", title: "Create deliverables", body: "Turn work into documents, presentations, research and structured outputs." },
+	{ index: "03", kind: "local", title: "Operate locally", body: "Use approved tools and applications on the system where the work actually lives." },
+	{ index: "04", kind: "continuity", title: "Continue the project", body: "Keep ideas, decisions and future work connected beyond a single prompt." },
 ] as const;
 ---
 
 <section id="product" class="relative scroll-mt-24 overflow-hidden py-24 sm:py-32">
 	<div class="glow -right-48 top-10 h-[30rem] w-[30rem] opacity-18" aria-hidden="true"></div>
 	<div class="section-shell">
-		<div class="grid gap-12 lg:grid-cols-[.85fr_1.15fr] lg:gap-20">
-			<div>
-				<p class="eyebrow reveal">From intention to output</p>
-				<h2 class="reveal mt-4 text-4xl text-cream sm:text-6xl">Real work, not isolated prompts.</h2>
-				<p class="reveal mt-6 max-w-xl text-lg leading-relaxed text-muted" style="--reveal-delay: 70ms">
-					Homun is the place where an idea becomes a project, a project becomes action, and action becomes something you can use.
-				</p>
-			</div>
+		<div class="max-w-3xl">
+			<p class="eyebrow reveal">From intention to output</p>
+			<h2 class="reveal mt-4 text-4xl text-cream sm:text-6xl">Real work, not isolated prompts.</h2>
+			<p class="reveal mt-6 max-w-2xl text-lg leading-relaxed text-muted" style="--reveal-delay: 70ms">
+				Homun is the place where an idea becomes a project, a project becomes action, and action becomes something you can use.
+			</p>
+		</div>
 
-			<div class="divide-y divide-line border-y border-line">
-				{outcomes.map((outcome, index) => (
-					<article class="reveal grid grid-cols-[2.4rem_1fr] gap-4 py-6 sm:grid-cols-[3rem_13rem_1fr] sm:items-start" style={`--reveal-delay: ${index * 60}ms`}>
-						<span class="font-mono text-[10px] text-accent-bright">{outcome.index}</span>
-						<h3 class="text-lg text-cream">{outcome.title}</h3>
-						<p class="col-start-2 text-sm leading-relaxed text-muted sm:col-start-3">{outcome.body}</p>
-					</article>
-				))}
-			</div>
+		<div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+			{outcomes.map((outcome, index) => (
+				<article class="reveal card p-5" style={`--reveal-delay: ${index * 60}ms`}>
+					<WorkSpotIllustration kind={outcome.kind} />
+					<span class="mt-5 block font-mono text-[10px] text-accent-bright">{outcome.index}</span>
+					<h3 class="mt-3 text-lg text-cream">{outcome.title}</h3>
+					<p class="mt-3 text-sm leading-relaxed text-muted">{outcome.body}</p>
+				</article>
+			))}
 		</div>
 
 		<div class="reveal relative mt-16" style="--reveal-delay: 90ms">

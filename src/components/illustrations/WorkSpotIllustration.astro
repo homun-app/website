@@ -1,0 +1,59 @@
+---
+interface Props {
+	kind: "code" | "deliverables" | "local" | "continuity";
+}
+
+const { kind } = Astro.props;
+---
+
+<div class="work-spot" data-illustration={`work-${kind}`} aria-hidden="true">
+	{kind === "code" && (
+		<svg viewBox="0 0 120 86" fill="none">
+			<rect x="7" y="9" width="106" height="68" rx="12" fill="#0a1411" stroke="#55dfc0" stroke-width="2" />
+			<path d="m38 29-14 14 14 14m44-28 14 14-14 14M69 23 52 63" stroke="#67e4c3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+			<circle cx="20" cy="20" r="3" fill="#ef78d8" />
+			<circle cx="30" cy="20" r="3" fill="#f1d070" />
+		</svg>
+	)}
+	{kind === "deliverables" && (
+		<svg viewBox="0 0 120 86" fill="none">
+			<rect x="20" y="15" width="57" height="62" rx="9" fill="#142c25" stroke="#55dfc0" />
+			<rect x="38" y="7" width="61" height="67" rx="9" fill="#edf5f2" />
+			<path d="M51 27h34M51 39h27M51 51h36" stroke="#13211c" stroke-width="4" stroke-linecap="round" />
+			<rect x="51" y="59" width="17" height="6" rx="3" fill="#ef78d8" />
+		</svg>
+	)}
+	{kind === "local" && (
+		<svg viewBox="0 0 120 86" fill="none">
+			<path d="m21 27 39-21 40 22-40 22Z" fill="#64e1bf" />
+			<path d="M21 27v38l39 21V50Z" fill="#142d25" stroke="#64e1bf" />
+			<path d="M100 28v37L60 86V50Z" fill="#346bd7" stroke="#76a2f5" />
+			<path d="m74 46 13-7v18l-13 8Z" fill="#0d1b35" stroke="#a9c2f6" />
+		</svg>
+	)}
+	{kind === "continuity" && (
+		<svg viewBox="0 0 120 86" fill="none">
+			<path d="M12 63C34 13 50 75 70 31c12-27 27-11 38 8" stroke="#22483d" stroke-width="12" stroke-linecap="round" />
+			<path d="M12 63C34 13 50 75 70 31c12-27 27-11 38 8" stroke="#62e0bf" stroke-width="2.5" stroke-linecap="round" />
+			<circle cx="12" cy="63" r="7" fill="#f1d070" />
+			<circle cx="108" cy="39" r="7" fill="#ef78d8" />
+			<circle cx="59" cy="49" r="5" fill="#5789ee" />
+		</svg>
+	)}
+</div>
+
+<style>
+	.work-spot {
+		display: flex;
+		height: 6.25rem;
+		align-items: center;
+		justify-content: center;
+		border: 1px solid var(--color-line);
+		border-radius: 0.85rem;
+		background:
+			radial-gradient(circle at 72% 32%, rgba(80, 223, 197, 0.11), transparent 46%),
+			rgba(5, 10, 8, 0.56);
+	}
+
+	svg { width: 7.1rem; height: 5.15rem; }
+</style>
