@@ -85,4 +85,36 @@ for (const preserved of [
 	assert.ok(homepage.includes(preserved), `Homepage lost required content: ${preserved}`);
 }
 
+const heroSource = await readFile(
+	new URL("../src/components/Hero.astro", import.meta.url),
+	"utf8",
+);
+assert.ok(
+	heroSource.includes("leading-[1.04]"),
+	"Hero title must preserve descenders with a 1.04 line height",
+);
+assert.ok(heroSource.includes("pb-[0.08em]"), "Hero title must include descender padding");
+
+const connectedSource = await readFile(
+	new URL("../src/components/illustrations/ConnectedWorkspaceIllustration.astro", import.meta.url),
+	"utf8",
+);
+for (const part of [
+	'data-scene="miniature-workshop"',
+	'data-workshop-part="incoming-message"',
+	'data-workshop-part="telegram-channel"',
+	'data-workshop-part="composio-tool"',
+	'data-workshop-part="mcp-skills-tool"',
+	'data-workshop-part="homun-machine"',
+	'data-workshop-part="reply-output"',
+]) {
+	assert.ok(connectedSource.includes(part), `Miniature workshop is missing: ${part}`);
+}
+for (const retired of ["class=\"peripheral", "class=\"action-rail", "MESSAGE · SCHEDULE · EVENT"]) {
+	assert.ok(
+		!connectedSource.includes(retired),
+		`Miniature workshop retained the old network diagram: ${retired}`,
+	);
+}
+
 console.log("Homepage illustration contract passed");
