@@ -1,0 +1,96 @@
+---
+interface Props {
+	kind: "whatsapp" | "gmail-brief" | "invoice";
+}
+
+const { kind } = Astro.props;
+---
+
+<div class="automation-story" data-illustration={`automation-${kind}`} aria-hidden="true">
+	{kind === "whatsapp" && (
+		<svg viewBox="0 0 360 190" fill="none">
+			<rect x="14" y="25" width="139" height="76" rx="13" fill="#0a1814" stroke="#55dfc0" stroke-opacity=".72" />
+			<circle cx="35" cy="47" r="8" fill="#55dfc0" fill-opacity=".16" stroke="#55dfc0" />
+			<text x="52" y="50" fill="#eef8f4" font-family="monospace" font-size="10">JEAN · WHATSAPP</text>
+			<path d="M32 68h96M32 82h69" stroke="#5b8177" stroke-width="4" stroke-linecap="round" />
+			<path class="story-path" d="M153 63h51" stroke="#55dfc0" stroke-width="2" />
+			<circle class="story-pulse" cx="178" cy="63" r="4" fill="#55dfc0" />
+			<rect x="204" y="25" width="142" height="76" rx="13" fill="#161017" stroke="#ef78d8" stroke-opacity=".76" />
+			<path d="m222 50 17-10 18 10-18 11Z" fill="#ef78d8" />
+			<path d="m222 50 17 11v21l-17-10Z" fill="#35192f" />
+			<path d="m257 50-18 11v21l18-10Z" fill="#346bd7" />
+			<text x="270" y="51" fill="#eef8f4" font-family="monospace" font-size="10">HOMUN</text>
+			<text x="270" y="71" fill="#698079" font-family="monospace" font-size="8">PROJECT CONTEXT</text>
+			<rect class="story-status" x="42" y="127" width="276" height="42" rx="12" fill="#0a1420" stroke="#5789ee" stroke-opacity=".82" />
+			<circle cx="63" cy="148" r="5" fill="#55dfc0" />
+			<text x="78" y="152" fill="#c7d8ff" font-family="monospace" font-size="10">REPLY READY · POLICY CHECKED</text>
+		</svg>
+	)}
+
+	{kind === "gmail-brief" && (
+		<svg viewBox="0 0 360 190" fill="none">
+			<rect x="14" y="25" width="75" height="76" rx="13" fill="#17150b" stroke="#f1d070" stroke-opacity=".78" />
+			<circle cx="51.5" cy="53" r="14" fill="#f1d070" fill-opacity=".15" stroke="#f1d070" />
+			<path d="M51.5 45v9l7 4" stroke="#f1d070" stroke-width="2" stroke-linecap="round" />
+			<text x="51.5" y="84" fill="#eef8f4" font-family="monospace" font-size="10" text-anchor="middle">08:30</text>
+			<path class="story-path" d="M89 63h31" stroke="#55dfc0" stroke-width="2" />
+			<rect x="120" y="25" width="91" height="76" rx="13" fill="#161017" stroke="#ef78d8" stroke-opacity=".76" />
+			<path d="M141 48h49v31h-49Z" stroke="#ef78d8" />
+			<path d="m141 48 24.5 18L190 48" stroke="#ef78d8" />
+			<text x="165.5" y="91" fill="#eef8f4" font-family="monospace" font-size="9" text-anchor="middle">GMAIL</text>
+			<path class="story-path" d="M211 63h31" stroke="#55dfc0" stroke-width="2" />
+			<rect x="242" y="25" width="104" height="76" rx="13" fill="#0b151f" stroke="#5789ee" stroke-opacity=".82" />
+			<path d="M260 48h67M260 61h55M260 74h62" stroke="#78a3f5" stroke-width="4" stroke-linecap="round" />
+			<text x="294" y="91" fill="#eef8f4" font-family="monospace" font-size="9" text-anchor="middle">PRIORITISE</text>
+			<rect class="story-status" x="42" y="127" width="276" height="42" rx="12" fill="#0a1420" stroke="#5789ee" stroke-opacity=".82" />
+			<path d="m61 151 13-6-4 14-3-5-4 3Z" fill="#78a3f5" />
+			<text x="84" y="152" fill="#c7d8ff" font-family="monospace" font-size="10">DAILY BRIEF → TELEGRAM</text>
+		</svg>
+	)}
+
+	{kind === "invoice" && (
+		<svg viewBox="0 0 360 190" fill="none">
+			<rect x="14" y="25" width="76" height="76" rx="13" fill="#161017" stroke="#ef78d8" stroke-opacity=".76" />
+			<path d="M35 42h34v43H35Z" fill="#f4f8f6" />
+			<path d="M42 54h20M42 64h16M42 74h12" stroke="#2c3d38" stroke-width="3" stroke-linecap="round" />
+			<path class="story-path" d="M90 63h31" stroke="#55dfc0" stroke-width="2" />
+			<rect x="121" y="25" width="103" height="76" rx="13" fill="#0a1814" stroke="#55dfc0" stroke-opacity=".72" />
+			<path d="M140 47h64M140 60h47M140 73h56" stroke="#55dfc0" stroke-width="4" stroke-linecap="round" />
+			<text x="172.5" y="91" fill="#eef8f4" font-family="monospace" font-size="9" text-anchor="middle">EXTRACT</text>
+			<path class="story-path" d="M224 63h31" stroke="#55dfc0" stroke-width="2" />
+			<rect x="255" y="25" width="91" height="76" rx="13" fill="#0b151f" stroke="#5789ee" stroke-opacity=".82" />
+			<path d="M274 44h53v39h-53Z" stroke="#78a3f5" />
+			<path d="M274 57h53M292 44v39M309 44v39" stroke="#78a3f5" />
+			<text x="300.5" y="94" fill="#eef8f4" font-family="monospace" font-size="9" text-anchor="middle">SHEETS</text>
+			<rect class="story-status" x="42" y="127" width="276" height="42" rx="12" fill="#17150b" stroke="#f1d070" stroke-opacity=".82" />
+			<circle cx="63" cy="148" r="5" fill="#f1d070" />
+			<text x="78" y="152" fill="#efe2b1" font-family="monospace" font-size="10">UPDATE · CONFIRM · NOTIFY</text>
+		</svg>
+	)}
+</div>
+
+<style>
+	.automation-story {
+		overflow: hidden;
+		border: 1px solid var(--color-line);
+		border-radius: 0.9rem;
+		background:
+			radial-gradient(circle at 50% 35%, rgba(80, 223, 197, 0.09), transparent 48%),
+			rgba(5, 10, 8, 0.58);
+	}
+
+	svg { display: block; width: 100%; height: auto; }
+	.story-path { stroke-dasharray: 8 10; animation: story-signal 8s linear infinite; }
+	.story-pulse { animation: story-pulse 4s ease-in-out infinite; }
+	.story-status { animation: story-status 8s ease-in-out infinite; }
+
+	@keyframes story-signal { to { stroke-dashoffset: -72; } }
+	@keyframes story-pulse { 0%, 100% { opacity: .3; } 50% { opacity: 1; filter: drop-shadow(0 0 7px #55dfc0); } }
+	@keyframes story-status { 0%, 35%, 100% { opacity: .48; } 55%, 80% { opacity: 1; } }
+
+	@media (prefers-reduced-motion: reduce) {
+		.story-path,
+		.story-pulse,
+		.story-status { animation: none; }
+	}
+</style>

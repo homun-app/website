@@ -1,5 +1,30 @@
 ---
 import ConnectedWorkspaceIllustration from "./illustrations/ConnectedWorkspaceIllustration.astro";
+import AutomationStoryIllustration from "./illustrations/AutomationStoryIllustration.astro";
+
+const stories = [
+	{
+		kind: "whatsapp",
+		badge: "Event · WhatsApp",
+		title: "Jean asks. Homun responds.",
+		body: "An incoming message becomes a task with the right project context and permissions.",
+		result: "Reply drafted · Auto-reply if allowed",
+	},
+	{
+		kind: "gmail-brief",
+		badge: "Schedule · 08:30",
+		title: "Your inbox, already distilled.",
+		body: "Every weekday Homun checks Gmail, prioritises what matters and prepares a brief.",
+		result: "Daily brief → Telegram",
+	},
+	{
+		kind: "invoice",
+		badge: "Event · New invoice",
+		title: "When work arrives, the workflow starts.",
+		body: "A service event can trigger extraction, updates across tools and a final notification.",
+		result: "Update Sheets · Notify",
+	},
+] as const;
 ---
 
 <section id="connected-action" class="relative scroll-mt-24 overflow-hidden border-y border-line bg-bg-raised/30 py-24 sm:py-32">
@@ -15,6 +40,45 @@ import ConnectedWorkspaceIllustration from "./illustrations/ConnectedWorkspaceIl
 			</div>
 			<div class="reveal" style="--reveal-delay: 90ms">
 				<ConnectedWorkspaceIllustration />
+			</div>
+		</div>
+
+		<div class="mt-24 sm:mt-32">
+			<div class="grid items-end gap-6 lg:grid-cols-[1fr_.8fr] lg:gap-16">
+				<div>
+					<p class="eyebrow reveal">Automations in motion</p>
+					<h3 class="reveal mt-4 text-3xl text-cream sm:text-5xl">Two ways to begin. Countless ways to continue.</h3>
+				</div>
+				<p class="reveal text-base leading-relaxed text-muted lg:pb-1" style="--reveal-delay: 70ms">
+					An automation can run at a chosen time, or wake up when something happens. Each example stays legible: a trigger, the tools Homun uses, and the result.
+				</p>
+			</div>
+
+			<div class="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+				{stories.map((story, index) => (
+					<article class={`card reveal flex flex-col p-5 sm:p-6 ${index === 2 ? "md:col-span-2 xl:col-span-1" : ""}`} style={`--reveal-delay: ${index * 70}ms`}>
+						<div class="mb-5">
+							<AutomationStoryIllustration kind={story.kind} />
+						</div>
+						<span class="inline-flex w-fit items-center gap-2 rounded-full border border-line-strong px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-accent-bright">
+							<span class="status-dot"></span>{story.badge}
+						</span>
+						<h4 class="mt-5 text-xl text-cream">{story.title}</h4>
+						<p class="mt-3 text-sm leading-relaxed text-muted">{story.body}</p>
+						<p class="mt-auto pt-6 font-mono text-[10px] uppercase tracking-[0.1em] text-faint">{story.result}</p>
+					</article>
+				))}
+			</div>
+
+			<div class="reveal mt-8 flex flex-col gap-6 rounded-2xl border border-line bg-bg/45 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-7">
+				<p class="max-w-2xl text-sm leading-relaxed text-muted">
+					<span class="text-cream">Safety remains part of the workflow.</span> Text replies can be automatic for allowlisted contacts. Sensitive actions can wait for confirmation.
+				</p>
+				<nav class="flex flex-wrap gap-x-5 gap-y-3" aria-label="Connected action guides">
+					<a class="font-mono text-[10px] uppercase tracking-wider text-accent-bright hover:text-cream" href="/guides/channels/">Channels</a>
+					<a class="font-mono text-[10px] uppercase tracking-wider text-accent-bright hover:text-cream" href="/guides/connectors/">Connectors</a>
+					<a class="font-mono text-[10px] uppercase tracking-wider text-accent-bright hover:text-cream" href="/guides/automations/">Automations</a>
+				</nav>
 			</div>
 		</div>
 	</div>
