@@ -94,6 +94,14 @@ assert.ok(
 	"Hero title must preserve descenders with a 1.04 line height",
 );
 assert.ok(heroSource.includes("pb-[0.08em]"), "Hero title must include descender padding");
+assert.ok(
+	heroSource.includes("min-[1100px]:text-[5.2rem]"),
+	"Hero title must delay its largest size until the split layout is wide enough",
+);
+assert.ok(
+	!heroSource.includes("lg:text-[5.2rem]"),
+	"Hero title must not use its largest size at the 1024px split breakpoint",
+);
 
 const connectedSource = await readFile(
 	new URL("../src/components/illustrations/ConnectedWorkspaceIllustration.astro", import.meta.url),
