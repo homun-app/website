@@ -104,5 +104,9 @@ const ogImage = new URL("/og.png", Astro.site);
 				});
 			})();
 		</script>
+		<script>
+			import { initDownloadControls } from "../scripts/downloads.mjs";
+			initDownloadControls();
+		</script>
 	</body>
 </html>

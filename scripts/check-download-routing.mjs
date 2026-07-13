@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import {
 	detectPlatform,
 	groupInstallers,
+	loadLatestInstallers,
 	preferredInstaller,
 	RELEASES_PAGE_URL,
 } from "../src/scripts/downloads.mjs";
@@ -33,5 +34,20 @@ assert.equal(preferredInstaller("windows", grouped)?.name, "Homun-1.2.3-x64.exe"
 assert.equal(preferredInstaller("linux", grouped)?.name, "Homun-1.2.3-x86_64.AppImage");
 assert.equal(preferredInstaller("unknown", grouped), null);
 assert.equal(RELEASES_PAGE_URL, "https://github.com/homun-app/homun-releases/releases/latest");
+
+const successFetch = async () => ({
+	ok: true,
+	json: async () => ({ assets }),
+});
+assert.equal(
+	(await loadLatestInstallers(successFetch, { useCache: false })).linux[0].name,
+	"Homun-1.2.3-x86_64.AppImage",
+);
+
+const failedFetch = async () => ({ ok: false, status: 403 });
+await assert.rejects(
+	() => loadLatestInstallers(failedFetch, { useCache: false }),
+	/GitHub release request failed: 403/,
+);
 
 console.log("Download resolver contract passed");
