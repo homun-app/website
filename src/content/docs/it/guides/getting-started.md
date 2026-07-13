@@ -8,7 +8,7 @@ vedi [Self-hosting](/it/guides/self-hosting/).
 
 ## Installazione (macOS)
 
-1. Scarica l'ultimo `.dmg` dalla [pagina delle release](https://github.com/homun-app/homun-releases/releases/latest).
+1. Usa il [download automatico nella homepage](/#download), oppure scegli manualmente un installer [dall'ultima release](https://github.com/homun-app/homun-releases/releases/latest).
 2. Aprilo e trascina **Homun** in `Applicazioni`.
 3. Avvialo. La build è firmata e notarizzata, quindi si apre senza l'avviso di
    Gatekeeper.

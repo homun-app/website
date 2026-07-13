@@ -8,7 +8,7 @@ see [Self-hosting](/guides/self-hosting/).
 
 ## Install (macOS)
 
-1. Download the latest `.dmg` from the [releases](https://github.com/homun-app/homun-releases/releases/latest).
+1. Use the [adaptive homepage download](/#download), or choose an installer manually from the [latest release](https://github.com/homun-app/homun-releases/releases/latest).
 2. Open it and drag **Homun** into `Applications`.
 3. Launch it. The build is signed and notarized, so it opens without a Gatekeeper
    warning.

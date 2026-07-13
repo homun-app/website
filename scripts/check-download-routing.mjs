@@ -63,4 +63,16 @@ for (const marker of [
 	assert.ok(homepage.includes(marker), `Homepage is missing download integration: ${marker}`);
 }
 
+const englishDownload = await readFile(new URL("../dist/guides/download/index.html", import.meta.url), "utf8");
+const italianDownload = await readFile(new URL("../dist/it/guides/download/index.html", import.meta.url), "utf8");
+for (const page of [englishDownload, italianDownload]) {
+	for (const expected of ["homun-releases/releases/latest", ".dmg", ".exe", ".AppImage", ".deb"]) {
+		assert.ok(page.includes(expected), `Download guide is missing ${expected}`);
+	}
+}
+const downloadGuides = `${englishDownload} ${italianDownload}`.toLowerCase();
+for (const forbidden of ["aren't published", "public release pending", "non sono pubblicati"]) {
+	assert.ok(!downloadGuides.includes(forbidden), `Stale release claim remains: ${forbidden}`);
+}
+
 console.log("Download resolver contract passed");

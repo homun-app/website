@@ -3,16 +3,18 @@ title: Download
 description: Get the Homun desktop app for macOS, Windows, or Linux — or self-host it.
 ---
 
-Homun ships as a desktop app for all three platforms. macOS is **signed, notarized,
-and published** today; Windows and Linux are built and on the way. Prefer a server?
-[Self-host it](/guides/self-hosting/) instead.
+Homun ships as a desktop app for macOS, Windows, and Linux. The homepage detects your
+operating system and selects the newest matching installer automatically. You can also
+choose another platform or browse the
+[latest release](https://github.com/homun-app/homun-releases/releases/latest) manually.
+Prefer a server? [Self-host it](/guides/self-hosting/) instead.
 
 ## macOS
 
-The recommended way to try Homun.
+The public feed currently contains a signed and notarized Apple Silicon `.dmg`.
 
-1. Download the latest `.dmg` from the
-   [releases page](https://github.com/homun-app/homun-releases/releases/latest).
+1. Use the [adaptive download on the homepage](/#download), or download the latest
+   `.dmg` from the [release page](https://github.com/homun-app/homun-releases/releases/latest).
 2. Open it and drag **Homun** into `Applications`.
 3. Launch it — the build is **signed and notarized**, so it opens without a Gatekeeper
    warning.
@@ -20,22 +22,22 @@ The recommended way to try Homun.
 The app bundles its own backend and **auto-updates**: when a new version ships, the
 Notifications panel (the sidebar bell) offers a one-click download + restart.
 
-## Windows & Linux
+## Windows
 
-Both are built by CI (`.exe` for Windows, `.AppImage` and `.deb` for Linux), but they
-are **not yet code-signed**, so they aren't published to the public release feed and
-don't auto-update yet.
+Download the public `.exe` from the [homepage](/#download) or the
+[latest release](https://github.com/homun-app/homun-releases/releases/latest). Windows
+may show a SmartScreen warning until code-signing is confirmed for the selected build.
 
-What that means for now:
+## Linux
 
-- **Windows** — the unsigned `.exe` triggers a SmartScreen warning you'd have to
-  bypass manually.
-- **Linux** — the `.AppImage` needs to be marked executable (`chmod +x`) before it
-  runs; the `.deb` installs on Debian/Ubuntu-based distros.
+The public feed offers two formats:
 
-We're holding public Windows/Linux downloads until they're signed. If you want to run
-Homun on those platforms today, [self-hosting](/guides/self-hosting/) is the portable
-option and works everywhere Docker does.
+- `.AppImage` — portable across distributions; mark it executable with
+  `chmod +x Homun-*.AppImage` before launching it.
+- `.deb` — installs on Debian, Ubuntu, and compatible distributions.
+
+Choose either format from the [homepage download selector](/#download) or from the
+[latest release](https://github.com/homun-app/homun-releases/releases/latest).
 
 ## System requirements
 
