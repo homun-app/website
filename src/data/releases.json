@@ -1,34 +1,176 @@
 {
   "schemaVersion": 1,
-  "syncedAt": "2026-07-13T12:00:00.000Z",
+  "syncedAt": "2026-07-13T22:08:59.937Z",
   "items": [
+    {
+      "version": "v0.1.1056",
+      "name": "0.1.1056",
+      "publishedAt": "2026-07-13T20:01:08Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1056",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "Linux",
+        "macOS",
+        "Windows"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1056-amd64.deb",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1056/Homun-0.1.1056-amd64.deb"
+        },
+        {
+          "name": "Homun-0.1.1056-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1056/Homun-0.1.1056-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1056-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1056/Homun-0.1.1056-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1056-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1056/Homun-0.1.1056-arm64.zip.blockmap"
+        },
+        {
+          "name": "Homun-0.1.1056-x64.exe",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1056/Homun-0.1.1056-x64.exe"
+        },
+        {
+          "name": "Homun-0.1.1056-x64.exe.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1056/Homun-0.1.1056-x64.exe.blockmap"
+        },
+        {
+          "name": "Homun-0.1.1056-x86_64.AppImage",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1056/Homun-0.1.1056-x86_64.AppImage"
+        },
+        {
+          "name": "latest-linux.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1056/latest-linux.yml"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1056/latest-mac.yml"
+        },
+        {
+          "name": "latest.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1056/latest.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
     {
       "version": "v0.1.1055",
       "name": "0.1.1055",
       "publishedAt": "2026-07-13T05:40:03Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1055",
-      "highlights": ["Desktop release published for macOS, Windows, and Linux."],
+      "highlights": [],
       "improvements": [],
       "fixes": [],
-      "platforms": ["Linux", "macOS", "Windows"],
-      "assets": [
-        { "name": "Homun-0.1.1055-arm64.dmg", "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1055/Homun-0.1.1055-arm64.dmg" },
-        { "name": "Homun-0.1.1055-x64.exe", "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1055/Homun-0.1.1055-x64.exe" },
-        { "name": "Homun-0.1.1055-amd64.deb", "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1055/Homun-0.1.1055-amd64.deb" },
-        { "name": "Homun-0.1.1055-x86_64.AppImage", "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1055/Homun-0.1.1055-x86_64.AppImage" }
+      "platforms": [
+        "Linux",
+        "macOS",
+        "Windows"
       ],
-      "projectSlugs": ["connected-actions"]
+      "assets": [
+        {
+          "name": "Homun-0.1.1055-amd64.deb",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1055/Homun-0.1.1055-amd64.deb"
+        },
+        {
+          "name": "Homun-0.1.1055-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1055/Homun-0.1.1055-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1055-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1055/Homun-0.1.1055-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1055-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1055/Homun-0.1.1055-arm64.zip.blockmap"
+        },
+        {
+          "name": "Homun-0.1.1055-x64.exe",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1055/Homun-0.1.1055-x64.exe"
+        },
+        {
+          "name": "Homun-0.1.1055-x64.exe.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1055/Homun-0.1.1055-x64.exe.blockmap"
+        },
+        {
+          "name": "Homun-0.1.1055-x86_64.AppImage",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1055/Homun-0.1.1055-x86_64.AppImage"
+        },
+        {
+          "name": "latest-linux.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1055/latest-linux.yml"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1055/latest-mac.yml"
+        },
+        {
+          "name": "latest.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1055/latest.yml"
+        }
+      ],
+      "projectSlugs": []
     },
     {
       "version": "v0.1.1054",
       "name": "0.1.1054",
       "publishedAt": "2026-07-11T07:54:16Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1054",
-      "highlights": ["Desktop release published for macOS, Windows, and Linux."],
+      "highlights": [],
       "improvements": [],
       "fixes": [],
-      "platforms": ["Linux", "macOS", "Windows"],
-      "assets": [],
+      "platforms": [
+        "Linux",
+        "macOS",
+        "Windows"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1054-amd64.deb",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1054/Homun-0.1.1054-amd64.deb"
+        },
+        {
+          "name": "Homun-0.1.1054-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1054/Homun-0.1.1054-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1054-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1054/Homun-0.1.1054-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1054-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1054/Homun-0.1.1054-arm64.zip.blockmap"
+        },
+        {
+          "name": "Homun-0.1.1054-x64.exe",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1054/Homun-0.1.1054-x64.exe"
+        },
+        {
+          "name": "Homun-0.1.1054-x64.exe.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1054/Homun-0.1.1054-x64.exe.blockmap"
+        },
+        {
+          "name": "Homun-0.1.1054-x86_64.AppImage",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1054/Homun-0.1.1054-x86_64.AppImage"
+        },
+        {
+          "name": "latest-linux.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1054/latest-linux.yml"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1054/latest-mac.yml"
+        },
+        {
+          "name": "latest.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1054/latest.yml"
+        }
+      ],
       "projectSlugs": []
     },
     {
@@ -36,11 +178,56 @@
       "name": "0.1.1053",
       "publishedAt": "2026-07-11T06:45:55Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1053",
-      "highlights": ["Desktop release published for macOS, Windows, and Linux."],
+      "highlights": [],
       "improvements": [],
       "fixes": [],
-      "platforms": ["Linux", "macOS", "Windows"],
-      "assets": [],
+      "platforms": [
+        "Linux",
+        "macOS",
+        "Windows"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1053-amd64.deb",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1053/Homun-0.1.1053-amd64.deb"
+        },
+        {
+          "name": "Homun-0.1.1053-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1053/Homun-0.1.1053-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1053-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1053/Homun-0.1.1053-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1053-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1053/Homun-0.1.1053-arm64.zip.blockmap"
+        },
+        {
+          "name": "Homun-0.1.1053-x64.exe",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1053/Homun-0.1.1053-x64.exe"
+        },
+        {
+          "name": "Homun-0.1.1053-x64.exe.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1053/Homun-0.1.1053-x64.exe.blockmap"
+        },
+        {
+          "name": "Homun-0.1.1053-x86_64.AppImage",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1053/Homun-0.1.1053-x86_64.AppImage"
+        },
+        {
+          "name": "latest-linux.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1053/latest-linux.yml"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1053/latest-mac.yml"
+        },
+        {
+          "name": "latest.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1053/latest.yml"
+        }
+      ],
       "projectSlugs": []
     },
     {
@@ -48,11 +235,1234 @@
       "name": "0.1.1050",
       "publishedAt": "2026-06-26T20:43:57Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1050",
-      "highlights": ["Desktop release published for macOS, Windows, and Linux."],
+      "highlights": [],
       "improvements": [],
       "fixes": [],
-      "platforms": ["Linux", "macOS", "Windows"],
-      "assets": [],
+      "platforms": [
+        "Linux",
+        "macOS",
+        "Windows"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1050-amd64.deb",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1050/Homun-0.1.1050-amd64.deb"
+        },
+        {
+          "name": "Homun-0.1.1050-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1050/Homun-0.1.1050-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1050-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1050/Homun-0.1.1050-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1050-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1050/Homun-0.1.1050-arm64.zip.blockmap"
+        },
+        {
+          "name": "Homun-0.1.1050-x64.exe",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1050/Homun-0.1.1050-x64.exe"
+        },
+        {
+          "name": "Homun-0.1.1050-x64.exe.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1050/Homun-0.1.1050-x64.exe.blockmap"
+        },
+        {
+          "name": "Homun-0.1.1050-x86_64.AppImage",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1050/Homun-0.1.1050-x86_64.AppImage"
+        },
+        {
+          "name": "latest-linux.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1050/latest-linux.yml"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1050/latest-mac.yml"
+        },
+        {
+          "name": "latest.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1050/latest.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1049",
+      "name": "0.1.1049",
+      "publishedAt": "2026-06-26T19:22:12Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1049",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1049-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1049/Homun-0.1.1049-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1049-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1049/Homun-0.1.1049-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1049-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1049/Homun-0.1.1049-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1049/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1048",
+      "name": "0.1.1048",
+      "publishedAt": "2026-06-25T08:18:40Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1048",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1048-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1048/Homun-0.1.1048-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1048-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1048/Homun-0.1.1048-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1048-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1048/Homun-0.1.1048-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1048/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1047",
+      "name": "0.1.1047",
+      "publishedAt": "2026-06-25T06:08:34Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1047",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1047-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1047/Homun-0.1.1047-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1047-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1047/Homun-0.1.1047-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1047-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1047/Homun-0.1.1047-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1047/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1046",
+      "name": "0.1.1046",
+      "publishedAt": "2026-06-23T15:46:57Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1046",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1046-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1046/Homun-0.1.1046-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1046-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1046/Homun-0.1.1046-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1046-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1046/Homun-0.1.1046-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1046/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1045",
+      "name": "0.1.1045",
+      "publishedAt": "2026-06-23T11:41:06Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1045",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1045-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1045/Homun-0.1.1045-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1045-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1045/Homun-0.1.1045-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1045-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1045/Homun-0.1.1045-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1045/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1044",
+      "name": "0.1.1044",
+      "publishedAt": "2026-06-23T09:49:12Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1044",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1044-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1044/Homun-0.1.1044-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1044-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1044/Homun-0.1.1044-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1044-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1044/Homun-0.1.1044-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1044/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1043",
+      "name": "0.1.1043",
+      "publishedAt": "2026-06-22T09:22:44Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1043",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1043-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1043/Homun-0.1.1043-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1043-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1043/Homun-0.1.1043-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1043-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1043/Homun-0.1.1043-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1043/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1042",
+      "name": "0.1.1042",
+      "publishedAt": "2026-06-22T08:22:29Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1042",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1042-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1042/Homun-0.1.1042-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1042-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1042/Homun-0.1.1042-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1042-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1042/Homun-0.1.1042-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1042/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1041",
+      "name": "0.1.1041",
+      "publishedAt": "2026-06-22T05:14:25Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1041",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1041-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1041/Homun-0.1.1041-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1041-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1041/Homun-0.1.1041-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1041-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1041/Homun-0.1.1041-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1041/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1040",
+      "name": "0.1.1040",
+      "publishedAt": "2026-06-22T03:46:47Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1040",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1040-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1040/Homun-0.1.1040-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1040-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1040/Homun-0.1.1040-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1040-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1040/Homun-0.1.1040-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1040/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1038",
+      "name": "0.1.1038",
+      "publishedAt": "2026-06-21T15:22:30Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1038",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1038-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1038/Homun-0.1.1038-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1038-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1038/Homun-0.1.1038-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1038-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1038/Homun-0.1.1038-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1038/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1037",
+      "name": "0.1.1037",
+      "publishedAt": "2026-06-21T14:09:45Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1037",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1037-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1037/Homun-0.1.1037-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1037-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1037/Homun-0.1.1037-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1037-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1037/Homun-0.1.1037-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1037/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1036",
+      "name": "0.1.1036",
+      "publishedAt": "2026-06-21T12:59:56Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1036",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1036-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1036/Homun-0.1.1036-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1036-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1036/Homun-0.1.1036-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1036-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1036/Homun-0.1.1036-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1036/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1035",
+      "name": "0.1.1035",
+      "publishedAt": "2026-06-21T11:22:06Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1035",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1035-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1035/Homun-0.1.1035-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1035-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1035/Homun-0.1.1035-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1035-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1035/Homun-0.1.1035-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1035/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1034",
+      "name": "0.1.1034",
+      "publishedAt": "2026-06-21T10:42:12Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1034",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1034-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1034/Homun-0.1.1034-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1034-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1034/Homun-0.1.1034-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1034-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1034/Homun-0.1.1034-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1034/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1032",
+      "name": "0.1.1032",
+      "publishedAt": "2026-06-21T09:26:52Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1032",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1032-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1032/Homun-0.1.1032-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1032-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1032/Homun-0.1.1032-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1032-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1032/Homun-0.1.1032-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1032/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1030",
+      "name": "0.1.1030",
+      "publishedAt": "2026-06-21T08:24:58Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1030",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1030-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1030/Homun-0.1.1030-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1030-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1030/Homun-0.1.1030-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1030-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1030/Homun-0.1.1030-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1030/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1029",
+      "name": "0.1.1029",
+      "publishedAt": "2026-06-21T07:45:44Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1029",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1029-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1029/Homun-0.1.1029-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1029-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1029/Homun-0.1.1029-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1029-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1029/Homun-0.1.1029-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1029/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1028",
+      "name": "0.1.1028",
+      "publishedAt": "2026-06-21T07:09:12Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1028",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1028-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1028/Homun-0.1.1028-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1028-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1028/Homun-0.1.1028-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1028-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1028/Homun-0.1.1028-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1028/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1027",
+      "name": "0.1.1027",
+      "publishedAt": "2026-06-20T21:19:48Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1027",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1027-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1027/Homun-0.1.1027-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1027-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1027/Homun-0.1.1027-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1027-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1027/Homun-0.1.1027-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1027/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1026",
+      "name": "0.1.1026",
+      "publishedAt": "2026-06-20T20:48:23Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1026",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1026-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1026/Homun-0.1.1026-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1026-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1026/Homun-0.1.1026-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1026-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1026/Homun-0.1.1026-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1026/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1025",
+      "name": "0.1.1025",
+      "publishedAt": "2026-06-20T20:34:02Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1025",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1025-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1025/Homun-0.1.1025-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1025-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1025/Homun-0.1.1025-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1025-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1025/Homun-0.1.1025-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1025/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1023",
+      "name": "0.1.1023",
+      "publishedAt": "2026-06-20T19:54:37Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1023",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1023-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1023/Homun-0.1.1023-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1023-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1023/Homun-0.1.1023-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1023-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1023/Homun-0.1.1023-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1023/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1022",
+      "name": "0.1.1022",
+      "publishedAt": "2026-06-20T19:40:33Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1022",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1022-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1022/Homun-0.1.1022-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1022-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1022/Homun-0.1.1022-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1022-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1022/Homun-0.1.1022-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1022/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1021",
+      "name": "0.1.1021",
+      "publishedAt": "2026-06-20T17:25:41Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1021",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1021-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1021/Homun-0.1.1021-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1021-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1021/Homun-0.1.1021-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1021-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1021/Homun-0.1.1021-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1021/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1020",
+      "name": "0.1.1020",
+      "publishedAt": "2026-06-20T16:29:53Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1020",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1020-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1020/Homun-0.1.1020-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1020-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1020/Homun-0.1.1020-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1020-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1020/Homun-0.1.1020-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1020/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1013",
+      "name": "0.1.1013",
+      "publishedAt": "2026-06-19T20:52:09Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1013",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1013-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1013/Homun-0.1.1013-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1013-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1013/Homun-0.1.1013-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1013-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1013/Homun-0.1.1013-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1013/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1012",
+      "name": "0.1.1012",
+      "publishedAt": "2026-06-17T23:45:15Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1012",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1012-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1012/Homun-0.1.1012-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1012-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1012/Homun-0.1.1012-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1012-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1012/Homun-0.1.1012-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1012/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1011",
+      "name": "0.1.1011",
+      "publishedAt": "2026-06-17T21:29:06Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1011",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1011-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1011/Homun-0.1.1011-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1011-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1011/Homun-0.1.1011-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1011-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1011/Homun-0.1.1011-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1011/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1010",
+      "name": "0.1.1010",
+      "publishedAt": "2026-06-17T19:55:07Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1010",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1010-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1010/Homun-0.1.1010-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1010-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1010/Homun-0.1.1010-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1010-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1010/Homun-0.1.1010-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1010/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1009",
+      "name": "0.1.1009",
+      "publishedAt": "2026-06-17T19:01:23Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1009",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1009-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1009/Homun-0.1.1009-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1009-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1009/Homun-0.1.1009-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1009-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1009/Homun-0.1.1009-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1009/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1008",
+      "name": "0.1.1008",
+      "publishedAt": "2026-06-17T14:52:24Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1008",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1008-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1008/Homun-0.1.1008-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1008-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1008/Homun-0.1.1008-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1008-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1008/Homun-0.1.1008-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1008/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1007",
+      "name": "0.1.1007",
+      "publishedAt": "2026-06-17T13:49:13Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1007",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1007-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1007/Homun-0.1.1007-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1007-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1007/Homun-0.1.1007-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1007-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1007/Homun-0.1.1007-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1007/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1005",
+      "name": "0.1.1005",
+      "publishedAt": "2026-06-17T12:40:58Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1005",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1005-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1005/Homun-0.1.1005-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1005-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1005/Homun-0.1.1005-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1005-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1005/Homun-0.1.1005-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1005/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1004",
+      "name": "0.1.1004",
+      "publishedAt": "2026-06-17T11:42:08Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1004",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1004-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1004/Homun-0.1.1004-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1004-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1004/Homun-0.1.1004-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1004-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1004/Homun-0.1.1004-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1004/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1003",
+      "name": "0.1.1003",
+      "publishedAt": "2026-06-17T07:42:56Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1003",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1003-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1003/Homun-0.1.1003-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1003-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1003/Homun-0.1.1003-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1003-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1003/Homun-0.1.1003-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1003/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1002",
+      "name": "0.1.1002",
+      "publishedAt": "2026-06-16T23:27:20Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1002",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1002-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1002/Homun-0.1.1002-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1002-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1002/Homun-0.1.1002-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1002-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1002/Homun-0.1.1002-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1002/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.1.1001",
+      "name": "0.1.1001",
+      "publishedAt": "2026-06-16T22:30:15Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1001",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1001-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1001/Homun-0.1.1001-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1001-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1001/Homun-0.1.1001-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1001-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1001/Homun-0.1.1001-arm64.zip.blockmap"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1001/latest-mac.yml"
+        }
+      ],
       "projectSlugs": []
     }
   ]
