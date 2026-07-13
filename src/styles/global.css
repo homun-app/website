@@ -209,6 +209,21 @@
 	mask-image: radial-gradient(ellipse 75% 65% at 50% 36%, #000 12%, transparent 78%);
 }
 
+.atmosphere {
+	background:
+		radial-gradient(
+			ellipse 62% 54% at 50% 4%,
+			rgba(80, 223, 197, 0.12),
+			transparent 72%
+		),
+		radial-gradient(
+			ellipse 36% 42% at 86% 62%,
+			rgba(12, 102, 87, 0.09),
+			transparent 76%
+		);
+	pointer-events: none;
+}
+
 .grain::after {
 	content: "";
 	position: fixed;

@@ -29,4 +29,9 @@ for (const href of ["/docs", "/marketplace", "/roadmap", "/guides/download/"]) {
 	assert.ok(html.includes(`href="${href}`), `Homepage is missing route: ${href}`);
 }
 
+assert.ok(
+	!html.includes("bg-grid"),
+	"Homepage still renders the graph-paper background",
+);
+
 console.log("Homepage positioning contract passed");
