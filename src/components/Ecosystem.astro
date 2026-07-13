@@ -1,12 +1,21 @@
+---
+import EcosystemIllustration from "./illustrations/EcosystemIllustration.astro";
+---
+
 <section id="ecosystem" class="relative overflow-hidden py-24 sm:py-32">
 	<div class="atmosphere absolute inset-0 -z-10" aria-hidden="true"></div>
 	<div class="section-shell">
-		<div class="max-w-3xl">
-			<p class="eyebrow reveal">A living system</p>
-			<h2 class="reveal mt-4 text-4xl text-cream sm:text-6xl">Designed to keep growing.</h2>
-			<p class="reveal mt-6 max-w-2xl text-lg leading-relaxed text-muted" style="--reveal-delay: 70ms">
-				Follow what Homun may become, shape the direction over time, and extend what it can do through a curated ecosystem.
-			</p>
+		<div class="grid items-center gap-12 lg:grid-cols-[.82fr_1.18fr] lg:gap-16">
+			<div class="max-w-2xl">
+				<p class="eyebrow reveal">A living system</p>
+				<h2 class="reveal mt-4 text-4xl text-cream sm:text-6xl">Designed to keep growing.</h2>
+				<p class="reveal mt-6 max-w-2xl text-lg leading-relaxed text-muted" style="--reveal-delay: 70ms">
+					Follow what Homun may become, shape the direction over time, and extend what it can do through a curated ecosystem.
+				</p>
+			</div>
+			<div class="reveal" style="--reveal-delay: 90ms">
+				<EcosystemIllustration />
+			</div>
 		</div>
 
 		<div class="mt-14 grid gap-5 lg:grid-cols-[1.12fr_.88fr]">

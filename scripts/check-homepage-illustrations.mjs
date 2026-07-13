@@ -11,9 +11,23 @@ for (const marker of [
 	'data-illustration="work-local"',
 	'data-illustration="work-continuity"',
 	'data-illustration="ecosystem"',
-	"prefers-reduced-motion:reduce",
 ]) {
 	assert.ok(homepage.includes(marker), `Homepage is missing illustration contract: ${marker}`);
+}
+
+for (const component of [
+	"WorkshopIllustration.astro",
+	"EngineTransition.astro",
+	"EcosystemIllustration.astro",
+]) {
+	const source = await readFile(
+		new URL(`../src/components/illustrations/${component}`, import.meta.url),
+		"utf8",
+	);
+	assert.ok(
+		source.includes("@media (prefers-reduced-motion: reduce)"),
+		`${component} is missing its reduced-motion override`,
+	);
 }
 
 for (const forbidden of ["ai-brain", "robot-mascot", "laptop-illustration", "bg-grid"]) {
