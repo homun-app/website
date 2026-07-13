@@ -10,7 +10,8 @@
     "test:homepage": "node scripts/check-homepage.mjs",
     "test:marketing-backgrounds": "node scripts/check-marketing-backgrounds.mjs",
     "test:downloads": "node scripts/check-download-routing.mjs",
-    "check": "npm run build && npm run test:homepage && npm run test:marketing-backgrounds && npm run test:downloads",
+    "test:illustrations": "node scripts/check-homepage-illustrations.mjs",
+    "check": "npm run build && npm run test:homepage && npm run test:marketing-backgrounds && npm run test:downloads && npm run test:illustrations",
     "preview": "astro preview",
     "astro": "astro"
   },
