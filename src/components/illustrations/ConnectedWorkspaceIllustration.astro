@@ -1,69 +1,92 @@
 <div
 	class="connected-workspace"
 	data-illustration="connected-workspace"
+	data-scene="miniature-workshop"
 	role="img"
-	aria-label="WhatsApp, Telegram, Composio, MCP and Skills connected through the stable Homun workspace"
+	aria-label="A WhatsApp message enters a miniature Homun workshop, where connected Composio, MCP and Skills tools help produce a ready reply; Telegram is also available as a channel"
 >
-	<div class="scene-label"><span>Connected workspace</span><span>Channels + tools</span></div>
+	<div class="scene-label"><span>Connected workshop</span><span>Message → useful result</span></div>
 	<svg viewBox="0 0 680 420" fill="none" aria-hidden="true">
 		<defs>
-			<linearGradient id="connected-core-left" x1="288" y1="172" x2="340" y2="267" gradientUnits="userSpaceOnUse">
-				<stop stop-color="#183b31" />
-				<stop offset="1" stop-color="#0a1713" />
+			<linearGradient id="workshop-floor" x1="340" y1="133" x2="340" y2="398" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#123329" />
+				<stop offset="1" stop-color="#07110e" />
 			</linearGradient>
-			<linearGradient id="connected-core-right" x1="394" y1="172" x2="340" y2="267" gradientUnits="userSpaceOnUse">
-				<stop stop-color="#4278df" />
-				<stop offset="1" stop-color="#1b3267" />
+			<linearGradient id="machine-left" x1="301" y1="185" x2="367" y2="308" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#1b4b3e" />
+				<stop offset="1" stop-color="#0a1814" />
 			</linearGradient>
+			<linearGradient id="machine-right" x1="435" y1="185" x2="367" y2="308" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#4a80e4" />
+				<stop offset="1" stop-color="#1c346c" />
+			</linearGradient>
+			<filter id="object-shadow" x="-40%" y="-40%" width="180%" height="200%">
+				<feDropShadow dx="0" dy="14" stdDeviation="12" flood-color="#000" flood-opacity=".42" />
+			</filter>
 		</defs>
 
-		<ellipse cx="340" cy="204" rx="242" ry="126" stroke="#225146" stroke-dasharray="7 10" />
-		<path class="signal-path signal-one" d="M165 116C224 112 255 138 291 170" stroke="#58dfbf" stroke-width="2" />
-		<path class="signal-path signal-two" d="M515 116C456 112 425 138 389 170" stroke="#5789ee" stroke-width="2" />
-		<path class="signal-path signal-three" d="M196 275C241 270 264 247 298 222" stroke="#ef78d8" stroke-width="2" />
-		<path class="signal-path signal-four" d="M484 275C439 270 416 247 382 222" stroke="#f1d070" stroke-width="2" />
+		<ellipse cx="350" cy="350" rx="252" ry="31" fill="#000" fill-opacity=".28" />
+		<path class="work-floor" d="M92 282 318 139l278 116-225 143Z" fill="url(#workshop-floor)" stroke="#28584d" />
+		<path d="M130 286 319 167l231 96-187 119Z" stroke="#1e493e" stroke-dasharray="6 9" />
 
-		<g class="peripheral peripheral-one">
-			<rect x="43" y="82" width="122" height="68" rx="14" fill="#0b1915" stroke="#55dfc0" stroke-opacity=".78" />
-			<circle cx="65" cy="104" r="7" fill="#55dfc0" fill-opacity=".18" stroke="#55dfc0" />
-			<path d="M61 104h8M65 100v8" stroke="#55dfc0" stroke-linecap="round" />
-			<text x="104" y="118" fill="#eef8f4" font-family="monospace" font-size="12" text-anchor="middle">WHATSAPP</text>
-			<text x="104" y="136" fill="#698079" font-family="monospace" font-size="9" text-anchor="middle">MESSAGE</text>
-		</g>
-		<g class="peripheral peripheral-two">
-			<rect x="515" y="82" width="122" height="68" rx="14" fill="#0b151f" stroke="#5789ee" stroke-opacity=".82" />
-			<path d="m538 109 18-8-6 19-4-6-5 4Z" fill="#78a3f5" />
-			<text x="576" y="118" fill="#eef8f4" font-family="monospace" font-size="12" text-anchor="middle">TELEGRAM</text>
-			<text x="576" y="136" fill="#698079" font-family="monospace" font-size="9" text-anchor="middle">CHANNEL</text>
-		</g>
-		<g class="peripheral peripheral-three">
-			<rect x="52" y="246" width="144" height="68" rx="14" fill="#171018" stroke="#ef78d8" stroke-opacity=".8" />
-			<rect x="70" y="266" width="20" height="20" rx="6" fill="#ef78d8" fill-opacity=".17" stroke="#ef78d8" />
-			<path d="M76 276h8M80 272v8" stroke="#ef78d8" stroke-linecap="round" />
-			<text x="133" y="278" fill="#eef8f4" font-family="monospace" font-size="12" text-anchor="middle">COMPOSIO</text>
-			<text x="133" y="296" fill="#698079" font-family="monospace" font-size="9" text-anchor="middle">CONNECTED APPS</text>
-		</g>
-		<g class="peripheral peripheral-four">
-			<rect x="484" y="246" width="144" height="68" rx="14" fill="#17150b" stroke="#f1d070" stroke-opacity=".78" />
-			<circle cx="507" cy="280" r="10" fill="#f1d070" fill-opacity=".16" stroke="#f1d070" />
-			<path d="M502 280h10M507 275v10" stroke="#f1d070" stroke-linecap="round" />
-			<text x="561" y="278" fill="#eef8f4" font-family="monospace" font-size="12" text-anchor="middle">MCP + SKILLS</text>
-			<text x="561" y="296" fill="#698079" font-family="monospace" font-size="9" text-anchor="middle">MORE TOOLS</text>
+		<path class="runway" d="M111 226c124-38 176-15 232 29 64 50 120 34 218-20" stroke="#173b32" stroke-width="28" stroke-linecap="round" />
+		<path d="M111 226c124-38 176-15 232 29 64 50 120 34 218-20" stroke="#285d50" stroke-width="18" stroke-linecap="round" />
+		<path class="runway-signal" d="M111 226c124-38 176-15 232 29 64 50 120 34 218-20" stroke="#65e3c3" stroke-width="2.5" stroke-linecap="round" />
+
+		<g class="scene-object incoming-message" data-workshop-part="incoming-message" filter="url(#object-shadow)">
+			<rect x="42" y="72" width="201" height="88" rx="20" fill="#eff8f4" />
+			<path d="m219 156 22 19-5-27Z" fill="#eff8f4" />
+			<circle cx="68" cy="104" r="11" fill="#d9f5ed" stroke="#20a991" />
+			<path d="M63 104h10M68 99v10" stroke="#168775" stroke-width="2" stroke-linecap="round" />
+			<text x="88" y="105" fill="#18352d" font-family="monospace" font-size="11">JEAN · WHATSAPP</text>
+			<text x="67" y="135" fill="#415d55" font-family="sans-serif" font-size="12">Latest project update?</text>
 		</g>
 
-		<g class="homun-core">
-			<path d="m288 172 52-31 54 31-54 32Z" fill="#64e1bf" />
-			<path d="M288 172v64l52 31v-63Z" fill="url(#connected-core-left)" stroke="#64e1bf" />
-			<path d="M394 172v64l-54 31v-63Z" fill="url(#connected-core-right)" stroke="#76a2f5" />
-			<path d="m313 191 27-16 28 16-28 17Z" fill="#0b1714" stroke="#d7fff5" stroke-opacity=".55" />
-			<text x="340" y="237" fill="#eef8f4" font-family="monospace" font-size="11" text-anchor="middle">HOMUN</text>
+		<g class="scene-object telegram-token" data-workshop-part="telegram-channel" filter="url(#object-shadow)">
+			<circle cx="587" cy="83" r="29" fill="#13274b" stroke="#5789ee" />
+			<path d="m574 84 27-12-9 28-6-9-8 6Z" fill="#86abf6" />
+			<text x="587" y="126" fill="#7e9fdc" font-family="monospace" font-size="9" text-anchor="middle">TELEGRAM</text>
 		</g>
 
-		<g class="action-rail">
-			<rect x="76" y="344" width="528" height="48" rx="14" fill="#081410" stroke="#1c463c" />
-			<circle class="rail-pulse" cx="102" cy="368" r="5" fill="#55dfc0" />
-			<text x="340" y="372" fill="#a8c0ba" font-family="monospace" font-size="10" text-anchor="middle">MESSAGE · SCHEDULE · EVENT  →  CONTEXT + TOOLS  →  ACTION</text>
+		<g class="scene-object composio-tool" data-workshop-part="composio-tool" filter="url(#object-shadow)">
+			<path d="m117 292 38-23 40 23-40 24Z" fill="#ef78d8" />
+			<path d="M117 292v45l38 23v-44Z" fill="#34182f" stroke="#ef78d8" stroke-opacity=".72" />
+			<path d="m195 292-40 24v44l40-23Z" fill="#81397b" stroke="#ef78d8" stroke-opacity=".72" />
+			<path d="m143 295 12-7 13 7-13 8Z" fill="#f5c2e9" />
+			<text x="155" y="379" fill="#c08bb5" font-family="monospace" font-size="9" text-anchor="middle">COMPOSIO</text>
 		</g>
+
+		<g class="scene-object mcp-tool" data-workshop-part="mcp-skills-tool" filter="url(#object-shadow)">
+			<path d="m217 326 34-20 36 20-36 21Z" fill="#f1d070" />
+			<path d="M217 326v39l34 20v-38Z" fill="#322b13" stroke="#f1d070" stroke-opacity=".72" />
+			<path d="m287 326-36 21v38l36-20Z" fill="#796527" stroke="#f1d070" stroke-opacity=".72" />
+			<path d="M243 340h16M251 332v16" stroke="#fff0ac" stroke-width="2" stroke-linecap="round" />
+			<text x="251" y="403" fill="#c7ad59" font-family="monospace" font-size="9" text-anchor="middle">MCP + SKILLS</text>
+		</g>
+
+		<g class="homun-machine" data-workshop-part="homun-machine" filter="url(#object-shadow)">
+			<path d="m298 179 69-41 72 41-72 43Z" fill="#64e1bf" />
+			<path d="M298 179v89l69 41v-87Z" fill="url(#machine-left)" stroke="#64e1bf" />
+			<path d="M439 179v89l-72 41v-87Z" fill="url(#machine-right)" stroke="#76a2f5" />
+			<path d="m331 197 36-22 38 22-38 23Z" fill="#07110e" stroke="#d9fff5" stroke-opacity=".58" />
+			<path d="M324 237v26l20 12v-26Z" fill="#132c25" stroke="#55dfc0" />
+			<path d="M410 226v27l-21 12v-27Z" fill="#182d5a" stroke="#78a3f5" />
+			<text x="367" y="285" fill="#eef8f4" font-family="monospace" font-size="11" text-anchor="middle">HOMUN</text>
+		</g>
+
+		<g class="scene-object reply-output" data-workshop-part="reply-output" filter="url(#object-shadow)">
+			<rect x="490" y="137" width="143" height="161" rx="15" fill="#f1f7f4" />
+			<path d="m607 137 26 26h-26Z" fill="#d8e5e0" />
+			<circle cx="516" cy="169" r="7" fill="#20a991" />
+			<path d="m512 169 3 3 6-7" stroke="#eafff9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+			<text x="531" y="173" fill="#234139" font-family="monospace" font-size="9">UPDATE FOUND</text>
+			<path d="M514 201h91M514 222h68M514 243h82" stroke="#29443c" stroke-width="6" stroke-linecap="round" />
+			<rect x="514" y="263" width="75" height="21" rx="10.5" fill="#ef78d8" />
+			<text x="551.5" y="277" fill="#271123" font-family="monospace" font-size="8" text-anchor="middle">REPLY READY</text>
+		</g>
+
+		<circle class="runway-light light-one" cx="286" cy="229" r="6" fill="#55dfc0" />
+		<circle class="runway-light light-two" cx="462" cy="266" r="5" fill="#5789ee" />
 	</svg>
 </div>
 
@@ -74,7 +97,7 @@
 		border: 1px solid var(--color-line-strong);
 		border-radius: 1.35rem;
 		background:
-			radial-gradient(circle at 50% 45%, rgba(80, 223, 197, 0.12), transparent 48%),
+			radial-gradient(circle at 54% 49%, rgba(80, 223, 197, 0.13), transparent 48%),
 			linear-gradient(155deg, rgba(10, 22, 18, 0.94), rgba(5, 9, 8, 0.98));
 		box-shadow: var(--shadow-lift);
 	}
@@ -92,19 +115,18 @@
 	}
 
 	svg { display: block; width: 100%; height: auto; }
-	.peripheral { animation: connected-drift 13s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: center; }
-	.peripheral-two { animation-delay: -3s; }
-	.peripheral-three { animation-delay: -6s; }
-	.peripheral-four { animation-delay: -9s; }
-	.signal-path { animation: connected-signal 7s ease-in-out infinite; }
-	.signal-two { animation-delay: -1.7s; }
-	.signal-three { animation-delay: -3.5s; }
-	.signal-four { animation-delay: -5.2s; }
-	.rail-pulse { animation: connected-pulse 3.6s ease-in-out infinite; }
+	.scene-object { animation: workshop-drift 13s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: center; }
+	.telegram-token { animation-delay: -3s; }
+	.composio-tool { animation-delay: -6s; }
+	.mcp-tool { animation-delay: -9s; }
+	.reply-output { animation-delay: -4.5s; }
+	.runway-signal { stroke-dasharray: 12 14; animation: runway-signal 9s linear infinite; }
+	.runway-light { animation: workshop-light 4.5s ease-in-out infinite; }
+	.light-two { animation-delay: -2.25s; }
 
-	@keyframes connected-drift { to { transform: translateY(-4px); } }
-	@keyframes connected-signal { 0%, 100% { opacity: .3; } 50% { opacity: 1; } }
-	@keyframes connected-pulse { 0%, 100% { opacity: .35; } 50% { opacity: 1; filter: drop-shadow(0 0 8px #55dfc0); } }
+	@keyframes workshop-drift { to { transform: translateY(-4px); } }
+	@keyframes runway-signal { to { stroke-dashoffset: -104; } }
+	@keyframes workshop-light { 0%, 100% { opacity: .32; } 50% { opacity: 1; filter: drop-shadow(0 0 9px #55dfc0); } }
 
 	@media (max-width: 640px) {
 		.scene-label { font-size: 0.48rem; }
@@ -112,8 +134,8 @@
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.peripheral,
-		.signal-path,
-		.rail-pulse { animation: none; }
+		.scene-object,
+		.runway-signal,
+		.runway-light { animation: none; }
 	}
 </style>
