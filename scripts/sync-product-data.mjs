@@ -1,11 +1,16 @@
-import { mkdir, rename, rm, writeFile } from "node:fs/promises";
-import { dirname, resolve } from "node:path";
+import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import {
 	normalizeProject,
 	normalizeReleases,
 	validateSnapshot,
 } from "./lib/github-product-data.mjs";
+import { applyPublicationPolicy } from "./lib/publication-policy.mjs";
+import {
+	hasSemanticChanges,
+	persistSnapshotPair,
+} from "./lib/snapshot-store.mjs";
 
 const PROJECT_QUERY = `
 query HomunPublicRoadmap($owner: String!, $number: Int!) {
@@ -66,6 +71,23 @@ export function readConfig(env = process.env) {
 	};
 }
 
+export function parseSyncArgs(args = []) {
+	const supported = new Set(["--dry-run", "--write", "--allow-empty"]);
+	for (const arg of args) {
+		if (!supported.has(arg)) throw new Error(`Unknown option: ${arg}`);
+	}
+	if (new Set(args).size !== args.length) {
+		const duplicate = args.find((arg, index) => args.indexOf(arg) !== index);
+		throw new Error(`Duplicate option: ${duplicate}`);
+	}
+	const dryRun = args.includes("--dry-run");
+	const write = args.includes("--write");
+	const allowEmpty = args.includes("--allow-empty");
+	if (dryRun && write) throw new Error("Cannot combine --dry-run and --write");
+	if (allowEmpty && !write) throw new Error("--allow-empty requires --write");
+	return { mode: write ? "write" : "dry-run", allowEmpty };
+}
+
 async function githubRequest(url, token, init = {}, fetchImpl = fetch) {
 	const response = await fetchImpl(url, {
 		...init,
@@ -84,8 +106,12 @@ async function githubRequest(url, token, init = {}, fetchImpl = fetch) {
 	return response.json();
 }
 
-export async function fetchProductData(config, fetchImpl = fetch) {
-	const syncedAt = new Date().toISOString();
+export async function fetchProductData(
+	config,
+	fetchImpl = fetch,
+	clock = () => new Date().toISOString(),
+) {
+	const syncedAt = clock();
 	const projectPayload = await githubRequest(
 		"https://api.github.com/graphql",
 		config.token,
@@ -102,6 +128,17 @@ export async function fetchProductData(config, fetchImpl = fetch) {
 	if (projectPayload.errors?.length) {
 		throw new Error(`GitHub Project query failed: ${projectPayload.errors[0].message}`);
 	}
+	const organization = projectPayload?.data?.organization;
+	if (organization == null) {
+		throw new Error(`GitHub organization not found: ${config.owner}`);
+	}
+	const project = organization.projectV2;
+	if (project == null) {
+		throw new Error(`GitHub Project ${config.projectNumber} not found`);
+	}
+	if (!Array.isArray(project.items?.nodes)) {
+		throw new Error("GitHub Project response is missing items.nodes");
+	}
 	projectPayload.syncedAt = syncedAt;
 	const releasePayload = await githubRequest(
 		`https://api.github.com/repos/${config.releasesRepo}/releases?per_page=100`,
@@ -115,37 +152,95 @@ export async function fetchProductData(config, fetchImpl = fetch) {
 	return { roadmap, releases };
 }
 
-export async function writeSnapshots(roadmap, releases, paths = {}) {
+function resolvedSnapshotPaths(paths = {}) {
+	return {
+		roadmapPath: resolve(paths.roadmapPath ?? "src/data/roadmap.json"),
+		releasesPath: resolve(paths.releasesPath ?? "src/data/releases.json"),
+	};
+}
+
+async function readSnapshotPair(paths = {}) {
+	const resolved = resolvedSnapshotPaths(paths);
+	const [roadmap, releases] = await Promise.all([
+		readFile(resolved.roadmapPath, "utf8").then(JSON.parse),
+		readFile(resolved.releasesPath, "utf8").then(JSON.parse),
+	]);
+	return { roadmap, releases };
+}
+
+export async function writeSnapshots(roadmap, releases, paths = {}, options = {}) {
 	validateSnapshot(roadmap, releases);
-	const roadmapPath = resolve(paths.roadmapPath ?? "src/data/roadmap.json");
-	const releasesPath = resolve(paths.releasesPath ?? "src/data/releases.json");
-	await mkdir(dirname(roadmapPath), { recursive: true });
-	await mkdir(dirname(releasesPath), { recursive: true });
-	const nonce = `${process.pid}-${Date.now()}`;
-	const roadmapTemp = `${roadmapPath}.${nonce}.tmp`;
-	const releasesTemp = `${releasesPath}.${nonce}.tmp`;
-	try {
-		await writeFile(roadmapTemp, `${JSON.stringify(roadmap, null, 2)}\n`);
-		await writeFile(releasesTemp, `${JSON.stringify(releases, null, 2)}\n`);
-		await rename(roadmapTemp, roadmapPath);
-		await rename(releasesTemp, releasesPath);
-	} finally {
-		await Promise.all([
-			rm(roadmapTemp, { force: true }),
-			rm(releasesTemp, { force: true }),
-		]);
+	const current = await readSnapshotPair(paths);
+	return persistSnapshotPair(current, { roadmap, releases }, paths, options);
+}
+
+export async function syncProductData({
+	env = process.env,
+	fetchImpl = fetch,
+	paths = {},
+	clock = () => new Date().toISOString(),
+	mode = "dry-run",
+	allowEmpty = false,
+} = {}) {
+	if (!new Set(["dry-run", "write"]).has(mode)) {
+		throw new Error(`Unknown sync mode: ${mode}`);
 	}
-}
+	if (allowEmpty && mode !== "write") {
+		throw new Error("allowEmpty requires write mode");
+	}
+	const current = await readSnapshotPair(paths);
+	if (current.roadmap?.schemaVersion !== 2 || !Array.isArray(current.roadmap.items)) {
+		throw new Error("Previous roadmap must use schemaVersion 2 with public items");
+	}
+	validateSnapshot(current.roadmap, current.releases);
 
-export async function syncProductData(env = process.env, fetchImpl = fetch, paths) {
 	const config = readConfig(env);
-	const snapshots = await fetchProductData(config, fetchImpl);
-	await writeSnapshots(snapshots.roadmap, snapshots.releases, paths);
-	return snapshots;
+	const syncedAt = clock();
+	const raw = await fetchProductData(config, fetchImpl, () => syncedAt);
+	const publishedRoadmap = raw.roadmap.candidates.length === 0
+		? {
+			schemaVersion: 2,
+			contentUpdatedAt: current.roadmap.contentUpdatedAt,
+			items: [],
+		}
+		: applyPublicationPolicy(current.roadmap, raw.roadmap.candidates);
+	const candidate = {
+		roadmap: publishedRoadmap,
+		releases: raw.releases,
+	};
+	validateSnapshot(candidate.roadmap, candidate.releases);
+	const changed = hasSemanticChanges(current, candidate);
+	if (!changed) {
+		return {
+			status: "NO_CHANGE",
+			snapshots: current,
+			roadmapCount: current.roadmap.items.length,
+			releaseCount: current.releases.items.length,
+		};
+	}
+	candidate.roadmap.contentUpdatedAt = syncedAt;
+	if (mode === "dry-run") {
+		return {
+			status: "WOULD_CHANGE",
+			snapshots: candidate,
+			roadmapCount: candidate.roadmap.items.length,
+			releaseCount: candidate.releases.items.length,
+		};
+	}
+	const persisted = await persistSnapshotPair(current, candidate, paths, { allowEmpty });
+	return {
+		status: persisted.status,
+		snapshots: candidate,
+		roadmapCount: candidate.roadmap.items.length,
+		releaseCount: candidate.releases.items.length,
+	};
 }
 
-export function formatSyncSummary(snapshots) {
-	return `Synced ${snapshots.roadmap.candidates.length} roadmap candidates and ${snapshots.releases.items.length} releases`;
+export function formatSyncSummary(result) {
+	if (result?.status) {
+		return `${result.status} ${result.roadmapCount} roadmap items and ${result.releaseCount} releases`;
+	}
+	return `Synced ${result.roadmap.candidates.length} roadmap candidates and ${result.releases.items.length} releases`;
 }
 
 const isCli = process.argv[1]
@@ -153,8 +248,9 @@ const isCli = process.argv[1]
 
 if (isCli) {
 	try {
-		const snapshots = await syncProductData();
-		console.log(formatSyncSummary(snapshots));
+		const options = parseSyncArgs(process.argv.slice(2));
+		const result = await syncProductData(options);
+		console.log(formatSyncSummary(result));
 	} catch (error) {
 		console.error(error instanceof Error ? error.message : error);
 		process.exitCode = 1;

@@ -1,6 +1,13 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import {
+	mkdtemp,
+	readdir,
+	rename as fsRename,
+	rm,
+	stat,
+	writeFile,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -9,9 +16,21 @@ import {
 	validateSnapshot,
 } from "./lib/github-product-data.mjs";
 import { applyPublicationPolicy } from "./lib/publication-policy.mjs";
+import {
+	hasSemanticChanges,
+	persistSnapshotPair,
+	semanticSnapshot,
+} from "./lib/snapshot-store.mjs";
 import * as productDataSync from "./sync-product-data.mjs";
 
-const { fetchProductData, readConfig, writeSnapshots } = productDataSync;
+const {
+	fetchProductData,
+	formatSyncSummary,
+	parseSyncArgs,
+	readConfig,
+	syncProductData,
+	writeSnapshots,
+} = productDataSync;
 
 const projectFixture = JSON.parse(
 	await readFile(new URL("./fixtures/github-project.json", import.meta.url)),
@@ -68,6 +87,83 @@ assert.deepEqual(
 	["shared-spaces", "mobile-companion", "connected-actions"],
 );
 
+const semanticCurrent = {
+	roadmap: {
+		schemaVersion: 2,
+		contentUpdatedAt: "2026-07-13T10:00:00.000Z",
+		items: [
+			{
+				slug: "apprentice",
+				votes: 42,
+				underReview: true,
+				publicUpdateDate: "2026-07-13",
+			},
+		],
+	},
+	releases: {
+		schemaVersion: 1,
+		syncedAt: "2026-07-13T10:00:00.000Z",
+		items: [{ version: "v1", checkedAt: "2026-07-13T10:00:00.000Z" }],
+	},
+};
+const timestampOnly = {
+	releases: {
+		items: [{ checkedAt: "2026-07-14T10:00:00.000Z", version: "v1" }],
+		syncedAt: "2026-07-14T10:00:00.000Z",
+		schemaVersion: 1,
+	},
+	roadmap: {
+		items: [
+			{
+				publicUpdateDate: "2026-07-13",
+				underReview: true,
+				votes: 42,
+				slug: "apprentice",
+			},
+		],
+		contentUpdatedAt: "2026-07-14T10:00:00.000Z",
+		fetchedAt: "2026-07-14T10:00:00.000Z",
+		schemaVersion: 2,
+	},
+};
+assert.deepEqual(semanticSnapshot(timestampOnly), {
+	releases: { items: [{ version: "v1" }], schemaVersion: 1 },
+	roadmap: {
+		items: [
+			{
+				publicUpdateDate: "2026-07-13",
+				slug: "apprentice",
+				underReview: true,
+				votes: 42,
+			},
+		],
+		schemaVersion: 2,
+	},
+});
+assert.equal(hasSemanticChanges(semanticCurrent, timestampOnly), false);
+assert.equal(hasSemanticChanges(semanticCurrent.roadmap, timestampOnly.roadmap), false);
+const changedVotes = structuredClone(timestampOnly);
+changedVotes.roadmap.items[0].votes = 43;
+assert.equal(hasSemanticChanges(semanticCurrent, changedVotes), true);
+const changedRelease = structuredClone(timestampOnly);
+changedRelease.releases.items[0].version = "v2";
+assert.equal(hasSemanticChanges(semanticCurrent, changedRelease), true);
+const reorderedArray = structuredClone(timestampOnly);
+reorderedArray.releases.items.push({ version: "v0" });
+assert.equal(
+	hasSemanticChanges(
+		{
+			...semanticCurrent,
+			releases: {
+				...semanticCurrent.releases,
+				items: [{ version: "v0" }, ...semanticCurrent.releases.items],
+			},
+		},
+		reorderedArray,
+	),
+	true,
+);
+
 const fetchResponses = [projectFixture, releaseFixture];
 const fakeFetch = async () => ({
 	ok: true,
@@ -87,6 +183,36 @@ assert.deepEqual(fetchedSnapshots.releases.items, releases.items);
 assert.equal(
 	productDataSync.formatSyncSummary?.(fetchedSnapshots),
 	"Synced 6 roadmap candidates and 1 releases",
+);
+const fetchConfig = {
+	token: "fixture-token",
+	owner: "homun-app",
+	projectNumber: 1,
+	releasesRepo: "homun-app/homun-releases",
+};
+async function fetchFrom(payloads) {
+	const queue = structuredClone(payloads);
+	return fetchProductData(
+		fetchConfig,
+		async () => ({ ok: true, json: async () => queue.shift() }),
+		() => "2026-07-14T15:00:00.000Z",
+	);
+}
+await assert.rejects(
+	fetchFrom([{ data: { organization: null } }]),
+	/GitHub organization not found: homun-app/,
+);
+await assert.rejects(
+	fetchFrom([{ data: { organization: { projectV2: null } } }]),
+	/GitHub Project 1 not found/,
+);
+await assert.rejects(
+	fetchFrom([{ data: { organization: { projectV2: {} } } }]),
+	/GitHub Project response is missing items.nodes/,
+);
+await assert.rejects(
+	fetchFrom([{ data: { organization: { projectV2: { items: {} } } } }]),
+	/GitHub Project response is missing items.nodes/,
 );
 assert.doesNotThrow(() => validateSnapshot(roadmap, releases));
 assert.doesNotThrow(() => validateSnapshot(publicRoadmap, releases));
@@ -579,10 +705,137 @@ assert.throws(
 	() => readConfig({ HOMUN_GITHUB_TOKEN: "secret" }),
 	/Missing HOMUN_PROJECT_NUMBER/,
 );
+assert.deepEqual(parseSyncArgs([]), { mode: "dry-run", allowEmpty: false });
+assert.deepEqual(parseSyncArgs(["--dry-run"]), { mode: "dry-run", allowEmpty: false });
+assert.deepEqual(parseSyncArgs(["--write"]), { mode: "write", allowEmpty: false });
+assert.deepEqual(parseSyncArgs(["--write", "--allow-empty"]), {
+	mode: "write",
+	allowEmpty: true,
+});
+assert.throws(() => parseSyncArgs(["--wat"]), /Unknown option: --wat/);
+assert.throws(
+	() => parseSyncArgs(["--dry-run", "--write"]),
+	/Cannot combine --dry-run and --write/,
+);
+assert.throws(
+	() => parseSyncArgs(["--allow-empty"]),
+	/--allow-empty requires --write/,
+);
 
 const tempRoot = await mkdtemp(join(tmpdir(), "homun-product-data-"));
 const roadmapPath = join(tempRoot, "roadmap.json");
 const releasesPath = join(tempRoot, "releases.json");
+await writeFile(roadmapPath, "original-roadmap\n");
+await writeFile(releasesPath, "original-releases\n");
+const tenRoadmapItems = Array.from({ length: 10 }, (_, index) => ({
+	...publishedApprentice,
+	slug: `roadmap-item-${index + 1}`,
+	title: `Roadmap item ${index + 1}`,
+	featured: false,
+	order: index + 1,
+}));
+const nonEmptyCurrentPair = {
+	roadmap: {
+		schemaVersion: 2,
+		contentUpdatedAt: "2026-07-13T10:00:00.000Z",
+		items: tenRoadmapItems,
+	},
+	releases: { schemaVersion: 1, syncedAt: "2026-07-13T10:00:00.000Z", items: [] },
+};
+const emptyCandidatePair = {
+	roadmap: {
+		schemaVersion: 2,
+		contentUpdatedAt: "2026-07-14T10:00:00.000Z",
+		items: [],
+	},
+	releases: { schemaVersion: 1, syncedAt: "2026-07-14T10:00:00.000Z", items: [] },
+};
+await assert.rejects(
+	persistSnapshotPair(
+		nonEmptyCurrentPair,
+		emptyCandidatePair,
+		{ roadmapPath, releasesPath },
+	),
+	/refusing to replace 10 roadmap items with zero/i,
+);
+assert.equal(await readFile(roadmapPath, "utf8"), "original-roadmap\n");
+assert.equal(await readFile(releasesPath, "utf8"), "original-releases\n");
+const timestampOnlyCandidatePair = structuredClone(nonEmptyCurrentPair);
+timestampOnlyCandidatePair.roadmap.contentUpdatedAt = "2026-07-14T10:00:00.000Z";
+timestampOnlyCandidatePair.releases.syncedAt = "2026-07-14T10:00:00.000Z";
+const beforeNoOpStats = await Promise.all([
+	stat(roadmapPath, { bigint: true }),
+	stat(releasesPath, { bigint: true }),
+]);
+assert.deepEqual(
+	await persistSnapshotPair(
+		nonEmptyCurrentPair,
+		timestampOnlyCandidatePair,
+		{ roadmapPath, releasesPath },
+	),
+	{ status: "NO_CHANGE" },
+);
+const afterNoOpStats = await Promise.all([
+	stat(roadmapPath, { bigint: true }),
+	stat(releasesPath, { bigint: true }),
+]);
+assert.deepEqual(
+	afterNoOpStats.map(({ mtimeNs }) => mtimeNs),
+	beforeNoOpStats.map(({ mtimeNs }) => mtimeNs),
+);
+assert.equal(await readFile(roadmapPath, "utf8"), "original-roadmap\n");
+assert.equal(await readFile(releasesPath, "utf8"), "original-releases\n");
+const invalidCandidatePair = structuredClone(nonEmptyCurrentPair);
+invalidCandidatePair.releases.items.push({
+	version: "v-invalid",
+	projectSlugs: ["unknown-roadmap-item"],
+});
+await assert.rejects(
+	persistSnapshotPair(
+		nonEmptyCurrentPair,
+		invalidCandidatePair,
+		{ roadmapPath, releasesPath },
+	),
+	/Unknown roadmap slug/,
+);
+assert.equal(await readFile(roadmapPath, "utf8"), "original-roadmap\n");
+assert.equal(await readFile(releasesPath, "utf8"), "original-releases\n");
+assert.deepEqual(
+	await persistSnapshotPair(
+		nonEmptyCurrentPair,
+		emptyCandidatePair,
+		{ roadmapPath, releasesPath },
+		{ allowEmpty: true },
+	),
+	{ status: "WROTE_CHANGE" },
+);
+assert.deepEqual(JSON.parse(await readFile(roadmapPath, "utf8")), emptyCandidatePair.roadmap);
+assert.deepEqual(JSON.parse(await readFile(releasesPath, "utf8")), emptyCandidatePair.releases);
+await writeFile(roadmapPath, "rollback-roadmap\n");
+await writeFile(releasesPath, "rollback-releases\n");
+const changedCandidatePair = structuredClone(nonEmptyCurrentPair);
+changedCandidatePair.roadmap.items[0].votes += 1;
+await assert.rejects(
+	persistSnapshotPair(
+		nonEmptyCurrentPair,
+		changedCandidatePair,
+		{ roadmapPath, releasesPath },
+		{
+			fileOps: {
+				rename: async (source, target) => {
+					if (source.endsWith(".tmp") && target === releasesPath) {
+						throw new Error("Injected second replacement failure");
+					}
+					return fsRename(source, target);
+				},
+			},
+		},
+	),
+	/Injected second replacement failure/,
+);
+assert.equal(await readFile(roadmapPath, "utf8"), "rollback-roadmap\n");
+assert.equal(await readFile(releasesPath, "utf8"), "rollback-releases\n");
+assert.deepEqual((await readdir(tempRoot)).sort(), ["releases.json", "roadmap.json"]);
 await writeFile(roadmapPath, "original-roadmap\n");
 await writeFile(releasesPath, "original-releases\n");
 await assert.rejects(
@@ -591,9 +844,124 @@ await assert.rejects(
 );
 assert.equal(await readFile(roadmapPath, "utf8"), "original-roadmap\n");
 assert.equal(await readFile(releasesPath, "utf8"), "original-releases\n");
+await Promise.all([
+	writeFile(roadmapPath, `${JSON.stringify(checkedInRoadmap, null, 2)}\n`),
+	writeFile(releasesPath, `${JSON.stringify(checkedInReleases, null, 2)}\n`),
+]);
 await writeSnapshots(roadmap, releases, { roadmapPath, releasesPath });
 assert.equal(JSON.parse(await readFile(roadmapPath, "utf8")).candidates.length, 6);
 assert.equal(JSON.parse(await readFile(releasesPath, "utf8")).items.length, 1);
+
+async function writePairFiles(pair) {
+	await Promise.all([
+		writeFile(roadmapPath, `${JSON.stringify(pair.roadmap, null, 2)}\n`),
+		writeFile(releasesPath, `${JSON.stringify(pair.releases, null, 2)}\n`),
+	]);
+}
+
+function fixtureFetchFor(projectPayload, releasePayload) {
+	const responses = structuredClone([projectPayload, releasePayload]);
+	return async () => ({ ok: true, json: async () => responses.shift() });
+}
+
+const syncEnv = {
+	HOMUN_GITHUB_TOKEN: "fixture-token",
+	HOMUN_PROJECT_NUMBER: "1",
+	HOMUN_PROJECT_OWNER: "homun-app",
+	HOMUN_RELEASES_REPO: "homun-app/homun-releases",
+};
+const currentPublicPair = { roadmap: publicRoadmap, releases };
+const voteChangedFixture = structuredClone(projectFixture);
+voteChangedFixture.data.organization.projectV2.items.nodes[0].content.reactions.totalCount += 1;
+await writePairFiles(currentPublicPair);
+const beforeDryRunBytes = await Promise.all([
+	readFile(roadmapPath, "utf8"),
+	readFile(releasesPath, "utf8"),
+]);
+const dryRunResult = await syncProductData({
+	env: syncEnv,
+	fetchImpl: fixtureFetchFor(voteChangedFixture, releaseFixture),
+	paths: { roadmapPath, releasesPath },
+	clock: () => "2026-07-14T15:00:00.000Z",
+	mode: "dry-run",
+});
+assert.equal(dryRunResult.status, "WOULD_CHANGE");
+assert.equal(dryRunResult.snapshots.roadmap.contentUpdatedAt, "2026-07-14T15:00:00.000Z");
+assert.ok(formatSyncSummary(dryRunResult).startsWith("WOULD_CHANGE"));
+assert.deepEqual(
+	await Promise.all([readFile(roadmapPath, "utf8"), readFile(releasesPath, "utf8")]),
+	beforeDryRunBytes,
+);
+
+const writeResult = await syncProductData({
+	env: syncEnv,
+	fetchImpl: fixtureFetchFor(voteChangedFixture, releaseFixture),
+	paths: { roadmapPath, releasesPath },
+	clock: () => "2026-07-14T15:00:00.000Z",
+	mode: "write",
+});
+assert.equal(writeResult.status, "WROTE_CHANGE");
+assert.ok(formatSyncSummary(writeResult).startsWith("WROTE_CHANGE"));
+assert.equal(
+	JSON.parse(await readFile(roadmapPath, "utf8")).items[0].votes,
+	voteChangedFixture.data.organization.projectV2.items.nodes[0].content.reactions.totalCount,
+);
+const beforeNoChangeSync = await Promise.all([
+	readFile(roadmapPath, "utf8"),
+	readFile(releasesPath, "utf8"),
+]);
+const noChangeResult = await syncProductData({
+	env: syncEnv,
+	fetchImpl: fixtureFetchFor(voteChangedFixture, releaseFixture),
+	paths: { roadmapPath, releasesPath },
+	clock: () => "2026-07-14T16:00:00.000Z",
+	mode: "write",
+});
+assert.equal(noChangeResult.status, "NO_CHANGE");
+assert.ok(formatSyncSummary(noChangeResult).startsWith("NO_CHANGE"));
+assert.deepEqual(
+	await Promise.all([readFile(roadmapPath, "utf8"), readFile(releasesPath, "utf8")]),
+	beforeNoChangeSync,
+);
+
+const emptyProjectFixture = structuredClone(projectFixture);
+emptyProjectFixture.data.organization.projectV2.items.nodes = [];
+await assert.rejects(
+	syncProductData({
+		env: syncEnv,
+		fetchImpl: fixtureFetchFor(emptyProjectFixture, []),
+		paths: { roadmapPath, releasesPath },
+		clock: () => "2026-07-14T17:00:00.000Z",
+		mode: "write",
+	}),
+	/refusing to replace 3 roadmap items with zero/i,
+);
+assert.deepEqual(
+	await Promise.all([readFile(roadmapPath, "utf8"), readFile(releasesPath, "utf8")]),
+	beforeNoChangeSync,
+);
+const allowEmptySyncResult = await syncProductData({
+	env: syncEnv,
+	fetchImpl: fixtureFetchFor(emptyProjectFixture, []),
+	paths: { roadmapPath, releasesPath },
+	clock: () => "2026-07-14T17:00:00.000Z",
+	mode: "write",
+	allowEmpty: true,
+});
+assert.equal(allowEmptySyncResult.status, "WROTE_CHANGE");
+assert.deepEqual(JSON.parse(await readFile(roadmapPath, "utf8")).items, []);
+
+await writePairFiles({ roadmap: checkedInRoadmap, releases: checkedInReleases });
+await assert.rejects(
+	syncProductData({
+		env: syncEnv,
+		fetchImpl: fixtureFetchFor(projectFixture, releaseFixture),
+		paths: { roadmapPath, releasesPath },
+		clock: () => "2026-07-14T18:00:00.000Z",
+		mode: "dry-run",
+	}),
+	/Previous roadmap must use schemaVersion 2/,
+);
 await rm(tempRoot, { recursive: true, force: true });
 
 const workflow = await readFile(
