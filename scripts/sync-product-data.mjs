@@ -110,7 +110,7 @@ export async function fetchProductData(config, fetchImpl = fetch) {
 		fetchImpl,
 	);
 	const roadmap = normalizeProject(projectPayload);
-	const releases = normalizeReleases(releasePayload, roadmap.items, syncedAt);
+	const releases = normalizeReleases(releasePayload, roadmap.candidates, syncedAt);
 	validateSnapshot(roadmap, releases);
 	return { roadmap, releases };
 }
@@ -144,15 +144,17 @@ export async function syncProductData(env = process.env, fetchImpl = fetch, path
 	return snapshots;
 }
 
+export function formatSyncSummary(snapshots) {
+	return `Synced ${snapshots.roadmap.candidates.length} roadmap candidates and ${snapshots.releases.items.length} releases`;
+}
+
 const isCli = process.argv[1]
 	&& import.meta.url === pathToFileURL(resolve(process.argv[1])).href;
 
 if (isCli) {
 	try {
 		const snapshots = await syncProductData();
-		console.log(
-			`Synced ${snapshots.roadmap.items.length} roadmap items and ${snapshots.releases.items.length} releases`,
-		);
+		console.log(formatSyncSummary(snapshots));
 	} catch (error) {
 		console.error(error instanceof Error ? error.message : error);
 		process.exitCode = 1;

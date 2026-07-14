@@ -8,7 +8,9 @@ import {
 	normalizeReleases,
 	validateSnapshot,
 } from "./lib/github-product-data.mjs";
-import { readConfig, writeSnapshots } from "./sync-product-data.mjs";
+import * as productDataSync from "./sync-product-data.mjs";
+
+const { fetchProductData, readConfig, writeSnapshots } = productDataSync;
 
 const projectFixture = JSON.parse(
 	await readFile(new URL("./fixtures/github-project.json", import.meta.url)),
@@ -52,6 +54,27 @@ assert.equal(releases.items.length, 1);
 assert.equal(releases.items[0].version, "v0.1.1055");
 assert.deepEqual(releases.items[0].platforms, ["Linux", "macOS", "Windows"]);
 assert.deepEqual(releases.items[0].projectSlugs, ["connected-actions"]);
+
+const fetchResponses = [projectFixture, releaseFixture];
+const fakeFetch = async () => ({
+	ok: true,
+	json: async () => structuredClone(fetchResponses.shift()),
+});
+const fetchedSnapshots = await fetchProductData(
+	{
+		token: "fixture-token",
+		owner: "homun-app",
+		projectNumber: 1,
+		releasesRepo: "homun-app/homun-releases",
+	},
+	fakeFetch,
+);
+assert.equal(fetchedSnapshots.roadmap.candidates.length, 6);
+assert.deepEqual(fetchedSnapshots.releases.items, releases.items);
+assert.equal(
+	productDataSync.formatSyncSummary?.(fetchedSnapshots),
+	"Synced 6 roadmap candidates and 1 releases",
+);
 assert.doesNotThrow(() => validateSnapshot(roadmap, releases));
 assert.doesNotThrow(() => validateSnapshot(checkedInRoadmap, checkedInReleases));
 
