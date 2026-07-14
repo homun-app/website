@@ -86,7 +86,8 @@ function responsiveDownloadLabels(control) {
 	return compact && full ? { compact, full } : null;
 }
 
-function wireDownloadControl(control, platform) {
+function wireDownloadControl(control, platform, dependencies = {}) {
+	const { loadInstallers = loadLatestInstallers, navigate = navigateTo } = dependencies;
 	control.addEventListener("click", async (event) => {
 		event.preventDefault();
 		if (control.getAttribute("aria-busy") === "true") return;
@@ -102,17 +103,17 @@ function wireDownloadControl(control, platform) {
 			? { compact: responsiveLabels.compact.textContent, full: responsiveLabels.full.textContent }
 			: statusLabel?.textContent;
 		if (responsiveLabels) {
-			responsiveLabels.compact.textContent = "Finding the latest installer…";
+			responsiveLabels.compact.textContent = "Finding…";
 			responsiveLabels.full.textContent = "Finding the latest installer…";
 		} else if (statusLabel) {
 			statusLabel.textContent = "Finding the latest installer…";
 		}
 		try {
-			const grouped = await loadLatestInstallers();
+			const grouped = await loadInstallers();
 			const asset = preferredInstaller(platform, grouped);
-			navigateTo(asset?.browser_download_url ?? RELEASES_PAGE_URL);
+			navigate(asset?.browser_download_url ?? RELEASES_PAGE_URL);
 		} catch {
-			navigateTo(RELEASES_PAGE_URL);
+			navigate(RELEASES_PAGE_URL);
 		} finally {
 			control.removeAttribute("aria-busy");
 			if (responsiveLabels && typeof original === "object") {
@@ -154,7 +155,7 @@ function renderInstallerLinks(list, grouped) {
 	appendFallbackLink(list);
 }
 
-export function initDownloadControls(root = document, navigatorLike = navigator) {
+export function initDownloadControls(root = document, navigatorLike = navigator, dependencies = {}) {
 	const platform = detectPlatform(navigatorLike);
 	for (const control of root.querySelectorAll("[data-homun-download]")) {
 		const responsiveLabels = responsiveDownloadLabels(control);
@@ -164,10 +165,10 @@ export function initDownloadControls(root = document, navigatorLike = navigator)
 		} else {
 			control.textContent = platformLabels[platform];
 		}
-		wireDownloadControl(control, platform);
+		wireDownloadControl(control, platform, dependencies);
 	}
 	for (const control of root.querySelectorAll("[data-download-platform]")) {
-		wireDownloadControl(control, control.dataset.downloadPlatform);
+		wireDownloadControl(control, control.dataset.downloadPlatform, dependencies);
 	}
 
 	const chooser = root.querySelector("[data-download-chooser]");

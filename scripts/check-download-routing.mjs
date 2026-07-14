@@ -37,37 +37,105 @@ assert.equal(preferredInstaller("linux", grouped)?.name, "Homun-1.2.3-x86_64.App
 assert.equal(preferredInstaller("unknown", grouped), null);
 assert.equal(RELEASES_PAGE_URL, "https://github.com/homun-app/homun-releases/releases/latest");
 
-const compactLabel = { textContent: "Download" };
-const fullLabel = { textContent: "Download Homun" };
-let primaryTextContentWasSet = false;
-const primaryControl = {
-	set textContent(_value) {
-		primaryTextContentWasSet = true;
+function deferred() {
+	let resolve;
+	let reject;
+	const promise = new Promise((resolvePromise, rejectPromise) => {
+		resolve = resolvePromise;
+		reject = rejectPromise;
+	});
+	return { promise, resolve, reject };
+}
+
+function responsiveControlFixture() {
+	const compactLabel = { textContent: "Download" };
+	const fullLabel = { textContent: "Download Homun" };
+	const attributes = new Map();
+	let clickHandler;
+	let textContentWasSet = false;
+	const control = {
+		set textContent(_value) {
+			textContentWasSet = true;
+		},
+		querySelector(selector) {
+			if (selector === '[data-download-label="compact"]') return compactLabel;
+			if (selector === '[data-download-label="full"]') return fullLabel;
+			return null;
+		},
+		matches() {
+			return true;
+		},
+		addEventListener(type, handler) {
+			if (type === "click") clickHandler = handler;
+		},
+		setAttribute(name, value) {
+			attributes.set(name, String(value));
+		},
+		getAttribute(name) {
+			return attributes.get(name) ?? null;
+		},
+		removeAttribute(name) {
+			attributes.delete(name);
+		},
+	};
+	const root = {
+		querySelectorAll(selector) {
+			if (selector === "[data-homun-download]") return [control];
+			if (selector === "[data-download-platform]") return [];
+			return [];
+		},
+		querySelector() {
+			return null;
+		},
+	};
+	return {
+		compactLabel,
+		control,
+		fullLabel,
+		root,
+		click: (event = { preventDefault() {} }) => clickHandler(event),
+		textContentWasSet: () => textContentWasSet,
+	};
+}
+
+const successControl = responsiveControlFixture();
+const pendingInstallers = deferred();
+const successDestinations = [];
+initDownloadControls(successControl.root, { platform: "MacIntel" }, {
+	loadInstallers: () => pendingInstallers.promise,
+	navigate: (url) => successDestinations.push(url),
+});
+assert.equal(successControl.compactLabel.textContent, "Download");
+assert.equal(successControl.fullLabel.textContent, "Download for macOS");
+assert.equal(successControl.textContentWasSet(), false, "Responsive download control must preserve its child labels");
+
+const successfulClick = successControl.click();
+assert.equal(successControl.compactLabel.textContent, "Finding…");
+assert.equal(successControl.fullLabel.textContent, "Finding the latest installer…");
+assert.equal(successControl.control.getAttribute("aria-busy"), "true");
+assert.equal(successControl.textContentWasSet(), false);
+pendingInstallers.resolve(grouped);
+await successfulClick;
+assert.deepEqual(successDestinations, ["https://example.test/mac.dmg"]);
+assert.equal(successControl.compactLabel.textContent, "Download");
+assert.equal(successControl.fullLabel.textContent, "Download for macOS");
+assert.equal(successControl.control.getAttribute("aria-busy"), null);
+assert.equal(successControl.textContentWasSet(), false);
+
+const failedControl = responsiveControlFixture();
+const failedDestinations = [];
+initDownloadControls(failedControl.root, { platform: "MacIntel" }, {
+	loadInstallers: async () => {
+		throw new Error("release lookup failed");
 	},
-	querySelector(selector) {
-		if (selector === '[data-download-label="compact"]') return compactLabel;
-		if (selector === '[data-download-label="full"]') return fullLabel;
-		return null;
-	},
-	matches() {
-		return true;
-	},
-	addEventListener() {},
-};
-const fakeRoot = {
-	querySelectorAll(selector) {
-		if (selector === "[data-homun-download]") return [primaryControl];
-		if (selector === "[data-download-platform]") return [];
-		return [];
-	},
-	querySelector() {
-		return null;
-	},
-};
-initDownloadControls(fakeRoot, { platform: "MacIntel" });
-assert.equal(compactLabel.textContent, "Download");
-assert.equal(fullLabel.textContent, "Download for macOS");
-assert.equal(primaryTextContentWasSet, false, "Responsive download control must preserve its child labels");
+	navigate: (url) => failedDestinations.push(url),
+});
+await failedControl.click();
+assert.deepEqual(failedDestinations, [RELEASES_PAGE_URL]);
+assert.equal(failedControl.compactLabel.textContent, "Download");
+assert.equal(failedControl.fullLabel.textContent, "Download for macOS");
+assert.equal(failedControl.control.getAttribute("aria-busy"), null);
+assert.equal(failedControl.textContentWasSet(), false);
 
 const successFetch = async () => ({
 	ok: true,
