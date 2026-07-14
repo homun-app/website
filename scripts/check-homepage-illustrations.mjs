@@ -6,6 +6,7 @@ const homepage = await readFile(new URL("../dist/index.html", import.meta.url), 
 for (const marker of [
 	'data-illustration="workshop"',
 	'data-illustration="engines"',
+	'data-illustration="memory-architecture"',
 	'data-illustration="work-code"',
 	'data-illustration="work-deliverables"',
 	'data-illustration="work-local"',
@@ -46,18 +47,35 @@ for (const href of [
 	assert.ok(homepage.includes(href), `Homepage is missing connected-action guide link: ${href}`);
 }
 
-const workPosition = homepage.indexOf('id="product"');
+const modelsPosition = homepage.indexOf('id="models"');
+const memoryPosition = homepage.indexOf('id="memory"');
+const productPosition = homepage.indexOf('id="product"');
 const connectedPosition = homepage.indexOf('id="connected-action"');
 const controlPosition = homepage.indexOf('id="control"');
+
+for (const [name, position] of [
+	["models", modelsPosition],
+	["memory", memoryPosition],
+	["product", productPosition],
+	["connected action", connectedPosition],
+	["control", controlPosition],
+]) {
+	assert.ok(position >= 0, `Homepage is missing the ${name} section`);
+}
+
 assert.ok(
-	workPosition < connectedPosition && connectedPosition < controlPosition,
-	"Connected action must render between product proof and control",
+	modelsPosition < memoryPosition &&
+		memoryPosition < productPosition &&
+		productPosition < connectedPosition &&
+		connectedPosition < controlPosition,
+	"Homepage sections must render in the approved product-story order",
 );
 
 for (const component of [
 	"WorkshopIllustration.astro",
 	"EngineTransition.astro",
 	"EcosystemIllustration.astro",
+	"MemoryArchitectureIllustration.astro",
 	"ConnectedWorkspaceIllustration.astro",
 	"AutomationStoryIllustration.astro",
 ]) {
@@ -123,6 +141,29 @@ for (const retired of ["class=\"peripheral", "class=\"action-rail", "MESSAGE · 
 		!connectedSource.includes(retired),
 		`Miniature workshop retained the old network diagram: ${retired}`,
 	);
+}
+
+const memorySource = await readFile(
+	new URL("../src/components/illustrations/MemoryArchitectureIllustration.astro", import.meta.url),
+	"utf8",
+);
+
+for (const part of [
+	'data-memory-part="core"',
+	'data-memory-part="recall"',
+	'data-memory-part="connections"',
+	'data-memory-part="understanding"',
+	'data-memory-path="recall"',
+	'data-memory-path="connections"',
+	'data-memory-path="understanding"',
+]) {
+	assert.ok(memorySource.includes(part), `Memory illustration is missing: ${part}`);
+}
+
+for (const label of [
+	"Recall", "SQLite + search", "Connections", "Graph + why", "Understanding", "Markdown wiki",
+]) {
+	assert.ok(memorySource.includes(label), `Memory illustration is missing label: ${label}`);
 }
 
 console.log("Homepage illustration contract passed");
