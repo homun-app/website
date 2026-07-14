@@ -1,0 +1,33 @@
+---
+import MemoryArchitectureIllustration from "./illustrations/MemoryArchitectureIllustration.astro";
+
+const controls = ["Inspect", "Correct", "Consolidate", "Forget", "Export"] as const;
+---
+
+<section id="memory" class="relative scroll-mt-24 overflow-hidden py-24 sm:py-32">
+  <div class="glow -right-48 top-16 h-[30rem] w-[30rem] opacity-15" aria-hidden="true"></div>
+  <div class="section-shell grid items-center gap-14 lg:grid-cols-[.88fr_1.12fr] lg:gap-20">
+    <div>
+      <p class="eyebrow reveal">Hybrid memory</p>
+      <h2 class="reveal mt-4 pb-[0.06em] text-4xl leading-[1.06] text-cream sm:text-6xl">
+        A memory inspired by how we remember.
+      </h2>
+      <p class="reveal mt-6 max-w-xl text-lg leading-relaxed text-muted" style="--reveal-delay: 70ms">
+        Fast recall, meaningful connections, and a narrative you can read and correct.
+      </p>
+
+      <ul class="reveal mt-9 flex max-w-xl flex-wrap gap-x-4 gap-y-3 border-t border-line pt-5" style="--reveal-delay: 130ms" aria-label="Memory controls">
+        {controls.map((control, index) => (
+          <li class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.12em] text-faint">
+            {index > 0 && <span aria-hidden="true" class="text-line-strong">·</span>}
+            <span>{control}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="reveal" style="--reveal-delay: 110ms">
+      <MemoryArchitectureIllustration />
+    </div>
+  </div>
+</section>
