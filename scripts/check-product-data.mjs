@@ -47,6 +47,14 @@ const checkedInReleases = JSON.parse(
 	await readFile(new URL("../src/data/releases.json", import.meta.url)),
 );
 
+assert.equal(checkedInRoadmap.schemaVersion, 2);
+assert.ok(checkedInRoadmap.items.length >= 10);
+for (const slug of ["apprentice", "shared-spaces", "connected-actions"]) {
+	assert.ok(checkedInRoadmap.items.some((item) => item.slug === slug));
+}
+assert.equal(checkedInReleases.schemaVersion, 2);
+assert.doesNotThrow(() => validateSnapshot(checkedInRoadmap, checkedInReleases));
+
 const tiedOrderProjectFixture = structuredClone(projectFixture);
 const tiedOrderNodes = tiedOrderProjectFixture.data.organization.projectV2.items.nodes;
 const secondOrderField = tiedOrderNodes[1].fieldValues.nodes.find(
@@ -84,6 +92,9 @@ assert.equal("sourceStatus" in roadmap.candidates[0], false);
 assert.equal(roadmap.candidates.filter((candidate) => candidate.featured).length, 1);
 assert.equal(roadmap.candidates.find((candidate) => candidate.slug === "voice-capture").votes, 184);
 const releases = normalizeReleases(releaseFixture, roadmap.candidates, projectFixture.syncedAt);
+assert.equal(releases.schemaVersion, 2);
+assert.equal(releases.fetchedAt, projectFixture.syncedAt);
+assert.deepEqual(Object.keys(releases), ["schemaVersion", "fetchedAt", "items"]);
 const deterministicReleaseA = structuredClone(releaseFixture[0]);
 deterministicReleaseA.tag_name = "v0.1.alpha";
 deterministicReleaseA.name = "0.1 alpha";
@@ -166,8 +177,8 @@ const semanticCurrent = {
 		],
 	},
 	releases: {
-		schemaVersion: 1,
-		syncedAt: "2026-07-13T10:00:00.000Z",
+		schemaVersion: 2,
+		contentUpdatedAt: "2026-07-13T10:00:00.000Z",
 		checkedAt: "2026-07-13T10:00:00.000Z",
 		items: [{ version: "v1" }],
 	},
@@ -175,9 +186,9 @@ const semanticCurrent = {
 const timestampOnly = {
 	releases: {
 		items: [{ version: "v1" }],
-		syncedAt: "2026-07-14T10:00:00.000Z",
+		contentUpdatedAt: "2026-07-14T10:00:00.000Z",
 		checkedAt: "2026-07-14T10:00:00.000Z",
-		schemaVersion: 1,
+		schemaVersion: 2,
 	},
 	roadmap: {
 		items: [
@@ -194,7 +205,7 @@ const timestampOnly = {
 	},
 };
 assert.deepEqual(semanticSnapshot(timestampOnly), {
-	releases: { items: [{ version: "v1" }], schemaVersion: 1 },
+	releases: { items: [{ version: "v1" }], schemaVersion: 2 },
 	roadmap: {
 		items: [
 			{
@@ -318,7 +329,7 @@ assert.throws(
 	/Invalid project slugs in release v0.1.1055/,
 );
 assert.throws(
-	() => validateSnapshot(roadmap, { schemaVersion: 1, items: [null] }),
+	() => validateSnapshot(roadmap, { schemaVersion: 2, items: [null] }),
 	/Invalid release item/,
 );
 const releaseWithNonStringVersion = structuredClone(releases);
@@ -334,11 +345,11 @@ assert.throws(
 	/Invalid release version/,
 );
 assert.throws(
-	() => validateSnapshot(roadmap, { schemaVersion: 1, items: {} }),
+	() => validateSnapshot(roadmap, { schemaVersion: 2, items: {} }),
 	/Invalid releases snapshot shape/,
 );
 assert.throws(
-	() => validateSnapshot(roadmap, { schemaVersion: 1 }),
+	() => validateSnapshot(roadmap, { schemaVersion: 2 }),
 	/Invalid releases snapshot shape/,
 );
 assert.throws(
@@ -412,7 +423,10 @@ assert.deepEqual(releaseWithDuplicateSlug.items[0].projectSlugs, [
 	"connected-actions",
 ]);
 assert.doesNotThrow(() => validateSnapshot(roadmap, releaseWithDuplicateSlug));
-assert.doesNotThrow(() => validateSnapshot(checkedInRoadmap, releaseWithDuplicateSlug));
+assert.throws(
+	() => validateSnapshot(checkedInRoadmap, releaseWithDuplicateSlug),
+	/Duplicate roadmap slug in release v0.1.1055: connected-actions/,
+);
 assert.throws(
 	() => validateSnapshot(publicRoadmap, releaseWithDuplicateSlug),
 	/Duplicate roadmap slug in release v0.1.1055: connected-actions/,
@@ -861,7 +875,11 @@ try {
 			contentUpdatedAt: "2026-07-13T10:00:00.000Z",
 			items: [publishedApprentice],
 		},
-		releases: { schemaVersion: 1, syncedAt: "2026-07-13T10:00:00.000Z", items: [] },
+		releases: {
+			schemaVersion: 2,
+			contentUpdatedAt: "2026-07-13T10:00:00.000Z",
+			items: [],
+		},
 	};
 	const missingTargetCandidate = structuredClone(missingTargetCurrent);
 	missingTargetCandidate.roadmap.items[0].votes += 1;
@@ -920,7 +938,11 @@ try {
 			contentUpdatedAt: "2026-07-13T10:00:00.000Z",
 			items: tenRoadmapItems,
 		},
-		releases: { schemaVersion: 1, syncedAt: "2026-07-13T10:00:00.000Z", items: [] },
+		releases: {
+			schemaVersion: 2,
+			contentUpdatedAt: "2026-07-13T10:00:00.000Z",
+			items: [],
+		},
 	};
 	const emptyCandidatePair = {
 		roadmap: {
@@ -928,7 +950,11 @@ try {
 			contentUpdatedAt: "2026-07-14T10:00:00.000Z",
 			items: [],
 		},
-		releases: { schemaVersion: 1, syncedAt: "2026-07-14T10:00:00.000Z", items: [] },
+		releases: {
+			schemaVersion: 2,
+			contentUpdatedAt: "2026-07-14T10:00:00.000Z",
+			items: [],
+		},
 	};
 	await assert.rejects(
 		persistSnapshotPair(
@@ -942,7 +968,7 @@ try {
 	assert.equal(await readFile(releasesPath, "utf8"), "original-releases\n");
 	const timestampOnlyCandidatePair = structuredClone(nonEmptyCurrentPair);
 	timestampOnlyCandidatePair.roadmap.contentUpdatedAt = "2026-07-14T10:00:00.000Z";
-	timestampOnlyCandidatePair.releases.syncedAt = "2026-07-14T10:00:00.000Z";
+	timestampOnlyCandidatePair.releases.contentUpdatedAt = "2026-07-14T10:00:00.000Z";
 	const beforeNoOpStats = await Promise.all([
 		stat(roadmapPath, { bigint: true }),
 		stat(releasesPath, { bigint: true }),
@@ -1071,8 +1097,16 @@ try {
 	assert.equal(await readFile(roadmapPath, "utf8"), "original-roadmap\n");
 	assert.equal(await readFile(releasesPath, "utf8"), "original-releases\n");
 	await Promise.all([
-		writeFile(roadmapPath, `${JSON.stringify(checkedInRoadmap, null, 2)}\n`),
-		writeFile(releasesPath, `${JSON.stringify(checkedInReleases, null, 2)}\n`),
+		writeFile(roadmapPath, `${JSON.stringify({
+			schemaVersion: 2,
+			fetchedAt: projectFixture.syncedAt,
+			candidates: [],
+		}, null, 2)}\n`),
+		writeFile(releasesPath, `${JSON.stringify({
+			schemaVersion: 2,
+			fetchedAt: projectFixture.syncedAt,
+			items: [],
+		}, null, 2)}\n`),
 	]);
 	await writeSnapshots(roadmap, releases, { roadmapPath, releasesPath });
 	assert.equal(JSON.parse(await readFile(roadmapPath, "utf8")).candidates.length, 6);
@@ -1149,6 +1183,9 @@ try {
 	});
 	assert.equal(dryRunResult.status, "WOULD_CHANGE");
 	assert.equal(dryRunResult.snapshots.roadmap.contentUpdatedAt, "2026-07-14T15:00:00.000Z");
+	assert.equal(dryRunResult.snapshots.releases.schemaVersion, 2);
+	assert.equal(dryRunResult.snapshots.releases.contentUpdatedAt, "2026-07-14T15:00:00.000Z");
+	assert.equal("fetchedAt" in dryRunResult.snapshots.releases, false);
 	assert.ok(formatSyncSummary(dryRunResult).startsWith("WOULD_CHANGE"));
 	assert.deepEqual(
 		await Promise.all([readFile(roadmapPath, "utf8"), readFile(releasesPath, "utf8")]),
@@ -1227,7 +1264,10 @@ try {
 	assert.equal(allowEmptySyncResult.status, "WROTE_CHANGE");
 	assert.deepEqual(JSON.parse(await readFile(roadmapPath, "utf8")).items, []);
 
-	await writePairFiles({ roadmap: checkedInRoadmap, releases: checkedInReleases });
+	await writePairFiles({
+		roadmap: { ...checkedInRoadmap, schemaVersion: 1 },
+		releases: checkedInReleases,
+	});
 	await assert.rejects(
 		syncProductData({
 			env: syncEnv,

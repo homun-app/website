@@ -194,7 +194,11 @@ export async function syncProductData({
 		: applyPublicationPolicy(current.roadmap, raw.roadmap.candidates);
 	const candidate = {
 		roadmap: publishedRoadmap,
-		releases: raw.releases,
+		releases: {
+			schemaVersion: 2,
+			contentUpdatedAt: current.releases.contentUpdatedAt,
+			items: raw.releases.items,
+		},
 	};
 	validateSnapshot(candidate.roadmap, candidate.releases);
 	assertSafeReplacement(current, candidate, {
@@ -210,6 +214,7 @@ export async function syncProductData({
 		};
 	}
 	candidate.roadmap.contentUpdatedAt = syncedAt;
+	candidate.releases.contentUpdatedAt = syncedAt;
 	if (mode === "dry-run") {
 		return {
 			status: "WOULD_CHANGE",

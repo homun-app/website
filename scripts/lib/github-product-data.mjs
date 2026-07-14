@@ -180,11 +180,11 @@ export function normalizeReleases(payload, _roadmapCandidates, syncedAt = new Da
 			(a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
 				|| compareText(a.version, b.version),
 		);
-	return { schemaVersion: 1, syncedAt, items };
+	return { schemaVersion: 2, fetchedAt: syncedAt, items };
 }
 
 export function validateSnapshot(roadmap, releases) {
-	if (![1, 2].includes(roadmap?.schemaVersion) || releases?.schemaVersion !== 1) {
+	if (![1, 2].includes(roadmap?.schemaVersion) || releases?.schemaVersion !== 2) {
 		throw new Error("Unsupported product data schema");
 	}
 	let isRawRoadmap = false;
