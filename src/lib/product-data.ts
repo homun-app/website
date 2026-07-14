@@ -1,5 +1,6 @@
 import roadmapSnapshot from "../data/roadmap.json";
 import releaseSnapshot from "../data/releases.json";
+import { selectFeaturedProject } from "./roadmap-presentation.mjs";
 
 export type RoadmapStatus = "ideas" | "next" | "building" | "shipped";
 export type VotingState = "open" | "closed";
@@ -50,9 +51,7 @@ export const releases = [...(releaseSnapshot.items as ReleaseItem[])].sort(
 );
 export const roadmapSyncedAt = roadmapSnapshot.contentUpdatedAt;
 export const releasesSyncedAt = releaseSnapshot.contentUpdatedAt;
-export const featuredProject =
-	roadmapItems.find((item) => item.featured)
-	?? roadmapItems.find((item) => item.status === "building");
+export const featuredProject = selectFeaturedProject(roadmapItems);
 export const latestRelease = releases[0];
 
 export function itemsByStatus(status: RoadmapStatus) {

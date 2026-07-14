@@ -35,3 +35,15 @@ export function roadmapPresentation(item) {
 			&& item?.voting === "open"
 	};
 }
+
+/**
+ * Select the one initiative that can truthfully be presented as currently building.
+ *
+ * @template {{ status?: string, featured?: boolean }} T
+ * @param {T[]} items
+ * @returns {T | undefined}
+ */
+export function selectFeaturedProject(items = []) {
+	return items.find((item) => item.status === "building" && item.featured)
+		?? items.find((item) => item.status === "building");
+}

@@ -4,6 +4,9 @@ import RoadmapOrbitIllustration from "../illustrations/RoadmapOrbitIllustration.
 
 interface Props { project: RoadmapItem }
 const { project } = Astro.props;
+if (project.status !== "building") {
+	throw new Error(`Featured roadmap project must be Building: ${project.slug}`);
+}
 const updated = project.publicUpdateDate
 	? new Date(`${project.publicUpdateDate}T00:00:00Z`).toLocaleDateString("en-US", {
 		month: "short",

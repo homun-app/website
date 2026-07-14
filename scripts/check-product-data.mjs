@@ -719,6 +719,9 @@ rawCandidatesWithUnpublishedShippedItem.candidates.find(
 rawCandidatesWithUnpublishedShippedItem.candidates.find(
 	(candidate) => candidate.slug === "apprentice",
 ).status = "shipped";
+rawCandidatesWithUnpublishedShippedItem.candidates.find(
+	(candidate) => candidate.slug === "apprentice",
+).featured = false;
 assert.doesNotThrow(() =>
 	validateSnapshot(rawCandidatesWithUnpublishedShippedItem, normalizedWithoutNotes),
 );
@@ -956,6 +959,18 @@ assert.throws(
 const duplicate = structuredClone(roadmap);
 duplicate.candidates.push({ ...duplicate.candidates[0] });
 assert.throws(() => validateSnapshot(duplicate, releases), /Duplicate roadmap slug/);
+
+for (const [snapshot, releaseSnapshot] of [
+	[structuredClone(roadmap), releases],
+	[structuredClone(publicRoadmap), publicReleases],
+]) {
+	const entries = snapshot.candidates ?? snapshot.items;
+	for (const item of entries) item.featured = item.slug === "shared-spaces";
+	assert.throws(
+		() => validateSnapshot(snapshot, releaseSnapshot),
+		/Featured roadmap item must be Building: shared-spaces/,
+	);
+}
 
 const publishedApprentice = {
 	slug: "apprentice",
@@ -1305,6 +1320,10 @@ assert.throws(() => normalizeProject(fixtureWithField("Area", "")), /Missing are
 assert.throws(() => normalizeProject(fixtureWithField("Area", 7)), /Invalid area/);
 assert.throws(() => normalizeProject(fixtureWithField("Featured", undefined)), /Missing featured/);
 assert.throws(() => normalizeProject(fixtureWithField("Featured", "Maybe")), /Invalid featured/);
+assert.throws(
+	() => normalizeProject(fixtureWithField("Featured", "Yes")),
+	/Featured roadmap item must be Building: shared-spaces/,
+);
 assert.throws(() => normalizeProject(fixtureWithField("Progress", undefined)), /Missing progress/);
 assert.throws(() => normalizeProject(fixtureWithField("Progress", Number.NaN, "number")), /Invalid progress/);
 assert.throws(() => normalizeProject(fixtureWithField("Slug", 24, "number")), /Invalid roadmap slug/);

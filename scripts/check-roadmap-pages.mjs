@@ -3,7 +3,9 @@ import { readFile } from "node:fs/promises";
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { getViteConfig } from "astro/config";
 import { createServer } from "vite";
-import { roadmapPresentation } from "../src/lib/roadmap-presentation.mjs";
+import * as roadmapPresentationModule from "../src/lib/roadmap-presentation.mjs";
+
+const { roadmapPresentation, selectFeaturedProject } = roadmapPresentationModule;
 
 const read = (path) => readFile(new URL(`../dist/${path}`, import.meta.url), "utf8");
 const readSource = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
@@ -50,6 +52,28 @@ const canonicalIdea = {
 	issueNumber: 123,
 	githubUrl: "https://github.com/homun-app/homun/issues/123",
 };
+
+assert.equal(
+	typeof selectFeaturedProject,
+	"function",
+	"Roadmap presentation is missing its featured Building selector",
+);
+const ordinaryBuilding = {
+	...canonicalIdea,
+	slug: "ordinary-building",
+	status: "building",
+	featured: false,
+};
+assert.equal(
+	selectFeaturedProject([{ ...canonicalIdea, featured: true }, ordinaryBuilding]),
+	ordinaryBuilding,
+	"An Idea marked featured must not be projected as Currently building",
+);
+assert.equal(
+	selectFeaturedProject([{ ...ordinaryBuilding, featured: true }, ordinaryBuilding]).featured,
+	true,
+	"A featured Building initiative must take precedence over the Building fallback",
+);
 
 assert.deepEqual(
 	roadmapPresentation(sharedSpaces),
@@ -146,6 +170,13 @@ try {
 		!featuredWithoutDate.includes("Updated "),
 		"Featured project invents an update date when publicUpdateDate is absent",
 	);
+	await assert.rejects(
+		container.renderToString(FeaturedProject, {
+			props: { project: { ...canonicalIdea, featured: true } },
+		}),
+		/Featured roadmap project must be Building: shared-spaces/,
+		"FeaturedProject must reject a non-Building project",
+	);
 } finally {
 	await viteServer.close();
 }
@@ -227,6 +258,11 @@ assert.doesNotMatch(
 	productDataSource,
 	/\bupdatedAt\s*:/,
 	"The public RoadmapItem contract exposes raw Issue activity metadata",
+);
+assert.match(
+	productDataSource,
+	/selectFeaturedProject\(roadmapItems\)/,
+	"Product data does not use the guarded featured Building projection",
 );
 
 assert.match(

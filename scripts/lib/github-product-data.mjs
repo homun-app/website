@@ -123,6 +123,9 @@ function normalizeProjectNode(node) {
 		throw new Error(`Invalid featured: ${slug}`);
 	}
 	const featured = sourceFeatured === "Yes";
+	if (featured && status !== "building") {
+		throw new Error(`Featured roadmap item must be Building: ${slug}`);
+	}
 	if (!fields.has("Progress") || fields.get("Progress") == null) {
 		throw new Error(`Missing progress: ${slug}`);
 	}
@@ -374,6 +377,9 @@ export function validateSnapshot(
 		}
 		if (![...PUBLIC_STATUSES.values()].includes(item.status)) {
 			throw new Error(`Unknown public status: ${item.status}`);
+		}
+		if (item.featured && item.status !== "building") {
+			throw new Error(`Featured roadmap item must be Building: ${item.slug}`);
 		}
 		if (
 			isRawRoadmap
