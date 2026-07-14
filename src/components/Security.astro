@@ -3,10 +3,11 @@ import { Image } from "astro:assets";
 import privacy from "../assets/screenshots/privacy.png";
 
 const controls = [
-	{ title: "Choose what leaves the machine", body: "Local and cloud models can coexist; you decide which configured provider handles the work." },
-	{ title: "Grant access explicitly", body: "Local tools and connectors operate through the permissions you approve." },
-	{ title: "Inspect the activity", body: "Plans, tool use and results remain visible while Homun works." },
-	{ title: "Keep local options open", body: "Compatible local models can run on suitable hardware without making a cloud provider the permanent centre of the system." },
+	{ title: "Keep knowledge local and in scope", body: "Memory is stored locally by default and separated by user and project, so one workspace does not silently become another's context." },
+	{ title: "Grant access explicitly", body: "Tools and connectors begin denied and operate through permissions you approve." },
+	{ title: "Inspect what happened", body: "Activity and audit history keep tool use, decisions and results visible." },
+	{ title: "Protect secrets by design", body: "Sensitive credentials belong behind the Vault boundary, not inside readable memory." },
+	{ title: "Retain the final say", body: "Correct, export or truly forget stored knowledge when it no longer belongs in the system." },
 ] as const;
 ---
 
@@ -32,13 +33,13 @@ const controls = [
 		</div>
 
 		<div>
-			<p class="eyebrow reveal">Local control</p>
-			<h2 class="reveal mt-4 text-4xl text-cream sm:text-6xl">Your system remains yours to direct.</h2>
+			<p class="eyebrow reveal">Security and control</p>
+			<h2 class="reveal mt-4 text-4xl text-cream sm:text-6xl">Useful memory requires ownership.</h2>
 			<p class="reveal mt-6 text-lg leading-relaxed text-muted" style="--reveal-delay: 70ms">
-				Local is an option you can use, not a slogan that hides where the work goes. Homun makes the choice and the access boundary visible.
+				Homun makes the storage, access boundary and activity visible—so persistent context remains something you direct.
 			</p>
 
-			<div class="mt-9 grid gap-x-7 gap-y-7 sm:grid-cols-2">
+			<div class="mt-9 grid gap-x-7 gap-y-7 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
 				{controls.map((control, index) => (
 					<div class="reveal border-t border-line pt-4" style={`--reveal-delay: ${100 + index * 50}ms`}>
 						<div class="mb-3 flex items-center gap-2">

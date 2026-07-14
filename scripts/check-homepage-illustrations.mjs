@@ -96,7 +96,7 @@ for (const forbidden of ["ai-brain", "robot-mascot", "laptop-illustration", "bg-
 for (const preserved of [
 	"Your work. Your models. Your system.",
 	"Real work, not isolated prompts.",
-	"Your system remains yours to direct.",
+	"Useful memory requires ownership.",
 	"Start without creating an account.",
 	"data-homun-download",
 ]) {
