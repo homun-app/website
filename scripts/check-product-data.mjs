@@ -675,8 +675,12 @@ assert.throws(
 	/Invalid releases snapshot shape/,
 );
 assert.throws(
-	() => validateSnapshot({ schemaVersion: 1, items: {} }, releases),
-	/Invalid roadmap snapshot shape/,
+	() => validateSnapshot({ schemaVersion: 1, items: [] }, releases),
+	/Unsupported product data schema/,
+);
+assert.throws(
+	() => validateSnapshot(roadmap, { ...releases, schemaVersion: 1 }),
+	/Unsupported product data schema/,
 );
 assert.throws(
 	() => validateSnapshot({ schemaVersion: 2 }, releases),
@@ -879,11 +883,23 @@ const releasePolicyRawReleases = {
 };
 const releasePolicyCandidates = [
 	{ slug: "apprentice", publicationStatus: "review" },
-	{ slug: "shared-spaces", publicationStatus: "draft" },
+	{ slug: "shared-spaces", publicationStatus: "review" },
 	{ slug: "connected-actions", publicationStatus: "published" },
 	{ slug: "retired-experiment", publicationStatus: "archived" },
 	{ slug: "future-memory", publicationStatus: "review" },
 ];
+assert.throws(
+	() => applyReleasePublicationPolicy(
+		releasePolicyPreviousReleases,
+		releasePolicyRawReleases,
+		releasePolicyCandidates.map((candidate) =>
+			candidate.slug === "shared-spaces"
+				? { ...candidate, publicationStatus: "draft" }
+				: candidate),
+		releasePolicyPreviousRoadmap,
+	),
+	/Published roadmap item cannot return to Draft: shared-spaces/,
+);
 const governedReleaseResult = applyReleasePublicationPolicy(
 	releasePolicyPreviousReleases,
 	releasePolicyRawReleases,
@@ -1015,7 +1031,10 @@ const newPublishedCandidate = {
 	labels: ["internal"],
 };
 
-assert.deepEqual(applyPublicationPolicy(previous, [draftCandidate]).items, previous.items);
+assert.throws(
+	() => applyPublicationPolicy(previous, [draftCandidate]),
+	/Published roadmap item cannot return to Draft: apprentice/,
+);
 assert.deepEqual(
 	applyPublicationPolicy(previous, [unchangedApprenticePublished, newDraftCandidate]).items,
 	previous.items,
@@ -1120,7 +1139,6 @@ assert.throws(
 		applyPublicationPolicy(
 			previous,
 			[unchangedApprenticePublished, { ...unchangedApprenticePublished }],
-			{ allowMissing: true },
 		),
 	/Duplicate roadmap candidate slug: apprentice/,
 );
@@ -1129,11 +1147,9 @@ assert.throws(
 		applyPublicationPolicy(
 			previous,
 			[{ ...unchangedApprenticePublished, publicationStatus: "private" }],
-			{ allowMissing: true },
 		),
 	/Unknown publication status: private/,
 );
-assert.deepEqual(applyPublicationPolicy(previous, [], { allowMissing: true }).items, previous.items);
 assert.deepEqual(applyPublicationPolicy(previous, [unchangedApprenticePublished]), {
 	schemaVersion: 2,
 	contentUpdatedAt: previous.contentUpdatedAt,
@@ -1163,24 +1179,6 @@ function assertRecordsAreIsolated(label, source, result) {
 		`${label} input capabilities must not change result`,
 	);
 }
-
-const draftIsolationPrevious = structuredClone(previous);
-const draftIsolationCandidate = structuredClone(draftCandidate);
-const draftIsolationResult = applyPublicationPolicy(draftIsolationPrevious, [
-	draftIsolationCandidate,
-]);
-assertRecordsAreIsolated(
-	"Draft",
-	draftIsolationPrevious.items[0],
-	draftIsolationResult.items[0],
-);
-draftIsolationCandidate.title = "Draft candidate input mutation";
-draftIsolationCandidate.capabilities.push("Draft candidate input mutation");
-assert.equal(draftIsolationResult.items[0].title, "Draft result mutation");
-assert.deepEqual(draftIsolationResult.items[0].capabilities, [
-	...publishedApprentice.capabilities,
-	"Draft result mutation",
-]);
 
 const reviewIsolationPrevious = structuredClone(previous);
 const reviewIsolationCandidate = {
@@ -1215,16 +1213,6 @@ assertRecordsAreIsolated(
 	"Published",
 	publishedIsolationCandidate,
 	publishedIsolationResult.items[0],
-);
-
-const missingIsolationPrevious = structuredClone(previous);
-const missingIsolationResult = applyPublicationPolicy(missingIsolationPrevious, [], {
-	allowMissing: true,
-});
-assertRecordsAreIsolated(
-	"allowMissing",
-	missingIsolationPrevious.items[0],
-	missingIsolationResult.items[0],
 );
 
 function fixtureWithField(name, value, property = "name", nodeIndex = 0) {
@@ -1410,11 +1398,26 @@ assert.throws(
 	() => validateSnapshot(publicWithSourceTimestamp, publicReleases),
 	/Public roadmap item must not contain updatedAt: shared-spaces/,
 );
-const publicWithoutOptionalText = structuredClone(publicRoadmap);
 for (const field of ["targetRelease", "publicUpdate", "publicUpdateDate"]) {
-	delete publicWithoutOptionalText.items[0][field];
+	const publicWithoutRequiredNullableField = structuredClone(publicRoadmap);
+	delete publicWithoutRequiredNullableField.items[0][field];
+	assert.throws(
+		() => validateSnapshot(publicWithoutRequiredNullableField, publicReleases),
+		new RegExp(`Missing ${field}: shared-spaces`),
+	);
 }
-assert.doesNotThrow(() => validateSnapshot(publicWithoutOptionalText, publicReleases));
+for (const [field, expected] of [
+	["targetRelease", /Invalid target release: shared-spaces/],
+	["publicUpdate", /Invalid public update: shared-spaces/],
+	["publicUpdateDate", /Invalid public update date: shared-spaces/],
+]) {
+	const publicWithUndefinedNullableField = structuredClone(publicRoadmap);
+	publicWithUndefinedNullableField.items[0][field] = undefined;
+	assert.throws(
+		() => validateSnapshot(publicWithUndefinedNullableField, publicReleases),
+		expected,
+	);
+}
 for (const [field, expected] of [
 	["targetRelease", /Invalid target release: shared-spaces/],
 	["publicUpdate", /Invalid public update: shared-spaces/],
@@ -1683,6 +1686,60 @@ try {
 		writeFile(roadmapPath, serializedCurrentRoadmap),
 		writeFile(releasesPath, serializedCurrentReleases),
 	]);
+	const assertPersistRejectsV1WithoutTouchingFiles = async (current, candidate) => {
+		const beforeBytes = await Promise.all([
+			readFile(roadmapPath, "utf8"),
+			readFile(releasesPath, "utf8"),
+		]);
+		const beforeStats = await Promise.all([
+			stat(roadmapPath, { bigint: true }),
+			stat(releasesPath, { bigint: true }),
+		]);
+		await assert.rejects(
+			persistSnapshotPair(current, candidate, { roadmapPath, releasesPath }),
+			/Unsupported product data schema/,
+		);
+		assert.deepEqual(
+			await Promise.all([readFile(roadmapPath, "utf8"), readFile(releasesPath, "utf8")]),
+			beforeBytes,
+		);
+		const afterStats = await Promise.all([
+			stat(roadmapPath, { bigint: true }),
+			stat(releasesPath, { bigint: true }),
+		]);
+		assert.deepEqual(
+			afterStats.map(({ mtimeNs }) => mtimeNs),
+			beforeStats.map(({ mtimeNs }) => mtimeNs),
+		);
+	};
+	await assertPersistRejectsV1WithoutTouchingFiles(
+		{
+			roadmap: { ...nonEmptyCurrentPair.roadmap, schemaVersion: 1 },
+			releases: nonEmptyCurrentPair.releases,
+		},
+		invalidCandidatePair,
+	);
+	await assertPersistRejectsV1WithoutTouchingFiles(
+		nonEmptyCurrentPair,
+		{
+			roadmap: { ...invalidCandidatePair.roadmap, schemaVersion: 1 },
+			releases: invalidCandidatePair.releases,
+		},
+	);
+	await assertPersistRejectsV1WithoutTouchingFiles(
+		{
+			roadmap: nonEmptyCurrentPair.roadmap,
+			releases: { ...nonEmptyCurrentPair.releases, schemaVersion: 1 },
+		},
+		invalidCandidatePair,
+	);
+	await assertPersistRejectsV1WithoutTouchingFiles(
+		nonEmptyCurrentPair,
+		{
+			roadmap: invalidCandidatePair.roadmap,
+			releases: { ...invalidCandidatePair.releases, schemaVersion: 1 },
+		},
+	);
 	assert.deepEqual(
 		await persistSnapshotPair(
 			nonEmptyCurrentPair,
@@ -1851,6 +1908,50 @@ try {
 	assert.deepEqual((await readdir(tempRoot)).sort(), ["releases.json", "roadmap.json"]);
 
 	await writePairFiles(currentPublicPair);
+	const publishedReturningToDraftFixture = structuredClone(projectFixture);
+	const publishedDraftFields = publishedReturningToDraftFixture.data.organization.projectV2.items
+		.nodes[0].fieldValues.nodes;
+	publishedDraftFields.find(
+		(field) => field.field.name === "Publication status",
+	).name = "Draft";
+	for (const mode of ["dry-run", "write"]) {
+		const beforeDraftBytes = await Promise.all([
+			readFile(roadmapPath, "utf8"),
+			readFile(releasesPath, "utf8"),
+		]);
+		const beforeDraftStats = await Promise.all([
+			stat(roadmapPath, { bigint: true }),
+			stat(releasesPath, { bigint: true }),
+		]);
+		await assert.rejects(
+			syncProductData({
+				env: syncEnv,
+				fetchImpl: fixtureFetchFor(publishedReturningToDraftFixture, releaseFixture),
+				paths: { roadmapPath, releasesPath },
+				clock: () => "2026-07-14T18:15:00.000Z",
+				mode,
+			}),
+			(error) => {
+				assert.equal(
+					error.message,
+					"Published roadmap item cannot return to Draft: shared-spaces",
+				);
+				return true;
+			},
+		);
+		assert.deepEqual(
+			await Promise.all([readFile(roadmapPath, "utf8"), readFile(releasesPath, "utf8")]),
+			beforeDraftBytes,
+		);
+		const afterDraftStats = await Promise.all([
+			stat(roadmapPath, { bigint: true }),
+			stat(releasesPath, { bigint: true }),
+		]);
+		assert.deepEqual(
+			afterDraftStats.map(({ mtimeNs }) => mtimeNs),
+			beforeDraftStats.map(({ mtimeNs }) => mtimeNs),
+		);
+	}
 	const issueActivityOnlyFixture = structuredClone(projectFixture);
 	issueActivityOnlyFixture.data.organization.projectV2.items.nodes[0].content.updatedAt =
 		"2026-07-14T18:00:00Z";
@@ -2106,6 +2207,14 @@ const workflow = await readFile(
 	new URL("../.github/workflows/sync-product-data.yml", import.meta.url),
 	"utf8",
 );
+const reconcileJobEnvironment = workflow.match(
+	/^  reconcile:\n([\s\S]*?)^    steps:/m,
+)?.[1] ?? "";
+assert.doesNotMatch(
+	reconcileJobEnvironment,
+	/(?:HOMUN_GITHUB_TOKEN|HOMUN_PROJECT_NUMBER)/,
+	"Roadmap credentials must not be inherited from the job environment",
+);
 for (const required of [
 	"schedule:",
 	"HOMUN_PROJECT_NUMBER",
@@ -2170,8 +2279,29 @@ assert.equal(
 	workflowStepValue(recoverySyncStep, "run"),
 	"npm run sync:product-data -- --write --allow-empty",
 );
+for (const [name, step] of [
+	["normal", normalSyncStep],
+	["allow-empty recovery", recoverySyncStep],
+]) {
+	assert.match(
+		step,
+		/^        env:\n          HOMUN_GITHUB_TOKEN: \$\{\{ secrets\.ROADMAP_GITHUB_TOKEN \}\}\n          HOMUN_PROJECT_NUMBER: \$\{\{ secrets\.HOMUN_PROJECT_NUMBER \}\}$/m,
+		`${name} sync step must receive both roadmap credentials`,
+	);
+}
 
 const commitStep = workflowStep("Commit semantic changes");
+for (const stepName of [
+	"Install dependencies",
+	"Validate generated snapshots",
+	"Commit semantic changes",
+]) {
+	assert.doesNotMatch(
+		workflowStep(stepName),
+		/(?:HOMUN_GITHUB_TOKEN|HOMUN_PROJECT_NUMBER)/,
+		`${stepName} must not receive roadmap credentials`,
+	);
+}
 assert.match(
 	commitStep,
 	/^          git push origin HEAD:\$\{\{ github\.event\.repository\.default_branch \}\}$/m,

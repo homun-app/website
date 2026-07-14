@@ -25,9 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      HOMUN_GITHUB_TOKEN: ${{ secrets.ROADMAP_GITHUB_TOKEN }}
       HOMUN_PROJECT_OWNER: homun-app
-      HOMUN_PROJECT_NUMBER: ${{ secrets.HOMUN_PROJECT_NUMBER }}
       HOMUN_RELEASES_REPO: homun-app/homun-releases
     steps:
       - name: Check out website
@@ -46,10 +44,16 @@ jobs:
 
       - name: Synchronize roadmap and releases
         if: ${{ github.event_name != 'workflow_dispatch' || inputs.allow_empty == false }}
+        env:
+          HOMUN_GITHUB_TOKEN: ${{ secrets.ROADMAP_GITHUB_TOKEN }}
+          HOMUN_PROJECT_NUMBER: ${{ secrets.HOMUN_PROJECT_NUMBER }}
         run: npm run sync:product-data -- --write
 
       - name: Synchronize roadmap and releases (allow empty recovery)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.allow_empty == true }}
+        env:
+          HOMUN_GITHUB_TOKEN: ${{ secrets.ROADMAP_GITHUB_TOKEN }}
+          HOMUN_PROJECT_NUMBER: ${{ secrets.HOMUN_PROJECT_NUMBER }}
         run: npm run sync:product-data -- --write --allow-empty
 
       - name: Validate generated snapshots

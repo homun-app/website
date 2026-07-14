@@ -20,7 +20,6 @@ export const VOTING_STATES = new Map([
 const ROADMAP_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const ISO_TIMESTAMP = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/;
-const LEGACY_PUBLIC_STATUSES = new Set(["Exploring", "Next", "Building", "Shipped"]);
 
 function isIsoDate(value) {
 	if (typeof value !== "string" || !ISO_DATE.test(value)) return false;
@@ -250,26 +249,20 @@ export function validateSnapshot(
 	{ knownRoadmapSlugs = [] } = {},
 ) {
 	const warnings = [];
-	if (![1, 2].includes(roadmap?.schemaVersion) || releases?.schemaVersion !== 2) {
+	if (roadmap?.schemaVersion !== 2 || releases?.schemaVersion !== 2) {
 		throw new Error("Unsupported product data schema");
 	}
-	let isRawRoadmap = false;
-	let isPublicRoadmap = false;
-	if (roadmap.schemaVersion === 2) {
-		const hasCandidates = Object.hasOwn(roadmap, "candidates");
-		const hasItems = Object.hasOwn(roadmap, "items");
-		if (
-			hasCandidates === hasItems ||
-			(hasCandidates && !Array.isArray(roadmap.candidates)) ||
-			(hasItems && !Array.isArray(roadmap.items))
-		) {
-			throw new Error("Invalid roadmap snapshot shape");
-		}
-		isRawRoadmap = hasCandidates;
-		isPublicRoadmap = hasItems;
-	} else if (!Array.isArray(roadmap.items)) {
+	const hasCandidates = Object.hasOwn(roadmap, "candidates");
+	const hasItems = Object.hasOwn(roadmap, "items");
+	if (
+		hasCandidates === hasItems ||
+		(hasCandidates && !Array.isArray(roadmap.candidates)) ||
+		(hasItems && !Array.isArray(roadmap.items))
+	) {
 		throw new Error("Invalid roadmap snapshot shape");
 	}
+	const isRawRoadmap = hasCandidates;
+	const isPublicRoadmap = hasItems;
 	if (
 		isRawRoadmap
 		&& !isIsoTimestamp(roadmap.fetchedAt)
@@ -310,16 +303,15 @@ export function validateSnapshot(
 		if (!ROADMAP_SLUG.test(item.slug)) throw new Error(`Invalid roadmap slug: ${item.slug}`);
 		if (slugs.has(item.slug)) throw new Error(`Duplicate roadmap slug: ${item.slug}`);
 		slugs.add(item.slug);
-		if (roadmap.schemaVersion === 2) {
-			if (isRawRoadmap) {
+		if (isRawRoadmap) {
 				if (Object.hasOwn(item, "underReview")) {
 					throw new Error(`Raw roadmap candidate must not contain underReview: ${item.slug}`);
 				}
 				if (!isIsoTimestamp(item.updatedAt)) {
 					throw new Error(`Invalid roadmap updatedAt: ${item.slug}`);
 				}
-			}
-			if (isPublicRoadmap) {
+		}
+		if (isPublicRoadmap) {
 				for (const field of ["publicationStatus", "archiveReason", "projectItemId", "labels"]) {
 					if (Object.hasOwn(item, field)) {
 						throw new Error(`Public roadmap item must not contain ${field}: ${item.slug}`);
@@ -328,69 +320,73 @@ export function validateSnapshot(
 				if (Object.hasOwn(item, "updatedAt")) {
 					throw new Error(`Public roadmap item must not contain updatedAt: ${item.slug}`);
 				}
+		}
+		if (typeof item.title !== "string" || !item.title.trim()) {
+			throw new Error(`Invalid roadmap title: ${item.slug}`);
+		}
+		if (typeof item.area !== "string" || !item.area.trim()) {
+			throw new Error(`Invalid roadmap area: ${item.slug}`);
+		}
+		if (typeof item.description !== "string" || !item.description.trim()) {
+			throw new Error(`Invalid roadmap description: ${item.slug}`);
+		}
+		if (typeof item.githubUrl !== "string" || !item.githubUrl.trim()) {
+			throw new Error(`Invalid roadmap GitHub URL: ${item.slug}`);
+		}
+		if (
+			!Array.isArray(item.capabilities)
+			|| item.capabilities.some(
+				(capability) => typeof capability !== "string" || !capability.trim(),
+			)
+		) {
+			throw new Error(`Invalid capabilities: ${item.slug}`);
+		}
+		if (typeof item.featured !== "boolean") {
+			throw new Error(`Invalid featured: ${item.slug}`);
+		}
+		if (!Number.isInteger(item.votes) || item.votes < 0) {
+			throw new Error(`Invalid votes: ${item.slug}`);
+		}
+		if (
+			item.issueNumber !== null
+			&& (!Number.isInteger(item.issueNumber) || item.issueNumber < 1)
+		) {
+			throw new Error(`Invalid issue number: ${item.slug}`);
+		}
+		if (isPublicRoadmap) {
+			for (const field of ["targetRelease", "publicUpdate", "publicUpdateDate"]) {
+				if (!Object.hasOwn(item, field)) {
+					throw new Error(`Missing ${field}: ${item.slug}`);
+				}
 			}
-			if (typeof item.title !== "string" || !item.title.trim()) {
-				throw new Error(`Invalid roadmap title: ${item.slug}`);
-			}
-			if (typeof item.area !== "string" || !item.area.trim()) {
-				throw new Error(`Invalid roadmap area: ${item.slug}`);
-			}
-			if (typeof item.description !== "string" || !item.description.trim()) {
-				throw new Error(`Invalid roadmap description: ${item.slug}`);
-			}
-			if (typeof item.githubUrl !== "string" || !item.githubUrl.trim()) {
-				throw new Error(`Invalid roadmap GitHub URL: ${item.slug}`);
-			}
-			if (
-				!Array.isArray(item.capabilities)
-				|| item.capabilities.some(
-					(capability) => typeof capability !== "string" || !capability.trim(),
-				)
-			) {
-				throw new Error(`Invalid capabilities: ${item.slug}`);
-			}
-			if (typeof item.featured !== "boolean") {
-				throw new Error(`Invalid featured: ${item.slug}`);
-			}
-			if (!Number.isInteger(item.votes) || item.votes < 0) {
-				throw new Error(`Invalid votes: ${item.slug}`);
-			}
-			if (
-				item.issueNumber !== null
-				&& (!Number.isInteger(item.issueNumber) || item.issueNumber < 1)
-			) {
-				throw new Error(`Invalid issue number: ${item.slug}`);
-			}
-			if (item.targetRelease != null && typeof item.targetRelease !== "string") {
-				throw new Error(`Invalid target release: ${item.slug}`);
-			}
-			if (item.publicUpdate != null && typeof item.publicUpdate !== "string") {
-				throw new Error(`Invalid public update: ${item.slug}`);
-			}
-			if (item.publicUpdateDate != null && !isIsoDate(item.publicUpdateDate)) {
-				throw new Error(`Invalid public update date: ${item.slug}`);
-			}
-			if (isPublicRoadmap && typeof item.underReview !== "boolean") {
-				throw new Error(`Invalid underReview: ${item.slug}`);
-			}
-			if (![...PUBLIC_STATUSES.values()].includes(item.status)) {
-				throw new Error(`Unknown public status: ${item.status}`);
-			}
-			if (
-				isRawRoadmap &&
-				![...PUBLICATION_STATUSES.values()].includes(item.publicationStatus)
-			) {
-				throw new Error(`Unknown publication status: ${item.publicationStatus}`);
-			}
-			if (![...VOTING_STATES.values()].includes(item.voting)) {
-				throw new Error(`Unknown voting state: ${item.voting}`);
-			}
-			if (!Number.isInteger(item.order)) throw new Error(`Invalid order: ${item.slug}`);
-			if (item.publicUpdate && !item.publicUpdateDate) {
-				throw new Error(`Missing public update date: ${item.slug}`);
-			}
-		} else if (!LEGACY_PUBLIC_STATUSES.has(item.sourceStatus)) {
-			throw new Error(`Unknown public status: ${item.sourceStatus}`);
+		}
+		if (item.targetRelease !== null && typeof item.targetRelease !== "string") {
+			throw new Error(`Invalid target release: ${item.slug}`);
+		}
+		if (item.publicUpdate !== null && typeof item.publicUpdate !== "string") {
+			throw new Error(`Invalid public update: ${item.slug}`);
+		}
+		if (item.publicUpdateDate !== null && !isIsoDate(item.publicUpdateDate)) {
+			throw new Error(`Invalid public update date: ${item.slug}`);
+		}
+		if (isPublicRoadmap && typeof item.underReview !== "boolean") {
+			throw new Error(`Invalid underReview: ${item.slug}`);
+		}
+		if (![...PUBLIC_STATUSES.values()].includes(item.status)) {
+			throw new Error(`Unknown public status: ${item.status}`);
+		}
+		if (
+			isRawRoadmap
+			&& ![...PUBLICATION_STATUSES.values()].includes(item.publicationStatus)
+		) {
+			throw new Error(`Unknown publication status: ${item.publicationStatus}`);
+		}
+		if (![...VOTING_STATES.values()].includes(item.voting)) {
+			throw new Error(`Unknown voting state: ${item.voting}`);
+		}
+		if (!Number.isInteger(item.order)) throw new Error(`Invalid order: ${item.slug}`);
+		if (item.publicUpdate && !item.publicUpdateDate) {
+			throw new Error(`Missing public update date: ${item.slug}`);
 		}
 		if (!Number.isFinite(item.progress) || item.progress < 0 || item.progress > 100) {
 			throw new Error(`Invalid progress: ${item.slug}`);

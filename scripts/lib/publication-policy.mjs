@@ -40,7 +40,19 @@ function byOrderThenSlug(left, right) {
 	return 0;
 }
 
-export function applyPublicationPolicy(previous, candidates, { allowMissing = false } = {}) {
+export function assertNoPublishedDraftRegression(previous, candidates) {
+	const previouslyPublishedSlugs = new Set(previous.items.map(({ slug }) => slug));
+	for (const candidate of candidates) {
+		if (
+			candidate.publicationStatus === "draft"
+			&& previouslyPublishedSlugs.has(candidate.slug)
+		) {
+			throw new Error(`Published roadmap item cannot return to Draft: ${candidate.slug}`);
+		}
+	}
+}
+
+export function applyPublicationPolicy(previous, candidates) {
 	const previousBySlug = new Map(previous.items.map((item) => [item.slug, item]));
 	const candidatesBySlug = new Map();
 
@@ -53,24 +65,20 @@ export function applyPublicationPolicy(previous, candidates, { allowMissing = fa
 		}
 		candidatesBySlug.set(candidate.slug, candidate);
 	}
+	assertNoPublishedDraftRegression(previous, candidates);
 
 	for (const item of previous.items) {
-		if (!allowMissing && !candidatesBySlug.has(item.slug)) {
+		if (!candidatesBySlug.has(item.slug)) {
 			throw new Error(`Roadmap item missing from Project source: ${item.slug}`);
 		}
 	}
 
-	const items = allowMissing
-		? previous.items
-				.filter((item) => !candidatesBySlug.has(item.slug))
-				.map(cloneApprovedRecord)
-		: [];
+	const items = [];
 
 	for (const candidate of candidates) {
 		const approved = previousBySlug.get(candidate.slug);
 		switch (candidate.publicationStatus) {
 			case "draft":
-				if (approved) items.push(cloneApprovedRecord(approved));
 				break;
 			case "review":
 				if (approved) {

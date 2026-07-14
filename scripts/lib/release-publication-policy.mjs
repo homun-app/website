@@ -1,3 +1,5 @@
+import { assertNoPublishedDraftRegression } from "./publication-policy.mjs";
+
 export function applyReleasePublicationPolicy(
 	previousReleases,
 	rawReleases,
@@ -11,6 +13,7 @@ export function applyReleasePublicationPolicy(
 		}
 		candidatesBySlug.set(candidate.slug, candidate);
 	}
+	assertNoPublishedDraftRegression(previousRoadmap, candidates);
 	const previouslyPublicSlugs = new Set(
 		previousRoadmap.items.map(({ slug }) => slug),
 	);
@@ -51,8 +54,7 @@ export function applyReleasePublicationPolicy(
 			const wasApproved = previouslyPublicSlugs.has(slug);
 			const hadPreviousLink = previousLinks.has(slug);
 			const preservesApprovedLinks = wasApproved
-				&& (candidate.publicationStatus === "review"
-					|| candidate.publicationStatus === "draft");
+				&& candidate.publicationStatus === "review";
 			const preservesArchivedHistory = candidate.publicationStatus === "archived";
 			if (
 				hadPreviousLink

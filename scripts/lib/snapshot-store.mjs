@@ -188,6 +188,7 @@ export async function persistSnapshotPair(
 	paths = {},
 	{ allowEmpty = false, fileOps = {} } = {},
 ) {
+	validateSnapshot(current.roadmap, current.releases);
 	validateSnapshot(candidate.roadmap, candidate.releases);
 	assertSafeReplacement(current, candidate, { allowEmpty });
 	if (!hasSemanticChanges(current, candidate)) return { status: "NO_CHANGE" };
