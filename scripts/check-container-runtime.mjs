@@ -12,7 +12,16 @@ let containerCreated = false;
 let cleanupPromise;
 let handlingSignal = false;
 
-function runDocker(args, { allowFailure = false } = {}) {
+function runDocker(
+	args,
+	{ allowFailure = false, allowDuringShutdown = false } = {},
+) {
+	if (handlingSignal && !allowDuringShutdown) {
+		return Promise.reject(
+			new Error(`docker ${args[0]} not started: runtime checker is shutting down`),
+		);
+	}
+
 	return new Promise((resolve, reject) => {
 		const child = spawn("docker", args, {
 			cwd: repositoryRoot,
@@ -64,11 +73,11 @@ async function removeRuntimeArtifacts() {
 	cleanupPromise = (async () => {
 		const containerRemoval = await runDocker(
 			["rm", "--force", containerName],
-			{ allowFailure: true },
+			{ allowFailure: true, allowDuringShutdown: true },
 		);
 		const imageRemoval = await runDocker(
 			["image", "rm", "--force", imageName],
-			{ allowFailure: true },
+			{ allowFailure: true, allowDuringShutdown: true },
 		);
 		const cleanupErrors = [];
 
@@ -90,10 +99,46 @@ async function removeRuntimeArtifacts() {
 	return cleanupPromise;
 }
 
+function waitForChildExit(child) {
+	return new Promise((resolve) => {
+		if (child.exitCode !== null || child.signalCode !== null) {
+			resolve();
+			return;
+		}
+
+		const finish = () => {
+			child.off("close", finish);
+			child.off("error", finish);
+			resolve();
+		};
+		child.once("close", finish);
+		child.once("error", finish);
+	});
+}
+
+async function terminateActiveChildren() {
+	const children = [...activeChildren];
+	const exits = children.map(waitForChildExit);
+	for (const child of children) child.kill("SIGTERM");
+
+	const exitedGracefully = await Promise.race([
+		Promise.allSettled(exits).then(() => true),
+		wait(2_000).then(() => false),
+	]);
+	if (exitedGracefully) return;
+
+	for (const child of children) {
+		if (child.exitCode === null && child.signalCode === null) {
+			child.kill("SIGKILL");
+		}
+	}
+	await Promise.allSettled(exits);
+}
+
 async function handleSignal(signal) {
 	if (handlingSignal) return;
 	handlingSignal = true;
-	for (const child of activeChildren) child.kill("SIGTERM");
+	await terminateActiveChildren();
 
 	try {
 		await removeRuntimeArtifacts();
