@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 const dockerfile = await readFile("Dockerfile", "utf8").catch(() => "");
 const dockerignore = await readFile(".dockerignore", "utf8").catch(() => "");
+const healthEndpoint = await readFile("public/health", "utf8").catch(() => "");
 
 assert.match(dockerfile, /^FROM node:24-alpine AS build$/m);
 assert.match(dockerfile, /^RUN npm ci$/m);
@@ -20,5 +21,11 @@ for (const ignoredPath of ["node_modules", "dist", ".git"]) {
 		`.dockerignore must exclude ${ignoredPath}`,
 	);
 }
+
+assert.equal(
+	healthEndpoint,
+	"ok\n",
+	"public/health must provide the container health response",
+);
 
 console.log("Container deployment contract passed");
