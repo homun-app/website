@@ -10,6 +10,7 @@ for (const required of [
 	"A memory inspired by how we remember.",
 	"Fast recall, meaningful connections, and a narrative you can read and correct.",
 	"Inspect · Correct · Consolidate · Forget · Export",
+	"Security and control",
 	"Useful memory requires ownership.",
 	"Homun makes the storage, access boundary and activity visible—so persistent context remains something you direct.",
 	"Keep knowledge local and in scope",
