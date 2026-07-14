@@ -134,8 +134,18 @@ Import `applyPublicationPolicy` and cover every transition:
 ```js
 const previous = { schemaVersion: 2, contentUpdatedAt: "2026-07-13T10:00:00.000Z", items: [publishedApprentice] };
 
-assert.deepEqual(applyPublicationPolicy(previous, [draftCandidate]).items, previous.items);
-assert.deepEqual(applyPublicationPolicy(previous, [newReviewCandidate]).items, previous.items);
+assert.throws(
+	() => applyPublicationPolicy(previous, [draftCandidate]),
+	{ message: "Published roadmap item cannot return to Draft: apprentice" },
+);
+assert.deepEqual(
+	applyPublicationPolicy(previous, [unchangedApprenticePublished, newDraftCandidate]).items,
+	previous.items,
+);
+assert.deepEqual(
+	applyPublicationPolicy(previous, [unchangedApprenticePublished, newReviewCandidate]).items,
+	previous.items,
+);
 assert.deepEqual(
 	applyPublicationPolicy(previous, [{ ...changedApprentice, publicationStatus: "review" }]).items,
 	[{ ...publishedApprentice, underReview: true }],
@@ -162,21 +172,21 @@ Expected: `ERR_MODULE_NOT_FOUND` for `scripts/lib/publication-policy.mjs`.
 Export:
 
 ```js
-export function applyPublicationPolicy(previous, candidates, { allowMissing = false } = {}) {
+export function applyPublicationPolicy(previous, candidates) {
 	const bySlug = new Map(candidates.map((candidate) => [candidate.slug, candidate]));
 	const priorBySlug = new Map(previous.items.map((item) => [item.slug, item]));
-	// Draft/new Review stay hidden; existing Review preserves approved fields;
-	// Published replaces; Archived removes; an unexplained missing slug fails.
+	// New Draft/new Review stay hidden; published -> Draft and missing source fail;
+	// existing Review preserves approved fields; Published replaces; Archived removes.
 }
 ```
 
-Copy only public fields into output. Never copy `publicationStatus`, archive reason, Project node IDs, labels, or internal metadata. For an existing `Review`, derive the result exclusively from the previous item and add `underReview: true`. The only normal removal path is an explicit `Archived` candidate.
+Copy only public fields into output. Never copy `publicationStatus`, archive reason, Project node IDs, labels, or internal metadata. A new `Draft` remains hidden, while a `Draft` candidate whose slug already exists in the public snapshot throws exactly `Published roadmap item cannot return to Draft: <slug>`. This rejection aborts dry-run and write synchronization before snapshot persistence, preserving the previous files byte-for-byte; maintainers use `Review` for changes and `Archived` for removal. For an existing `Review`, derive the result exclusively from the previous item and add `underReview: true`. A previous public slug missing from the Project source always fails. The only normal removal path is an explicit `Archived` candidate.
 
 - [ ] **Step 4: Verify the full policy matrix**
 
 Run `npm run test:product-data`.
 
-Expected: PASS for Draft, new Review, existing Review, Published, Archived, and missing-source protection.
+Expected: PASS for new-Draft hiding, exact existing-Draft rejection, new Review, existing Review, Published, Archived, and missing-source protection.
 
 - [ ] **Step 5: Commit policy**
 

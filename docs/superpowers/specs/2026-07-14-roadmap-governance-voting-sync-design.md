@@ -64,14 +64,16 @@ preserve the previously approved website state.
 
 | Value | Website behavior |
 | --- | --- |
-| `Draft` | Never public |
+| `Draft` | A new item stays hidden; an already published slug returning to `Draft` is invalid |
 | `Review` | Preserve the previously published item; a new item stays hidden |
 | `Published` | Publish the current approved representation |
 | `Archived` | Remove from the main roadmap while preserving the issue and history |
 
 Maintainers must set an already published item to `Review` before changing a sensitive
 field. After reviewing the complete candidate, they set it back to `Published`.
-Setting an item to `Archived` is itself the explicit approval to remove it.
+They must never move a published item back to `Draft`: synchronization rejects that
+transition and preserves the previous snapshot. Setting an item to `Archived` is itself
+the explicit approval to remove it.
 
 Sensitive changes are:
 
@@ -165,7 +167,7 @@ the synchronization job.
 1. Fetch Project items, issue content, reactions, and published Releases.
 2. Normalize them into versioned candidate records.
 3. Apply publication rules by stable slug:
-   - ignore `Draft` items;
+   - ignore a new `Draft` item, but reject a published slug that returns to `Draft`;
    - retain the previous published record for `Review` items;
    - use the candidate for `Published` items;
    - remove `Archived` items from the public result.
@@ -198,6 +200,9 @@ previous public record and therefore remains invisible.
   organization data fails synchronization and preserves the previous snapshot.
 - Unknown statuses, missing slugs, duplicate slugs, invalid progress, multiple featured
   items, and invalid publication states fail before any write.
+- An already published slug returning to `Draft` fails synchronization and leaves both
+  previous snapshot files unchanged; maintainers use `Review` for changes and `Archived`
+  for removal.
 - A `Review` item never disappears if a published version with the same slug exists.
 - A new `Review` item stays hidden until it becomes `Published`.
 - A `Shipped` item without a linked published release fails validation.
@@ -251,8 +256,9 @@ public roadmap during migration.
 ### Data contracts
 
 - Normalize each public and publication status from fixed fixtures.
-- Prove that `Draft`, new `Review`, existing `Review`, `Published`, and `Archived`
-  produce the specified public result.
+- Prove that a new `Draft` stays hidden, an existing published slug cannot return to
+  `Draft`, and new `Review`, existing `Review`, `Published`, and `Archived` produce the
+  specified public result.
 - Reject empty replacement of a non-empty snapshot.
 - Reject invalid fields and multiple featured items.
 - Verify that a no-op sync with a new check timestamp produces no file diff.
@@ -265,7 +271,7 @@ public roadmap during migration.
 - Build roadmap, detail pages, changelog, and RSS from representative snapshots.
 - Assert the journey labels are `Ideas`, `Next`, `Building`, and `Shipped`.
 - Assert idea cards expose votes, GitHub voting, discussion, and idea submission.
-- Assert archived and draft records generate no public route.
+- Assert archived records and new `Draft` candidates generate no public route.
 - Check empty states without allowing an unexpected empty production replacement.
 - Check desktop, tablet, mobile, keyboard navigation, focus, contrast, and reduced motion.
 
