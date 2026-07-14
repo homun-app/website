@@ -1,9 +1,24 @@
 export const PUBLIC_STATUSES = new Map([
-	["Exploring", "exploring"],
+	["Ideas", "ideas"],
 	["Next", "next"],
 	["Building", "building"],
 	["Shipped", "shipped"],
 ]);
+
+export const PUBLICATION_STATUSES = new Map([
+	["Draft", "draft"],
+	["Review", "review"],
+	["Published", "published"],
+	["Archived", "archived"],
+]);
+
+export const VOTING_STATES = new Map([
+	["Open", "open"],
+	["Closed", "closed"],
+]);
+
+const ROADMAP_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const LEGACY_PUBLIC_STATUSES = new Set(["Exploring", "Next", "Building", "Shipped"]);
 
 function fieldMap(node) {
 	return new Map(
@@ -44,30 +59,48 @@ function listItems(value = "") {
 
 function normalizeProjectNode(node) {
 	const fields = fieldMap(node);
-	if (String(fields.get("Public") ?? "").toLowerCase() !== "yes") return null;
 	const content = node?.content;
-	if (!content?.title || !content?.url) return null;
-	const sourceStatus = String(fields.get("Public status") ?? "");
-	const status = PUBLIC_STATUSES.get(sourceStatus);
-	if (!status) throw new Error(`Unknown public status: ${sourceStatus || "(empty)"}`);
+	if (!content?.title || !content?.url) throw new Error("Missing roadmap content");
+	const publicStatus = String(fields.get("Public status") ?? "");
+	const status = PUBLIC_STATUSES.get(publicStatus);
+	if (!status) throw new Error(`Unknown public status: ${publicStatus || "(empty)"}`);
+	const sourcePublicationStatus = String(fields.get("Publication status") ?? "");
+	const publicationStatus = PUBLICATION_STATUSES.get(sourcePublicationStatus);
+	if (!publicationStatus) {
+		throw new Error(`Unknown publication status: ${sourcePublicationStatus || "(empty)"}`);
+	}
+	const sourceVoting = String(fields.get("Voting") ?? "");
+	const voting = VOTING_STATES.get(sourceVoting);
+	if (!voting) throw new Error(`Unknown voting state: ${sourceVoting || "(empty)"}`);
 	const slug = String(fields.get("Slug") ?? "").trim();
 	if (!slug) throw new Error(`Missing roadmap slug: ${content.title}`);
+	if (!ROADMAP_SLUG.test(slug)) throw new Error(`Invalid roadmap slug: ${slug}`);
+	const order = Number(fields.get("Order"));
+	if (!Number.isInteger(order)) throw new Error(`Invalid order: ${slug}`);
+	const progress = Number(fields.get("Progress") ?? 0);
+	if (!Number.isFinite(progress) || progress < 0 || progress > 100) {
+		throw new Error(`Invalid progress: ${slug}`);
+	}
+	const publicUpdate = String(fields.get("Public update") ?? "").trim() || null;
+	const publicUpdateDate = String(fields.get("Public update date") ?? "").trim() || null;
+	if (publicUpdate && !publicUpdateDate) throw new Error(`Missing public update date: ${slug}`);
 	const body = content.body ?? "";
 	const sections = markdownSections(body);
 	return {
 		slug,
 		title: content.title,
 		status,
-		sourceStatus,
+		publicationStatus,
 		area: String(fields.get("Area") ?? "Product"),
 		description: firstParagraph(body),
 		capabilities: listItems(sections.get("intended capabilities")),
 		featured: String(fields.get("Featured") ?? "").toLowerCase() === "yes",
-		progress: Number(fields.get("Progress") ?? 0),
+		progress,
 		targetRelease: String(fields.get("Target release") ?? "").trim() || null,
-		publicUpdate: String(fields.get("Public update") ?? "").trim() || null,
-		community: String(fields.get("Community") ?? "Closed").toLowerCase(),
-		order: Number(fields.get("Order") ?? 0),
+		publicUpdate,
+		publicUpdateDate,
+		voting,
+		order,
 		updatedAt: content.updatedAt,
 		githubUrl: content.url,
 		issueNumber: content.number,
@@ -77,11 +110,15 @@ function normalizeProjectNode(node) {
 
 export function normalizeProject(payload) {
 	const nodes = payload?.data?.organization?.projectV2?.items?.nodes ?? [];
-	const items = nodes
+	const candidates = nodes
 		.map(normalizeProjectNode)
-		.filter(Boolean)
 		.sort((a, b) => a.order - b.order);
-	return { schemaVersion: 1, syncedAt: payload.syncedAt, items };
+	const slugs = new Set();
+	for (const candidate of candidates) {
+		if (slugs.has(candidate.slug)) throw new Error(`Duplicate roadmap slug: ${candidate.slug}`);
+		slugs.add(candidate.slug);
+	}
+	return { schemaVersion: 2, fetchedAt: payload.syncedAt, candidates };
 }
 
 function platformsForAssets(assets = []) {
@@ -104,9 +141,9 @@ function projectSlugsFromBody(body = "", knownSlugs) {
 		.filter((slug) => slug && knownSlugs.has(slug));
 }
 
-function normalizeRelease(release, roadmapItems) {
+function normalizeRelease(release, roadmapCandidates) {
 	const sections = markdownSections(release.body ?? "");
-	const knownSlugs = new Set(roadmapItems.map((item) => item.slug));
+	const knownSlugs = new Set(roadmapCandidates.map((candidate) => candidate.slug));
 	return {
 		version: release.tag_name,
 		name: release.name || release.tag_name,
@@ -124,24 +161,41 @@ function normalizeRelease(release, roadmapItems) {
 	};
 }
 
-export function normalizeReleases(payload, roadmapItems, syncedAt = new Date().toISOString()) {
+export function normalizeReleases(payload, roadmapCandidates, syncedAt = new Date().toISOString()) {
 	const items = payload
 		.filter((release) => !release.draft && !release.prerelease && release.published_at)
-		.map((release) => normalizeRelease(release, roadmapItems))
+		.map((release) => normalizeRelease(release, roadmapCandidates))
 		.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
 	return { schemaVersion: 1, syncedAt, items };
 }
 
 export function validateSnapshot(roadmap, releases) {
-	if (roadmap?.schemaVersion !== 1 || releases?.schemaVersion !== 1) {
+	if (![1, 2].includes(roadmap?.schemaVersion) || releases?.schemaVersion !== 1) {
 		throw new Error("Unsupported product data schema");
 	}
+	const roadmapEntries = roadmap.schemaVersion === 2 ? roadmap.candidates : roadmap.items;
 	const slugs = new Set();
 	let featured = 0;
-	for (const item of roadmap.items ?? []) {
+	for (const item of roadmapEntries ?? []) {
+		if (!item.slug) throw new Error("Missing roadmap slug");
+		if (!ROADMAP_SLUG.test(item.slug)) throw new Error(`Invalid roadmap slug: ${item.slug}`);
 		if (slugs.has(item.slug)) throw new Error(`Duplicate roadmap slug: ${item.slug}`);
 		slugs.add(item.slug);
-		if (!PUBLIC_STATUSES.has(item.sourceStatus)) {
+		if (roadmap.schemaVersion === 2) {
+			if (![...PUBLIC_STATUSES.values()].includes(item.status)) {
+				throw new Error(`Unknown public status: ${item.status}`);
+			}
+			if (![...PUBLICATION_STATUSES.values()].includes(item.publicationStatus)) {
+				throw new Error(`Unknown publication status: ${item.publicationStatus}`);
+			}
+			if (![...VOTING_STATES.values()].includes(item.voting)) {
+				throw new Error(`Unknown voting state: ${item.voting}`);
+			}
+			if (!Number.isInteger(item.order)) throw new Error(`Invalid order: ${item.slug}`);
+			if (item.publicUpdate && !item.publicUpdateDate) {
+				throw new Error(`Missing public update date: ${item.slug}`);
+			}
+		} else if (!LEGACY_PUBLIC_STATUSES.has(item.sourceStatus)) {
 			throw new Error(`Unknown public status: ${item.sourceStatus}`);
 		}
 		if (!Number.isFinite(item.progress) || item.progress < 0 || item.progress > 100) {
