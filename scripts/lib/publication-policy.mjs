@@ -1,5 +1,16 @@
 const PUBLICATION_STATUSES = new Set(["draft", "review", "published", "archived"]);
 
+function cloneCapabilities(capabilities) {
+	return [...capabilities];
+}
+
+function cloneApprovedRecord(record) {
+	return {
+		...record,
+		capabilities: cloneCapabilities(record.capabilities),
+	};
+}
+
 function publicRecord(candidate) {
 	return {
 		slug: candidate.slug,
@@ -7,7 +18,7 @@ function publicRecord(candidate) {
 		status: candidate.status,
 		area: candidate.area,
 		description: candidate.description,
-		capabilities: candidate.capabilities,
+		capabilities: cloneCapabilities(candidate.capabilities),
 		featured: candidate.featured,
 		progress: candidate.progress,
 		targetRelease: candidate.targetRelease,
@@ -51,17 +62,21 @@ export function applyPublicationPolicy(previous, candidates, { allowMissing = fa
 	}
 
 	const items = allowMissing
-		? previous.items.filter((item) => !candidatesBySlug.has(item.slug))
+		? previous.items
+				.filter((item) => !candidatesBySlug.has(item.slug))
+				.map(cloneApprovedRecord)
 		: [];
 
 	for (const candidate of candidates) {
 		const approved = previousBySlug.get(candidate.slug);
 		switch (candidate.publicationStatus) {
 			case "draft":
-				if (approved) items.push(approved);
+				if (approved) items.push(cloneApprovedRecord(approved));
 				break;
 			case "review":
-				if (approved) items.push({ ...approved, underReview: true });
+				if (approved) {
+					items.push({ ...cloneApprovedRecord(approved), underReview: true });
+				}
 				break;
 			case "published":
 				items.push(publicRecord(candidate));

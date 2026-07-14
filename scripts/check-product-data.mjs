@@ -271,6 +271,93 @@ assert.deepEqual(applyPublicationPolicy(previous, [unchangedApprenticePublished]
 	items: [publishedApprentice],
 });
 
+function assertRecordsAreIsolated(label, source, result) {
+	const sourceTitle = source.title;
+	const sourceCapabilities = [...source.capabilities];
+	const resultCapabilities = [...result.capabilities];
+
+	result.title = `${label} result mutation`;
+	result.capabilities.push(`${label} result mutation`);
+	assert.equal(source.title, sourceTitle, `${label} result title must not alias its input`);
+	assert.deepEqual(
+		source.capabilities,
+		sourceCapabilities,
+		`${label} result capabilities must not alias its input`,
+	);
+
+	source.title = `${label} input mutation`;
+	source.capabilities.push(`${label} input mutation`);
+	assert.equal(result.title, `${label} result mutation`, `${label} input must not change result`);
+	assert.deepEqual(
+		result.capabilities,
+		[...resultCapabilities, `${label} result mutation`],
+		`${label} input capabilities must not change result`,
+	);
+}
+
+const draftIsolationPrevious = structuredClone(previous);
+const draftIsolationCandidate = structuredClone(draftCandidate);
+const draftIsolationResult = applyPublicationPolicy(draftIsolationPrevious, [
+	draftIsolationCandidate,
+]);
+assertRecordsAreIsolated(
+	"Draft",
+	draftIsolationPrevious.items[0],
+	draftIsolationResult.items[0],
+);
+draftIsolationCandidate.title = "Draft candidate input mutation";
+draftIsolationCandidate.capabilities.push("Draft candidate input mutation");
+assert.equal(draftIsolationResult.items[0].title, "Draft result mutation");
+assert.deepEqual(draftIsolationResult.items[0].capabilities, [
+	...publishedApprentice.capabilities,
+	"Draft result mutation",
+]);
+
+const reviewIsolationPrevious = structuredClone(previous);
+const reviewIsolationCandidate = {
+	...structuredClone(changedApprentice),
+	publicationStatus: "review",
+};
+const reviewIsolationResult = applyPublicationPolicy(reviewIsolationPrevious, [
+	reviewIsolationCandidate,
+]);
+assertRecordsAreIsolated(
+	"Review",
+	reviewIsolationPrevious.items[0],
+	reviewIsolationResult.items[0],
+);
+reviewIsolationCandidate.title = "Review candidate input mutation";
+reviewIsolationCandidate.capabilities.push("Review candidate input mutation");
+assert.equal(reviewIsolationResult.items[0].title, "Review result mutation");
+assert.deepEqual(reviewIsolationResult.items[0].capabilities, [
+	...publishedApprentice.capabilities,
+	"Review result mutation",
+]);
+
+const publishedIsolationPrevious = structuredClone(previous);
+const publishedIsolationCandidate = {
+	...structuredClone(changedApprentice),
+	publicationStatus: "published",
+};
+const publishedIsolationResult = applyPublicationPolicy(publishedIsolationPrevious, [
+	publishedIsolationCandidate,
+]);
+assertRecordsAreIsolated(
+	"Published",
+	publishedIsolationCandidate,
+	publishedIsolationResult.items[0],
+);
+
+const missingIsolationPrevious = structuredClone(previous);
+const missingIsolationResult = applyPublicationPolicy(missingIsolationPrevious, [], {
+	allowMissing: true,
+});
+assertRecordsAreIsolated(
+	"allowMissing",
+	missingIsolationPrevious.items[0],
+	missingIsolationResult.items[0],
+);
+
 function fixtureWithField(name, value, property = "name", nodeIndex = 0) {
 	const fixture = structuredClone(projectFixture);
 	const fields = fixture.data.organization.projectV2.items.nodes[nodeIndex].fieldValues.nodes;
