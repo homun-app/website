@@ -1,41 +1,31 @@
-# Memory and security homepage design
+# Memory continuity homepage design
 
 **Date:** 2026-07-14
-**Status:** Approved design, pending implementation plan
+**Status:** Visual direction approved; written specification awaiting review
 
 ## Purpose
 
-Make Homun's memory architecture a first-class product promise, with the same strategic weight as model freedom. The section must explain the benefit before the implementation: Homun does not merely store chat history; it builds useful continuity that people can inspect, correct, and control.
+Present Homun's hybrid memory as a major product differentiator rather than a small architecture diagram. The section must first show the human benefit — continuity across conversations and projects — and then prove how Homun creates it through three synchronized representations: SQL, a causal graph, and a readable Markdown wiki.
 
-Security remains a separate product pillar. The transition between the two sections makes the relationship explicit: persistent memory is valuable only when it remains owned and governable by the user.
+The section must leave visitors with a simple idea:
 
-## Positioning
+> A new chat. The same understanding.
 
-The primary message is:
+Homun carries forward what happened, what was decided, and why. The user can inspect, correct, export, consolidate, or forget that knowledge instead of trusting an opaque history store.
 
-> A memory inspired by how we remember.
+## Product truth
 
-The supporting message is:
+The story must stay aligned with the implemented and documented memory architecture:
 
-> Fast recall, meaningful connections, and a narrative you can read and correct.
+1. **Recall — SQLite + FTS/search:** durable structured facts, decisions, episodes, embeddings, and fast hybrid retrieval.
+2. **Connections — Graph + why:** entities and relationships connecting people, projects, decisions, artifacts, causes, and open work.
+3. **Understanding — Markdown wiki:** a human-readable project narrative generated from structured knowledge and available for correction.
 
-This wording communicates the human-memory inspiration without claiming that Homun literally simulates a human brain.
+These are three synchronized faces of one memory, not three unrelated storage products. The public example is illustrative and must not suggest that live user data is transmitted to the website.
 
-The section must communicate three complementary capabilities:
+## Homepage position
 
-1. **Recall — SQLite + search:** durable facts and fast retrieval.
-2. **Connections — Graph + why:** relationships, decisions, causes, and open loops.
-3. **Understanding — Markdown wiki:** a readable and editable narrative of the user's knowledge.
-
-The closing control line is:
-
-> Inspect · Correct · Consolidate · Forget · Export
-
-## Homepage structure
-
-Add `Memory` as a top-level navigation item linking to the new `#memory` section.
-
-The homepage order becomes:
+The Memory section remains directly after Model Freedom:
 
 1. Hero
 2. Model Freedom
@@ -46,104 +36,153 @@ The homepage order becomes:
 7. Ecosystem
 8. Download
 
-This position establishes model autonomy and memory continuity as Homun's two central differentiators before demonstrating workflows and integrations.
+This gives equal strategic weight to model autonomy and long-lived context. The existing `Memory` navigation item continues to target `#memory`.
 
-## Section composition
+## Narrative structure
 
-The desktop section uses a balanced two-part composition:
+The section is a short product story, not an isolated diagram.
 
-- A concise editorial introduction containing the eyebrow, headline, supporting copy, and control line.
-- A bespoke illustration representing one memory with three connected faces.
+### 1. Promise
 
-The illustration has a central `MEMORY` element and three clearly labelled satellites:
+- Eyebrow: `Hybrid memory · built for continuity`
+- Headline: `A new chat. The same understanding.`
+- Supporting copy: Homun preserves what happened, what was decided, and why through a memory the user can inspect and correct.
 
-- `Recall` with the descriptor `SQLite + search`
-- `Connections` with the descriptor `Graph + why`
-- `Understanding` with the descriptor `Markdown wiki`
+The promise leads with the outcome. SQL, graph, and Markdown appear only after the visitor understands why continuity matters.
 
-The three elements must read as parts of one system, not as unrelated feature cards. Their paths meet at the central memory and share the visual language already established on the homepage: dark surfaces, restrained teal glow, fine technical lines, rounded geometry, and selective use of blue and violet accents.
+### 2. Capture
 
-The illustration must be drawn as a native web component using semantic HTML and SVG/CSS where appropriate. It must not depend on a raster screenshot of the application.
+The first scene shows a concise, clearly fictional project conversation. A decision such as keeping private documents on a local model while leaving cloud presentation rendering opt-in is identified as something worth remembering.
+
+The scene exposes only the minimum metadata needed to feel concrete:
+
+- project and relative time;
+- the relevant message;
+- extracted knowledge types such as `Decision`, `Privacy`, and `Model routing`.
+
+### 3. One memory, three faces
+
+The centre scene uses the approved visual direction from concept C: three overlapping surfaces that feel like different views of the same object.
+
+- The back surface is **SQL / Recall**, with compact structured records.
+- The middle surface is **Graph / Connections**, with a small relationship map that makes the causal `why` visible.
+- The front surface is **Wiki / Understanding**, with a readable note explaining the decision.
+
+The overlap is essential. It communicates synchronization and depth more effectively than three separate cards or three satellites around a generic centre node.
+
+### 4. Continuity
+
+The final scene brings the decision into a new conversation without requiring the user to paste old context. The response states the remembered boundary and identifies its source project and decision.
+
+This scene also exposes the ownership actions:
+
+- Inspect
+- Correct
+- Forget
+
+The longer control set — Consolidate and Export — may appear in the closing line or supporting copy if it remains legible without becoming a toolbar.
+
+### 5. Closing proof
+
+The section closes with:
+
+> Not a transcript. Not an opaque embedding blob.
+
+and three compact proof labels:
+
+- `SQL · fast recall`
+- `Graph · context + why`
+- `Wiki · read + correct`
+
+## Visual composition
+
+The design uses the existing Homun language: near-black and deep-green surfaces, fine borders, cream typography, restrained teal light, and selective blue, magenta, and amber accents.
+
+On desktop:
+
+- the promise forms a wide editorial header;
+- the story is presented as a continuous three-scene sequence;
+- Capture and Recall are narrower supporting scenes;
+- the overlapping three-face memory is the visual centre and receives the most space;
+- subtle directional traces connect the scenes without turning the composition into a flowchart.
+
+The component must feel editorial and cinematic, not like an admin dashboard. Dense labels, repeated card chrome, decorative grids, and an empty central `MEMORY` box are explicitly avoided.
 
 ## Motion
 
-Motion clarifies the relationship between the three memory layers:
+Motion explains the transformation once when the section enters the viewport:
 
-- On entry, the central memory appears first.
-- The three paths draw outward in sequence.
-- Each satellite fades and lifts into place as its path reaches it.
-- A final subtle pulse confirms that the three layers operate as one memory.
+1. the captured decision appears;
+2. the SQL surface enters;
+3. the graph surface overlaps it and its relationships draw in;
+4. the wiki surface settles on top;
+5. a restrained signal crosses into the recalled answer.
 
-The animation runs once when the section enters the viewport. It must not loop continuously or compete with the content. Hover or pointer movement may create only a very small depth response on devices with a precise pointer.
+The animation does not loop. Pointer movement may add only a small depth response to the overlapping faces on precise-pointer devices.
 
-When `prefers-reduced-motion` is enabled, the complete illustration appears immediately with no path drawing, pulsing, or pointer response.
+With `prefers-reduced-motion`, the complete story is visible immediately. No meaning depends on movement.
 
 ## Responsive behaviour
 
-On wide screens, text and illustration sit side by side with enough vertical space to avoid headline clipping.
+At desktop widths, the three scenes read from left to right in one sequence.
 
-On smaller screens:
+At tablet and mobile widths:
 
-- The text appears before the illustration.
-- The three memory layers become a vertical sequence around the central element.
-- Labels remain visible without relying on hover.
-- The control line can wrap into two balanced rows without truncation.
-- The illustration must fit the viewport without horizontal scrolling.
+- the promise remains first;
+- Capture, Three Faces, and Recall stack vertically in narrative order;
+- the three-face overlap is preserved rather than converted into generic feature cards;
+- directional traces are hidden or simplified;
+- all source labels and ownership controls remain visible without hover;
+- no title, descender, pill, or panel is clipped;
+- the section introduces no horizontal scrolling.
 
-Typography must preserve full descenders and line height at every breakpoint.
+## Accessibility
+
+- The section keeps a stable `memory` anchor and a real heading hierarchy.
+- The three-layer architecture and continuity story are available as text, not only as decorative graphics.
+- Decorative paths and signals are hidden from assistive technology.
+- The fictional example is labelled by context and does not impersonate real user data.
+- Text and controls meet WCAG AA contrast targets.
+- The static reduced-motion state remains complete and understandable.
 
 ## Relationship with security
 
-Security remains a separate section rather than being compressed into the memory illustration. Its opening transition is:
+Memory explains what Homun retains and how it creates continuity. Security remains a separate section explaining ownership, local storage, permissions, Vault boundaries, auditability, and deletion.
+
+The transition remains:
 
 > Useful memory requires ownership.
 
-The security section then explains the controls that make persistent memory trustworthy:
+The Memory section may mention local, inspectable, and correctable properties but must not absorb the full Security story or make unsupported guarantees.
 
-- local-first storage and project scope;
-- deny-by-default access and explicit grants;
-- inspectable activity and audit history;
-- protected secrets and a clear Vault boundary;
-- the ability to correct, export, or truly forget stored knowledge.
-
-The memory section explains what Homun can remember. The security section explains who remains in control.
-
-## Accessibility and content quality
-
-- The section uses a real heading hierarchy and a stable `memory` anchor.
-- SVG relationships that are purely decorative are hidden from assistive technology; the same meaning is present in text.
-- Text and interactive elements meet WCAG AA contrast targets.
-- The section remains understandable with CSS animations disabled.
-- Product claims stay aligned with the documented architecture and avoid absolute security guarantees.
-- The visual does not use third-party product logos or imply endorsements.
-
-## Scope
+## Implementation boundaries
 
 This slice includes:
 
-- the new homepage Memory section;
-- the `Memory` navigation link;
-- responsive and reduced-motion behaviour;
-- the transition and copy alignment with the existing Security section;
-- automated checks and browser-level visual verification for the affected homepage.
+- replacing the current sparse memory illustration and two-column composition;
+- restructuring `Memory.astro` around the approved promise and narrative sequence;
+- replacing or retiring `MemoryArchitectureIllustration.astro` with focused subcomponents if that keeps the implementation readable;
+- entry motion, reduced-motion behaviour, desktop/tablet/mobile layouts, and accessibility text;
+- focused automated checks and browser verification;
+- publishing the finished section through the existing `main` and Coolify flow after approval and verification.
 
 This slice does not include:
 
-- changes to Homun's memory implementation;
-- an interactive memory explorer;
-- live user memory data on the public website;
-- a rewrite of the full documentation architecture;
-- new security certifications or unsupported security claims.
+- changes to Homun's application memory engine;
+- live data or an interactive public memory explorer;
+- a redesign of the adjacent homepage sections;
+- a rewrite of the documentation site;
+- unsupported claims about perfectly reproducing a human brain.
 
 ## Acceptance criteria
 
-The design is complete when:
-
-1. `Memory` is reachable from the main navigation and the anchor works on desktop and mobile.
-2. The section appears directly after Model Freedom and communicates the three-layer architecture without requiring documentation knowledge.
-3. The illustration is visually consistent with the existing Homun homepage and does not resemble a generic dashboard card grid.
-4. Entry motion runs once, reduced-motion users receive a static version, and the page remains stable during load.
-5. Desktop and mobile layouts have no clipped text, truncated labels, or horizontal overflow.
-6. The Security section follows as a distinct ownership and control story.
-7. Existing homepage links, download behaviour, and responsive navigation continue to work.
-8. The production build and the relevant browser tests pass.
+1. The first visible message is continuity across conversations, not storage technology.
+2. A visitor can understand the Capture → Three Faces → Recall story without reading the documentation.
+3. SQL, graph, and wiki visibly overlap as synchronized views of one memory.
+4. The graph communicates relationships and reasons rather than a decorative orbit.
+5. The final scene visibly recalls the decision with source context and ownership actions.
+6. The result is materially richer and more distinctive than the current central-node diagram while remaining consistent with the rest of the homepage.
+7. Desktop and mobile layouts have no clipping, overlap failures, or horizontal overflow.
+8. Motion runs once, reduced-motion receives a complete static state, and layout does not shift during load.
+9. Existing navigation, homepage anchors, download behaviour, and adjacent sections continue to work.
+10. The production build, focused component checks, and relevant browser suite pass before deployment.
