@@ -972,6 +972,24 @@ for (const [snapshot, releaseSnapshot] of [
 	);
 }
 
+const multipleFeaturedBuildingItems = structuredClone(roadmap);
+const secondFeaturedBuilding = multipleFeaturedBuildingItems.candidates.find(
+	(item) => item.slug === "shared-spaces",
+);
+secondFeaturedBuilding.status = "building";
+secondFeaturedBuilding.featured = true;
+assert.equal(
+	multipleFeaturedBuildingItems.candidates.filter(
+		(item) => item.status === "building" && item.featured,
+	).length,
+	2,
+	"Multiple-featured fixture must contain two featured Building initiatives",
+);
+assert.throws(
+	() => validateSnapshot(multipleFeaturedBuildingItems, releases),
+	/Multiple featured roadmap items/,
+);
+
 const publishedApprentice = {
 	slug: "apprentice",
 	title: "Apprentice",

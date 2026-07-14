@@ -12,7 +12,8 @@ for (const required of [
 	"Official Homun plugins. Free at launch.",
 	"Browse Projects",
 	"Propose ideas and vote through public GitHub discussions.",
-	"No Homun account is required.",
+	"Browsing the roadmap does not require a Homun account.",
+	"Proposing ideas and voting require a GitHub account.",
 ]) {
 	assert.ok(
 		text.toLowerCase().includes(required.toLowerCase()),
@@ -28,6 +29,7 @@ assert.ok(
 for (const obsolete of [
 	"Exploring",
 	"Community voting and suggestions will use an optional Homun account when enabled.",
+	"No Homun account is required.",
 	"Voting &amp; suggestions · Coming later",
 ]) {
 	assert.ok(!html.includes(obsolete), `Homepage contains obsolete roadmap message: ${obsolete}`);
