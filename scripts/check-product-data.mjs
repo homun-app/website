@@ -932,6 +932,20 @@ await assert.rejects(
 		fetchImpl: fixtureFetchFor(emptyProjectFixture, []),
 		paths: { roadmapPath, releasesPath },
 		clock: () => "2026-07-14T17:00:00.000Z",
+		mode: "dry-run",
+	}),
+	/refusing to replace 3 roadmap items with zero/i,
+);
+assert.deepEqual(
+	await Promise.all([readFile(roadmapPath, "utf8"), readFile(releasesPath, "utf8")]),
+	beforeNoChangeSync,
+);
+await assert.rejects(
+	syncProductData({
+		env: syncEnv,
+		fetchImpl: fixtureFetchFor(emptyProjectFixture, []),
+		paths: { roadmapPath, releasesPath },
+		clock: () => "2026-07-14T17:00:00.000Z",
 		mode: "write",
 	}),
 	/refusing to replace 3 roadmap items with zero/i,

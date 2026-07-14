@@ -31,6 +31,18 @@ export function hasSemanticChanges(current, candidate) {
 		!== JSON.stringify(semanticSnapshot(candidate));
 }
 
+export function assertSafeReplacement(
+	current,
+	candidate,
+	{ allowEmpty = false } = {},
+) {
+	const currentCount = current.roadmap?.items?.length ?? 0;
+	const candidateCount = candidate.roadmap?.items?.length ?? 0;
+	if (!allowEmpty && currentCount > 0 && candidateCount === 0) {
+		throw new Error(`Refusing to replace ${currentCount} roadmap items with zero`);
+	}
+}
+
 export async function persistSnapshotPair(
 	current,
 	candidate,
@@ -38,11 +50,7 @@ export async function persistSnapshotPair(
 	{ allowEmpty = false, fileOps = {} } = {},
 ) {
 	validateSnapshot(candidate.roadmap, candidate.releases);
-	const currentCount = current.roadmap?.items?.length ?? 0;
-	const candidateCount = candidate.roadmap?.items?.length ?? 0;
-	if (!allowEmpty && currentCount > 0 && candidateCount === 0) {
-		throw new Error(`Refusing to replace ${currentCount} roadmap items with zero`);
-	}
+	assertSafeReplacement(current, candidate, { allowEmpty });
 	if (!hasSemanticChanges(current, candidate)) return { status: "NO_CHANGE" };
 
 	const ops = { mkdir, readFile, rename, rm, writeFile, ...fileOps };

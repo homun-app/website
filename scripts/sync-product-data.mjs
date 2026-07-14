@@ -8,6 +8,7 @@ import {
 } from "./lib/github-product-data.mjs";
 import { applyPublicationPolicy } from "./lib/publication-policy.mjs";
 import {
+	assertSafeReplacement,
 	hasSemanticChanges,
 	persistSnapshotPair,
 } from "./lib/snapshot-store.mjs";
@@ -209,6 +210,9 @@ export async function syncProductData({
 		releases: raw.releases,
 	};
 	validateSnapshot(candidate.roadmap, candidate.releases);
+	assertSafeReplacement(current, candidate, {
+		allowEmpty: mode === "write" && allowEmpty,
+	});
 	const changed = hasSemanticChanges(current, candidate);
 	if (!changed) {
 		return {
