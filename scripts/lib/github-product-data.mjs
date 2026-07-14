@@ -19,6 +19,7 @@ export const VOTING_STATES = new Map([
 
 const ROADMAP_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+const ISO_TIMESTAMP = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/;
 const LEGACY_PUBLIC_STATUSES = new Set(["Exploring", "Next", "Building", "Shipped"]);
 
 function isIsoDate(value) {
@@ -28,6 +29,13 @@ function isIsoDate(value) {
 	return date.getUTCFullYear() === year
 		&& date.getUTCMonth() === month - 1
 		&& date.getUTCDate() === day;
+}
+
+function isIsoTimestamp(value) {
+	return typeof value === "string"
+		&& ISO_TIMESTAMP.test(value)
+		&& isIsoDate(value.slice(0, 10))
+		&& Number.isFinite(Date.parse(value));
 }
 
 function compareText(left, right) {
@@ -73,6 +81,13 @@ function listItems(value = "") {
 		.filter(Boolean);
 }
 
+function optionalText(fields, fieldName, slug, errorLabel) {
+	if (!fields.has(fieldName) || fields.get(fieldName) == null) return null;
+	const value = fields.get(fieldName);
+	if (typeof value !== "string") throw new Error(`Invalid ${errorLabel}: ${slug}`);
+	return value.trim() || null;
+}
+
 function normalizeProjectNode(node) {
 	const fields = fieldMap(node);
 	const content = node?.content;
@@ -116,7 +131,8 @@ function normalizeProjectNode(node) {
 	if (!Number.isFinite(progress) || progress < 0 || progress > 100) {
 		throw new Error(`Invalid progress: ${slug}`);
 	}
-	const publicUpdate = String(fields.get("Public update") ?? "").trim() || null;
+	const targetRelease = optionalText(fields, "Target release", slug, "target release");
+	const publicUpdate = optionalText(fields, "Public update", slug, "public update");
 	const sourcePublicUpdateDate = fields.get("Public update date");
 	let publicUpdateDate = null;
 	if (sourcePublicUpdateDate != null) {
@@ -147,7 +163,7 @@ function normalizeProjectNode(node) {
 		capabilities: listItems(sections.get("intended capabilities")),
 		featured,
 		progress,
-		targetRelease: String(fields.get("Target release") ?? "").trim() || null,
+		targetRelease,
 		publicUpdate,
 		publicUpdateDate,
 		voting,
@@ -260,11 +276,17 @@ export function validateSnapshot(
 	) {
 		throw new Error("Invalid raw roadmap fetchedAt");
 	}
+	if (isRawRoadmap && Object.hasOwn(roadmap, "contentUpdatedAt")) {
+		throw new Error("Raw roadmap must not contain contentUpdatedAt");
+	}
 	if (
 		isPublicRoadmap
 		&& (typeof roadmap.contentUpdatedAt !== "string" || !roadmap.contentUpdatedAt.trim())
 	) {
 		throw new Error("Invalid public roadmap contentUpdatedAt");
+	}
+	if (isPublicRoadmap && Object.hasOwn(roadmap, "fetchedAt")) {
+		throw new Error("Public roadmap must not contain fetchedAt");
 	}
 	const expectedReleaseTimestamp = isRawRoadmap ? "fetchedAt" : "contentUpdatedAt";
 	const unexpectedReleaseTimestamp = isRawRoadmap ? "contentUpdatedAt" : "fetchedAt";
@@ -290,6 +312,24 @@ export function validateSnapshot(
 		if (slugs.has(item.slug)) throw new Error(`Duplicate roadmap slug: ${item.slug}`);
 		slugs.add(item.slug);
 		if (roadmap.schemaVersion === 2) {
+			if (isRawRoadmap) {
+				if (Object.hasOwn(item, "underReview")) {
+					throw new Error(`Raw roadmap candidate must not contain underReview: ${item.slug}`);
+				}
+				if (!isIsoTimestamp(item.updatedAt)) {
+					throw new Error(`Invalid roadmap updatedAt: ${item.slug}`);
+				}
+			}
+			if (isPublicRoadmap) {
+				for (const field of ["publicationStatus", "archiveReason", "projectItemId", "labels"]) {
+					if (Object.hasOwn(item, field)) {
+						throw new Error(`Public roadmap item must not contain ${field}: ${item.slug}`);
+					}
+				}
+				if (Object.hasOwn(item, "updatedAt") && !isIsoTimestamp(item.updatedAt)) {
+					throw new Error(`Invalid roadmap updatedAt: ${item.slug}`);
+				}
+			}
 			if (typeof item.title !== "string" || !item.title.trim()) {
 				throw new Error(`Invalid roadmap title: ${item.slug}`);
 			}
@@ -322,13 +362,13 @@ export function validateSnapshot(
 			) {
 				throw new Error(`Invalid issue number: ${item.slug}`);
 			}
-			if (item.targetRelease !== null && typeof item.targetRelease !== "string") {
+			if (item.targetRelease != null && typeof item.targetRelease !== "string") {
 				throw new Error(`Invalid target release: ${item.slug}`);
 			}
-			if (item.publicUpdate !== null && typeof item.publicUpdate !== "string") {
+			if (item.publicUpdate != null && typeof item.publicUpdate !== "string") {
 				throw new Error(`Invalid public update: ${item.slug}`);
 			}
-			if (item.publicUpdateDate !== null && !isIsoDate(item.publicUpdateDate)) {
+			if (item.publicUpdateDate != null && !isIsoDate(item.publicUpdateDate)) {
 				throw new Error(`Invalid public update date: ${item.slug}`);
 			}
 			if (isPublicRoadmap && typeof item.underReview !== "boolean") {
@@ -368,6 +408,37 @@ export function validateSnapshot(
 		}
 		if (typeof release.version !== "string" || !release.version.trim()) {
 			throw new Error("Invalid release version");
+		}
+		if (typeof release.name !== "string" || !release.name.trim()) {
+			throw new Error(`Invalid release name: ${release.version}`);
+		}
+		if (typeof release.githubUrl !== "string" || !release.githubUrl.trim()) {
+			throw new Error(`Invalid release GitHub URL: ${release.version}`);
+		}
+		if (!isIsoTimestamp(release.publishedAt)) {
+			throw new Error(`Invalid release publishedAt: ${release.version}`);
+		}
+		for (const field of ["highlights", "improvements", "fixes", "platforms"]) {
+			if (
+				!Array.isArray(release[field])
+				|| release[field].some((value) => typeof value !== "string")
+			) {
+				throw new Error(`Invalid release ${field}: ${release.version}`);
+			}
+		}
+		if (!Array.isArray(release.assets)) {
+			throw new Error(`Invalid release assets: ${release.version}`);
+		}
+		for (const asset of release.assets) {
+			if (!asset || typeof asset !== "object" || Array.isArray(asset)) {
+				throw new Error(`Invalid release asset: ${release.version}`);
+			}
+			if (typeof asset.name !== "string" || !asset.name.trim()) {
+				throw new Error(`Invalid release asset name: ${release.version}`);
+			}
+			if (typeof asset.downloadUrl !== "string" || !asset.downloadUrl.trim()) {
+				throw new Error(`Invalid release asset download URL: ${release.version}`);
+			}
 		}
 		if (
 			!Array.isArray(release.projectSlugs) ||

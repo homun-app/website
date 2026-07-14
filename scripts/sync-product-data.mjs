@@ -15,6 +15,9 @@ import {
 	recoverSnapshotPair,
 } from "./lib/snapshot-store.mjs";
 
+export const MAX_GITHUB_PAGES = 100;
+export const GITHUB_REQUEST_TIMEOUT_MS = 30_000;
+
 const PROJECT_QUERY = `
 query HomunPublicRoadmap($owner: String!, $number: Int!, $after: String) {
   organization(login: $owner) {
@@ -22,7 +25,7 @@ query HomunPublicRoadmap($owner: String!, $number: Int!, $after: String) {
       items(first: 100, after: $after) {
         pageInfo { hasNextPage endCursor }
         nodes {
-          fieldValues(first: 30) {
+          fieldValues(first: 100) {
             nodes {
               ... on ProjectV2ItemFieldSingleSelectValue {
                 name
@@ -50,7 +53,6 @@ query HomunPublicRoadmap($owner: String!, $number: Int!, $after: String) {
               url
               updatedAt
               reactions(content: THUMBS_UP) { totalCount }
-              labels(first: 20) { nodes { name } }
             }
           }
         }
@@ -92,9 +94,16 @@ export function parseSyncArgs(args = []) {
 	return { mode: write ? "write" : "dry-run", allowEmpty };
 }
 
-async function githubRequest(url, token, init = {}, fetchImpl = fetch) {
+async function githubRequest(
+	url,
+	token,
+	init = {},
+	fetchImpl = fetch,
+	timeoutMs = GITHUB_REQUEST_TIMEOUT_MS,
+) {
 	const response = await fetchImpl(url, {
 		...init,
+		signal: init.signal ?? AbortSignal.timeout(timeoutMs),
 		headers: {
 			Accept: "application/vnd.github+json",
 			Authorization: `Bearer ${token}`,
@@ -114,12 +123,24 @@ export async function fetchProductData(
 	config,
 	fetchImpl = fetch,
 	clock = () => new Date().toISOString(),
+	{
+		maxPages = MAX_GITHUB_PAGES,
+		timeoutMs = GITHUB_REQUEST_TIMEOUT_MS,
+	} = {},
 ) {
+	if (!Number.isInteger(maxPages) || maxPages < 1) {
+		throw new Error("maxPages must be a positive integer");
+	}
 	const syncedAt = clock();
 	const projectNodes = [];
 	const seenCursors = new Set();
 	let after = null;
+	let projectPage = 0;
 	while (true) {
+		projectPage += 1;
+		if (projectPage > maxPages) {
+			throw new Error(`GitHub Project pagination exceeded ${maxPages} pages`);
+		}
 		const projectPayload = await githubRequest(
 			"https://api.github.com/graphql",
 			config.token,
@@ -132,6 +153,7 @@ export async function fetchProductData(
 				}),
 			},
 			fetchImpl,
+			timeoutMs,
 		);
 		if (projectPayload.errors?.length) {
 			throw new Error(`GitHub Project query failed: ${projectPayload.errors[0].message}`);
@@ -180,11 +202,15 @@ export async function fetchProductData(
 	};
 	const releasePayload = [];
 	for (let page = 1; ; page += 1) {
+		if (page > maxPages) {
+			throw new Error(`GitHub releases pagination exceeded ${maxPages} pages`);
+		}
 		const releasePage = await githubRequest(
 			`https://api.github.com/repos/${config.releasesRepo}/releases?per_page=100&page=${page}`,
 			config.token,
 			{},
 			fetchImpl,
+			timeoutMs,
 		);
 		if (!Array.isArray(releasePage)) {
 			throw new Error(`GitHub releases response page ${page} is not an array`);

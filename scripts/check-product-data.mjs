@@ -380,7 +380,7 @@ const paginatedSnapshots = await fetchProductData(
 		releasesRepo: "homun-app/homun-releases",
 	},
 	async (url, init = {}) => {
-		paginationRequests.push({ url, init: structuredClone(init) });
+		paginationRequests.push({ url, init });
 		return { ok: true, json: async () => structuredClone(paginationResponses.shift()) };
 	},
 	() => "2026-07-14T15:00:00.000Z",
@@ -412,7 +412,13 @@ for (const { init } of paginationRequests.slice(0, 2)) {
 	assert.match(query, /\$after:\s*String/);
 	assert.match(query, /items\(first:\s*100,\s*after:\s*\$after\)/);
 	assert.match(query, /pageInfo\s*\{\s*hasNextPage\s+endCursor\s*\}/s);
+	assert.match(query, /fieldValues\(first:\s*100\)/);
+	assert.doesNotMatch(query, /labels\s*\(/);
 }
+assert.equal(
+	paginationRequests.every(({ init }) => init.signal instanceof AbortSignal),
+	true,
+);
 assert.deepEqual(
 	paginationRequests.slice(2).map(({ url }) => url),
 	[
@@ -426,12 +432,13 @@ const fetchConfig = {
 	projectNumber: 1,
 	releasesRepo: "homun-app/homun-releases",
 };
-async function fetchFrom(payloads) {
+async function fetchFrom(payloads, options = {}) {
 	const queue = structuredClone(payloads);
 	return fetchProductData(
 		fetchConfig,
 		async () => ({ ok: true, json: async () => queue.shift() }),
 		() => "2026-07-14T15:00:00.000Z",
+		options,
 	);
 }
 await assert.rejects(
@@ -506,6 +513,43 @@ await assert.rejects(
 	]),
 	/GitHub Project pagination repeated cursor: repeat/,
 );
+await assert.rejects(
+	fetchFrom([
+		{
+			data: {
+				organization: {
+					projectV2: {
+						items: {
+							nodes: [],
+							pageInfo: { hasNextPage: true, endCursor: "page-1" },
+						},
+					},
+				},
+			},
+		},
+		{
+			data: {
+				organization: {
+					projectV2: {
+						items: {
+							nodes: [],
+							pageInfo: { hasNextPage: true, endCursor: "page-2" },
+						},
+					},
+				},
+			},
+		},
+	], { maxPages: 2 }),
+	/GitHub Project pagination exceeded 2 pages/,
+);
+await assert.rejects(
+	fetchFrom([
+		projectFixture,
+		Array.from({ length: 100 }, () => ({ draft: true })),
+		Array.from({ length: 100 }, () => ({ draft: true })),
+	], { maxPages: 2 }),
+	/GitHub releases pagination exceeded 2 pages/,
+);
 assert.doesNotThrow(() => validateSnapshot(roadmap, releases));
 assert.doesNotThrow(() => validateSnapshot(publicRoadmap, publicReleases));
 assert.doesNotThrow(() => validateSnapshot(checkedInRoadmap, checkedInReleases));
@@ -543,6 +587,45 @@ assert.throws(
 	() => validateSnapshot(publicRoadmap, releaseWithEmptyVersion),
 	/Invalid release version/,
 );
+for (const [field, value, expected] of [
+	["name", "", /Invalid release name: v0.1.1055/],
+	["githubUrl", "", /Invalid release GitHub URL: v0.1.1055/],
+	["publishedAt", "not-a-date", /Invalid release publishedAt: v0.1.1055/],
+	["publishedAt", "2026-02-30T10:00:00Z", /Invalid release publishedAt: v0.1.1055/],
+	["highlights", "highlight", /Invalid release highlights: v0.1.1055/],
+	["improvements", [42], /Invalid release improvements: v0.1.1055/],
+	["fixes", null, /Invalid release fixes: v0.1.1055/],
+	["platforms", [null], /Invalid release platforms: v0.1.1055/],
+	["assets", "asset", /Invalid release assets: v0.1.1055/],
+]) {
+	const malformedRelease = structuredClone(publicReleases);
+	malformedRelease.items[0][field] = value;
+	assert.throws(() => validateSnapshot(publicRoadmap, malformedRelease), expected);
+}
+for (const [field, expected] of [
+	["name", /Invalid release name: v0.1.1055/],
+	["githubUrl", /Invalid release GitHub URL: v0.1.1055/],
+	["publishedAt", /Invalid release publishedAt: v0.1.1055/],
+	["highlights", /Invalid release highlights: v0.1.1055/],
+	["improvements", /Invalid release improvements: v0.1.1055/],
+	["fixes", /Invalid release fixes: v0.1.1055/],
+	["platforms", /Invalid release platforms: v0.1.1055/],
+	["assets", /Invalid release assets: v0.1.1055/],
+	["projectSlugs", /Invalid project slugs in release v0.1.1055/],
+]) {
+	const releaseWithMissingField = structuredClone(publicReleases);
+	delete releaseWithMissingField.items[0][field];
+	assert.throws(() => validateSnapshot(publicRoadmap, releaseWithMissingField), expected);
+}
+for (const [asset, expected] of [
+	[null, /Invalid release asset: v0.1.1055/],
+	[{ name: "", downloadUrl: "https://example.com/file" }, /Invalid release asset name: v0.1.1055/],
+	[{ name: "file.dmg", downloadUrl: "" }, /Invalid release asset download URL: v0.1.1055/],
+]) {
+	const malformedRelease = structuredClone(publicReleases);
+	malformedRelease.items[0].assets = [asset];
+	assert.throws(() => validateSnapshot(publicRoadmap, malformedRelease), expected);
+}
 assert.throws(
 	() => validateSnapshot(roadmap, {
 		schemaVersion: 2,
@@ -709,13 +792,20 @@ const releasePolicyPreviousReleases = {
 	schemaVersion: 2,
 	contentUpdatedAt: "2026-07-13T10:00:00.000Z",
 	items: [
-		{ version: "v3", name: "Old v3", projectSlugs: [] },
 		{
+			...structuredClone(releases.items[0]),
+			version: "v3",
+			name: "Old v3",
+			projectSlugs: [],
+		},
+		{
+			...structuredClone(releases.items[0]),
 			version: "v2",
 			name: "Old v2",
 			projectSlugs: ["apprentice", "connected-actions", "shared-spaces"],
 		},
 		{
+			...structuredClone(releases.items[0]),
 			version: "v1",
 			name: "Old v1",
 			projectSlugs: ["apprentice", "retired-experiment"],
@@ -727,6 +817,7 @@ const releasePolicyRawReleases = {
 	fetchedAt: "2026-07-14T10:00:00.000Z",
 	items: [
 		{
+			...structuredClone(releases.items[0]),
 			version: "v3",
 			name: "Fresh v3",
 			highlights: ["Keep fresh release content"],
@@ -739,8 +830,18 @@ const releasePolicyRawReleases = {
 				"shared-spaces",
 			],
 		},
-		{ version: "v2", name: "Fresh v2", projectSlugs: [] },
-		{ version: "v1", name: "Fresh v1", projectSlugs: [] },
+		{
+			...structuredClone(releases.items[0]),
+			version: "v2",
+			name: "Fresh v2",
+			projectSlugs: [],
+		},
+		{
+			...structuredClone(releases.items[0]),
+			version: "v1",
+			name: "Fresh v1",
+			projectSlugs: [],
+		},
 	],
 };
 const releasePolicyCandidates = [
@@ -1124,6 +1225,39 @@ assert.throws(
 	() => normalizeProject(fixtureWithField("Public update date", undefined)),
 	/Missing public update date/,
 );
+assert.throws(
+	() => normalizeProject(fixtureWithField("Public update", 42, "number")),
+	/Invalid public update: shared-spaces/,
+);
+assert.throws(
+	() => normalizeProject(fixtureWithField("Target release", 42, "number", 1)),
+	/Invalid target release: mobile-companion/,
+);
+const absentOptionalTextFixture = fixtureWithField("Public update", undefined);
+const absentOptionalFields = absentOptionalTextFixture.data.organization.projectV2.items.nodes[0]
+	.fieldValues.nodes;
+const absentOptionalDate = absentOptionalFields.find(
+	(field) => field.field.name === "Public update date",
+);
+absentOptionalFields.splice(absentOptionalFields.indexOf(absentOptionalDate), 1);
+const normalizedAbsentOptionalText = normalizeProject(absentOptionalTextFixture).candidates[0];
+assert.equal(normalizedAbsentOptionalText.publicUpdate, null);
+assert.equal(normalizedAbsentOptionalText.publicUpdateDate, null);
+assert.equal(normalizedAbsentOptionalText.targetRelease, null);
+const trimmedOptionalTextFixture = fixtureWithField(
+	"Public update",
+	"  Trimmed public update  ",
+	"text",
+);
+const trimmedOptionalTargetFields = trimmedOptionalTextFixture.data.organization.projectV2.items
+	.nodes[0].fieldValues.nodes;
+trimmedOptionalTargetFields.push({
+	field: { name: "Target release" },
+	text: "  Future release  ",
+});
+const normalizedTrimmedOptionalText = normalizeProject(trimmedOptionalTextFixture).candidates[0];
+assert.equal(normalizedTrimmedOptionalText.publicUpdate, "Trimmed public update");
+assert.equal(normalizedTrimmedOptionalText.targetRelease, "Future release");
 assert.throws(() => normalizeProject(fixtureWithField("Area", undefined)), /Missing area/);
 assert.throws(() => normalizeProject(fixtureWithField("Area", "")), /Missing area/);
 assert.throws(() => normalizeProject(fixtureWithField("Area", 7)), /Invalid area/);
@@ -1176,6 +1310,71 @@ assert.throws(
 	() => validateSnapshot(publicWithoutContentUpdatedAt, publicReleases),
 	/Invalid public roadmap contentUpdatedAt/,
 );
+const rawWithPublicTimestamp = structuredClone(roadmap);
+rawWithPublicTimestamp.contentUpdatedAt = projectFixture.syncedAt;
+assert.throws(
+	() => validateSnapshot(rawWithPublicTimestamp, releases),
+	/Raw roadmap must not contain contentUpdatedAt/,
+);
+const publicWithRawTimestamp = structuredClone(publicRoadmap);
+publicWithRawTimestamp.fetchedAt = projectFixture.syncedAt;
+assert.throws(
+	() => validateSnapshot(publicWithRawTimestamp, publicReleases),
+	/Public roadmap must not contain fetchedAt/,
+);
+const rawWithReviewFlag = structuredClone(roadmap);
+rawWithReviewFlag.candidates[0].underReview = false;
+assert.throws(
+	() => validateSnapshot(rawWithReviewFlag, releases),
+	/Raw roadmap candidate must not contain underReview: shared-spaces/,
+);
+for (const governanceField of ["publicationStatus", "archiveReason", "projectItemId", "labels"]) {
+	const publicWithGovernanceMetadata = structuredClone(publicRoadmap);
+	publicWithGovernanceMetadata.items[0][governanceField] = "private";
+	assert.throws(
+		() => validateSnapshot(publicWithGovernanceMetadata, publicReleases),
+		new RegExp(`Public roadmap item must not contain ${governanceField}: shared-spaces`),
+	);
+}
+for (const invalidUpdatedAt of [
+	undefined,
+	"",
+	"14/07/2026",
+	"2026-02-30T10:00:00Z",
+	20260714,
+]) {
+	const rawWithInvalidTimestamp = structuredClone(roadmap);
+	rawWithInvalidTimestamp.candidates[0].updatedAt = invalidUpdatedAt;
+	assert.throws(
+		() => validateSnapshot(rawWithInvalidTimestamp, releases),
+		/Invalid roadmap updatedAt: shared-spaces/,
+	);
+}
+for (const invalidUpdatedAt of ["14/07/2026", 20260714]) {
+	const publicWithInvalidTimestamp = structuredClone(publicRoadmap);
+	publicWithInvalidTimestamp.items[0].updatedAt = invalidUpdatedAt;
+	assert.throws(
+		() => validateSnapshot(publicWithInvalidTimestamp, publicReleases),
+		/Invalid roadmap updatedAt: shared-spaces/,
+	);
+}
+const publicWithoutOptionalText = structuredClone(publicRoadmap);
+for (const field of ["targetRelease", "publicUpdate", "publicUpdateDate"]) {
+	delete publicWithoutOptionalText.items[0][field];
+}
+assert.doesNotThrow(() => validateSnapshot(publicWithoutOptionalText, publicReleases));
+for (const [field, expected] of [
+	["targetRelease", /Invalid target release: shared-spaces/],
+	["publicUpdate", /Invalid public update: shared-spaces/],
+	["publicUpdateDate", /Invalid public update date: shared-spaces/],
+]) {
+	const publicWithNumericOptional = structuredClone(publicRoadmap);
+	publicWithNumericOptional.items[0][field] = 42;
+	assert.throws(
+		() => validateSnapshot(publicWithNumericOptional, publicReleases),
+		expected,
+	);
+}
 for (const [snapshot, releaseSnapshot] of [
 	[structuredClone(roadmap), releases],
 	[structuredClone(publicRoadmap), publicReleases],
@@ -1421,7 +1620,9 @@ try {
 	assert.equal(await readFile(releasesPath, "utf8"), "original-releases\n");
 	const invalidCandidatePair = structuredClone(nonEmptyCurrentPair);
 	invalidCandidatePair.releases.items.push({
+		...structuredClone(publicReleases.items[0]),
 		version: "v-invalid",
+		name: "Unknown roadmap link fixture",
 		projectSlugs: ["unknown-roadmap-item"],
 	});
 	const serializedCurrentRoadmap = `${JSON.stringify(nonEmptyCurrentPair.roadmap, null, 2)}\n`;
