@@ -148,6 +148,21 @@ const memorySource = await readFile(
 	"utf8",
 );
 
+for (const marker of [
+	'aria-labelledby="memory-architecture-title memory-architecture-description"',
+	'id="memory-architecture-title"',
+	'id="memory-architecture-description"',
+	"Recall — SQLite + search. Connections — Graph + why. Understanding — Markdown wiki.",
+]) {
+	assert.ok(memorySource.includes(marker), `Memory accessibility contract is missing: ${marker}`);
+}
+assert.ok(
+	!memorySource.includes(
+		'aria-label="One Homun memory combining fast recall, connected context, and a readable wiki"',
+	),
+	"Memory illustration retained its incomplete accessible label",
+);
+
 const memoryReducedMotion = memorySource.slice(
 	memorySource.indexOf("@media (prefers-reduced-motion: reduce)"),
 );
