@@ -136,6 +136,9 @@ export function validateSnapshot(roadmap, releases) {
 	if (roadmap?.schemaVersion !== 1 || releases?.schemaVersion !== 1) {
 		throw new Error("Unsupported product data schema");
 	}
+	if (!Array.isArray(roadmap.items) || roadmap.items.length === 0) {
+		throw new Error("Roadmap snapshot must contain at least one public item");
+	}
 	const slugs = new Set();
 	let featured = 0;
 	for (const item of roadmap.items ?? []) {

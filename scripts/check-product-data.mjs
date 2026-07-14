@@ -38,6 +38,10 @@ assert.equal(releases.items[0].version, "v0.1.1055");
 assert.deepEqual(releases.items[0].platforms, ["Linux", "macOS", "Windows"]);
 assert.deepEqual(releases.items[0].projectSlugs, ["connected-actions"]);
 assert.doesNotThrow(() => validateSnapshot(roadmap, releases));
+assert.throws(
+	() => validateSnapshot({ ...roadmap, items: [] }, releases),
+	/Roadmap snapshot must contain at least one public item/,
+);
 assert.doesNotThrow(() => validateSnapshot(checkedInRoadmap, checkedInReleases));
 
 const releaseWithoutNotes = structuredClone(releaseFixture);
