@@ -219,13 +219,16 @@ export function validateSnapshot(roadmap, releases) {
 		versions.add(release.version);
 		if (!isPublicRoadmap) continue;
 		const releaseSlugs = new Set();
-		for (const projectSlug of release.projectSlugs ?? []) {
+		const projectSlugs = release.projectSlugs ?? [];
+		for (const projectSlug of projectSlugs) {
 			if (releaseSlugs.has(projectSlug)) {
 				throw new Error(
 					`Duplicate roadmap slug in release ${release.version}: ${projectSlug}`,
 				);
 			}
 			releaseSlugs.add(projectSlug);
+		}
+		for (const projectSlug of projectSlugs) {
 			if (!slugs.has(projectSlug)) {
 				throw new Error(`Unknown roadmap slug in release ${release.version}: ${projectSlug}`);
 			}

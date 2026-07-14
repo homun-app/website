@@ -153,6 +153,18 @@ assert.throws(
 	() => validateSnapshot(publicRoadmap, releaseWithDuplicateSlug),
 	/Duplicate roadmap slug in release v0.1.1055: connected-actions/,
 );
+const unknownDuplicateReleaseLinkFixture = structuredClone(releaseFixture);
+unknownDuplicateReleaseLinkFixture[0].body = "Roadmap: ghost, ghost";
+const releaseWithUnknownDuplicateSlug = normalizeReleases(
+	unknownDuplicateReleaseLinkFixture,
+	roadmap.candidates,
+	projectFixture.syncedAt,
+);
+assert.deepEqual(releaseWithUnknownDuplicateSlug.items[0].projectSlugs, ["ghost", "ghost"]);
+assert.throws(
+	() => validateSnapshot(publicRoadmap, releaseWithUnknownDuplicateSlug),
+	/Duplicate roadmap slug in release v0.1.1055: ghost/,
+);
 const draftLinkFixture = structuredClone(releaseFixture);
 draftLinkFixture[0].body = "## Highlights\n- Published release without a roadmap link";
 draftLinkFixture[1].published_at = "2026-07-14T08:00:00Z";
