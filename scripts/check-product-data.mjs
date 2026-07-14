@@ -55,6 +55,18 @@ assert.equal(releases.items.length, 1);
 assert.equal(releases.items[0].version, "v0.1.1055");
 assert.deepEqual(releases.items[0].platforms, ["Linux", "macOS", "Windows"]);
 assert.deepEqual(releases.items[0].projectSlugs, ["connected-actions"]);
+const publicRoadmap = applyPublicationPolicy(
+	{
+		schemaVersion: 2,
+		contentUpdatedAt: projectFixture.syncedAt,
+		items: [],
+	},
+	roadmap.candidates,
+);
+assert.deepEqual(
+	publicRoadmap.items.map(({ slug }) => slug),
+	["shared-spaces", "mobile-companion", "connected-actions"],
+);
 
 const fetchResponses = [projectFixture, releaseFixture];
 const fakeFetch = async () => ({
@@ -77,6 +89,7 @@ assert.equal(
 	"Synced 6 roadmap candidates and 1 releases",
 );
 assert.doesNotThrow(() => validateSnapshot(roadmap, releases));
+assert.doesNotThrow(() => validateSnapshot(publicRoadmap, releases));
 assert.doesNotThrow(() => validateSnapshot(checkedInRoadmap, checkedInReleases));
 
 const releaseWithoutNotes = structuredClone(releaseFixture);
@@ -88,6 +101,98 @@ const normalizedWithoutNotes = normalizeReleases(
 );
 assert.deepEqual(normalizedWithoutNotes.items[0].highlights, []);
 assert.deepEqual(normalizedWithoutNotes.items[0].projectSlugs, []);
+const publicRoadmapWithoutShippedItems = structuredClone(publicRoadmap);
+publicRoadmapWithoutShippedItems.items.find(
+	(item) => item.slug === "connected-actions",
+).status = "building";
+assert.doesNotThrow(() =>
+	validateSnapshot(publicRoadmapWithoutShippedItems, normalizedWithoutNotes),
+);
+const rawCandidatesWithUnpublishedShippedItem = structuredClone(roadmap);
+rawCandidatesWithUnpublishedShippedItem.candidates.find(
+	(candidate) => candidate.slug === "connected-actions",
+).status = "building";
+rawCandidatesWithUnpublishedShippedItem.candidates.find(
+	(candidate) => candidate.slug === "apprentice",
+).status = "shipped";
+assert.doesNotThrow(() =>
+	validateSnapshot(rawCandidatesWithUnpublishedShippedItem, normalizedWithoutNotes),
+);
+const prereleaseLinkFixture = structuredClone(releaseFixture);
+prereleaseLinkFixture[0].body = "## Highlights\n- Published release without a roadmap link";
+prereleaseLinkFixture[1].draft = false;
+prereleaseLinkFixture[1].prerelease = true;
+prereleaseLinkFixture[1].published_at = "2026-07-14T08:00:00Z";
+prereleaseLinkFixture[1].body = "Roadmap: connected-actions";
+const releasesWithPrereleaseLink = normalizeReleases(
+	prereleaseLinkFixture,
+	roadmap.candidates,
+	projectFixture.syncedAt,
+);
+assert.equal(releasesWithPrereleaseLink.items.length, 1);
+assert.deepEqual(releasesWithPrereleaseLink.items[0].projectSlugs, []);
+assert.throws(
+	() => validateSnapshot(publicRoadmap, releasesWithPrereleaseLink),
+	/Shipped roadmap item has no published release: connected-actions/,
+);
+const duplicateReleaseLinkFixture = structuredClone(releaseFixture);
+duplicateReleaseLinkFixture[0].body =
+	"## Highlights\n- Duplicate roadmap reference\n\nRoadmap:  connected-actions, , connected-actions  ";
+const releaseWithDuplicateSlug = normalizeReleases(
+	duplicateReleaseLinkFixture,
+	roadmap.candidates,
+	projectFixture.syncedAt,
+);
+assert.deepEqual(releaseWithDuplicateSlug.items[0].projectSlugs, [
+	"connected-actions",
+	"connected-actions",
+]);
+assert.doesNotThrow(() => validateSnapshot(roadmap, releaseWithDuplicateSlug));
+assert.doesNotThrow(() => validateSnapshot(checkedInRoadmap, releaseWithDuplicateSlug));
+assert.throws(
+	() => validateSnapshot(publicRoadmap, releaseWithDuplicateSlug),
+	/Duplicate roadmap slug in release v0.1.1055: connected-actions/,
+);
+const draftLinkFixture = structuredClone(releaseFixture);
+draftLinkFixture[0].body = "## Highlights\n- Published release without a roadmap link";
+draftLinkFixture[1].published_at = "2026-07-14T08:00:00Z";
+draftLinkFixture[1].body = "Roadmap: connected-actions";
+const releasesWithDraftLink = normalizeReleases(
+	draftLinkFixture,
+	roadmap.candidates,
+	projectFixture.syncedAt,
+);
+assert.equal(releasesWithDraftLink.items.length, 1);
+assert.deepEqual(releasesWithDraftLink.items[0].projectSlugs, []);
+const shippedLinkedOnlyFromDraft = structuredClone(publicRoadmap);
+assert.throws(
+	() => validateSnapshot(shippedLinkedOnlyFromDraft, releasesWithDraftLink),
+	/Shipped roadmap item has no published release: connected-actions/,
+);
+const releaseWithUnknownSlugFixture = structuredClone(releaseFixture);
+releaseWithUnknownSlugFixture[0].tag_name = "v0.1.1056";
+releaseWithUnknownSlugFixture[0].name = "0.1.1056";
+releaseWithUnknownSlugFixture[0].body =
+	"## Highlights\n- Release with an invalid roadmap reference\n\nRoadmap: shared-spaces, missing-project, connected-actions";
+const releaseWithUnknownSlug = normalizeReleases(
+	releaseWithUnknownSlugFixture,
+	roadmap.candidates,
+	projectFixture.syncedAt,
+);
+assert.throws(
+	() => validateSnapshot(publicRoadmap, releaseWithUnknownSlug),
+	/Unknown roadmap slug in release v0.1.1056: missing-project/,
+);
+assert.deepEqual(releaseWithUnknownSlug.items[0].projectSlugs, [
+	"shared-spaces",
+	"missing-project",
+	"connected-actions",
+]);
+const shippedWithoutPublishedRelease = structuredClone(publicRoadmap);
+assert.throws(
+	() => validateSnapshot(shippedWithoutPublishedRelease, normalizedWithoutNotes),
+	/Shipped roadmap item has no published release: connected-actions/,
+);
 
 const duplicate = structuredClone(roadmap);
 duplicate.candidates.push({ ...duplicate.candidates[0] });

@@ -132,18 +132,17 @@ function platformsForAssets(assets = []) {
 	return ["Linux", "macOS", "Windows"].filter((platform) => found.has(platform));
 }
 
-function projectSlugsFromBody(body = "", knownSlugs) {
+function projectSlugsFromBody(body = "") {
 	const match = String(body ?? "").match(/^Roadmap:\s*(.+)$/im);
 	if (!match) return [];
 	return match[1]
 		.split(",")
 		.map((slug) => slug.trim())
-		.filter((slug) => slug && knownSlugs.has(slug));
+		.filter(Boolean);
 }
 
-function normalizeRelease(release, roadmapCandidates) {
+function normalizeRelease(release) {
 	const sections = markdownSections(release.body ?? "");
-	const knownSlugs = new Set(roadmapCandidates.map((candidate) => candidate.slug));
 	return {
 		version: release.tag_name,
 		name: release.name || release.tag_name,
@@ -157,23 +156,29 @@ function normalizeRelease(release, roadmapCandidates) {
 			name: asset.name,
 			downloadUrl: asset.browser_download_url,
 		})),
-		projectSlugs: projectSlugsFromBody(release.body, knownSlugs),
+		projectSlugs: projectSlugsFromBody(release.body),
 	};
 }
 
-export function normalizeReleases(payload, roadmapCandidates, syncedAt = new Date().toISOString()) {
+export function normalizeReleases(payload, _roadmapCandidates, syncedAt = new Date().toISOString()) {
 	const items = payload
 		.filter((release) => !release.draft && !release.prerelease && release.published_at)
-		.map((release) => normalizeRelease(release, roadmapCandidates))
+		.map(normalizeRelease)
 		.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
 	return { schemaVersion: 1, syncedAt, items };
 }
 
 export function validateSnapshot(roadmap, releases) {
-	if (![1, 2].includes(roadmap?.schemaVersion) || releases?.schemaVersion !== 1) {
+	const isRawRoadmap =
+		roadmap?.schemaVersion === 2 && Array.isArray(roadmap.candidates);
+	const isPublicRoadmap =
+		roadmap?.schemaVersion === 2 && Array.isArray(roadmap.items);
+	const isLegacyRoadmap =
+		roadmap?.schemaVersion === 1 && Array.isArray(roadmap.items);
+	if ((!isRawRoadmap && !isPublicRoadmap && !isLegacyRoadmap) || releases?.schemaVersion !== 1) {
 		throw new Error("Unsupported product data schema");
 	}
-	const roadmapEntries = roadmap.schemaVersion === 2 ? roadmap.candidates : roadmap.items;
+	const roadmapEntries = isRawRoadmap ? roadmap.candidates : roadmap.items;
 	const slugs = new Set();
 	let featured = 0;
 	for (const item of roadmapEntries ?? []) {
@@ -185,7 +190,10 @@ export function validateSnapshot(roadmap, releases) {
 			if (![...PUBLIC_STATUSES.values()].includes(item.status)) {
 				throw new Error(`Unknown public status: ${item.status}`);
 			}
-			if (![...PUBLICATION_STATUSES.values()].includes(item.publicationStatus)) {
+			if (
+				isRawRoadmap &&
+				![...PUBLICATION_STATUSES.values()].includes(item.publicationStatus)
+			) {
 				throw new Error(`Unknown publication status: ${item.publicationStatus}`);
 			}
 			if (![...VOTING_STATES.values()].includes(item.voting)) {
@@ -205,9 +213,33 @@ export function validateSnapshot(roadmap, releases) {
 	}
 	if (featured > 1) throw new Error("Multiple featured roadmap items");
 	const versions = new Set();
+	const publishedReleasesByRoadmapSlug = new Map();
 	for (const release of releases.items ?? []) {
 		if (versions.has(release.version)) throw new Error(`Duplicate release: ${release.version}`);
 		versions.add(release.version);
+		if (!isPublicRoadmap) continue;
+		const releaseSlugs = new Set();
+		for (const projectSlug of release.projectSlugs ?? []) {
+			if (releaseSlugs.has(projectSlug)) {
+				throw new Error(
+					`Duplicate roadmap slug in release ${release.version}: ${projectSlug}`,
+				);
+			}
+			releaseSlugs.add(projectSlug);
+			if (!slugs.has(projectSlug)) {
+				throw new Error(`Unknown roadmap slug in release ${release.version}: ${projectSlug}`);
+			}
+			const linkedReleases = publishedReleasesByRoadmapSlug.get(projectSlug) ?? [];
+			linkedReleases.push(release);
+			publishedReleasesByRoadmapSlug.set(projectSlug, linkedReleases);
+		}
+	}
+	if (isPublicRoadmap) {
+		for (const item of roadmapEntries) {
+			if (item.status === "shipped" && !publishedReleasesByRoadmapSlug.has(item.slug)) {
+				throw new Error(`Shipped roadmap item has no published release: ${item.slug}`);
+			}
+		}
 	}
 	return true;
 }
