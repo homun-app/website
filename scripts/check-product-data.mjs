@@ -176,6 +176,7 @@ assert.throws(
 for (const invalidRawReleases of [
 	{ schemaVersion: 2, items: releases.items },
 	{ schemaVersion: 2, fetchedAt: "", items: releases.items },
+	{ schemaVersion: 2, fetchedAt: "not-a-timestamp", items: releases.items },
 	{ ...releases, contentUpdatedAt: projectFixture.syncedAt },
 ]) {
 	assert.throws(
@@ -183,9 +184,26 @@ for (const invalidRawReleases of [
 		/Invalid releases snapshot shape/,
 	);
 }
+const rawWithInvalidFetchedAt = structuredClone(roadmap);
+rawWithInvalidFetchedAt.fetchedAt = "not-a-timestamp";
+assert.throws(
+	() => validateSnapshot(rawWithInvalidFetchedAt, releases),
+	/Invalid raw roadmap fetchedAt/,
+);
+const publicWithInvalidContentUpdatedAt = structuredClone(publicRoadmap);
+publicWithInvalidContentUpdatedAt.contentUpdatedAt = "2026-02-30T10:00:00Z";
+assert.throws(
+	() => validateSnapshot(publicWithInvalidContentUpdatedAt, publicReleases),
+	/Invalid public roadmap contentUpdatedAt/,
+);
 for (const invalidPublicReleases of [
 	{ schemaVersion: 2, items: releases.items },
 	{ schemaVersion: 2, contentUpdatedAt: "", items: releases.items },
+	{
+		schemaVersion: 2,
+		contentUpdatedAt: "2026-02-30T10:00:00Z",
+		items: releases.items,
+	},
 	{ ...publicReleases, fetchedAt: projectFixture.syncedAt },
 ]) {
 	assert.throws(
@@ -601,6 +619,16 @@ for (const [field, value, expected] of [
 	const malformedRelease = structuredClone(publicReleases);
 	malformedRelease.items[0][field] = value;
 	assert.throws(() => validateSnapshot(publicRoadmap, malformedRelease), expected);
+}
+for (const field of ["highlights", "improvements", "fixes", "platforms"]) {
+	for (const invalidValue of ["", "   "]) {
+		const releaseWithBlankListEntry = structuredClone(publicReleases);
+		releaseWithBlankListEntry.items[0][field] = [invalidValue];
+		assert.throws(
+			() => validateSnapshot(publicRoadmap, releaseWithBlankListEntry),
+			new RegExp(`Invalid release ${field}: v0.1.1055`),
+		);
+	}
 }
 for (const [field, expected] of [
 	["name", /Invalid release name: v0.1.1055/],

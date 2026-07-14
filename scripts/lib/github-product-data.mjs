@@ -272,7 +272,7 @@ export function validateSnapshot(
 	}
 	if (
 		isRawRoadmap
-		&& (typeof roadmap.fetchedAt !== "string" || !roadmap.fetchedAt.trim())
+		&& !isIsoTimestamp(roadmap.fetchedAt)
 	) {
 		throw new Error("Invalid raw roadmap fetchedAt");
 	}
@@ -281,7 +281,7 @@ export function validateSnapshot(
 	}
 	if (
 		isPublicRoadmap
-		&& (typeof roadmap.contentUpdatedAt !== "string" || !roadmap.contentUpdatedAt.trim())
+		&& !isIsoTimestamp(roadmap.contentUpdatedAt)
 	) {
 		throw new Error("Invalid public roadmap contentUpdatedAt");
 	}
@@ -293,8 +293,7 @@ export function validateSnapshot(
 	if (
 		!Array.isArray(releases.items)
 		|| !Object.hasOwn(releases, expectedReleaseTimestamp)
-		|| typeof releases[expectedReleaseTimestamp] !== "string"
-		|| !releases[expectedReleaseTimestamp].trim()
+		|| !isIsoTimestamp(releases[expectedReleaseTimestamp])
 		|| Object.hasOwn(releases, unexpectedReleaseTimestamp)
 	) {
 		throw new Error("Invalid releases snapshot shape");
@@ -421,7 +420,9 @@ export function validateSnapshot(
 		for (const field of ["highlights", "improvements", "fixes", "platforms"]) {
 			if (
 				!Array.isArray(release[field])
-				|| release[field].some((value) => typeof value !== "string")
+				|| release[field].some(
+					(value) => typeof value !== "string" || !value.trim(),
+				)
 			) {
 				throw new Error(`Invalid release ${field}: ${release.version}`);
 			}
