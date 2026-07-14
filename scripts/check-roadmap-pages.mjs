@@ -22,6 +22,7 @@ const ideaDetailHtml = await read("roadmap/shared-spaces/index.html");
 const changelogHtml = await read("changelog/index.html");
 const rss = await read("changelog/rss.xml");
 const detailSource = await readSource("src/pages/roadmap/[slug].astro");
+const productDataSource = await readSource("src/lib/product-data.ts");
 const roadmapText = plain(roadmapHtml);
 const changelogText = plain(changelogHtml);
 const detailText = plain(detailHtml);
@@ -71,6 +72,11 @@ assert.ok(
 	"Roadmap proposal entry point does not use the structured idea form",
 );
 assertNoNestedAnchors(roadmapHtml);
+assert.doesNotMatch(
+	productDataSource,
+	/export const communityIdeas\b/,
+	"Product data still exports the retired communityIdeas alias",
+);
 
 assert.ok(changelogText.includes("v0.1.1055"), "Changelog is missing the real latest release");
 assert.ok(!changelogText.includes("illustrative samples"), "Changelog still contains sample copy");

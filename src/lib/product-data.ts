@@ -58,8 +58,6 @@ export const latestRelease = releases[0];
 export const ideasOpenForVoting = roadmapItems
 	.filter((item) => item.status === "ideas" && item.voting === "open")
 	.sort((a, b) => b.votes - a.votes || a.order - b.order);
-// Temporary compatibility alias until the roadmap UI adopts the governance names.
-export const communityIdeas = ideasOpenForVoting;
 
 export function itemsByStatus(status: RoadmapStatus) {
 	return roadmapItems.filter((item) => item.status === status);
