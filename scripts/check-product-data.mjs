@@ -1362,11 +1362,18 @@ function workflowStep(name) {
 	return match[1];
 }
 
-function workflowStepValue(step, key) {
-	const match = step.match(new RegExp(`^        ${key}: (.+)$`, "m"));
+function workflowStepValue(step, key, indentation = 8) {
+	const match = step.match(new RegExp(`^ {${indentation}}${key}: (.+)$`, "m"));
 	assert.ok(match, `Product sync workflow step is missing ${key}`);
 	return match[1];
 }
+
+const checkoutStep = workflowStep("Check out website");
+assert.equal(
+	workflowStepValue(checkoutStep, "ref", 10),
+	"${{ github.event.repository.default_branch }}",
+	"Every product-data event must check out the repository default branch",
+);
 
 const normalSyncStep = workflowStep("Synchronize roadmap and releases");
 assert.equal(
@@ -1390,6 +1397,13 @@ assert.equal(
 assert.equal(
 	workflowStepValue(recoverySyncStep, "run"),
 	"npm run sync:product-data -- --write --allow-empty",
+);
+
+const commitStep = workflowStep("Commit semantic changes");
+assert.match(
+	commitStep,
+	/^          git push origin HEAD:\$\{\{ github\.event\.repository\.default_branch \}\}$/m,
+	"Product-data changes must be pushed explicitly to the repository default branch",
 );
 
 console.log("Product data contract passed");
