@@ -20,6 +20,12 @@ export const VOTING_STATES = new Map([
 const ROADMAP_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const LEGACY_PUBLIC_STATUSES = new Set(["Exploring", "Next", "Building", "Shipped"]);
 
+function compareText(left, right) {
+	if (left < right) return -1;
+	if (left > right) return 1;
+	return 0;
+}
+
 function fieldMap(node) {
 	return new Map(
 		(node?.fieldValues?.nodes ?? [])
@@ -112,7 +118,7 @@ export function normalizeProject(payload) {
 	const nodes = payload?.data?.organization?.projectV2?.items?.nodes ?? [];
 	const candidates = nodes
 		.map(normalizeProjectNode)
-		.sort((a, b) => a.order - b.order);
+		.sort((a, b) => a.order - b.order || compareText(a.slug, b.slug));
 	const slugs = new Set();
 	for (const candidate of candidates) {
 		if (slugs.has(candidate.slug)) throw new Error(`Duplicate roadmap slug: ${candidate.slug}`);
@@ -138,7 +144,8 @@ function projectSlugsFromBody(body = "") {
 	return match[1]
 		.split(",")
 		.map((slug) => slug.trim())
-		.filter(Boolean);
+		.filter(Boolean)
+		.sort(compareText);
 }
 
 function normalizeRelease(release) {
@@ -152,10 +159,15 @@ function normalizeRelease(release) {
 		improvements: listItems(sections.get("improvements")),
 		fixes: listItems(sections.get("fixes")),
 		platforms: platformsForAssets(release.assets),
-		assets: (release.assets ?? []).map((asset) => ({
-			name: asset.name,
-			downloadUrl: asset.browser_download_url,
-		})),
+		assets: (release.assets ?? [])
+			.map((asset) => ({
+				name: asset.name,
+				downloadUrl: asset.browser_download_url,
+			}))
+			.sort(
+				(a, b) => compareText(a.name, b.name)
+					|| compareText(a.downloadUrl, b.downloadUrl),
+			),
 		projectSlugs: projectSlugsFromBody(release.body),
 	};
 }
@@ -164,7 +176,10 @@ export function normalizeReleases(payload, _roadmapCandidates, syncedAt = new Da
 	const items = payload
 		.filter((release) => !release.draft && !release.prerelease && release.published_at)
 		.map(normalizeRelease)
-		.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+		.sort(
+			(a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
+				|| compareText(a.version, b.version),
+		);
 	return { schemaVersion: 1, syncedAt, items };
 }
 

@@ -1,4 +1,3 @@
-import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import {
@@ -11,6 +10,8 @@ import {
 	assertSafeReplacement,
 	hasSemanticChanges,
 	persistSnapshotPair,
+	readSnapshotPair,
+	recoverSnapshotPair,
 } from "./lib/snapshot-store.mjs";
 
 const PROJECT_QUERY = `
@@ -153,24 +154,9 @@ export async function fetchProductData(
 	return { roadmap, releases };
 }
 
-function resolvedSnapshotPaths(paths = {}) {
-	return {
-		roadmapPath: resolve(paths.roadmapPath ?? "src/data/roadmap.json"),
-		releasesPath: resolve(paths.releasesPath ?? "src/data/releases.json"),
-	};
-}
-
-async function readSnapshotPair(paths = {}) {
-	const resolved = resolvedSnapshotPaths(paths);
-	const [roadmap, releases] = await Promise.all([
-		readFile(resolved.roadmapPath, "utf8").then(JSON.parse),
-		readFile(resolved.releasesPath, "utf8").then(JSON.parse),
-	]);
-	return { roadmap, releases };
-}
-
 export async function writeSnapshots(roadmap, releases, paths = {}, options = {}) {
 	validateSnapshot(roadmap, releases);
+	await recoverSnapshotPair(paths, options);
 	const current = await readSnapshotPair(paths);
 	return persistSnapshotPair(current, { roadmap, releases }, paths, options);
 }
@@ -189,6 +175,7 @@ export async function syncProductData({
 	if (allowEmpty && mode !== "write") {
 		throw new Error("allowEmpty requires write mode");
 	}
+	await recoverSnapshotPair(paths);
 	const current = await readSnapshotPair(paths);
 	if (current.roadmap?.schemaVersion !== 2 || !Array.isArray(current.roadmap.items)) {
 		throw new Error("Previous roadmap must use schemaVersion 2 with public items");
