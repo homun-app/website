@@ -158,6 +158,40 @@ const publicRoadmap = applyPublicationPolicy(
 	},
 	roadmap.candidates,
 );
+const asPublicReleases = (releaseSnapshot) => ({
+	schemaVersion: 2,
+	contentUpdatedAt: projectFixture.syncedAt,
+	items: releaseSnapshot.items,
+});
+const publicReleases = asPublicReleases(releases);
+assert.throws(
+	() => validateSnapshot(publicRoadmap, releases),
+	/Invalid releases snapshot shape/,
+);
+assert.throws(
+	() => validateSnapshot(roadmap, publicReleases),
+	/Invalid releases snapshot shape/,
+);
+for (const invalidRawReleases of [
+	{ schemaVersion: 2, items: releases.items },
+	{ schemaVersion: 2, fetchedAt: "", items: releases.items },
+	{ ...releases, contentUpdatedAt: projectFixture.syncedAt },
+]) {
+	assert.throws(
+		() => validateSnapshot(roadmap, invalidRawReleases),
+		/Invalid releases snapshot shape/,
+	);
+}
+for (const invalidPublicReleases of [
+	{ schemaVersion: 2, items: releases.items },
+	{ schemaVersion: 2, contentUpdatedAt: "", items: releases.items },
+	{ ...publicReleases, fetchedAt: projectFixture.syncedAt },
+]) {
+	assert.throws(
+		() => validateSnapshot(publicRoadmap, invalidPublicReleases),
+		/Invalid releases snapshot shape/,
+	);
+}
 assert.deepEqual(
 	publicRoadmap.items.map(({ slug }) => slug),
 	["shared-spaces", "mobile-companion", "connected-actions"],
@@ -312,44 +346,55 @@ await assert.rejects(
 	/GitHub Project response is missing items.nodes/,
 );
 assert.doesNotThrow(() => validateSnapshot(roadmap, releases));
-assert.doesNotThrow(() => validateSnapshot(publicRoadmap, releases));
+assert.doesNotThrow(() => validateSnapshot(publicRoadmap, publicReleases));
 assert.doesNotThrow(() => validateSnapshot(checkedInRoadmap, checkedInReleases));
 for (const invalidProjectSlug of ["", 1055, "Shared Spaces"]) {
-	const releaseWithInvalidProjectSlug = structuredClone(releases);
+	const releaseWithInvalidProjectSlug = structuredClone(publicReleases);
 	releaseWithInvalidProjectSlug.items[0].projectSlugs = [invalidProjectSlug];
 	assert.throws(
 		() => validateSnapshot(publicRoadmap, releaseWithInvalidProjectSlug),
 		/Invalid project slugs in release v0.1.1055/,
 	);
 }
-const releaseWithNonArrayProjectSlugs = structuredClone(releases);
+const releaseWithNonArrayProjectSlugs = structuredClone(publicReleases);
 releaseWithNonArrayProjectSlugs.items[0].projectSlugs = "connected-actions";
 assert.throws(
 	() => validateSnapshot(publicRoadmap, releaseWithNonArrayProjectSlugs),
 	/Invalid project slugs in release v0.1.1055/,
 );
 assert.throws(
-	() => validateSnapshot(roadmap, { schemaVersion: 2, items: [null] }),
+	() => validateSnapshot(roadmap, {
+		schemaVersion: 2,
+		fetchedAt: projectFixture.syncedAt,
+		items: [null],
+	}),
 	/Invalid release item/,
 );
-const releaseWithNonStringVersion = structuredClone(releases);
+const releaseWithNonStringVersion = structuredClone(publicReleases);
 releaseWithNonStringVersion.items[0].version = 1055;
 assert.throws(
 	() => validateSnapshot(publicRoadmap, releaseWithNonStringVersion),
 	/Invalid release version/,
 );
-const releaseWithEmptyVersion = structuredClone(releases);
+const releaseWithEmptyVersion = structuredClone(publicReleases);
 releaseWithEmptyVersion.items[0].version = "";
 assert.throws(
 	() => validateSnapshot(publicRoadmap, releaseWithEmptyVersion),
 	/Invalid release version/,
 );
 assert.throws(
-	() => validateSnapshot(roadmap, { schemaVersion: 2, items: {} }),
+	() => validateSnapshot(roadmap, {
+		schemaVersion: 2,
+		fetchedAt: projectFixture.syncedAt,
+		items: {},
+	}),
 	/Invalid releases snapshot shape/,
 );
 assert.throws(
-	() => validateSnapshot(roadmap, { schemaVersion: 2 }),
+	() => validateSnapshot(roadmap, {
+		schemaVersion: 2,
+		fetchedAt: projectFixture.syncedAt,
+	}),
 	/Invalid releases snapshot shape/,
 );
 assert.throws(
@@ -381,7 +426,10 @@ publicRoadmapWithoutShippedItems.items.find(
 	(item) => item.slug === "connected-actions",
 ).status = "building";
 assert.doesNotThrow(() =>
-	validateSnapshot(publicRoadmapWithoutShippedItems, normalizedWithoutNotes),
+	validateSnapshot(
+		publicRoadmapWithoutShippedItems,
+		asPublicReleases(normalizedWithoutNotes),
+	),
 );
 const rawCandidatesWithUnpublishedShippedItem = structuredClone(roadmap);
 rawCandidatesWithUnpublishedShippedItem.candidates.find(
@@ -407,7 +455,7 @@ const releasesWithPrereleaseLink = normalizeReleases(
 assert.equal(releasesWithPrereleaseLink.items.length, 1);
 assert.deepEqual(releasesWithPrereleaseLink.items[0].projectSlugs, []);
 assert.throws(
-	() => validateSnapshot(publicRoadmap, releasesWithPrereleaseLink),
+	() => validateSnapshot(publicRoadmap, asPublicReleases(releasesWithPrereleaseLink)),
 	/Shipped roadmap item has no published release: connected-actions/,
 );
 const duplicateReleaseLinkFixture = structuredClone(releaseFixture);
@@ -424,11 +472,11 @@ assert.deepEqual(releaseWithDuplicateSlug.items[0].projectSlugs, [
 ]);
 assert.doesNotThrow(() => validateSnapshot(roadmap, releaseWithDuplicateSlug));
 assert.throws(
-	() => validateSnapshot(checkedInRoadmap, releaseWithDuplicateSlug),
+	() => validateSnapshot(checkedInRoadmap, asPublicReleases(releaseWithDuplicateSlug)),
 	/Duplicate roadmap slug in release v0.1.1055: connected-actions/,
 );
 assert.throws(
-	() => validateSnapshot(publicRoadmap, releaseWithDuplicateSlug),
+	() => validateSnapshot(publicRoadmap, asPublicReleases(releaseWithDuplicateSlug)),
 	/Duplicate roadmap slug in release v0.1.1055: connected-actions/,
 );
 const unknownDuplicateReleaseLinkFixture = structuredClone(releaseFixture);
@@ -440,7 +488,7 @@ const releaseWithUnknownDuplicateSlug = normalizeReleases(
 );
 assert.deepEqual(releaseWithUnknownDuplicateSlug.items[0].projectSlugs, ["ghost", "ghost"]);
 assert.throws(
-	() => validateSnapshot(publicRoadmap, releaseWithUnknownDuplicateSlug),
+	() => validateSnapshot(publicRoadmap, asPublicReleases(releaseWithUnknownDuplicateSlug)),
 	/Duplicate roadmap slug in release v0.1.1055: ghost/,
 );
 const draftLinkFixture = structuredClone(releaseFixture);
@@ -456,7 +504,7 @@ assert.equal(releasesWithDraftLink.items.length, 1);
 assert.deepEqual(releasesWithDraftLink.items[0].projectSlugs, []);
 const shippedLinkedOnlyFromDraft = structuredClone(publicRoadmap);
 assert.throws(
-	() => validateSnapshot(shippedLinkedOnlyFromDraft, releasesWithDraftLink),
+	() => validateSnapshot(shippedLinkedOnlyFromDraft, asPublicReleases(releasesWithDraftLink)),
 	/Shipped roadmap item has no published release: connected-actions/,
 );
 const releaseWithUnknownSlugFixture = structuredClone(releaseFixture);
@@ -470,7 +518,7 @@ const releaseWithUnknownSlug = normalizeReleases(
 	projectFixture.syncedAt,
 );
 assert.throws(
-	() => validateSnapshot(publicRoadmap, releaseWithUnknownSlug),
+	() => validateSnapshot(publicRoadmap, asPublicReleases(releaseWithUnknownSlug)),
 	/Unknown roadmap slug in release v0.1.1056: missing-project/,
 );
 assert.deepEqual(releaseWithUnknownSlug.items[0].projectSlugs, [
@@ -480,7 +528,7 @@ assert.deepEqual(releaseWithUnknownSlug.items[0].projectSlugs, [
 ]);
 const shippedWithoutPublishedRelease = structuredClone(publicRoadmap);
 assert.throws(
-	() => validateSnapshot(shippedWithoutPublishedRelease, normalizedWithoutNotes),
+	() => validateSnapshot(shippedWithoutPublishedRelease, asPublicReleases(normalizedWithoutNotes)),
 	/Shipped roadmap item has no published release: connected-actions/,
 );
 
@@ -1130,20 +1178,20 @@ try {
 		HOMUN_PROJECT_OWNER: "homun-app",
 		HOMUN_RELEASES_REPO: "homun-app/homun-releases",
 	};
-	const currentPublicPair = { roadmap: publicRoadmap, releases };
+	const currentPublicPair = { roadmap: publicRoadmap, releases: publicReleases };
 	const voteChangedFixture = structuredClone(projectFixture);
 	voteChangedFixture.data.organization.projectV2.items.nodes[0].content.reactions.totalCount += 1;
 	const transactionJournalPath = join(tempRoot, ".product-data-transaction.json");
 	await Promise.all([
 		writeFile(roadmapPath, "partially-replaced-roadmap\n"),
-		writeFile(releasesPath, `${JSON.stringify(releases, null, 2)}\n`),
+		writeFile(releasesPath, `${JSON.stringify(publicReleases, null, 2)}\n`),
 		writeFile(
 			`${roadmapPath}.product-data.bak`,
 			`${JSON.stringify(publicRoadmap, null, 2)}\n`,
 		),
 		writeFile(
 			`${releasesPath}.product-data.bak`,
-			`${JSON.stringify(releases, null, 2)}\n`,
+			`${JSON.stringify(publicReleases, null, 2)}\n`,
 		),
 		writeFile(`${releasesPath}.product-data.tmp`, "candidate-releases\n"),
 		writeFile(transactionJournalPath, JSON.stringify({

@@ -204,7 +204,15 @@ export function validateSnapshot(roadmap, releases) {
 	} else if (!Array.isArray(roadmap.items)) {
 		throw new Error("Invalid roadmap snapshot shape");
 	}
-	if (!Array.isArray(releases.items)) {
+	const expectedReleaseTimestamp = isRawRoadmap ? "fetchedAt" : "contentUpdatedAt";
+	const unexpectedReleaseTimestamp = isRawRoadmap ? "contentUpdatedAt" : "fetchedAt";
+	if (
+		!Array.isArray(releases.items)
+		|| !Object.hasOwn(releases, expectedReleaseTimestamp)
+		|| typeof releases[expectedReleaseTimestamp] !== "string"
+		|| !releases[expectedReleaseTimestamp].trim()
+		|| Object.hasOwn(releases, unexpectedReleaseTimestamp)
+	) {
 		throw new Error("Invalid releases snapshot shape");
 	}
 	const roadmapEntries = isRawRoadmap ? roadmap.candidates : roadmap.items;
