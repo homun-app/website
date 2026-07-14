@@ -1,8 +1,10 @@
 ---
 import type { RoadmapItem, RoadmapStatus } from "../../lib/product-data";
+import { roadmapPresentation } from "../../lib/roadmap-presentation.mjs";
 import CommunityIdeas from "./CommunityIdeas.astro";
 interface Props { items: RoadmapItem[] }
 const { items } = Astro.props;
+const presentedItems = items.map((item) => ({ item, presentation: roadmapPresentation(item) }));
 const stages: { status: RoadmapStatus; label: string; hint: string }[] = [
 	{ status: "ideas", label: "Ideas", hint: "Ideas we are evaluating with the community" },
 	{ status: "next", label: "Next", hint: "Directions we intend to pursue" },
@@ -34,10 +36,10 @@ const areas = [...new Set(items.map((item) => item.area))].sort();
 					<p class="mt-1 text-xs text-faint">{stage.hint}</p>
 				</div>
 				<div class="space-y-3">
-					{items.filter((item) => item.status === stage.status).map((item) => (
+					{presentedItems.filter(({ item }) => item.status === stage.status).map(({ item, presentation }) => (
 						<article class="project-card card card-hover relative p-4" data-roadmap-area={item.area}>
 							<span class="font-mono text-[10px] uppercase tracking-[.12em] text-accent-bright">{item.area}</span>
-							{item.underReview && <span class="ml-2 rounded-full border border-accent/30 px-2 py-1 font-mono text-[9px] uppercase tracking-[.1em] text-accent-bright">Under review</span>}
+							{presentation.underReview && <span class="ml-2 rounded-full border border-accent/30 px-2 py-1 font-mono text-[9px] uppercase tracking-[.1em] text-accent-bright">Under review</span>}
 							<h4 class="mt-2 text-[15px] font-semibold leading-snug text-cream">
 								<a href={`/roadmap/${item.slug}/`} class="project-detail-link focus-visible:outline-none" aria-label={`View ${item.title} roadmap details`}>{item.title}</a>
 							</h4>
@@ -48,8 +50,12 @@ const areas = [...new Set(items.map((item) => item.area))].sort();
 							{item.status === "ideas" && (
 								<div class="project-actions mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-line pt-3 font-mono text-[10px]">
 									<span class="text-accent-bright" aria-label={`${item.votes} votes`}>👍 {item.votes}</span>
-									{item.voting === "open" && <a href={item.githubUrl} target="_blank" rel="noopener" class="text-muted hover:text-cream">Vote on GitHub ↗</a>}
-									<a href={item.githubUrl} target="_blank" rel="noopener" class="text-muted hover:text-cream">Discuss on GitHub ↗</a>
+									{presentation.canParticipate && (
+										<>
+											<a href={item.githubUrl} target="_blank" rel="noopener" class="text-muted hover:text-cream">Vote on GitHub ↗</a>
+											<a href={item.githubUrl} target="_blank" rel="noopener" class="text-muted hover:text-cream">Discuss on GitHub ↗</a>
+										</>
+									)}
 								</div>
 							)}
 						</article>
