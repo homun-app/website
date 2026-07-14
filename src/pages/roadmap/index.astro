@@ -4,9 +4,7 @@ import FeaturedProject from "../../components/roadmap/FeaturedProject.astro";
 import LatestRelease from "../../components/roadmap/LatestRelease.astro";
 import RoadmapJourney from "../../components/roadmap/RoadmapJourney.astro";
 import ReleaseHistory from "../../components/roadmap/ReleaseHistory.astro";
-import CommunityIdeas from "../../components/roadmap/CommunityIdeas.astro";
 import {
-	communityIdeas,
 	featuredProject,
 	latestRelease,
 	releases,
@@ -21,7 +19,7 @@ const synced = new Date(roadmapSyncedAt).toLocaleDateString("en-US", {
 });
 ---
 
-<Page title="Roadmap — Homun" description="A living view of what Homun is exploring, building, and shipping.">
+<Page title="Roadmap — Homun" description="A living view of Homun ideas, active work, and shipped releases.">
 	<section class="relative overflow-hidden pb-12 pt-36 sm:pt-44">
 		<div class="atmosphere absolute inset-0 -z-10" aria-hidden="true"></div>
 		<div class="glow left-1/2 top-0 h-80 w-[42rem] -translate-x-1/2 opacity-25" aria-hidden="true"></div>
@@ -53,9 +51,8 @@ const synced = new Date(roadmapSyncedAt).toLocaleDateString("en-US", {
 	</section>
 
 	<section class="pb-28">
-		<div class="mx-auto grid max-w-6xl gap-5 px-5 lg:grid-cols-[1.35fr_.65fr]">
+		<div class="mx-auto max-w-6xl px-5">
 			{releases.length > 0 && <ReleaseHistory releases={releases.slice(0, 4)} />}
-			{communityIdeas.length > 0 && <CommunityIdeas items={communityIdeas} />}
 		</div>
 	</section>
 </Page>

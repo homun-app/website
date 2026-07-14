@@ -2,6 +2,12 @@ name: Sync public product data
 
 on:
   workflow_dispatch:
+    inputs:
+      allow_empty:
+        description: Allow an empty roadmap snapshot to replace published data during recovery
+        required: false
+        default: false
+        type: boolean
   repository_dispatch:
     types: [product-data-sync]
   schedule:
@@ -19,13 +25,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      HOMUN_GITHUB_TOKEN: ${{ secrets.ROADMAP_GITHUB_TOKEN }}
       HOMUN_PROJECT_OWNER: homun-app
-      HOMUN_PROJECT_NUMBER: ${{ secrets.HOMUN_PROJECT_NUMBER }}
       HOMUN_RELEASES_REPO: homun-app/homun-releases
     steps:
       - name: Check out website
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -37,7 +43,18 @@ jobs:
         run: npm ci
 
       - name: Synchronize roadmap and releases
-        run: npm run sync:product-data
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.allow_empty == false }}
+        env:
+          HOMUN_GITHUB_TOKEN: ${{ secrets.ROADMAP_GITHUB_TOKEN }}
+          HOMUN_PROJECT_NUMBER: ${{ secrets.HOMUN_PROJECT_NUMBER }}
+        run: npm run sync:product-data -- --write
+
+      - name: Synchronize roadmap and releases (allow empty recovery)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.allow_empty == true }}
+        env:
+          HOMUN_GITHUB_TOKEN: ${{ secrets.ROADMAP_GITHUB_TOKEN }}
+          HOMUN_PROJECT_NUMBER: ${{ secrets.HOMUN_PROJECT_NUMBER }}
+        run: npm run sync:product-data -- --write --allow-empty
 
       - name: Validate generated snapshots
         run: npm run test:product-data
@@ -53,4 +70,4 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add src/data/roadmap.json src/data/releases.json
           git commit -m "chore: sync public product data"
-          git push
+          git push origin HEAD:${{ github.event.repository.default_branch }}

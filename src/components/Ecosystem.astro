@@ -1,5 +1,17 @@
 ---
 import EcosystemIllustration from "./illustrations/EcosystemIllustration.astro";
+import { itemsByStatus } from "../lib/product-data";
+
+const roadmapMetricDefinitions = [
+	{ status: "ideas", label: "Ideas" },
+	{ status: "building", label: "Building" },
+	{ status: "shipped", label: "Shipped" },
+] as const;
+const roadmapMetrics = roadmapMetricDefinitions.map(({ status, label }) => ({
+	status,
+	label,
+	count: itemsByStatus(status).length,
+}));
 ---
 
 <section id="ecosystem" class="relative overflow-hidden py-24 sm:py-32">
@@ -25,18 +37,25 @@ import EcosystemIllustration from "./illustrations/EcosystemIllustration.astro";
 					<span class="rounded-full border border-line px-2.5 py-1 font-mono text-[9px] uppercase tracking-wider text-faint">Public roadmap</span>
 				</div>
 				<div class="my-12 grid grid-cols-3 gap-2">
-					<div class="rounded-lg border border-line bg-bg/45 p-3"><p class="metric-label">Exploring</p><p class="mt-4 text-2xl text-cream">06</p></div>
-					<div class="rounded-lg border border-accent/25 bg-accent/5 p-3"><p class="metric-label text-accent-bright">Building</p><p class="mt-4 text-2xl text-cream">03</p></div>
-					<div class="rounded-lg border border-line bg-bg/45 p-3"><p class="metric-label">Shipped</p><p class="mt-4 text-2xl text-cream">05</p></div>
+					{roadmapMetrics.map(({ status, label, count }) => (
+						<div
+							data-status={status}
+							data-count={count}
+							class={`rounded-lg border p-3 ${status === "building" ? "border-accent/25 bg-accent/5" : "border-line bg-bg/45"}`}
+						>
+							<p class={`metric-label ${status === "building" ? "text-accent-bright" : ""}`}>{label}</p>
+							<p class="mt-4 text-2xl text-cream">{String(count).padStart(2, "0")}</p>
+						</div>
+					))}
 				</div>
 				<div>
 					<h3 class="text-3xl text-cream">See the direction.<br />Help shape what comes next.</h3>
 					<p class="mt-4 max-w-xl text-sm leading-relaxed text-muted">
-						See what Homun is exploring, what is being built and what has shipped. Community voting and suggestions will use an optional Homun account when enabled.
+						See the ideas Homun is considering, what comes next, what is being built and what has shipped. Submit ideas through GitHub now. Voting opens after moderation, when an idea has a public GitHub discussion. Browsing the roadmap does not require a Homun account. Proposing ideas and voting require a GitHub account.
 					</p>
 					<div class="mt-7 flex flex-wrap items-center gap-4">
 						<a href="/roadmap" class="btn btn-ghost">Browse Projects</a>
-						<span class="font-mono text-[10px] uppercase tracking-wider text-faint">Voting &amp; suggestions · Coming later</span>
+						<span class="font-mono text-[10px] uppercase tracking-wider text-faint">GitHub idea submissions · Available now</span>
 					</div>
 				</div>
 			</article>

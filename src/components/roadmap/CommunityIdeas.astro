@@ -1,20 +1,10 @@
 ---
-import type { RoadmapItem } from "../../lib/product-data";
-interface Props { items: RoadmapItem[] }
-const { items } = Astro.props;
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
 ---
 
-<section class="card p-6 sm:p-7" aria-labelledby="community-ideas-title">
-	<p class="eyebrow">Help shape Homun</p>
-	<h2 id="community-ideas-title" class="mt-3 text-xl font-semibold">Community ideas</h2>
-	<p class="mt-3 text-sm leading-relaxed text-faint">Ideas are not commitments. Vote or add context on GitHub while we evaluate them.</p>
-	<div class="mt-5 divide-y divide-line">
-		{items.map((item) => (
-			<a href={item.githubUrl} target="_blank" rel="noopener" class="flex items-center justify-between gap-3 py-4 text-sm text-muted hover:text-cream">
-				<span>{item.title}</span><span class="font-mono text-xs text-accent-bright">▲ {item.votes}</span>
-			</a>
-		))}
-	</div>
-	<a href="https://github.com/homun-app/homun/issues/new" target="_blank" rel="noopener" class="btn mt-5 w-full border border-line-strong text-sm text-cream hover:border-accent/50">Suggest an idea</a>
-	<p class="mt-3 text-center text-[11px] text-faint">A GitHub account is needed only to participate.</p>
-</section>
+<div class:list={["border border-dashed border-line-strong", compact ? "rounded-xl p-4" : "card p-6 sm:p-7"]} aria-label="Suggest a roadmap idea">
+	<p class="font-mono text-[10px] uppercase tracking-[.12em] text-accent-bright">Help shape Homun</p>
+	<p class="mt-2 text-xs leading-relaxed text-faint">Propose a direction for the community to discuss and evaluate.</p>
+	<a href="https://github.com/homun-app/homun/issues/new?template=roadmap-idea.yml" target="_blank" rel="noopener" class="btn mt-4 w-full border border-line-strong text-xs text-cream hover:border-accent/50">Suggest an idea</a>
+</div>

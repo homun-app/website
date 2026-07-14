@@ -4,7 +4,16 @@ import RoadmapOrbitIllustration from "../illustrations/RoadmapOrbitIllustration.
 
 interface Props { project: RoadmapItem }
 const { project } = Astro.props;
-const updated = new Date(project.updatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+if (project.status !== "building") {
+	throw new Error(`Featured roadmap project must be Building: ${project.slug}`);
+}
+const updated = project.publicUpdateDate
+	? new Date(`${project.publicUpdateDate}T00:00:00Z`).toLocaleDateString("en-US", {
+		month: "short",
+		day: "numeric",
+		timeZone: "UTC",
+	})
+	: null;
 ---
 
 <article class="featured card sheen relative min-h-[26rem] overflow-hidden p-6 sm:p-8">
@@ -15,7 +24,7 @@ const updated = new Date(project.updatedAt).toLocaleDateString("en-US", { month:
 		<p class="mt-4 text-[15px] leading-relaxed text-muted">{project.description}</p>
 		<div class="mt-6 flex flex-wrap gap-2">
 			<span class="pill">{project.progress}% complete</span>
-			<span class="pill">Updated {updated}</span>
+			{updated && <span class="pill" data-public-update-date={project.publicUpdateDate}>Updated {updated}</span>}
 		</div>
 		<div class="mt-5 h-1.5 max-w-sm overflow-hidden rounded-full bg-white/5" aria-label={`${project.progress}% complete`}>
 			<div class="h-full rounded-full bg-gradient-to-r from-accent to-[#6c8fee]" style={`width:${project.progress}%`}></div>

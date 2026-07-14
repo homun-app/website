@@ -1,14 +1,14 @@
 import roadmapSnapshot from "../data/roadmap.json";
 import releaseSnapshot from "../data/releases.json";
+import { selectFeaturedProject } from "./roadmap-presentation.mjs";
 
-export type RoadmapStatus = "exploring" | "next" | "building" | "shipped";
-export type CommunityStatus = "open" | "voting" | "closed";
+export type RoadmapStatus = "ideas" | "next" | "building" | "shipped";
+export type VotingState = "open" | "closed";
 
 export interface RoadmapItem {
 	slug: string;
 	title: string;
 	status: RoadmapStatus;
-	sourceStatus: "Exploring" | "Next" | "Building" | "Shipped";
 	area: string;
 	description: string;
 	capabilities: string[];
@@ -16,9 +16,10 @@ export interface RoadmapItem {
 	progress: number;
 	targetRelease: string | null;
 	publicUpdate: string | null;
-	community: CommunityStatus;
+	publicUpdateDate: string | null;
+	underReview: boolean;
+	voting: VotingState;
 	order: number;
-	updatedAt: string;
 	githubUrl: string;
 	issueNumber: number | null;
 	votes: number;
@@ -48,15 +49,10 @@ export const roadmapItems = [...(roadmapSnapshot.items as RoadmapItem[])].sort(
 export const releases = [...(releaseSnapshot.items as ReleaseItem[])].sort(
 	(a, b) => new Date(b.publishedAt).valueOf() - new Date(a.publishedAt).valueOf(),
 );
-export const roadmapSyncedAt = roadmapSnapshot.syncedAt;
-export const releasesSyncedAt = releaseSnapshot.syncedAt;
-export const featuredProject =
-	roadmapItems.find((item) => item.featured)
-	?? roadmapItems.find((item) => item.status === "building");
+export const roadmapSyncedAt = roadmapSnapshot.contentUpdatedAt;
+export const releasesSyncedAt = releaseSnapshot.contentUpdatedAt;
+export const featuredProject = selectFeaturedProject(roadmapItems);
 export const latestRelease = releases[0];
-export const communityIdeas = roadmapItems
-	.filter((item) => item.community === "voting")
-	.sort((a, b) => b.votes - a.votes || a.order - b.order);
 
 export function itemsByStatus(status: RoadmapStatus) {
 	return roadmapItems.filter((item) => item.status === status);

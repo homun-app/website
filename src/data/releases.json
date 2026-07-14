@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 1,
-  "syncedAt": "2026-07-14T10:57:24.760Z",
+  "schemaVersion": 2,
+  "contentUpdatedAt": "2026-07-14T10:57:24.760Z",
   "items": [
     {
       "version": "v0.1.1058",
@@ -171,7 +171,11 @@
           "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1056/latest.yml"
         }
       ],
-      "projectSlugs": []
+      "projectSlugs": [
+        "connected-actions",
+        "local-computer",
+        "model-freedom"
+      ]
     },
     {
       "version": "v0.1.1055",
