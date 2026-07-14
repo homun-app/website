@@ -17,7 +17,7 @@ for (const required of [
 	"Browse Projects",
 ]) {
 	assert.ok(
-		text.toLowerCase().includes(required.toLowerCase()),
+		text.includes(required),
 		`Homepage is missing required message: ${required}`,
 	);
 }
@@ -30,7 +30,7 @@ for (const forbidden of ["Codex", "Claude Code", "any model", "every platform"])
 }
 
 for (const href of ["/docs", "/marketplace", "/roadmap", "/guides/download/", "/#memory"]) {
-	assert.ok(html.includes(`href="${href}`), `Homepage is missing route: ${href}`);
+	assert.ok(html.includes(`href="${href}"`), `Homepage is missing route: ${href}`);
 }
 
 assert.ok(
