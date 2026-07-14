@@ -1105,6 +1105,19 @@ assert.throws(
 	() => normalizeProject(fixtureWithField("Voting", "Voting")),
 	/Unknown voting state/,
 );
+for (const [field, acceptedWhenCoerced, expected] of [
+	["Public status", "Ideas", /Unknown public status/],
+	["Publication status", "Published", /Unknown publication status/],
+	["Voting", "Open", /Unknown voting state/],
+]) {
+	assert.throws(
+		() => normalizeProject(fixtureWithField(
+			field,
+			{ toString: () => acceptedWhenCoerced },
+		)),
+		expected,
+	);
+}
 assert.throws(() => normalizeProject(fixtureWithField("Order", 1.5, "number")), /Invalid order/);
 assert.throws(() => normalizeProject(fixtureWithField("Progress", 101, "number")), /Invalid progress/);
 assert.throws(
@@ -1133,6 +1146,19 @@ assert.throws(
 	() => normalizeProject(fixtureWithField("Public update date", "14/07/2026", "date")),
 	/Invalid public update date: shared-spaces/,
 );
+assert.throws(
+	() => normalizeProject(fixtureWithField("Public update date", 20260714, "date")),
+	/Invalid public update date: shared-spaces/,
+);
+const coercibleDateFixture = fixtureWithField(
+	"Public update date",
+	{ toString: () => "2026-07-14" },
+	"date",
+);
+assert.throws(
+	() => normalizeProject(coercibleDateFixture),
+	/Invalid public update date: shared-spaces/,
+);
 const updateWithoutValidDate = fixtureWithField("Public update date", "2026-02-30", "date");
 assert.throws(
 	() => normalizeProject(updateWithoutValidDate),
@@ -1150,6 +1176,17 @@ assert.throws(
 	() => validateSnapshot(publicWithoutContentUpdatedAt, publicReleases),
 	/Invalid public roadmap contentUpdatedAt/,
 );
+for (const [snapshot, releaseSnapshot] of [
+	[structuredClone(roadmap), releases],
+	[structuredClone(publicRoadmap), publicReleases],
+]) {
+	const entries = snapshot.candidates ?? snapshot.items;
+	entries[0].slug = 123;
+	assert.throws(
+		() => validateSnapshot(snapshot, releaseSnapshot),
+		/Invalid roadmap slug: 123/,
+	);
+}
 for (const [field, value, expected] of [
 	["title", undefined, /Invalid roadmap title: shared-spaces/],
 	["area", undefined, /Invalid roadmap area: shared-spaces/],

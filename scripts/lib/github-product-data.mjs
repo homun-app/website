@@ -77,15 +77,15 @@ function normalizeProjectNode(node) {
 	const fields = fieldMap(node);
 	const content = node?.content;
 	if (!content?.title || !content?.url) throw new Error("Missing roadmap content");
-	const publicStatus = String(fields.get("Public status") ?? "");
+	const publicStatus = fields.get("Public status") ?? "";
 	const status = PUBLIC_STATUSES.get(publicStatus);
 	if (!status) throw new Error(`Unknown public status: ${publicStatus || "(empty)"}`);
-	const sourcePublicationStatus = String(fields.get("Publication status") ?? "");
+	const sourcePublicationStatus = fields.get("Publication status") ?? "";
 	const publicationStatus = PUBLICATION_STATUSES.get(sourcePublicationStatus);
 	if (!publicationStatus) {
 		throw new Error(`Unknown publication status: ${sourcePublicationStatus || "(empty)"}`);
 	}
-	const sourceVoting = String(fields.get("Voting") ?? "");
+	const sourceVoting = fields.get("Voting") ?? "";
 	const voting = VOTING_STATES.get(sourceVoting);
 	if (!voting) throw new Error(`Unknown voting state: ${sourceVoting || "(empty)"}`);
 	const sourceSlug = fields.get("Slug");
@@ -117,11 +117,19 @@ function normalizeProjectNode(node) {
 		throw new Error(`Invalid progress: ${slug}`);
 	}
 	const publicUpdate = String(fields.get("Public update") ?? "").trim() || null;
-	const publicUpdateDate = String(fields.get("Public update date") ?? "").trim() || null;
-	if (publicUpdate && !publicUpdateDate) throw new Error(`Missing public update date: ${slug}`);
-	if (publicUpdateDate && !isIsoDate(publicUpdateDate)) {
-		throw new Error(`Invalid public update date: ${slug}`);
+	const sourcePublicUpdateDate = fields.get("Public update date");
+	let publicUpdateDate = null;
+	if (sourcePublicUpdateDate != null) {
+		if (
+			typeof sourcePublicUpdateDate !== "string"
+			|| !sourcePublicUpdateDate.trim()
+			|| !isIsoDate(sourcePublicUpdateDate.trim())
+		) {
+			throw new Error(`Invalid public update date: ${slug}`);
+		}
+		publicUpdateDate = sourcePublicUpdateDate.trim();
 	}
+	if (publicUpdate && !publicUpdateDate) throw new Error(`Missing public update date: ${slug}`);
 	if (!content.reactions || !Object.hasOwn(content.reactions, "totalCount")) {
 		throw new Error(`Missing votes: ${slug}`);
 	}
@@ -273,7 +281,11 @@ export function validateSnapshot(
 	const slugs = new Set();
 	let featured = 0;
 	for (const item of roadmapEntries ?? []) {
-		if (!item.slug) throw new Error("Missing roadmap slug");
+		if (item.slug == null || item.slug === "") throw new Error("Missing roadmap slug");
+		if (typeof item.slug !== "string") {
+			throw new Error(`Invalid roadmap slug: ${item.slug}`);
+		}
+		if (!item.slug.trim()) throw new Error("Missing roadmap slug");
 		if (!ROADMAP_SLUG.test(item.slug)) throw new Error(`Invalid roadmap slug: ${item.slug}`);
 		if (slugs.has(item.slug)) throw new Error(`Duplicate roadmap slug: ${item.slug}`);
 		slugs.add(item.slug);
