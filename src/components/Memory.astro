@@ -1,33 +1,47 @@
 ---
-import MemoryArchitectureIllustration from "./illustrations/MemoryArchitectureIllustration.astro";
-
-const controls = ["Inspect", "Correct", "Consolidate", "Forget", "Export"] as const;
+import MemoryContinuityIllustration from "./illustrations/MemoryContinuityIllustration.astro";
 ---
 
 <section id="memory" class="relative scroll-mt-24 overflow-hidden py-24 sm:py-32">
-  <div class="glow -right-48 top-16 h-[30rem] w-[30rem] opacity-15" aria-hidden="true"></div>
-  <div class="section-shell grid items-center gap-14 lg:grid-cols-[.88fr_1.12fr] lg:gap-20">
-    <div>
-      <p class="eyebrow reveal">Hybrid memory</p>
-      <h2 class="reveal mt-4 pb-[0.06em] text-4xl leading-[1.06] text-cream sm:text-6xl">
-        A memory inspired by how we remember.
-      </h2>
-      <p class="reveal mt-6 max-w-xl text-lg leading-relaxed text-muted" style="--reveal-delay: 70ms">
-        Fast recall, meaningful connections, and a narrative you can read and correct.
-      </p>
+	<div class="glow -right-48 top-16 h-[34rem] w-[34rem] opacity-15" aria-hidden="true"></div>
+	<div class="section-shell">
+		<div class="grid items-end gap-8 lg:grid-cols-[.92fr_1.08fr] lg:gap-16">
+			<div>
+				<p class="eyebrow reveal">Hybrid memory · built for continuity</p>
+				<h2 class="reveal mt-4 pb-[0.08em] text-4xl leading-[1.04] text-cream sm:text-6xl">
+					A new chat.<br />The same understanding.
+				</h2>
+			</div>
+			<p class="reveal max-w-xl text-lg leading-relaxed text-muted" style="--reveal-delay: 70ms">
+				Homun remembers more than facts. It preserves
+				<span class="text-cream">what happened, what was decided, and why</span> — through a memory
+				you can inspect, correct, and carry with you.
+			</p>
+		</div>
 
-      <ul class="reveal mt-9 flex max-w-xl flex-nowrap gap-x-1 border-t border-line pt-5 sm:gap-x-2" style="--reveal-delay: 130ms" aria-label="Memory controls">
-        {controls.map((control, index) => (
-          <li class="flex shrink-0 items-center gap-1 whitespace-nowrap font-mono text-[9px] uppercase tracking-[0.06em] text-faint sm:text-[10px] sm:tracking-[0.12em]">
-            {index > 0 && <span aria-hidden="true" class="text-line-strong">·</span>}
-            <span>{control}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
+		<div class="reveal mt-12" style="--reveal-delay: 110ms">
+			<MemoryContinuityIllustration />
+		</div>
 
-    <div class="reveal" style="--reveal-delay: 110ms">
-      <MemoryArchitectureIllustration />
-    </div>
-  </div>
+		<div
+			class="reveal mt-8 flex flex-col justify-between gap-5 border-t border-line pt-6 md:flex-row md:items-center"
+			style="--reveal-delay: 150ms"
+		>
+			<p class="max-w-xl text-sm leading-relaxed text-muted">
+				<span class="text-cream">Not a transcript. Not an opaque embedding blob.</span><br />
+				Structured recall, meaningful connections, and a narrative you own.
+			</p>
+			<ul class="flex flex-wrap gap-2" aria-label="Hybrid memory layers">
+				<li class="pill font-mono text-[9px] uppercase tracking-wider">
+					<strong class="text-cream">SQL</strong> · fast recall
+				</li>
+				<li class="pill font-mono text-[9px] uppercase tracking-wider">
+					<strong class="text-cream">Graph</strong> · context + why
+				</li>
+				<li class="pill font-mono text-[9px] uppercase tracking-wider">
+					<strong class="text-cream">Wiki</strong> · read + correct
+				</li>
+			</ul>
+		</div>
+	</div>
 </section>
