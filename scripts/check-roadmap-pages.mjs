@@ -31,6 +31,15 @@ const journeySource = await readSource("src/components/roadmap/RoadmapJourney.as
 const featuredSource = await readSource("src/components/roadmap/FeaturedProject.astro");
 const productDataSource = await readSource("src/lib/product-data.ts");
 const roadmapSnapshot = JSON.parse(await readSource("src/data/roadmap.json"));
+const releasesSnapshot = JSON.parse(await readSource("src/data/releases.json"));
+const orderedReleases = [...releasesSnapshot.items].sort(
+	(left, right) => new Date(right.publishedAt) - new Date(left.publishedAt)
+		|| left.version.localeCompare(right.version),
+);
+assert.ok(orderedReleases.length >= 2, "Release presentation contract needs two releases");
+const [expectedLatestRelease, expectedPreviousRelease] = orderedReleases;
+const releaseId = (version) => version.replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase();
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const roadmapText = plain(roadmapHtml);
 const changelogText = plain(changelogHtml);
 const detailText = plain(detailHtml);
@@ -175,7 +184,7 @@ for (const required of [
 	"Ideas",
 	"👍 0",
 	"Suggest an idea",
-	"v0.1.1056",
+	expectedLatestRelease.version,
 	"Synced with GitHub",
 ]) {
 	assert.ok(roadmapText.includes(required), `Roadmap missing: ${required}`);
@@ -222,16 +231,37 @@ assert.doesNotMatch(
 
 assert.match(
 	roadmapHtml,
-	/Latest release[\s\S]*?<h2[^>]*>v0\.1\.1056<\/h2>/,
-	"Roadmap latest-release card is not led by v0.1.1056",
+	new RegExp(
+		`Latest release[\\s\\S]*?<h2[^>]*>${escapeRegex(expectedLatestRelease.version)}<\\/h2>`,
+	),
+	`Roadmap latest-release card is not led by ${expectedLatestRelease.version}`,
 );
-assert.match(
-	changelogHtml,
-	/<article id="v0-1-1056"[\s\S]*?v0\.1\.1056[\s\S]*?Latest[\s\S]*?<article id="v0-1-1055"/,
-	"Changelog does not render v0.1.1056 first and mark it latest",
+const latestArticleStart = changelogHtml.indexOf(`id="${releaseId(expectedLatestRelease.version)}"`);
+const previousArticleStart = changelogHtml.indexOf(`id="${releaseId(expectedPreviousRelease.version)}"`);
+assert.ok(latestArticleStart >= 0, `Changelog is missing ${expectedLatestRelease.version}`);
+assert.ok(previousArticleStart >= 0, `Changelog is missing ${expectedPreviousRelease.version}`);
+assert.ok(
+	latestArticleStart < previousArticleStart,
+	`Changelog does not order ${expectedLatestRelease.version} before ${expectedPreviousRelease.version}`,
 );
-assert.ok(changelogText.includes("v0.1.1056"), "Changelog is missing the real latest release");
+const latestArticleHtml = changelogHtml.slice(latestArticleStart, previousArticleStart);
+assert.ok(
+	latestArticleHtml.includes(expectedLatestRelease.version)
+		&& latestArticleHtml.includes("Latest"),
+	`Changelog does not mark ${expectedLatestRelease.version} as latest`,
+);
 assert.ok(!changelogText.includes("illustrative samples"), "Changelog still contains sample copy");
-assert.ok(rss.includes("v0.1.1056"), "RSS is missing the real latest release");
+const rssItems = [...rss.matchAll(/<item>([\s\S]*?)<\/item>/g)].map((match) => match[1]);
+assert.ok(rssItems.length >= 2, "RSS release contract needs two items");
+assert.ok(
+	rssItems[0].includes(`<title>Homun ${expectedLatestRelease.version}</title>`)
+		&& rssItems[0].includes(`#${releaseId(expectedLatestRelease.version)}/</link>`),
+	`RSS first item is not ${expectedLatestRelease.version}`,
+);
+assert.ok(
+	rss.indexOf(`<title>Homun ${expectedLatestRelease.version}</title>`)
+		< rss.indexOf(`<title>Homun ${expectedPreviousRelease.version}</title>`),
+	`RSS does not order ${expectedLatestRelease.version} before ${expectedPreviousRelease.version}`,
+);
 
 console.log("Living roadmap and release contract passed");

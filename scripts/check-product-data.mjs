@@ -1851,6 +1851,40 @@ try {
 	assert.deepEqual((await readdir(tempRoot)).sort(), ["releases.json", "roadmap.json"]);
 
 	await writePairFiles(currentPublicPair);
+	const issueActivityOnlyFixture = structuredClone(projectFixture);
+	issueActivityOnlyFixture.data.organization.projectV2.items.nodes[0].content.updatedAt =
+		"2026-07-14T18:00:00Z";
+	const beforeIssueActivityBytes = await Promise.all([
+		readFile(roadmapPath, "utf8"),
+		readFile(releasesPath, "utf8"),
+	]);
+	const beforeIssueActivityStats = await Promise.all([
+		stat(roadmapPath, { bigint: true }),
+		stat(releasesPath, { bigint: true }),
+	]);
+	const issueActivityResult = await syncProductData({
+		env: syncEnv,
+		fetchImpl: fixtureFetchFor(issueActivityOnlyFixture, releaseFixture),
+		paths: { roadmapPath, releasesPath },
+		clock: () => "2026-07-14T18:30:00.000Z",
+		mode: "write",
+	});
+	assert.equal(issueActivityResult.status, "NO_CHANGE");
+	assert.deepEqual(
+		await Promise.all([readFile(roadmapPath, "utf8"), readFile(releasesPath, "utf8")]),
+		beforeIssueActivityBytes,
+		"Issue activity alone must not rewrite public snapshot bytes",
+	);
+	const afterIssueActivityStats = await Promise.all([
+		stat(roadmapPath, { bigint: true }),
+		stat(releasesPath, { bigint: true }),
+	]);
+	assert.deepEqual(
+		afterIssueActivityStats.map(({ mtimeNs }) => mtimeNs),
+		beforeIssueActivityStats.map(({ mtimeNs }) => mtimeNs),
+		"Issue activity alone must not touch public snapshot mtimes",
+	);
+
 	const newReviewReleaseFixture = structuredClone(releaseFixture);
 	newReviewReleaseFixture[0].body = newReviewReleaseFixture[0].body.replace(
 		"Roadmap: connected-actions",
