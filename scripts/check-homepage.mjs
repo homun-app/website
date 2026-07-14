@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const html = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
-const text = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+const text = html.replace(/<[^>]+>/g, " ").replace(/&#39;/g, "'").replace(/\s+/g, " ");
 
 for (const required of [
 	"Your work. Your models. Your system.",
@@ -11,6 +11,17 @@ for (const required of [
 	"Fast recall, meaningful connections, and a narrative you can read and correct.",
 	"Inspect · Correct · Consolidate · Forget · Export",
 	"Useful memory requires ownership.",
+	"Homun makes the storage, access boundary and activity visible—so persistent context remains something you direct.",
+	"Keep knowledge local and in scope",
+	"Memory is stored locally by default and separated by user and project, so one workspace does not silently become another's context.",
+	"Grant access explicitly",
+	"Tools and connectors begin denied and operate through permissions you approve.",
+	"Inspect what happened",
+	"Homun surfaces plans, tool use and connector activity while work is in progress.",
+	"Protect secrets by design",
+	"Sensitive credentials belong behind the Vault boundary, not inside readable memory.",
+	"Retain the final say",
+	"Correct, export or remove knowledge from active recall when it no longer belongs in the system.",
 	"Cloud, open source, or local",
 	"Real work, not isolated prompts",
 	"Official Homun plugins. Free at launch.",

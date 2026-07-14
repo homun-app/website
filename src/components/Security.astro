@@ -5,15 +5,15 @@ import privacy from "../assets/screenshots/privacy.png";
 const controls = [
 	{ title: "Keep knowledge local and in scope", body: "Memory is stored locally by default and separated by user and project, so one workspace does not silently become another's context." },
 	{ title: "Grant access explicitly", body: "Tools and connectors begin denied and operate through permissions you approve." },
-	{ title: "Inspect what happened", body: "Activity and audit history keep tool use, decisions and results visible." },
+	{ title: "Inspect what happened", body: "Homun surfaces plans, tool use and connector activity while work is in progress." },
 	{ title: "Protect secrets by design", body: "Sensitive credentials belong behind the Vault boundary, not inside readable memory." },
-	{ title: "Retain the final say", body: "Correct, export or truly forget stored knowledge when it no longer belongs in the system." },
+	{ title: "Retain the final say", body: "Correct, export or remove knowledge from active recall when it no longer belongs in the system." },
 ] as const;
 ---
 
 <section id="control" class="relative scroll-mt-24 overflow-hidden border-y border-line bg-bg-raised/35 py-24 sm:py-32">
 	<div class="glow -left-40 bottom-0 h-96 w-96 opacity-20" aria-hidden="true"></div>
-	<div class="section-shell grid items-center gap-14 lg:grid-cols-[1.05fr_.95fr] lg:gap-20">
+	<div class="section-shell grid items-center gap-14 xl:grid-cols-[1.05fr_.95fr] xl:gap-20">
 		<div class="reveal relative">
 			<div class="operator-panel p-2.5">
 				<div class="flex items-center justify-between px-3 py-2.5">
@@ -39,7 +39,7 @@ const controls = [
 				Homun makes the storage, access boundary and activity visible—so persistent context remains something you direct.
 			</p>
 
-			<div class="mt-9 grid gap-x-7 gap-y-7 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+			<div class="mt-9 grid gap-x-7 gap-y-7 sm:grid-cols-2">
 				{controls.map((control, index) => (
 					<div class="reveal border-t border-line pt-4" style={`--reveal-delay: ${100 + index * 50}ms`}>
 						<div class="mb-3 flex items-center gap-2">
