@@ -148,6 +148,19 @@ const memorySource = await readFile(
 	"utf8",
 );
 
+const memoryReducedMotion = memorySource.slice(
+	memorySource.indexOf("@media (prefers-reduced-motion: reduce)"),
+);
+for (const declaration of [
+	"stroke-dasharray: none !important;",
+	"stroke-dashoffset: 0 !important;",
+]) {
+	assert.ok(
+		memoryReducedMotion.includes(declaration),
+		`Memory reduced-motion routes are missing: ${declaration}`,
+	);
+}
+
 for (const part of [
 	'data-memory-part="core"',
 	'data-memory-part="recall"',

@@ -80,16 +80,33 @@ function installerKind(name) {
 	return "Installer";
 }
 
+function responsiveDownloadLabels(control) {
+	const compact = control.querySelector('[data-download-label="compact"]');
+	const full = control.querySelector('[data-download-label="full"]');
+	return compact && full ? { compact, full } : null;
+}
+
 function wireDownloadControl(control, platform) {
 	control.addEventListener("click", async (event) => {
 		event.preventDefault();
 		if (control.getAttribute("aria-busy") === "true") return;
 		control.setAttribute("aria-busy", "true");
-		const statusLabel = control.matches("[data-homun-download]")
-			? control
-			: control.querySelector("[data-download-action]");
-		const original = statusLabel?.textContent;
-		if (statusLabel) statusLabel.textContent = "Finding the latest installer…";
+		const isPrimary = control.matches("[data-homun-download]");
+		const responsiveLabels = isPrimary ? responsiveDownloadLabels(control) : null;
+		const statusLabel = responsiveLabels
+			? null
+			: isPrimary
+				? control
+				: control.querySelector("[data-download-action]");
+		const original = responsiveLabels
+			? { compact: responsiveLabels.compact.textContent, full: responsiveLabels.full.textContent }
+			: statusLabel?.textContent;
+		if (responsiveLabels) {
+			responsiveLabels.compact.textContent = "Finding the latest installer…";
+			responsiveLabels.full.textContent = "Finding the latest installer…";
+		} else if (statusLabel) {
+			statusLabel.textContent = "Finding the latest installer…";
+		}
 		try {
 			const grouped = await loadLatestInstallers();
 			const asset = preferredInstaller(platform, grouped);
@@ -98,7 +115,12 @@ function wireDownloadControl(control, platform) {
 			navigateTo(RELEASES_PAGE_URL);
 		} finally {
 			control.removeAttribute("aria-busy");
-			if (statusLabel && original) statusLabel.textContent = original;
+			if (responsiveLabels && typeof original === "object") {
+				responsiveLabels.compact.textContent = original.compact;
+				responsiveLabels.full.textContent = original.full;
+			} else if (statusLabel && original) {
+				statusLabel.textContent = original;
+			}
 		}
 	});
 }
@@ -135,7 +157,13 @@ function renderInstallerLinks(list, grouped) {
 export function initDownloadControls(root = document, navigatorLike = navigator) {
 	const platform = detectPlatform(navigatorLike);
 	for (const control of root.querySelectorAll("[data-homun-download]")) {
-		control.textContent = platformLabels[platform];
+		const responsiveLabels = responsiveDownloadLabels(control);
+		if (responsiveLabels) {
+			responsiveLabels.compact.textContent = "Download";
+			responsiveLabels.full.textContent = platformLabels[platform];
+		} else {
+			control.textContent = platformLabels[platform];
+		}
 		wireDownloadControl(control, platform);
 	}
 	for (const control of root.querySelectorAll("[data-download-platform]")) {

@@ -64,4 +64,17 @@ assert.ok(
 	"Memory must render after Models and before Product, with Security later in the story",
 );
 
+const navSource = await readFile(
+	new URL("../src/components/Nav.astro", import.meta.url),
+	"utf8",
+);
+assert.ok(
+	navSource.includes('<span class="sm:hidden" data-download-label="compact">Download</span>'),
+	"Compact navigation must use the short Download label",
+);
+assert.ok(
+	navSource.includes('<span class="hidden sm:inline" data-download-label="full">Download Homun</span>'),
+	"Navigation must restore the full Download Homun label from sm upward",
+);
+
 console.log("Homepage positioning contract passed");

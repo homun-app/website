@@ -130,7 +130,13 @@
   @media (prefers-reduced-motion: reduce) {
     .memory-core,
     .memory-node,
-    [data-memory-path],
     .core-signal { animation: none !important; opacity: 1; stroke-dashoffset: 0; transform: none; }
+    [data-memory-path] {
+      animation: none !important;
+      opacity: 1;
+      stroke-dasharray: none !important;
+      stroke-dashoffset: 0 !important;
+      transform: none;
+    }
   }
 </style>

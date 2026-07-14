@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import {
 	detectPlatform,
 	groupInstallers,
+	initDownloadControls,
 	loadLatestInstallers,
 	preferredInstaller,
 	RELEASES_PAGE_URL,
@@ -35,6 +36,38 @@ assert.equal(preferredInstaller("windows", grouped)?.name, "Homun-1.2.3-x64.exe"
 assert.equal(preferredInstaller("linux", grouped)?.name, "Homun-1.2.3-x86_64.AppImage");
 assert.equal(preferredInstaller("unknown", grouped), null);
 assert.equal(RELEASES_PAGE_URL, "https://github.com/homun-app/homun-releases/releases/latest");
+
+const compactLabel = { textContent: "Download" };
+const fullLabel = { textContent: "Download Homun" };
+let primaryTextContentWasSet = false;
+const primaryControl = {
+	set textContent(_value) {
+		primaryTextContentWasSet = true;
+	},
+	querySelector(selector) {
+		if (selector === '[data-download-label="compact"]') return compactLabel;
+		if (selector === '[data-download-label="full"]') return fullLabel;
+		return null;
+	},
+	matches() {
+		return true;
+	},
+	addEventListener() {},
+};
+const fakeRoot = {
+	querySelectorAll(selector) {
+		if (selector === "[data-homun-download]") return [primaryControl];
+		if (selector === "[data-download-platform]") return [];
+		return [];
+	},
+	querySelector() {
+		return null;
+	},
+};
+initDownloadControls(fakeRoot, { platform: "MacIntel" });
+assert.equal(compactLabel.textContent, "Download");
+assert.equal(fullLabel.textContent, "Download for macOS");
+assert.equal(primaryTextContentWasSet, false, "Responsive download control must preserve its child labels");
 
 const successFetch = async () => ({
 	ok: true,
