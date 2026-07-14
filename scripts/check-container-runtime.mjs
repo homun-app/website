@@ -1,9 +1,13 @@
 import { spawn } from "node:child_process";
+import { randomUUID } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 const repositoryRoot = fileURLToPath(new URL("..", import.meta.url));
-const imageName = `homun-website-roadmap-smoke:${process.pid}`;
-const containerName = `homun-website-roadmap-smoke-${process.pid}`;
+const runId = randomUUID();
+const ownershipLabel = `dev.homun.smoke-run=${runId}`;
+const imageName = `homun-website-roadmap-smoke:${runId}`;
+const containerName = `homun-website-roadmap-smoke-${runId}`;
+const cleanupTimeoutMilliseconds = 5_000;
 const activeChildren = new Set();
 
 let dockerAvailable = false;
@@ -14,7 +18,11 @@ let handlingSignal = false;
 
 function runDocker(
 	args,
-	{ allowFailure = false, allowDuringShutdown = false } = {},
+	{
+		allowFailure = false,
+		allowDuringShutdown = false,
+		timeoutMilliseconds = 0,
+	} = {},
 ) {
 	if (handlingSignal && !allowDuringShutdown) {
 		return Promise.reject(
@@ -32,6 +40,9 @@ function runDocker(
 		let stdout = "";
 		let stderr = "";
 		let settled = false;
+		let timedOut = false;
+		let timeout;
+		let forceKillTimeout;
 
 		child.stdout.setEncoding("utf8");
 		child.stderr.setEncoding("utf8");
@@ -45,14 +56,29 @@ function runDocker(
 		const finish = (error, result) => {
 			if (settled) return;
 			settled = true;
+			clearTimeout(timeout);
+			clearTimeout(forceKillTimeout);
 			activeChildren.delete(child);
 			if (error) reject(error);
 			else resolve(result);
 		};
+		const timeoutError = (result) =>
+			new Error(
+				`docker ${args[0]} timed out after ${timeoutMilliseconds}ms`,
+				{ cause: result },
+			);
+		const finishTimeout = (result) => {
+			if (allowFailure) finish(undefined, result);
+			else finish(timeoutError(result));
+		};
 
 		child.on("error", (error) => finish(error));
 		child.on("close", (code, signal) => {
-			const result = { code, signal, stdout, stderr };
+			const result = { code, signal, stdout, stderr, timedOut };
+			if (timedOut) {
+				finishTimeout(result);
+				return;
+			}
 			if (code === 0 || allowFailure) {
 				finish(undefined, result);
 				return;
@@ -63,6 +89,25 @@ function runDocker(
 				new Error(`docker ${args[0]} failed: ${detail}`, { cause: result }),
 			);
 		});
+
+		if (timeoutMilliseconds > 0) {
+			timeout = setTimeout(() => {
+				timedOut = true;
+				child.kill("SIGTERM");
+				forceKillTimeout = setTimeout(() => {
+					if (child.exitCode === null && child.signalCode === null) {
+						child.kill("SIGKILL");
+					}
+					finishTimeout({
+						code: child.exitCode,
+						signal: child.signalCode,
+						stdout,
+						stderr,
+						timedOut,
+					});
+				}, 250);
+			}, timeoutMilliseconds);
+		}
 	});
 }
 
@@ -73,22 +118,40 @@ async function removeRuntimeArtifacts() {
 	cleanupPromise = (async () => {
 		const containerRemoval = await runDocker(
 			["rm", "--force", containerName],
-			{ allowFailure: true, allowDuringShutdown: true },
+			{
+				allowFailure: true,
+				allowDuringShutdown: true,
+				timeoutMilliseconds: cleanupTimeoutMilliseconds,
+			},
 		);
 		const imageRemoval = await runDocker(
 			["image", "rm", "--force", imageName],
-			{ allowFailure: true, allowDuringShutdown: true },
+			{
+				allowFailure: true,
+				allowDuringShutdown: true,
+				timeoutMilliseconds: cleanupTimeoutMilliseconds,
+			},
 		);
 		const cleanupErrors = [];
 
-		if (containerCreated && containerRemoval.code !== 0) {
+		if (
+			containerRemoval.timedOut ||
+			(containerCreated && containerRemoval.code !== 0)
+		) {
 			cleanupErrors.push(
-				`container cleanup failed: ${containerRemoval.stderr.trim() || containerRemoval.stdout.trim()}`,
+				containerRemoval.timedOut
+					? `container cleanup failed: timed out after ${cleanupTimeoutMilliseconds}ms`
+					: `container cleanup failed: ${containerRemoval.stderr.trim() || containerRemoval.stdout.trim()}`,
 			);
 		}
-		if (imageBuilt && imageRemoval.code !== 0) {
+		if (
+			imageRemoval.timedOut ||
+			(imageBuilt && imageRemoval.code !== 0)
+		) {
 			cleanupErrors.push(
-				`image cleanup failed: ${imageRemoval.stderr.trim() || imageRemoval.stdout.trim()}`,
+				imageRemoval.timedOut
+					? `image cleanup failed: timed out after ${cleanupTimeoutMilliseconds}ms`
+					: `image cleanup failed: ${imageRemoval.stderr.trim() || imageRemoval.stdout.trim()}`,
 			);
 		}
 		if (cleanupErrors.length > 0) {
@@ -185,14 +248,15 @@ async function waitForRoutes(baseUrl) {
 	let lastError;
 
 	while (Date.now() < deadline) {
-		try {
-			await Promise.all(
-				routes.map((route) => checkRoute(baseUrl, route, deadline)),
-			);
-			return;
-		} catch (error) {
-			lastError = error;
-			if (Date.now() < deadline) await wait(250);
+		const routeResults = await Promise.allSettled(
+			routes.map((route) => checkRoute(baseUrl, route, deadline)),
+		);
+		const failedRoute = routeResults.find((result) => result.status === "rejected");
+		if (!failedRoute) return;
+
+		lastError = failedRoute.reason;
+		if (Date.now() < deadline) {
+			await wait(Math.min(250, deadline - Date.now()));
 		}
 	}
 
@@ -210,7 +274,16 @@ async function runRuntimeCheck() {
 	}
 	dockerAvailable = true;
 
-	await runDocker(["build", "--tag", imageName, "--file", "Dockerfile", "."]);
+	await runDocker([
+		"build",
+		"--label",
+		ownershipLabel,
+		"--tag",
+		imageName,
+		"--file",
+		"Dockerfile",
+		".",
+	]);
 	imageBuilt = true;
 
 	await runDocker([
@@ -218,6 +291,8 @@ async function runRuntimeCheck() {
 		"--detach",
 		"--name",
 		containerName,
+		"--label",
+		ownershipLabel,
 		"--publish",
 		"127.0.0.1::80",
 		imageName,

@@ -15,9 +15,10 @@
     "test:roadmap": "node scripts/check-roadmap-pages.mjs",
     "test:container": "node scripts/check-container-deployment.mjs",
     "test:container-runtime": "node scripts/check-container-runtime.mjs",
+    "test:container-runtime-ownership": "node scripts/check-container-runtime-ownership.mjs",
     "test:container-runtime-signals": "node scripts/check-container-runtime-signals.mjs",
     "sync:product-data": "node scripts/sync-product-data.mjs",
-    "check": "npm run build && npm run test:homepage && npm run test:marketing-backgrounds && npm run test:downloads && npm run test:illustrations && npm run test:product-data && npm run test:roadmap && npm run test:container && npm run test:container-runtime-signals",
+    "check": "npm run build && npm run test:homepage && npm run test:marketing-backgrounds && npm run test:downloads && npm run test:illustrations && npm run test:product-data && npm run test:roadmap && npm run test:container && npm run test:container-runtime-ownership && npm run test:container-runtime-signals",
     "preview": "astro preview",
     "astro": "astro"
   },

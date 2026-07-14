@@ -41,6 +41,11 @@ if (args[0] === "build") {
   }, 300);
 } else if (args[0] === "rm") {
   record("cleanup-container");
+  if (signalMode === "cleanup-hang") {
+    record("cleanup-pid:" + process.pid);
+    process.on("SIGTERM", () => record("cleanup-sigterm"));
+    setInterval(() => {}, 1_000);
+  }
 } else if (args[0] === "image") {
   record("cleanup-image");
 } else {
@@ -51,6 +56,16 @@ if (args[0] === "build") {
 
 function wait(milliseconds) {
 	return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
+function processExists(pid) {
+	try {
+		process.kill(pid, 0);
+		return true;
+	} catch (error) {
+		if (error?.code === "ESRCH") return false;
+		throw error;
+	}
 }
 
 async function runSignalScenario(signalMode) {
@@ -84,6 +99,7 @@ async function runSignalScenario(signalMode) {
 	};
 
 	let timeout;
+	const checkerTimeout = signalMode === "cleanup-hang" ? 8_000 : 5_000;
 	try {
 		await waitForScenarioEvent("build-started");
 		checker.kill("SIGTERM");
@@ -92,7 +108,7 @@ async function runSignalScenario(signalMode) {
 			new Promise((_, reject) => {
 				timeout = setTimeout(
 					() => reject(new Error(`Runtime checker did not exit for ${signalMode}`)),
-					5_000,
+					checkerTimeout,
 				);
 			}),
 		]);
@@ -128,7 +144,37 @@ try {
 		`runtime checker spawned Docker after shutdown began: ${successfulBuild.events.join(", ")}`,
 	);
 
+	const cleanupStartedAt = Date.now();
+	const hangingCleanup = await runSignalScenario("cleanup-hang");
+	assert.deepEqual(hangingCleanup.result, { code: 143, signal: null });
+	assert.ok(
+		hangingCleanup.events.includes("cleanup-sigterm"),
+		`hanging cleanup was not terminated: ${hangingCleanup.events.join(", ")}`,
+	);
+	const cleanupPid = Number(
+		hangingCleanup.events
+			.find((event) => event.startsWith("cleanup-pid:"))
+			?.slice("cleanup-pid:".length),
+	);
+	assert.ok(Number.isInteger(cleanupPid), "hanging cleanup did not record its PID");
+	assert.equal(
+		processExists(cleanupPid),
+		false,
+		`hanging cleanup process ${cleanupPid} survived the timeout`,
+	);
+	assert.ok(
+		Date.now() - cleanupStartedAt < 8_000,
+		"signal handling exceeded the cleanup time limit",
+	);
+
 	console.log("Container runtime signal cleanup contract passed");
 } finally {
+	const cleanupEvents = await readFile(`${eventLog}-cleanup-hang`, "utf8").catch(
+		() => "",
+	);
+	for (const match of cleanupEvents.matchAll(/^cleanup-pid:(\d+)$/gm)) {
+		const pid = Number(match[1]);
+		if (processExists(pid)) process.kill(pid, "SIGKILL");
+	}
 	await rm(fixtureDirectory, { recursive: true, force: true });
 }
