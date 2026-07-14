@@ -2,6 +2,12 @@ name: Sync public product data
 
 on:
   workflow_dispatch:
+    inputs:
+      allow_empty:
+        description: Allow an empty roadmap snapshot to replace published data during recovery
+        required: false
+        default: false
+        type: boolean
   repository_dispatch:
     types: [product-data-sync]
   schedule:
@@ -37,7 +43,12 @@ jobs:
         run: npm ci
 
       - name: Synchronize roadmap and releases
-        run: npm run sync:product-data
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.allow_empty == false }}
+        run: npm run sync:product-data -- --write
+
+      - name: Synchronize roadmap and releases (allow empty recovery)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.allow_empty == true }}
+        run: npm run sync:product-data -- --write --allow-empty
 
       - name: Validate generated snapshots
         run: npm run test:product-data

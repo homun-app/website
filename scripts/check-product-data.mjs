@@ -1335,13 +1335,61 @@ const workflow = await readFile(
 	"utf8",
 );
 for (const required of [
-	"workflow_dispatch:",
 	"schedule:",
 	"HOMUN_PROJECT_NUMBER",
-	"npm run sync:product-data",
 	"git diff --quiet -- src/data/roadmap.json src/data/releases.json",
 ]) {
 	assert.ok(workflow.includes(required), `Product sync workflow is missing: ${required}`);
 }
+
+assert.match(
+	workflow,
+	/  workflow_dispatch:\n    inputs:\n      allow_empty:\n        description: .+\n        required: false\n        default: false\n        type: boolean/,
+	"Manual product-data syncs must expose a documented, default-off allow_empty input",
+);
+assert.match(
+	workflow,
+	/  repository_dispatch:\n    types: \[product-data-sync\]/,
+	"Repository dispatch must accept only the product-data-sync event type",
+);
+
+function workflowStep(name) {
+	const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+	const match = workflow.match(
+		new RegExp(`      - name: ${escapedName}\\n([\\s\\S]*?)(?=      - name: |$)`),
+	);
+	assert.ok(match, `Product sync workflow is missing step: ${name}`);
+	return match[1];
+}
+
+function workflowStepValue(step, key) {
+	const match = step.match(new RegExp(`^        ${key}: (.+)$`, "m"));
+	assert.ok(match, `Product sync workflow step is missing ${key}`);
+	return match[1];
+}
+
+const normalSyncStep = workflowStep("Synchronize roadmap and releases");
+assert.equal(
+	workflowStepValue(normalSyncStep, "if"),
+	"${{ github.event_name != 'workflow_dispatch' || inputs.allow_empty == false }}",
+	"Scheduled, repository-dispatched, and default manual syncs must use the guarded write path",
+);
+assert.equal(
+	workflowStepValue(normalSyncStep, "run"),
+	"npm run sync:product-data -- --write",
+);
+
+const recoverySyncStep = workflowStep(
+	"Synchronize roadmap and releases (allow empty recovery)",
+);
+assert.equal(
+	workflowStepValue(recoverySyncStep, "if"),
+	"${{ github.event_name == 'workflow_dispatch' && inputs.allow_empty == true }}",
+	"Only an explicit manual dispatch may activate empty-snapshot recovery",
+);
+assert.equal(
+	workflowStepValue(recoverySyncStep, "run"),
+	"npm run sync:product-data -- --write --allow-empty",
+);
 
 console.log("Product data contract passed");
