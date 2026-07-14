@@ -6,7 +6,7 @@ const homepage = await readFile(new URL("../dist/index.html", import.meta.url), 
 for (const marker of [
 	'data-illustration="workshop"',
 	'data-illustration="engines"',
-	'data-illustration="memory-architecture"',
+	'data-illustration="memory-continuity"',
 	'data-illustration="work-code"',
 	'data-illustration="work-deliverables"',
 	'data-illustration="work-local"',
@@ -75,7 +75,7 @@ for (const component of [
 	"WorkshopIllustration.astro",
 	"EngineTransition.astro",
 	"EcosystemIllustration.astro",
-	"MemoryArchitectureIllustration.astro",
+	"MemoryContinuityIllustration.astro",
 	"ConnectedWorkspaceIllustration.astro",
 	"AutomationStoryIllustration.astro",
 ]) {
@@ -144,54 +144,62 @@ for (const retired of ["class=\"peripheral", "class=\"action-rail", "MESSAGE · 
 }
 
 const memorySource = await readFile(
-	new URL("../src/components/illustrations/MemoryArchitectureIllustration.astro", import.meta.url),
+	new URL("../src/components/illustrations/MemoryContinuityIllustration.astro", import.meta.url),
 	"utf8",
 );
 
 for (const marker of [
-	'aria-labelledby="memory-architecture-title memory-architecture-description"',
-	'id="memory-architecture-title"',
-	'id="memory-architecture-description"',
-	"Recall — SQLite + search. Connections — Graph + why. Understanding — Markdown wiki.",
+	'aria-labelledby="memory-continuity-title memory-continuity-description"',
+	'id="memory-continuity-title"',
+	'id="memory-continuity-description"',
+	'data-memory-stage="capture"',
+	'data-memory-stage="three-faces"',
+	'data-memory-stage="recall"',
+	'data-memory-face="sql"',
+	'data-memory-face="graph"',
+	'data-memory-face="wiki"',
+	'data-memory-action="inspect"',
+	'data-memory-action="correct"',
+	'data-memory-action="forget"',
 ]) {
-	assert.ok(memorySource.includes(marker), `Memory accessibility contract is missing: ${marker}`);
+	assert.ok(memorySource.includes(marker), `Memory continuity contract is missing: ${marker}`);
 }
-assert.ok(
-	!memorySource.includes(
-		'aria-label="One Homun memory combining fast recall, connected context, and a readable wiki"',
-	),
-	"Memory illustration retained its incomplete accessible label",
-);
-
 const memoryReducedMotion = memorySource.slice(
 	memorySource.indexOf("@media (prefers-reduced-motion: reduce)"),
 );
 for (const declaration of [
-	"stroke-dasharray: none !important;",
-	"stroke-dashoffset: 0 !important;",
+	"animation: none !important;",
+	"transform: none;",
+	"opacity: 1;",
 ]) {
 	assert.ok(
 		memoryReducedMotion.includes(declaration),
-		`Memory reduced-motion routes are missing: ${declaration}`,
+		`Memory reduced-motion state is missing: ${declaration}`,
 	);
 }
 
-for (const part of [
-	'data-memory-part="core"',
-	'data-memory-part="recall"',
-	'data-memory-part="connections"',
-	'data-memory-part="understanding"',
-	'data-memory-path="recall"',
-	'data-memory-path="connections"',
-	'data-memory-path="understanding"',
+for (const label of [
+	"Yesterday · Project Atlas",
+	"One memory · three synchronized faces",
+	"Today · New chat",
+	"Recall",
+	"SQLite + FTS",
+	"Connections",
+	"Graph + why",
+	"Understanding",
+	"Markdown wiki",
+	"Source · Project Atlas",
 ]) {
-	assert.ok(memorySource.includes(part), `Memory illustration is missing: ${part}`);
+	assert.ok(memorySource.includes(label), `Memory continuity illustration is missing: ${label}`);
 }
 
-for (const label of [
-	"Recall", "SQLite + search", "Connections", "Graph + why", "Understanding", "Markdown wiki",
+for (const retired of [
+	'data-memory-part="core"',
+	'class="memory-core"',
+	'class="memory-orbit"',
+	"One continuous system",
 ]) {
-	assert.ok(memorySource.includes(label), `Memory illustration is missing label: ${label}`);
+	assert.ok(!memorySource.includes(retired), `Memory continuity retained the old diagram: ${retired}`);
 }
 
 console.log("Homepage illustration contract passed");
