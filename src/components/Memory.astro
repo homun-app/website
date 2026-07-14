@@ -16,9 +16,9 @@ const controls = ["Inspect", "Correct", "Consolidate", "Forget", "Export"] as co
         Fast recall, meaningful connections, and a narrative you can read and correct.
       </p>
 
-      <ul class="reveal mt-9 flex max-w-xl flex-wrap gap-x-4 gap-y-3 border-t border-line pt-5" style="--reveal-delay: 130ms" aria-label="Memory controls">
+      <ul class="reveal mt-9 flex max-w-xl flex-nowrap gap-x-1 border-t border-line pt-5 sm:gap-x-2" style="--reveal-delay: 130ms" aria-label="Memory controls">
         {controls.map((control, index) => (
-          <li class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.12em] text-faint">
+          <li class="flex shrink-0 items-center gap-1 whitespace-nowrap font-mono text-[9px] uppercase tracking-[0.06em] text-faint sm:text-[10px] sm:tracking-[0.12em]">
             {index > 0 && <span aria-hidden="true" class="text-line-strong">·</span>}
             <span>{control}</span>
           </li>

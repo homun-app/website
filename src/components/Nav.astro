@@ -17,7 +17,7 @@ const links = [
 			<Wordmark class="h-[1.3rem] w-auto text-cream" />
 		</a>
 
-		<div class="hidden items-center gap-1 md:flex">
+		<div class="hidden items-center gap-1 lg:flex">
 			{links.map((link) => (
 				<a href={link.href} class="rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:text-cream">
 					{link.label}
@@ -32,7 +32,7 @@ const links = [
 			<a href="https://github.com/homun-app/homun-releases/releases/latest" data-homun-download class="btn btn-primary min-h-9 px-4 py-2 text-sm">Download Homun</a>
 			<button
 				id="nav-toggle"
-				class="flex h-10 w-10 items-center justify-center rounded-lg text-cream md:hidden"
+				class="flex h-10 w-10 items-center justify-center rounded-lg text-cream lg:hidden"
 				aria-label="Open menu"
 				aria-expanded="false"
 				aria-controls="nav-mobile"
@@ -44,7 +44,7 @@ const links = [
 		</div>
 	</nav>
 
-	<div id="nav-mobile" class="hidden border-t border-line bg-bg/95 px-4 py-4 backdrop-blur-xl md:hidden">
+	<div id="nav-mobile" class="hidden border-t border-line bg-bg/95 px-4 py-4 backdrop-blur-xl lg:hidden">
 		<div class="mx-auto flex max-w-6xl flex-col gap-1">
 			{links.map((link) => (
 				<a href={link.href} class="rounded-lg px-3 py-3 text-[15px] text-muted hover:bg-surface hover:text-cream">
