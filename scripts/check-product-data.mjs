@@ -16,6 +16,7 @@ import {
 	validateSnapshot,
 } from "./lib/github-product-data.mjs";
 import { applyPublicationPolicy } from "./lib/publication-policy.mjs";
+import { applyReleasePublicationPolicy } from "./lib/release-publication-policy.mjs";
 import {
 	hasSemanticChanges,
 	persistSnapshotPair,
@@ -470,7 +471,10 @@ assert.deepEqual(releaseWithDuplicateSlug.items[0].projectSlugs, [
 	"connected-actions",
 	"connected-actions",
 ]);
-assert.doesNotThrow(() => validateSnapshot(roadmap, releaseWithDuplicateSlug));
+assert.throws(
+	() => validateSnapshot(roadmap, releaseWithDuplicateSlug),
+	/Duplicate roadmap slug in release v0.1.1055: connected-actions/,
+);
 assert.throws(
 	() => validateSnapshot(checkedInRoadmap, asPublicReleases(releaseWithDuplicateSlug)),
 	/Duplicate roadmap slug in release v0.1.1055: connected-actions/,
@@ -517,15 +521,122 @@ const releaseWithUnknownSlug = normalizeReleases(
 	roadmap.candidates,
 	projectFixture.syncedAt,
 );
-assert.throws(
-	() => validateSnapshot(publicRoadmap, asPublicReleases(releaseWithUnknownSlug)),
-	/Unknown roadmap slug in release v0.1.1056: missing-project/,
+assert.deepEqual(
+	validateSnapshot(publicRoadmap, asPublicReleases(releaseWithUnknownSlug)),
+	{
+		warnings: [
+			"Unknown roadmap slug in release v0.1.1056: missing-project",
+		],
+	},
 );
 assert.deepEqual(releaseWithUnknownSlug.items[0].projectSlugs, [
 	"connected-actions",
 	"missing-project",
 	"shared-spaces",
 ]);
+
+const releasePolicyPreviousRoadmap = {
+	schemaVersion: 2,
+	contentUpdatedAt: "2026-07-13T10:00:00.000Z",
+	items: [
+		{ slug: "apprentice" },
+		{ slug: "shared-spaces" },
+		{ slug: "connected-actions" },
+		{ slug: "retired-experiment" },
+	],
+};
+const releasePolicyPreviousReleases = {
+	schemaVersion: 2,
+	contentUpdatedAt: "2026-07-13T10:00:00.000Z",
+	items: [
+		{ version: "v3", name: "Old v3", projectSlugs: [] },
+		{
+			version: "v2",
+			name: "Old v2",
+			projectSlugs: ["apprentice", "connected-actions", "shared-spaces"],
+		},
+		{
+			version: "v1",
+			name: "Old v1",
+			projectSlugs: ["apprentice", "retired-experiment"],
+		},
+	],
+};
+const releasePolicyRawReleases = {
+	schemaVersion: 2,
+	fetchedAt: "2026-07-14T10:00:00.000Z",
+	items: [
+		{
+			version: "v3",
+			name: "Fresh v3",
+			highlights: ["Keep fresh release content"],
+			projectSlugs: [
+				"apprentice",
+				"connected-actions",
+				"future-memory",
+				"ghost",
+				"retired-experiment",
+				"shared-spaces",
+			],
+		},
+		{ version: "v2", name: "Fresh v2", projectSlugs: [] },
+		{ version: "v1", name: "Fresh v1", projectSlugs: [] },
+	],
+};
+const releasePolicyCandidates = [
+	{ slug: "apprentice", publicationStatus: "review" },
+	{ slug: "shared-spaces", publicationStatus: "draft" },
+	{ slug: "connected-actions", publicationStatus: "published" },
+	{ slug: "retired-experiment", publicationStatus: "archived" },
+	{ slug: "future-memory", publicationStatus: "review" },
+];
+const governedReleaseResult = applyReleasePublicationPolicy(
+	releasePolicyPreviousReleases,
+	releasePolicyRawReleases,
+	releasePolicyCandidates,
+	releasePolicyPreviousRoadmap,
+);
+assert.equal(
+	governedReleaseResult.releases.contentUpdatedAt,
+	releasePolicyPreviousReleases.contentUpdatedAt,
+);
+assert.equal(governedReleaseResult.releases.items[0].name, "Fresh v3");
+assert.deepEqual(governedReleaseResult.releases.items[0].highlights, [
+	"Keep fresh release content",
+]);
+assert.deepEqual(
+	governedReleaseResult.releases.items.map(({ version, projectSlugs }) => [
+		version,
+		projectSlugs,
+	]),
+	[
+		["v3", ["connected-actions", "ghost", "retired-experiment"]],
+		["v2", ["apprentice", "shared-spaces"]],
+		["v1", ["apprentice", "retired-experiment"]],
+	],
+);
+assert.deepEqual(governedReleaseResult.warnings, [
+	"Unknown roadmap slug in release v3: ghost",
+]);
+assert.deepEqual(
+	validateSnapshot(
+		{
+			schemaVersion: 2,
+			contentUpdatedAt: releasePolicyPreviousRoadmap.contentUpdatedAt,
+			items: [{
+				slug: "apprentice",
+				status: "building",
+				voting: "open",
+				order: 1,
+				progress: 50,
+				featured: false,
+			}],
+		},
+		governedReleaseResult.releases,
+		{ knownRoadmapSlugs: releasePolicyCandidates.map(({ slug }) => slug) },
+	),
+	{ warnings: ["Unknown roadmap slug in release v3: ghost"] },
+);
 const shippedWithoutPublishedRelease = structuredClone(publicRoadmap);
 assert.throws(
 	() => validateSnapshot(shippedWithoutPublishedRelease, asPublicReleases(normalizedWithoutNotes)),
@@ -1044,18 +1155,24 @@ try {
 		version: "v-invalid",
 		projectSlugs: ["unknown-roadmap-item"],
 	});
-	await assert.rejects(
-		persistSnapshotPair(
+	const serializedCurrentRoadmap = `${JSON.stringify(nonEmptyCurrentPair.roadmap, null, 2)}\n`;
+	const serializedCurrentReleases = `${JSON.stringify(nonEmptyCurrentPair.releases, null, 2)}\n`;
+	await Promise.all([
+		writeFile(roadmapPath, serializedCurrentRoadmap),
+		writeFile(releasesPath, serializedCurrentReleases),
+	]);
+	assert.deepEqual(
+		await persistSnapshotPair(
 			nonEmptyCurrentPair,
 			invalidCandidatePair,
 			{ roadmapPath, releasesPath },
 		),
-		/Unknown roadmap slug/,
+		{ status: "WROTE_CHANGE" },
 	);
-	assert.equal(await readFile(roadmapPath, "utf8"), "original-roadmap\n");
-	assert.equal(await readFile(releasesPath, "utf8"), "original-releases\n");
-	const serializedCurrentRoadmap = `${JSON.stringify(nonEmptyCurrentPair.roadmap, null, 2)}\n`;
-	const serializedCurrentReleases = `${JSON.stringify(nonEmptyCurrentPair.releases, null, 2)}\n`;
+	assert.deepEqual(
+		JSON.parse(await readFile(releasesPath, "utf8")).items.at(-1).projectSlugs,
+		["unknown-roadmap-item"],
+	);
 	const concurrentRoadmap = structuredClone(nonEmptyCurrentPair.roadmap);
 	concurrentRoadmap.items[0].votes += 99;
 	const concurrentRoadmapBytes = `${JSON.stringify(concurrentRoadmap, null, 2)}\n`;
@@ -1217,6 +1334,105 @@ try {
 	});
 	assert.equal(recoveredSyncResult.status, "NO_CHANGE");
 	assert.deepEqual((await readdir(tempRoot)).sort(), ["releases.json", "roadmap.json"]);
+
+	await writePairFiles(currentPublicPair);
+	const newReviewReleaseFixture = structuredClone(releaseFixture);
+	newReviewReleaseFixture[0].body = newReviewReleaseFixture[0].body.replace(
+		"Roadmap: connected-actions",
+		"Roadmap: connected-actions, apprentice",
+	);
+	const newReviewLinkResult = await syncProductData({
+		env: syncEnv,
+		fetchImpl: fixtureFetchFor(projectFixture, newReviewReleaseFixture),
+		paths: { roadmapPath, releasesPath },
+		clock: () => "2026-07-14T14:10:00.000Z",
+		mode: "dry-run",
+	});
+	assert.equal(newReviewLinkResult.status, "NO_CHANGE");
+	assert.deepEqual(
+		newReviewLinkResult.snapshots.releases.items[0].projectSlugs,
+		["connected-actions"],
+	);
+
+	const existingReviewRoadmap = structuredClone(publicRoadmap);
+	existingReviewRoadmap.items.push(structuredClone(publishedApprentice));
+	existingReviewRoadmap.items.sort((left, right) => left.order - right.order);
+	const existingReviewReleases = structuredClone(publicReleases);
+	existingReviewReleases.items[0].projectSlugs.push("apprentice");
+	existingReviewReleases.items[0].projectSlugs.sort();
+	await writePairFiles({
+		roadmap: existingReviewRoadmap,
+		releases: existingReviewReleases,
+	});
+	const existingReviewLinkResult = await syncProductData({
+		env: syncEnv,
+		fetchImpl: fixtureFetchFor(projectFixture, releaseFixture),
+		paths: { roadmapPath, releasesPath },
+		clock: () => "2026-07-14T14:20:00.000Z",
+		mode: "dry-run",
+	});
+	assert.equal(existingReviewLinkResult.status, "WOULD_CHANGE");
+	assert.deepEqual(
+		existingReviewLinkResult.snapshots.releases.items[0].projectSlugs,
+		["apprentice", "connected-actions"],
+	);
+
+	const archivedRoadmap = structuredClone(publicRoadmap);
+	archivedRoadmap.items.push({
+		...structuredClone(publishedApprentice),
+		slug: "retired-experiment",
+		title: "Retired experiment",
+		featured: false,
+		order: 60,
+	});
+	const archivedReleases = structuredClone(publicReleases);
+	archivedReleases.items[0].projectSlugs.push("retired-experiment");
+	archivedReleases.items[0].projectSlugs.sort();
+	await writePairFiles({ roadmap: archivedRoadmap, releases: archivedReleases });
+	const archivedLinkResult = await syncProductData({
+		env: syncEnv,
+		fetchImpl: fixtureFetchFor(projectFixture, releaseFixture),
+		paths: { roadmapPath, releasesPath },
+		clock: () => "2026-07-14T14:30:00.000Z",
+		mode: "dry-run",
+	});
+	assert.equal(archivedLinkResult.status, "WOULD_CHANGE");
+	assert.equal(
+		archivedLinkResult.snapshots.roadmap.items.some(
+			({ slug }) => slug === "retired-experiment",
+		),
+		false,
+	);
+	assert.deepEqual(
+		archivedLinkResult.snapshots.releases.items[0].projectSlugs,
+		["connected-actions", "retired-experiment"],
+	);
+
+	await writePairFiles(currentPublicPair);
+	const unknownReleaseFixture = structuredClone(releaseFixture);
+	unknownReleaseFixture[0].body = unknownReleaseFixture[0].body.replace(
+		"Roadmap: connected-actions",
+		"Roadmap: connected-actions, ghost",
+	);
+	const unknownLinkResult = await syncProductData({
+		env: syncEnv,
+		fetchImpl: fixtureFetchFor(projectFixture, unknownReleaseFixture),
+		paths: { roadmapPath, releasesPath },
+		clock: () => "2026-07-14T14:40:00.000Z",
+		mode: "dry-run",
+	});
+	assert.deepEqual(unknownLinkResult.warnings, [
+		"Unknown roadmap slug in release v0.1.1055: ghost",
+	]);
+	assert.deepEqual(
+		unknownLinkResult.snapshots.releases.items[0].projectSlugs,
+		["connected-actions", "ghost"],
+	);
+	assert.match(
+		formatSyncSummary(unknownLinkResult),
+		/\nWARNING: Unknown roadmap slug in release v0\.1\.1055: ghost$/,
+	);
+
 	await writePairFiles(currentPublicPair);
 	const beforeDryRunBytes = await Promise.all([
 		readFile(roadmapPath, "utf8"),
@@ -1303,7 +1519,7 @@ try {
 	);
 	const allowEmptySyncResult = await syncProductData({
 		env: syncEnv,
-		fetchImpl: fixtureFetchFor(emptyProjectFixture, []),
+		fetchImpl: fixtureFetchFor(emptyProjectFixture, releaseFixture),
 		paths: { roadmapPath, releasesPath },
 		clock: () => "2026-07-14T17:00:00.000Z",
 		mode: "write",
@@ -1311,6 +1527,13 @@ try {
 	});
 	assert.equal(allowEmptySyncResult.status, "WROTE_CHANGE");
 	assert.deepEqual(JSON.parse(await readFile(roadmapPath, "utf8")).items, []);
+	assert.deepEqual(
+		JSON.parse(await readFile(releasesPath, "utf8")).items[0].projectSlugs,
+		["connected-actions"],
+	);
+	assert.deepEqual(allowEmptySyncResult.warnings, [
+		"Unknown roadmap slug in release v0.1.1055: connected-actions",
+	]);
 
 	await writePairFiles({
 		roadmap: { ...checkedInRoadmap, schemaVersion: 1 },

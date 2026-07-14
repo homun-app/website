@@ -183,7 +183,12 @@ export function normalizeReleases(payload, _roadmapCandidates, syncedAt = new Da
 	return { schemaVersion: 2, fetchedAt: syncedAt, items };
 }
 
-export function validateSnapshot(roadmap, releases) {
+export function validateSnapshot(
+	roadmap,
+	releases,
+	{ knownRoadmapSlugs = [] } = {},
+) {
+	const warnings = [];
 	if (![1, 2].includes(roadmap?.schemaVersion) || releases?.schemaVersion !== 2) {
 		throw new Error("Unsupported product data schema");
 	}
@@ -251,6 +256,7 @@ export function validateSnapshot(roadmap, releases) {
 	if (featured > 1) throw new Error("Multiple featured roadmap items");
 	const versions = new Set();
 	const publishedReleasesByRoadmapSlug = new Map();
+	const knownSlugs = new Set([...slugs, ...knownRoadmapSlugs]);
 	for (const release of releases.items) {
 		if (!release || typeof release !== "object" || Array.isArray(release)) {
 			throw new Error("Invalid release item");
@@ -269,7 +275,6 @@ export function validateSnapshot(roadmap, releases) {
 		}
 		if (versions.has(release.version)) throw new Error(`Duplicate release: ${release.version}`);
 		versions.add(release.version);
-		if (!isPublicRoadmap) continue;
 		const releaseSlugs = new Set();
 		const projectSlugs = release.projectSlugs ?? [];
 		for (const projectSlug of projectSlugs) {
@@ -280,10 +285,15 @@ export function validateSnapshot(roadmap, releases) {
 			}
 			releaseSlugs.add(projectSlug);
 		}
+		if (!isPublicRoadmap) continue;
 		for (const projectSlug of projectSlugs) {
-			if (!slugs.has(projectSlug)) {
-				throw new Error(`Unknown roadmap slug in release ${release.version}: ${projectSlug}`);
+			if (!knownSlugs.has(projectSlug)) {
+				warnings.push(
+					`Unknown roadmap slug in release ${release.version}: ${projectSlug}`,
+				);
+				continue;
 			}
+			if (!slugs.has(projectSlug)) continue;
 			const linkedReleases = publishedReleasesByRoadmapSlug.get(projectSlug) ?? [];
 			linkedReleases.push(release);
 			publishedReleasesByRoadmapSlug.set(projectSlug, linkedReleases);
@@ -296,5 +306,5 @@ export function validateSnapshot(roadmap, releases) {
 			}
 		}
 	}
-	return true;
+	return { warnings };
 }

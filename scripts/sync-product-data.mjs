@@ -6,6 +6,7 @@ import {
 	validateSnapshot,
 } from "./lib/github-product-data.mjs";
 import { applyPublicationPolicy } from "./lib/publication-policy.mjs";
+import { applyReleasePublicationPolicy } from "./lib/release-publication-policy.mjs";
 import {
 	assertSafeReplacement,
 	hasSemanticChanges,
@@ -192,15 +193,23 @@ export async function syncProductData({
 			items: [],
 		}
 		: applyPublicationPolicy(current.roadmap, raw.roadmap.candidates);
+	const releasePublication = applyReleasePublicationPolicy(
+		current.releases,
+		raw.releases,
+		raw.roadmap.candidates,
+		current.roadmap,
+	);
 	const candidate = {
 		roadmap: publishedRoadmap,
-		releases: {
-			schemaVersion: 2,
-			contentUpdatedAt: current.releases.contentUpdatedAt,
-			items: raw.releases.items,
-		},
+		releases: releasePublication.releases,
 	};
-	validateSnapshot(candidate.roadmap, candidate.releases);
+	const validation = validateSnapshot(candidate.roadmap, candidate.releases, {
+		knownRoadmapSlugs: raw.roadmap.candidates.map(({ slug }) => slug),
+	});
+	const warnings = [...new Set([
+		...releasePublication.warnings,
+		...validation.warnings,
+	])];
 	assertSafeReplacement(current, candidate, {
 		allowEmpty: mode === "write" && allowEmpty,
 	});
@@ -211,6 +220,7 @@ export async function syncProductData({
 			snapshots: current,
 			roadmapCount: current.roadmap.items.length,
 			releaseCount: current.releases.items.length,
+			warnings,
 		};
 	}
 	candidate.roadmap.contentUpdatedAt = syncedAt;
@@ -221,6 +231,7 @@ export async function syncProductData({
 			snapshots: candidate,
 			roadmapCount: candidate.roadmap.items.length,
 			releaseCount: candidate.releases.items.length,
+			warnings,
 		};
 	}
 	const persisted = await persistSnapshotPair(current, candidate, paths, { allowEmpty });
@@ -229,14 +240,21 @@ export async function syncProductData({
 		snapshots: candidate,
 		roadmapCount: candidate.roadmap.items.length,
 		releaseCount: candidate.releases.items.length,
+		warnings,
 	};
 }
 
 export function formatSyncSummary(result) {
+	const warningLines = (result?.warnings ?? [])
+		.map((warning) => `WARNING: ${warning}`)
+		.join("\n");
+	let summary;
 	if (result?.status) {
-		return `${result.status} ${result.roadmapCount} roadmap items and ${result.releaseCount} releases`;
+		summary = `${result.status} ${result.roadmapCount} roadmap items and ${result.releaseCount} releases`;
+	} else {
+		summary = `Synced ${result.roadmap.candidates.length} roadmap candidates and ${result.releases.items.length} releases`;
 	}
-	return `Synced ${result.roadmap.candidates.length} roadmap candidates and ${result.releases.items.length} releases`;
+	return warningLines ? `${summary}\n${warningLines}` : summary;
 }
 
 const isCli = process.argv[1]
