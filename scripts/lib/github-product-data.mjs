@@ -169,14 +169,28 @@ export function normalizeReleases(payload, _roadmapCandidates, syncedAt = new Da
 }
 
 export function validateSnapshot(roadmap, releases) {
-	const isRawRoadmap =
-		roadmap?.schemaVersion === 2 && Array.isArray(roadmap.candidates);
-	const isPublicRoadmap =
-		roadmap?.schemaVersion === 2 && Array.isArray(roadmap.items);
-	const isLegacyRoadmap =
-		roadmap?.schemaVersion === 1 && Array.isArray(roadmap.items);
-	if ((!isRawRoadmap && !isPublicRoadmap && !isLegacyRoadmap) || releases?.schemaVersion !== 1) {
+	if (![1, 2].includes(roadmap?.schemaVersion) || releases?.schemaVersion !== 1) {
 		throw new Error("Unsupported product data schema");
+	}
+	let isRawRoadmap = false;
+	let isPublicRoadmap = false;
+	if (roadmap.schemaVersion === 2) {
+		const hasCandidates = Object.hasOwn(roadmap, "candidates");
+		const hasItems = Object.hasOwn(roadmap, "items");
+		if (
+			hasCandidates === hasItems ||
+			(hasCandidates && !Array.isArray(roadmap.candidates)) ||
+			(hasItems && !Array.isArray(roadmap.items))
+		) {
+			throw new Error("Invalid roadmap snapshot shape");
+		}
+		isRawRoadmap = hasCandidates;
+		isPublicRoadmap = hasItems;
+	} else if (!Array.isArray(roadmap.items)) {
+		throw new Error("Invalid roadmap snapshot shape");
+	}
+	if (!Array.isArray(releases.items)) {
+		throw new Error("Invalid releases snapshot shape");
 	}
 	const roadmapEntries = isRawRoadmap ? roadmap.candidates : roadmap.items;
 	const slugs = new Set();
@@ -214,7 +228,22 @@ export function validateSnapshot(roadmap, releases) {
 	if (featured > 1) throw new Error("Multiple featured roadmap items");
 	const versions = new Set();
 	const publishedReleasesByRoadmapSlug = new Map();
-	for (const release of releases.items ?? []) {
+	for (const release of releases.items) {
+		if (!release || typeof release !== "object" || Array.isArray(release)) {
+			throw new Error("Invalid release item");
+		}
+		if (typeof release.version !== "string" || !release.version.trim()) {
+			throw new Error("Invalid release version");
+		}
+		if (
+			!Array.isArray(release.projectSlugs) ||
+			release.projectSlugs.some(
+				(projectSlug) =>
+					typeof projectSlug !== "string" || !ROADMAP_SLUG.test(projectSlug),
+			)
+		) {
+			throw new Error(`Invalid project slugs in release ${release.version}`);
+		}
 		if (versions.has(release.version)) throw new Error(`Duplicate release: ${release.version}`);
 		versions.add(release.version);
 		if (!isPublicRoadmap) continue;

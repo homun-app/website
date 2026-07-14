@@ -91,6 +91,58 @@ assert.equal(
 assert.doesNotThrow(() => validateSnapshot(roadmap, releases));
 assert.doesNotThrow(() => validateSnapshot(publicRoadmap, releases));
 assert.doesNotThrow(() => validateSnapshot(checkedInRoadmap, checkedInReleases));
+for (const invalidProjectSlug of ["", 1055, "Shared Spaces"]) {
+	const releaseWithInvalidProjectSlug = structuredClone(releases);
+	releaseWithInvalidProjectSlug.items[0].projectSlugs = [invalidProjectSlug];
+	assert.throws(
+		() => validateSnapshot(publicRoadmap, releaseWithInvalidProjectSlug),
+		/Invalid project slugs in release v0.1.1055/,
+	);
+}
+const releaseWithNonArrayProjectSlugs = structuredClone(releases);
+releaseWithNonArrayProjectSlugs.items[0].projectSlugs = "connected-actions";
+assert.throws(
+	() => validateSnapshot(publicRoadmap, releaseWithNonArrayProjectSlugs),
+	/Invalid project slugs in release v0.1.1055/,
+);
+assert.throws(
+	() => validateSnapshot(roadmap, { schemaVersion: 1, items: [null] }),
+	/Invalid release item/,
+);
+const releaseWithNonStringVersion = structuredClone(releases);
+releaseWithNonStringVersion.items[0].version = 1055;
+assert.throws(
+	() => validateSnapshot(publicRoadmap, releaseWithNonStringVersion),
+	/Invalid release version/,
+);
+const releaseWithEmptyVersion = structuredClone(releases);
+releaseWithEmptyVersion.items[0].version = "";
+assert.throws(
+	() => validateSnapshot(publicRoadmap, releaseWithEmptyVersion),
+	/Invalid release version/,
+);
+assert.throws(
+	() => validateSnapshot(roadmap, { schemaVersion: 1, items: {} }),
+	/Invalid releases snapshot shape/,
+);
+assert.throws(
+	() => validateSnapshot(roadmap, { schemaVersion: 1 }),
+	/Invalid releases snapshot shape/,
+);
+assert.throws(
+	() => validateSnapshot({ schemaVersion: 1, items: {} }, releases),
+	/Invalid roadmap snapshot shape/,
+);
+assert.throws(
+	() => validateSnapshot({ schemaVersion: 2 }, releases),
+	/Invalid roadmap snapshot shape/,
+);
+const ambiguousV2Roadmap = structuredClone(roadmap);
+ambiguousV2Roadmap.items = structuredClone(publicRoadmap.items);
+assert.throws(
+	() => validateSnapshot(ambiguousV2Roadmap, releases),
+	/Invalid roadmap snapshot shape/,
+);
 
 const releaseWithoutNotes = structuredClone(releaseFixture);
 releaseWithoutNotes[0].body = null;
