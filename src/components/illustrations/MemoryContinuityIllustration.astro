@@ -228,7 +228,7 @@
 		box-shadow: 0 20px 55px rgba(0, 0, 0, 0.34);
 	}
 
-	.sql-face { left: 0; top: 0; rotate: -4deg; opacity: 0.72; }
+	.sql-face { --face-opacity: 0.72; left: 0; top: 0; rotate: -4deg; opacity: 0.72; }
 	.graph-face { left: 13%; top: 2.25rem; z-index: 2; border-color: rgba(119, 162, 245, 0.38); }
 	.wiki-face { left: 26%; top: 4.75rem; z-index: 3; rotate: 2.5deg; border-color: rgba(239, 120, 216, 0.32); }
 
@@ -317,6 +317,46 @@
 	.flow-out { left: 100%; }
 	.flow-in { right: 100%; rotate: 180deg; }
 
+	:global(.reveal.in) .capture-stage {
+		animation: memory-stage-enter 620ms var(--ease-expo) both;
+	}
+
+	:global(.reveal.in) .sql-face {
+		animation: memory-face-enter 620ms 180ms var(--ease-expo) both;
+	}
+
+	:global(.reveal.in) .graph-face {
+		animation: memory-face-enter 620ms 320ms var(--ease-expo) both;
+	}
+
+	:global(.reveal.in) .wiki-face {
+		animation: memory-face-enter 620ms 460ms var(--ease-expo) both;
+	}
+
+	:global(.reveal.in) .story-flow {
+		animation: memory-flow-enter 520ms 620ms ease-out both;
+		transform-origin: left;
+	}
+
+	:global(.reveal.in) .recall-stage {
+		animation: memory-stage-enter 620ms 720ms var(--ease-expo) both;
+	}
+
+	@keyframes memory-stage-enter {
+		from { opacity: 0; transform: translateY(14px); }
+		to { opacity: 1; transform: translateY(0); }
+	}
+
+	@keyframes memory-face-enter {
+		from { opacity: 0; transform: translateY(16px); }
+		to { opacity: var(--face-opacity, 1); transform: translateY(0); }
+	}
+
+	@keyframes memory-flow-enter {
+		from { opacity: 0; scale: 0 1; }
+		to { opacity: 1; scale: 1 1; }
+	}
+
 	@media (max-width: 1050px) {
 		.memory-continuity { grid-template-columns: 1fr; }
 		.memory-stage { min-height: 19rem; }
@@ -342,6 +382,7 @@
 		.recall-stage {
 			animation: none !important;
 			transform: none;
+			scale: 1;
 			opacity: 1;
 		}
 	}

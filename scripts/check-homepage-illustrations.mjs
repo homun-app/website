@@ -178,6 +178,18 @@ for (const declaration of [
 	);
 }
 
+for (const animation of [
+	"memory-stage-enter",
+	"memory-face-enter",
+	"memory-flow-enter",
+]) {
+	assert.ok(memorySource.includes(animation), `Memory continuity animation is missing: ${animation}`);
+}
+assert.ok(
+	!memorySource.includes("animation-iteration-count: infinite"),
+	"Memory continuity motion must not loop",
+);
+
 for (const label of [
 	"Yesterday · Project Atlas",
 	"One memory · three synchronized faces",
