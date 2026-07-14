@@ -1,7 +1,7 @@
 ---
 import Page from "../../layouts/Page.astro";
 import RoadmapOrbitIllustration from "../../components/illustrations/RoadmapOrbitIllustration.astro";
-import { roadmapPresentation } from "../../lib/roadmap-presentation.mjs";
+import RoadmapParticipation from "../../components/roadmap/RoadmapParticipation.astro";
 import {
 	roadmapItems,
 	releasesForProject,
@@ -19,7 +19,6 @@ const statusLabel = { ideas: "Ideas", next: "Next", building: "Building", shippe
 const publicUpdateDate = project.publicUpdateDate
 	? new Date(`${project.publicUpdateDate}T00:00:00Z`).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })
 	: null;
-const presentation = roadmapPresentation(project);
 ---
 
 <Page title={`${project.title} — Homun Roadmap`} description={project.description}>
@@ -32,7 +31,6 @@ const presentation = roadmapPresentation(project);
 					<div class="reveal flex flex-wrap items-center gap-3">
 						<span class="eyebrow">{project.area}</span>
 						<span class="pill text-xs">{statusLabel}</span>
-						{presentation.underReview && <span class="pill border-accent/30 text-xs text-accent-bright">Under review</span>}
 					</div>
 					<h1 class="reveal text-gradient mt-5 text-5xl font-semibold sm:text-6xl">{project.title}</h1>
 					<p class="reveal mt-6 text-lg leading-relaxed text-muted">{project.description}</p>
@@ -81,14 +79,7 @@ const presentation = roadmapPresentation(project);
 				<section class="card p-6">
 					<h2 class="text-xl font-semibold">Shape this project</h2>
 					<p class="mt-3 text-sm leading-relaxed text-faint">Read the public context, add a useful example, or vote when discussion is open.</p>
-					{project.status === "ideas" && (
-						<div class="mt-4 flex items-center justify-between gap-3 rounded-xl border border-line bg-surface/50 p-3">
-							<span class="font-mono text-xs text-accent-bright" aria-label={`${project.votes} votes`}>👍 {project.votes}</span>
-							{presentation.canParticipate && <a href={project.githubUrl} target="_blank" rel="noopener" class="text-xs text-muted hover:text-cream">Vote on GitHub ↗</a>}
-						</div>
-					)}
-					{presentation.canParticipate && <a href={project.githubUrl} target="_blank" rel="noopener" class="btn mt-5 w-full border border-line-strong text-sm text-cream hover:border-accent/50">Discuss on GitHub ↗</a>}
-					<p class="mt-3 text-center text-[11px] text-faint">A GitHub account is needed only to participate.</p>
+					<RoadmapParticipation item={project} variant="detail" />
 				</section>
 			</aside>
 		</div>

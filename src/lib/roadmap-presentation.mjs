@@ -8,7 +8,7 @@
  *   githubUrl?: string,
  *   underReview?: boolean,
  * }} item
- * @returns {{ underReview: boolean, canParticipate: boolean }}
+ * @returns {{ underReview: boolean, hasIssue: boolean, canDiscuss: boolean, canVote: boolean }}
  */
 export function roadmapPresentation(item) {
 	const issueNumber = item?.issueNumber;
@@ -28,8 +28,10 @@ export function roadmapPresentation(item) {
 
 	return {
 		underReview: item?.underReview === true,
-		canParticipate: item?.status === "ideas"
+		hasIssue: issueUrlMatches,
+		canDiscuss: issueUrlMatches,
+		canVote: issueUrlMatches
+			&& item?.status === "ideas"
 			&& item?.voting === "open"
-			&& issueUrlMatches,
 	};
 }
