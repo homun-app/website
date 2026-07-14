@@ -26,7 +26,6 @@ function publicRecord(candidate) {
 		publicUpdateDate: candidate.publicUpdateDate,
 		voting: candidate.voting,
 		order: candidate.order,
-		updatedAt: candidate.updatedAt,
 		githubUrl: candidate.githubUrl,
 		issueNumber: candidate.issueNumber,
 		votes: candidate.votes,

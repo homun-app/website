@@ -28,6 +28,7 @@ const changelogHtml = await read("changelog/index.html");
 const rss = await read("changelog/rss.xml");
 const detailSource = await readSource("src/pages/roadmap/[slug].astro");
 const journeySource = await readSource("src/components/roadmap/RoadmapJourney.astro");
+const featuredSource = await readSource("src/components/roadmap/FeaturedProject.astro");
 const productDataSource = await readSource("src/lib/product-data.ts");
 const roadmapSnapshot = JSON.parse(await readSource("src/data/roadmap.json"));
 const roadmapText = plain(roadmapHtml);
@@ -105,6 +106,37 @@ try {
 	assert.ok(!fallbackHtml.includes("Vote on GitHub"), "Fallback component invents a voting link");
 	assert.ok(!fallbackHtml.includes("Discuss on GitHub"), "Fallback component invents a discussion link");
 	assert.ok(fallbackHtml.includes(moderationCopy), "Fallback component is missing neutral moderation copy");
+
+	const { default: FeaturedProject } = await viteServer.ssrLoadModule(
+		"/src/components/roadmap/FeaturedProject.astro",
+	);
+	const featuredHtml = await container.renderToString(FeaturedProject, {
+		props: {
+			project: {
+				...canonicalIdea,
+				status: "building",
+				publicUpdateDate: "2026-07-04",
+			},
+		},
+	});
+	assert.ok(featuredHtml.includes("Updated Jul 4"), "Featured project does not use publicUpdateDate");
+	assert.ok(
+		featuredHtml.includes('data-public-update-date="2026-07-04"'),
+		"Featured project does not expose its stable public update date",
+	);
+	const featuredWithoutDate = await container.renderToString(FeaturedProject, {
+		props: {
+			project: {
+				...canonicalIdea,
+				status: "building",
+				publicUpdateDate: null,
+			},
+		},
+	});
+	assert.ok(
+		!featuredWithoutDate.includes("Updated "),
+		"Featured project invents an update date when publicUpdateDate is absent",
+	);
 } finally {
 	await viteServer.close();
 }
@@ -143,7 +175,7 @@ for (const required of [
 	"Ideas",
 	"👍 0",
 	"Suggest an idea",
-	"v0.1.1055",
+	"v0.1.1056",
 	"Synced with GitHub",
 ]) {
 	assert.ok(roadmapText.includes(required), `Roadmap missing: ${required}`);
@@ -172,9 +204,34 @@ assert.doesNotMatch(
 	/export const communityIdeas\b/,
 	"Product data still exports the retired communityIdeas alias",
 );
+assert.doesNotMatch(
+	productDataSource,
+	/export const ideasOpenForVoting\b/,
+	"Product data exposes an unused ideasOpenForVoting collection",
+);
+assert.doesNotMatch(
+	featuredSource,
+	/project\.updatedAt/,
+	"Featured project reads the raw Issue activity timestamp",
+);
+assert.doesNotMatch(
+	productDataSource,
+	/\bupdatedAt\s*:/,
+	"The public RoadmapItem contract exposes raw Issue activity metadata",
+);
 
-assert.ok(changelogText.includes("v0.1.1055"), "Changelog is missing the real latest release");
+assert.match(
+	roadmapHtml,
+	/Latest release[\s\S]*?<h2[^>]*>v0\.1\.1056<\/h2>/,
+	"Roadmap latest-release card is not led by v0.1.1056",
+);
+assert.match(
+	changelogHtml,
+	/<article id="v0-1-1056"[\s\S]*?v0\.1\.1056[\s\S]*?Latest[\s\S]*?<article id="v0-1-1055"/,
+	"Changelog does not render v0.1.1056 first and mark it latest",
+);
+assert.ok(changelogText.includes("v0.1.1056"), "Changelog is missing the real latest release");
 assert.ok(!changelogText.includes("illustrative samples"), "Changelog still contains sample copy");
-assert.ok(rss.includes("v0.1.1055"), "RSS is missing the real latest release");
+assert.ok(rss.includes("v0.1.1056"), "RSS is missing the real latest release");
 
 console.log("Living roadmap and release contract passed");

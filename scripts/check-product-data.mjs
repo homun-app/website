@@ -31,8 +31,13 @@ const {
 	parseSyncArgs,
 	readConfig,
 	syncProductData,
-	writeSnapshots,
 } = productDataSync;
+
+assert.equal(
+	"writeSnapshots" in productDataSync,
+	false,
+	"The sync module must not export a raw-candidate write bypass",
+);
 
 const projectFixture = JSON.parse(
 	await readFile(new URL("./fixtures/github-project.json", import.meta.url)),
@@ -950,7 +955,6 @@ const publishedApprentice = {
 	publicUpdateDate: "2026-07-13",
 	voting: "open",
 	order: 30,
-	updatedAt: "2026-07-13T09:30:00.000Z",
 	githubUrl: "https://github.com/homun-app/homun/issues/30",
 	issueNumber: 30,
 	votes: 42,
@@ -965,6 +969,7 @@ const { underReview: _approvedReviewState, ...apprenticeCandidateFields } = publ
 const unchangedApprenticePublished = {
 	...apprenticeCandidateFields,
 	publicationStatus: "published",
+	updatedAt: "2026-07-13T09:30:00.000Z",
 };
 const changedApprentice = {
 	...unchangedApprenticePublished,
@@ -1038,6 +1043,28 @@ assert.equal(
 	false,
 );
 assert.deepEqual(
+	applyPublicationPolicy(previous, [{
+		...unchangedApprenticePublished,
+		updatedAt: "2026-07-14T08:00:00.000Z",
+	}]).items,
+	previous.items,
+	"Issue activity timestamps must not change the public roadmap projection",
+);
+assert.equal(
+	hasSemanticChanges(
+		{ roadmap: previous, releases: checkedInReleases },
+		{
+			roadmap: applyPublicationPolicy(previous, [{
+				...unchangedApprenticePublished,
+				updatedAt: "2026-07-14T08:00:00.000Z",
+			}]),
+			releases: checkedInReleases,
+		},
+	),
+	false,
+	"Issue-only activity must not trigger a public snapshot write",
+);
+assert.deepEqual(
 	applyPublicationPolicy(previous, [
 		{ ...changedApprentice, publicationStatus: "archived" },
 	]).items,
@@ -1064,7 +1091,6 @@ assert.deepEqual(Object.keys(publishedWithNewItem.items[0]), [
 	"publicUpdateDate",
 	"voting",
 	"order",
-	"updatedAt",
 	"githubUrl",
 	"issueNumber",
 	"votes",
@@ -1378,14 +1404,12 @@ for (const invalidUpdatedAt of [
 		/Invalid roadmap updatedAt: shared-spaces/,
 	);
 }
-for (const invalidUpdatedAt of ["14/07/2026", 20260714]) {
-	const publicWithInvalidTimestamp = structuredClone(publicRoadmap);
-	publicWithInvalidTimestamp.items[0].updatedAt = invalidUpdatedAt;
-	assert.throws(
-		() => validateSnapshot(publicWithInvalidTimestamp, publicReleases),
-		/Invalid roadmap updatedAt: shared-spaces/,
-	);
-}
+const publicWithSourceTimestamp = structuredClone(publicRoadmap);
+publicWithSourceTimestamp.items[0].updatedAt = "2026-07-14T10:00:00Z";
+assert.throws(
+	() => validateSnapshot(publicWithSourceTimestamp, publicReleases),
+	/Public roadmap item must not contain updatedAt: shared-spaces/,
+);
 const publicWithoutOptionalText = structuredClone(publicRoadmap);
 for (const field of ["targetRelease", "publicUpdate", "publicUpdateDate"]) {
 	delete publicWithoutOptionalText.items[0][field];
@@ -1751,29 +1775,22 @@ try {
 	assert.equal(await readFile(roadmapPath, "utf8"), serializedCurrentRoadmap);
 	assert.equal(await readFile(releasesPath, "utf8"), serializedCurrentReleases);
 	assert.deepEqual((await readdir(tempRoot)).sort(), ["releases.json", "roadmap.json"]);
-	await writeFile(roadmapPath, "original-roadmap\n");
-	await writeFile(releasesPath, "original-releases\n");
+	await Promise.all([
+		writeFile(roadmapPath, serializedCurrentRoadmap),
+		writeFile(releasesPath, serializedCurrentReleases),
+	]);
+	const duplicatePublicPair = structuredClone(nonEmptyCurrentPair);
+	duplicatePublicPair.roadmap.items.push({ ...duplicatePublicPair.roadmap.items[0] });
 	await assert.rejects(
-		writeSnapshots(duplicate, releases, { roadmapPath, releasesPath }),
+		persistSnapshotPair(
+			nonEmptyCurrentPair,
+			duplicatePublicPair,
+			{ roadmapPath, releasesPath },
+		),
 		/Duplicate roadmap slug/,
 	);
-	assert.equal(await readFile(roadmapPath, "utf8"), "original-roadmap\n");
-	assert.equal(await readFile(releasesPath, "utf8"), "original-releases\n");
-	await Promise.all([
-		writeFile(roadmapPath, `${JSON.stringify({
-			schemaVersion: 2,
-			fetchedAt: projectFixture.syncedAt,
-			candidates: [],
-		}, null, 2)}\n`),
-		writeFile(releasesPath, `${JSON.stringify({
-			schemaVersion: 2,
-			fetchedAt: projectFixture.syncedAt,
-			items: [],
-		}, null, 2)}\n`),
-	]);
-	await writeSnapshots(roadmap, releases, { roadmapPath, releasesPath });
-	assert.equal(JSON.parse(await readFile(roadmapPath, "utf8")).candidates.length, 6);
-	assert.equal(JSON.parse(await readFile(releasesPath, "utf8")).items.length, 1);
+	assert.equal(await readFile(roadmapPath, "utf8"), serializedCurrentRoadmap);
+	assert.equal(await readFile(releasesPath, "utf8"), serializedCurrentReleases);
 
 	async function writePairFiles(pair) {
 		await Promise.all([

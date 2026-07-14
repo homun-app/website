@@ -325,8 +325,8 @@ export function validateSnapshot(
 						throw new Error(`Public roadmap item must not contain ${field}: ${item.slug}`);
 					}
 				}
-				if (Object.hasOwn(item, "updatedAt") && !isIsoTimestamp(item.updatedAt)) {
-					throw new Error(`Invalid roadmap updatedAt: ${item.slug}`);
+				if (Object.hasOwn(item, "updatedAt")) {
+					throw new Error(`Public roadmap item must not contain updatedAt: ${item.slug}`);
 				}
 			}
 			if (typeof item.title !== "string" || !item.title.trim()) {

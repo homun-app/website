@@ -19,7 +19,6 @@ export interface RoadmapItem {
 	underReview: boolean;
 	voting: VotingState;
 	order: number;
-	updatedAt: string;
 	githubUrl: string;
 	issueNumber: number | null;
 	votes: number;
@@ -55,9 +54,6 @@ export const featuredProject =
 	roadmapItems.find((item) => item.featured)
 	?? roadmapItems.find((item) => item.status === "building");
 export const latestRelease = releases[0];
-export const ideasOpenForVoting = roadmapItems
-	.filter((item) => item.status === "ideas" && item.voting === "open")
-	.sort((a, b) => b.votes - a.votes || a.order - b.order);
 
 export function itemsByStatus(status: RoadmapStatus) {
 	return roadmapItems.filter((item) => item.status === status);

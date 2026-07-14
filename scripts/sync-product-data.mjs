@@ -224,13 +224,6 @@ export async function fetchProductData(
 	return { roadmap, releases };
 }
 
-export async function writeSnapshots(roadmap, releases, paths = {}, options = {}) {
-	validateSnapshot(roadmap, releases);
-	await recoverSnapshotPair(paths, options);
-	const current = await readSnapshotPair(paths);
-	return persistSnapshotPair(current, { roadmap, releases }, paths, options);
-}
-
 export async function syncProductData({
 	env = process.env,
 	fetchImpl = fetch,
