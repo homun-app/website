@@ -316,6 +316,110 @@ assert.equal(
 	productDataSync.formatSyncSummary?.(fetchedSnapshots),
 	"Synced 6 roadmap candidates and 1 releases",
 );
+
+function numberedProjectNode(template, number) {
+	const node = structuredClone(template);
+	const fields = node.fieldValues.nodes;
+	fields.find((field) => field.field.name === "Slug").text = `paginated-item-${number}`;
+	fields.find((field) => field.field.name === "Order").number = number;
+	fields.find((field) => field.field.name === "Featured").name = "No";
+	node.content.number = number;
+	node.content.title = `Paginated item ${number}`;
+	node.content.url = `https://github.com/homun-app/homun/issues/${number}`;
+	return node;
+}
+
+const paginationTemplate = projectFixture.data.organization.projectV2.items.nodes[0];
+const paginatedProjectNodes = Array.from(
+	{ length: 101 },
+	(_, index) => numberedProjectNode(paginationTemplate, index + 1),
+);
+const projectPageOne = {
+	data: {
+		organization: {
+			projectV2: {
+				items: {
+					pageInfo: { hasNextPage: true, endCursor: "cursor-100" },
+					nodes: paginatedProjectNodes.slice(0, 100),
+				},
+			},
+		},
+	},
+};
+const projectPageTwo = {
+	data: {
+		organization: {
+			projectV2: {
+				items: {
+					pageInfo: { hasNextPage: false, endCursor: "cursor-101" },
+					nodes: paginatedProjectNodes.slice(100),
+				},
+			},
+		},
+	},
+};
+const paginatedReleases = Array.from({ length: 101 }, (_, index) => ({
+	...structuredClone(releaseFixture[0]),
+	tag_name: `v0.1.${2000 - index}`,
+	name: `0.1.${2000 - index}`,
+	published_at: new Date(Date.UTC(2026, 6, 14, 12, 0, 0) - index * 1000).toISOString(),
+	body: "## Highlights\n- Pagination fixture",
+}));
+const paginationRequests = [];
+const paginationResponses = [
+	projectPageOne,
+	projectPageTwo,
+	paginatedReleases.slice(0, 100),
+	paginatedReleases.slice(100),
+];
+const paginatedSnapshots = await fetchProductData(
+	{
+		token: "fixture-token",
+		owner: "homun-app",
+		projectNumber: 1,
+		releasesRepo: "homun-app/homun-releases",
+	},
+	async (url, init = {}) => {
+		paginationRequests.push({ url, init: structuredClone(init) });
+		return { ok: true, json: async () => structuredClone(paginationResponses.shift()) };
+	},
+	() => "2026-07-14T15:00:00.000Z",
+);
+assert.equal(paginatedSnapshots.roadmap.candidates.length, 101);
+assert.deepEqual(
+	paginatedSnapshots.roadmap.candidates.map(({ slug }) => slug),
+	paginatedProjectNodes.map((node) =>
+		node.fieldValues.nodes.find((field) => field.field.name === "Slug").text),
+);
+assert.equal(paginatedSnapshots.releases.items.length, 101);
+assert.deepEqual(
+	paginatedSnapshots.releases.items.map(({ version }) => version),
+	paginatedReleases.map(({ tag_name }) => tag_name),
+);
+assert.equal(paginationRequests.length, 4);
+assert.deepEqual(
+	paginationRequests.slice(0, 2).map(({ url }) => url),
+	["https://api.github.com/graphql", "https://api.github.com/graphql"],
+);
+const projectVariables = paginationRequests.slice(0, 2).map(({ init }) =>
+	JSON.parse(init.body).variables);
+assert.deepEqual(projectVariables, [
+	{ owner: "homun-app", number: 1, after: null },
+	{ owner: "homun-app", number: 1, after: "cursor-100" },
+]);
+for (const { init } of paginationRequests.slice(0, 2)) {
+	const query = JSON.parse(init.body).query;
+	assert.match(query, /\$after:\s*String/);
+	assert.match(query, /items\(first:\s*100,\s*after:\s*\$after\)/);
+	assert.match(query, /pageInfo\s*\{\s*hasNextPage\s+endCursor\s*\}/s);
+}
+assert.deepEqual(
+	paginationRequests.slice(2).map(({ url }) => url),
+	[
+		"https://api.github.com/repos/homun-app/homun-releases/releases?per_page=100&page=1",
+		"https://api.github.com/repos/homun-app/homun-releases/releases?per_page=100&page=2",
+	],
+);
 const fetchConfig = {
 	token: "fixture-token",
 	owner: "homun-app",
@@ -345,6 +449,62 @@ await assert.rejects(
 await assert.rejects(
 	fetchFrom([{ data: { organization: { projectV2: { items: {} } } } }]),
 	/GitHub Project response is missing items.nodes/,
+);
+await assert.rejects(
+	fetchFrom([{
+		data: {
+			organization: {
+				projectV2: {
+					items: { nodes: [], pageInfo: { hasNextPage: false } },
+				},
+			},
+		},
+	}]),
+	/GitHub Project response has invalid items.pageInfo/,
+);
+await assert.rejects(
+	fetchFrom([{
+		data: {
+			organization: {
+				projectV2: {
+					items: {
+						nodes: [],
+						pageInfo: { hasNextPage: true, endCursor: null },
+					},
+				},
+			},
+		},
+	}]),
+	/GitHub Project response has no end cursor/,
+);
+await assert.rejects(
+	fetchFrom([
+		{
+			data: {
+				organization: {
+					projectV2: {
+						items: {
+							nodes: [],
+							pageInfo: { hasNextPage: true, endCursor: "repeat" },
+						},
+					},
+				},
+			},
+		},
+		{
+			data: {
+				organization: {
+					projectV2: {
+						items: {
+							nodes: [],
+							pageInfo: { hasNextPage: true, endCursor: "repeat" },
+						},
+					},
+				},
+			},
+		},
+	]),
+	/GitHub Project pagination repeated cursor: repeat/,
 );
 assert.doesNotThrow(() => validateSnapshot(roadmap, releases));
 assert.doesNotThrow(() => validateSnapshot(publicRoadmap, publicReleases));
@@ -624,10 +784,10 @@ assert.deepEqual(
 			schemaVersion: 2,
 			contentUpdatedAt: releasePolicyPreviousRoadmap.contentUpdatedAt,
 			items: [{
-				slug: "apprentice",
-				status: "building",
+				...structuredClone(
+					checkedInRoadmap.items.find(({ slug }) => slug === "apprentice"),
+				),
 				voting: "open",
-				order: 1,
 				progress: 50,
 				featured: false,
 			}],
@@ -950,6 +1110,78 @@ assert.throws(() => normalizeProject(fixtureWithField("Progress", 101, "number")
 assert.throws(
 	() => normalizeProject(fixtureWithField("Public update date", undefined)),
 	/Missing public update date/,
+);
+assert.throws(() => normalizeProject(fixtureWithField("Area", undefined)), /Missing area/);
+assert.throws(() => normalizeProject(fixtureWithField("Area", "")), /Missing area/);
+assert.throws(() => normalizeProject(fixtureWithField("Area", 7)), /Invalid area/);
+assert.throws(() => normalizeProject(fixtureWithField("Featured", undefined)), /Missing featured/);
+assert.throws(() => normalizeProject(fixtureWithField("Featured", "Maybe")), /Invalid featured/);
+assert.throws(() => normalizeProject(fixtureWithField("Progress", undefined)), /Missing progress/);
+assert.throws(() => normalizeProject(fixtureWithField("Progress", Number.NaN, "number")), /Invalid progress/);
+assert.throws(() => normalizeProject(fixtureWithField("Slug", 24, "number")), /Invalid roadmap slug/);
+assert.throws(() => normalizeProject(fixtureWithField("Order", "1", "text")), /Invalid order/);
+for (const invalidVotes of [-1, 1.5, Number.NaN]) {
+	const invalidVoteFixture = structuredClone(projectFixture);
+	invalidVoteFixture.data.organization.projectV2.items.nodes[0].content.reactions.totalCount =
+		invalidVotes;
+	assert.throws(() => normalizeProject(invalidVoteFixture), /Invalid votes: shared-spaces/);
+}
+const missingVotesFixture = structuredClone(projectFixture);
+delete missingVotesFixture.data.organization.projectV2.items.nodes[0].content.reactions;
+assert.throws(() => normalizeProject(missingVotesFixture), /Missing votes: shared-spaces/);
+assert.throws(
+	() => normalizeProject(fixtureWithField("Public update date", "14/07/2026", "date")),
+	/Invalid public update date: shared-spaces/,
+);
+const updateWithoutValidDate = fixtureWithField("Public update date", "2026-02-30", "date");
+assert.throws(
+	() => normalizeProject(updateWithoutValidDate),
+	/Invalid public update date: shared-spaces/,
+);
+const rawWithoutFetchedAt = structuredClone(roadmap);
+delete rawWithoutFetchedAt.fetchedAt;
+assert.throws(
+	() => validateSnapshot(rawWithoutFetchedAt, releases),
+	/Invalid raw roadmap fetchedAt/,
+);
+const publicWithoutContentUpdatedAt = structuredClone(publicRoadmap);
+delete publicWithoutContentUpdatedAt.contentUpdatedAt;
+assert.throws(
+	() => validateSnapshot(publicWithoutContentUpdatedAt, publicReleases),
+	/Invalid public roadmap contentUpdatedAt/,
+);
+for (const [field, value, expected] of [
+	["title", undefined, /Invalid roadmap title: shared-spaces/],
+	["area", undefined, /Invalid roadmap area: shared-spaces/],
+	["votes", -1, /Invalid votes: shared-spaces/],
+	["underReview", "false", /Invalid underReview: shared-spaces/],
+]) {
+	const malformed = structuredClone(publicRoadmap);
+	malformed.items[0][field] = value;
+	assert.throws(() => validateSnapshot(malformed, publicReleases), expected);
+}
+for (const [field, value, expected] of [
+	["description", "", /Invalid roadmap description: shared-spaces/],
+	["githubUrl", "", /Invalid roadmap GitHub URL: shared-spaces/],
+	["capabilities", [""], /Invalid capabilities: shared-spaces/],
+	["featured", "false", /Invalid featured: shared-spaces/],
+	["progress", Number.NaN, /Invalid progress: shared-spaces/],
+	["order", 1.5, /Invalid order: shared-spaces/],
+	["voting", "maybe", /Unknown voting state: maybe/],
+	["issueNumber", 0, /Invalid issue number: shared-spaces/],
+	["targetRelease", 2, /Invalid target release: shared-spaces/],
+	["publicUpdate", 2, /Invalid public update: shared-spaces/],
+	["publicUpdateDate", "14/07/2026", /Invalid public update date: shared-spaces/],
+]) {
+	const malformed = structuredClone(publicRoadmap);
+	malformed.items[0][field] = value;
+	assert.throws(() => validateSnapshot(malformed, publicReleases), expected);
+}
+const publicUpdateWithoutDate = structuredClone(publicRoadmap);
+publicUpdateWithoutDate.items[0].publicUpdateDate = null;
+assert.throws(
+	() => validateSnapshot(publicUpdateWithoutDate, publicReleases),
+	/Missing public update date: shared-spaces/,
 );
 const duplicateSlug = structuredClone(projectFixture);
 const secondFields = duplicateSlug.data.organization.projectV2.items.nodes[1].fieldValues.nodes;

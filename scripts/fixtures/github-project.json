@@ -4,6 +4,10 @@
     "organization": {
       "projectV2": {
         "items": {
+          "pageInfo": {
+            "hasNextPage": false,
+            "endCursor": null
+          },
           "nodes": [
             {
               "fieldValues": { "nodes": [

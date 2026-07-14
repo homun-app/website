@@ -18,7 +18,17 @@ export const VOTING_STATES = new Map([
 ]);
 
 const ROADMAP_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const LEGACY_PUBLIC_STATUSES = new Set(["Exploring", "Next", "Building", "Shipped"]);
+
+function isIsoDate(value) {
+	if (typeof value !== "string" || !ISO_DATE.test(value)) return false;
+	const [year, month, day] = value.split("-").map(Number);
+	const date = new Date(Date.UTC(year, month - 1, day));
+	return date.getUTCFullYear() === year
+		&& date.getUTCMonth() === month - 1
+		&& date.getUTCDate() === day;
+}
 
 function compareText(left, right) {
 	if (left < right) return -1;
@@ -78,18 +88,45 @@ function normalizeProjectNode(node) {
 	const sourceVoting = String(fields.get("Voting") ?? "");
 	const voting = VOTING_STATES.get(sourceVoting);
 	if (!voting) throw new Error(`Unknown voting state: ${sourceVoting || "(empty)"}`);
-	const slug = String(fields.get("Slug") ?? "").trim();
+	const sourceSlug = fields.get("Slug");
+	if (sourceSlug != null && typeof sourceSlug !== "string") {
+		throw new Error(`Invalid roadmap slug: ${sourceSlug}`);
+	}
+	const slug = (sourceSlug ?? "").trim();
 	if (!slug) throw new Error(`Missing roadmap slug: ${content.title}`);
 	if (!ROADMAP_SLUG.test(slug)) throw new Error(`Invalid roadmap slug: ${slug}`);
-	const order = Number(fields.get("Order"));
+	const order = fields.get("Order");
 	if (!Number.isInteger(order)) throw new Error(`Invalid order: ${slug}`);
-	const progress = Number(fields.get("Progress") ?? 0);
+	if (!fields.has("Area") || fields.get("Area") == null || fields.get("Area") === "") {
+		throw new Error(`Missing area: ${slug}`);
+	}
+	if (typeof fields.get("Area") !== "string") throw new Error(`Invalid area: ${slug}`);
+	const area = fields.get("Area").trim();
+	if (!area) throw new Error(`Missing area: ${slug}`);
+	if (!fields.has("Featured")) throw new Error(`Missing featured: ${slug}`);
+	const sourceFeatured = fields.get("Featured");
+	if (sourceFeatured !== "Yes" && sourceFeatured !== "No") {
+		throw new Error(`Invalid featured: ${slug}`);
+	}
+	const featured = sourceFeatured === "Yes";
+	if (!fields.has("Progress") || fields.get("Progress") == null) {
+		throw new Error(`Missing progress: ${slug}`);
+	}
+	const progress = fields.get("Progress");
 	if (!Number.isFinite(progress) || progress < 0 || progress > 100) {
 		throw new Error(`Invalid progress: ${slug}`);
 	}
 	const publicUpdate = String(fields.get("Public update") ?? "").trim() || null;
 	const publicUpdateDate = String(fields.get("Public update date") ?? "").trim() || null;
 	if (publicUpdate && !publicUpdateDate) throw new Error(`Missing public update date: ${slug}`);
+	if (publicUpdateDate && !isIsoDate(publicUpdateDate)) {
+		throw new Error(`Invalid public update date: ${slug}`);
+	}
+	if (!content.reactions || !Object.hasOwn(content.reactions, "totalCount")) {
+		throw new Error(`Missing votes: ${slug}`);
+	}
+	const votes = content.reactions.totalCount;
+	if (!Number.isInteger(votes) || votes < 0) throw new Error(`Invalid votes: ${slug}`);
 	const body = content.body ?? "";
 	const sections = markdownSections(body);
 	return {
@@ -97,10 +134,10 @@ function normalizeProjectNode(node) {
 		title: content.title,
 		status,
 		publicationStatus,
-		area: String(fields.get("Area") ?? "Product"),
+		area,
 		description: firstParagraph(body),
 		capabilities: listItems(sections.get("intended capabilities")),
-		featured: String(fields.get("Featured") ?? "").toLowerCase() === "yes",
+		featured,
 		progress,
 		targetRelease: String(fields.get("Target release") ?? "").trim() || null,
 		publicUpdate,
@@ -110,7 +147,7 @@ function normalizeProjectNode(node) {
 		updatedAt: content.updatedAt,
 		githubUrl: content.url,
 		issueNumber: content.number,
-		votes: Number(content.reactions?.totalCount ?? 0),
+		votes,
 	};
 }
 
@@ -209,6 +246,18 @@ export function validateSnapshot(
 	} else if (!Array.isArray(roadmap.items)) {
 		throw new Error("Invalid roadmap snapshot shape");
 	}
+	if (
+		isRawRoadmap
+		&& (typeof roadmap.fetchedAt !== "string" || !roadmap.fetchedAt.trim())
+	) {
+		throw new Error("Invalid raw roadmap fetchedAt");
+	}
+	if (
+		isPublicRoadmap
+		&& (typeof roadmap.contentUpdatedAt !== "string" || !roadmap.contentUpdatedAt.trim())
+	) {
+		throw new Error("Invalid public roadmap contentUpdatedAt");
+	}
 	const expectedReleaseTimestamp = isRawRoadmap ? "fetchedAt" : "contentUpdatedAt";
 	const unexpectedReleaseTimestamp = isRawRoadmap ? "contentUpdatedAt" : "fetchedAt";
 	if (
@@ -229,6 +278,50 @@ export function validateSnapshot(
 		if (slugs.has(item.slug)) throw new Error(`Duplicate roadmap slug: ${item.slug}`);
 		slugs.add(item.slug);
 		if (roadmap.schemaVersion === 2) {
+			if (typeof item.title !== "string" || !item.title.trim()) {
+				throw new Error(`Invalid roadmap title: ${item.slug}`);
+			}
+			if (typeof item.area !== "string" || !item.area.trim()) {
+				throw new Error(`Invalid roadmap area: ${item.slug}`);
+			}
+			if (typeof item.description !== "string" || !item.description.trim()) {
+				throw new Error(`Invalid roadmap description: ${item.slug}`);
+			}
+			if (typeof item.githubUrl !== "string" || !item.githubUrl.trim()) {
+				throw new Error(`Invalid roadmap GitHub URL: ${item.slug}`);
+			}
+			if (
+				!Array.isArray(item.capabilities)
+				|| item.capabilities.some(
+					(capability) => typeof capability !== "string" || !capability.trim(),
+				)
+			) {
+				throw new Error(`Invalid capabilities: ${item.slug}`);
+			}
+			if (typeof item.featured !== "boolean") {
+				throw new Error(`Invalid featured: ${item.slug}`);
+			}
+			if (!Number.isInteger(item.votes) || item.votes < 0) {
+				throw new Error(`Invalid votes: ${item.slug}`);
+			}
+			if (
+				item.issueNumber !== null
+				&& (!Number.isInteger(item.issueNumber) || item.issueNumber < 1)
+			) {
+				throw new Error(`Invalid issue number: ${item.slug}`);
+			}
+			if (item.targetRelease !== null && typeof item.targetRelease !== "string") {
+				throw new Error(`Invalid target release: ${item.slug}`);
+			}
+			if (item.publicUpdate !== null && typeof item.publicUpdate !== "string") {
+				throw new Error(`Invalid public update: ${item.slug}`);
+			}
+			if (item.publicUpdateDate !== null && !isIsoDate(item.publicUpdateDate)) {
+				throw new Error(`Invalid public update date: ${item.slug}`);
+			}
+			if (isPublicRoadmap && typeof item.underReview !== "boolean") {
+				throw new Error(`Invalid underReview: ${item.slug}`);
+			}
 			if (![...PUBLIC_STATUSES.values()].includes(item.status)) {
 				throw new Error(`Unknown public status: ${item.status}`);
 			}

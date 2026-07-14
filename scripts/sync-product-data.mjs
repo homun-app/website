@@ -16,10 +16,11 @@ import {
 } from "./lib/snapshot-store.mjs";
 
 const PROJECT_QUERY = `
-query HomunPublicRoadmap($owner: String!, $number: Int!) {
+query HomunPublicRoadmap($owner: String!, $number: Int!, $after: String) {
   organization(login: $owner) {
     projectV2(number: $number) {
-      items(first: 100) {
+      items(first: 100, after: $after) {
+        pageInfo { hasNextPage endCursor }
         nodes {
           fieldValues(first: 30) {
             nodes {
@@ -115,40 +116,82 @@ export async function fetchProductData(
 	clock = () => new Date().toISOString(),
 ) {
 	const syncedAt = clock();
-	const projectPayload = await githubRequest(
-		"https://api.github.com/graphql",
-		config.token,
-		{
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				query: PROJECT_QUERY,
-				variables: { owner: config.owner, number: config.projectNumber },
-			}),
+	const projectNodes = [];
+	const seenCursors = new Set();
+	let after = null;
+	while (true) {
+		const projectPayload = await githubRequest(
+			"https://api.github.com/graphql",
+			config.token,
+			{
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					query: PROJECT_QUERY,
+					variables: { owner: config.owner, number: config.projectNumber, after },
+				}),
+			},
+			fetchImpl,
+		);
+		if (projectPayload.errors?.length) {
+			throw new Error(`GitHub Project query failed: ${projectPayload.errors[0].message}`);
+		}
+		const organization = projectPayload?.data?.organization;
+		if (organization == null) {
+			throw new Error(`GitHub organization not found: ${config.owner}`);
+		}
+		const project = organization.projectV2;
+		if (project == null) {
+			throw new Error(`GitHub Project ${config.projectNumber} not found`);
+		}
+		if (!Array.isArray(project.items?.nodes)) {
+			throw new Error("GitHub Project response is missing items.nodes");
+		}
+		const pageInfo = project.items.pageInfo;
+		if (!pageInfo) {
+			throw new Error("GitHub Project response is missing items.pageInfo");
+		}
+		if (
+			typeof pageInfo.hasNextPage !== "boolean"
+			|| !Object.hasOwn(pageInfo, "endCursor")
+			|| (pageInfo.endCursor !== null && typeof pageInfo.endCursor !== "string")
+		) {
+			throw new Error("GitHub Project response has invalid items.pageInfo");
+		}
+		projectNodes.push(...project.items.nodes);
+		if (!pageInfo.hasNextPage) break;
+		const endCursor = pageInfo.endCursor;
+		if (typeof endCursor !== "string" || !endCursor.trim()) {
+			throw new Error("GitHub Project response has no end cursor");
+		}
+		if (seenCursors.has(endCursor)) {
+			throw new Error(`GitHub Project pagination repeated cursor: ${endCursor}`);
+		}
+		seenCursors.add(endCursor);
+		after = endCursor;
+	}
+	const projectPayload = {
+		syncedAt,
+		data: {
+			organization: {
+				projectV2: { items: { nodes: projectNodes } },
+			},
 		},
-		fetchImpl,
-	);
-	if (projectPayload.errors?.length) {
-		throw new Error(`GitHub Project query failed: ${projectPayload.errors[0].message}`);
+	};
+	const releasePayload = [];
+	for (let page = 1; ; page += 1) {
+		const releasePage = await githubRequest(
+			`https://api.github.com/repos/${config.releasesRepo}/releases?per_page=100&page=${page}`,
+			config.token,
+			{},
+			fetchImpl,
+		);
+		if (!Array.isArray(releasePage)) {
+			throw new Error(`GitHub releases response page ${page} is not an array`);
+		}
+		releasePayload.push(...releasePage);
+		if (releasePage.length < 100) break;
 	}
-	const organization = projectPayload?.data?.organization;
-	if (organization == null) {
-		throw new Error(`GitHub organization not found: ${config.owner}`);
-	}
-	const project = organization.projectV2;
-	if (project == null) {
-		throw new Error(`GitHub Project ${config.projectNumber} not found`);
-	}
-	if (!Array.isArray(project.items?.nodes)) {
-		throw new Error("GitHub Project response is missing items.nodes");
-	}
-	projectPayload.syncedAt = syncedAt;
-	const releasePayload = await githubRequest(
-		`https://api.github.com/repos/${config.releasesRepo}/releases?per_page=100`,
-		config.token,
-		{},
-		fetchImpl,
-	);
 	const roadmap = normalizeProject(projectPayload);
 	const releases = normalizeReleases(releasePayload, roadmap.candidates, syncedAt);
 	validateSnapshot(roadmap, releases);
