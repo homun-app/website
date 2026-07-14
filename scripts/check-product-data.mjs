@@ -8,6 +8,7 @@ import {
 	normalizeReleases,
 	validateSnapshot,
 } from "./lib/github-product-data.mjs";
+import { applyPublicationPolicy } from "./lib/publication-policy.mjs";
 import * as productDataSync from "./sync-product-data.mjs";
 
 const { fetchProductData, readConfig, writeSnapshots } = productDataSync;
@@ -91,6 +92,184 @@ assert.deepEqual(normalizedWithoutNotes.items[0].projectSlugs, []);
 const duplicate = structuredClone(roadmap);
 duplicate.candidates.push({ ...duplicate.candidates[0] });
 assert.throws(() => validateSnapshot(duplicate, releases), /Duplicate roadmap slug/);
+
+const publishedApprentice = {
+	slug: "apprentice",
+	title: "Apprentice",
+	status: "building",
+	area: "AI",
+	description: "Teach Homun repeatable local workflows.",
+	capabilities: ["Learn from approved examples", "Keep private context local"],
+	featured: true,
+	progress: 62,
+	targetRelease: "v0.2",
+	publicUpdate: "The first guided workflow is under active development.",
+	publicUpdateDate: "2026-07-13",
+	voting: "open",
+	order: 30,
+	updatedAt: "2026-07-13T09:30:00.000Z",
+	githubUrl: "https://github.com/homun-app/homun/issues/30",
+	issueNumber: 30,
+	votes: 42,
+	underReview: false,
+};
+const previous = {
+	schemaVersion: 2,
+	contentUpdatedAt: "2026-07-13T10:00:00.000Z",
+	items: [publishedApprentice],
+};
+const { underReview: _approvedReviewState, ...apprenticeCandidateFields } = publishedApprentice;
+const unchangedApprenticePublished = {
+	...apprenticeCandidateFields,
+	publicationStatus: "published",
+};
+const changedApprentice = {
+	...unchangedApprenticePublished,
+	title: "Apprentice, redesigned",
+	status: "next",
+	description: "Candidate copy that must not leak before approval.",
+	capabilities: ["Unapproved capability"],
+	featured: false,
+	progress: 95,
+	targetRelease: "v0.3",
+	publicUpdate: "Unapproved update",
+	publicUpdateDate: "2026-07-14",
+	voting: "closed",
+	order: 1,
+	updatedAt: "2026-07-14T08:00:00.000Z",
+	archiveReason: "internal-only",
+	projectItemId: "PVTI_internal",
+	labels: ["private-metadata"],
+};
+const draftCandidate = { ...changedApprentice, publicationStatus: "draft" };
+const newDraftCandidate = {
+	...unchangedApprenticePublished,
+	slug: "future-memory",
+	title: "Future Memory",
+	order: 10,
+	publicationStatus: "draft",
+};
+const newReviewCandidate = {
+	...unchangedApprenticePublished,
+	slug: "quiet-mode",
+	title: "Quiet Mode",
+	order: 20,
+	publicationStatus: "review",
+};
+const newPublishedCandidate = {
+	...unchangedApprenticePublished,
+	slug: "connected-actions",
+	title: "Connected Actions",
+	order: 20,
+	publicationStatus: "published",
+	archiveReason: "must-not-leak",
+	projectItemId: "PVTI_new",
+	labels: ["internal"],
+};
+
+assert.deepEqual(applyPublicationPolicy(previous, [draftCandidate]).items, previous.items);
+assert.deepEqual(
+	applyPublicationPolicy(previous, [unchangedApprenticePublished, newDraftCandidate]).items,
+	previous.items,
+);
+assert.deepEqual(
+	applyPublicationPolicy(previous, [unchangedApprenticePublished, newReviewCandidate]).items,
+	previous.items,
+);
+assert.deepEqual(
+	applyPublicationPolicy(previous, [
+		{ ...changedApprentice, publicationStatus: "review" },
+	]).items,
+	[{ ...publishedApprentice, underReview: true }],
+);
+assert.equal(
+	applyPublicationPolicy(previous, [
+		{ ...changedApprentice, publicationStatus: "published" },
+	]).items[0].title,
+	changedApprentice.title,
+);
+assert.equal(
+	applyPublicationPolicy(previous, [
+		{ ...changedApprentice, publicationStatus: "published" },
+	]).items[0].underReview,
+	false,
+);
+assert.deepEqual(
+	applyPublicationPolicy(previous, [
+		{ ...changedApprentice, publicationStatus: "archived" },
+	]).items,
+	[],
+);
+assert.throws(() => applyPublicationPolicy(previous, []), /missing from Project source/i);
+
+const publishedWithNewItem = applyPublicationPolicy(previous, [
+	unchangedApprenticePublished,
+	newPublishedCandidate,
+]);
+assert.equal(publishedWithNewItem.items[0].title, "Connected Actions");
+assert.deepEqual(Object.keys(publishedWithNewItem.items[0]), [
+	"slug",
+	"title",
+	"status",
+	"area",
+	"description",
+	"capabilities",
+	"featured",
+	"progress",
+	"targetRelease",
+	"publicUpdate",
+	"publicUpdateDate",
+	"voting",
+	"order",
+	"updatedAt",
+	"githubUrl",
+	"issueNumber",
+	"votes",
+	"underReview",
+]);
+assert.equal(publishedWithNewItem.items[0].underReview, false);
+assert.equal("publicationStatus" in publishedWithNewItem.items[0], false);
+assert.equal("archiveReason" in publishedWithNewItem.items[0], false);
+assert.equal("projectItemId" in publishedWithNewItem.items[0], false);
+assert.equal("labels" in publishedWithNewItem.items[0], false);
+
+const alphaPublishedCandidate = {
+	...newPublishedCandidate,
+	slug: "alpha-action",
+	title: "Alpha Action",
+};
+assert.deepEqual(
+	applyPublicationPolicy(previous, [
+		unchangedApprenticePublished,
+		newPublishedCandidate,
+		alphaPublishedCandidate,
+	]).items.map(({ slug }) => slug),
+	["alpha-action", "connected-actions", "apprentice"],
+);
+assert.throws(
+	() =>
+		applyPublicationPolicy(
+			previous,
+			[unchangedApprenticePublished, { ...unchangedApprenticePublished }],
+			{ allowMissing: true },
+		),
+	/Duplicate roadmap candidate slug: apprentice/,
+);
+assert.throws(
+	() =>
+		applyPublicationPolicy(
+			previous,
+			[{ ...unchangedApprenticePublished, publicationStatus: "private" }],
+			{ allowMissing: true },
+		),
+	/Unknown publication status: private/,
+);
+assert.deepEqual(applyPublicationPolicy(previous, [], { allowMissing: true }).items, previous.items);
+assert.deepEqual(applyPublicationPolicy(previous, [unchangedApprenticePublished]), {
+	schemaVersion: 2,
+	contentUpdatedAt: previous.contentUpdatedAt,
+	items: [publishedApprentice],
+});
 
 function fixtureWithField(name, value, property = "name", nodeIndex = 0) {
 	const fixture = structuredClone(projectFixture);
