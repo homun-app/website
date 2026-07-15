@@ -13,6 +13,7 @@
     "test:illustrations": "node scripts/check-homepage-illustrations.mjs",
     "test:product-data": "node scripts/check-product-data.mjs",
     "test:roadmap-rollout": "node scripts/check-roadmap-project-rollout.mjs",
+    "test:roadmap-bootstrap": "node scripts/check-roadmap-project-bootstrap.mjs",
     "test:roadmap": "node scripts/check-roadmap-pages.mjs",
     "test:container": "node scripts/check-container-deployment.mjs",
     "test:container-runtime": "node scripts/check-container-runtime.mjs",
@@ -20,7 +21,8 @@
     "test:container-runtime-signals": "node scripts/check-container-runtime-signals.mjs",
     "sync:product-data": "node scripts/sync-product-data.mjs",
     "roadmap:project-rollout": "node scripts/roadmap-project-rollout.mjs",
-    "check": "npm run build && npm run test:homepage && npm run test:marketing-backgrounds && npm run test:downloads && npm run test:illustrations && npm run test:product-data && npm run test:roadmap-rollout && npm run test:roadmap && npm run test:container && npm run test:container-runtime-ownership && npm run test:container-runtime-signals",
+    "roadmap:project-bootstrap": "node scripts/bootstrap-roadmap-project.mjs",
+    "check": "npm run build && npm run test:homepage && npm run test:marketing-backgrounds && npm run test:downloads && npm run test:illustrations && npm run test:product-data && npm run test:roadmap-rollout && npm run test:roadmap-bootstrap && npm run test:roadmap && npm run test:container && npm run test:container-runtime-ownership && npm run test:container-runtime-signals",
     "preview": "astro preview",
     "astro": "astro"
   },

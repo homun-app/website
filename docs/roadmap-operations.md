@@ -46,6 +46,17 @@ automatically.
 
 ## Migration and recovery commands
 
+When the organization Project is new and contains no roadmap items, preview the
+idempotent bootstrap first:
+
+```bash
+npm run roadmap:project-bootstrap -- --project-number <number> --dry-run
+```
+
+After approving the exact fields and public issues, apply it with `--apply` and type
+`bootstrap` at the confirmation prompt. A repeated dry-run must report zero fields and
+zero issues to create before continuing.
+
 Inventory and preview the Project without writes:
 
 ```bash

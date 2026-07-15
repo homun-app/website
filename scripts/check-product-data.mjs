@@ -46,6 +46,17 @@ const releaseFixture = JSON.parse(
 	await readFile(new URL("./fixtures/github-releases.json", import.meta.url)),
 );
 const roadmap = normalizeProject(projectFixture);
+const markedProjectFixture = structuredClone(projectFixture);
+markedProjectFixture.data.organization.projectV2.items.nodes[0].content.body = [
+	"<!-- roadmap-slug: shared-spaces -->",
+	"",
+	markedProjectFixture.data.organization.projectV2.items.nodes[0].content.body,
+].join("\n");
+assert.equal(
+	normalizeProject(markedProjectFixture).candidates[0].description,
+	roadmap.candidates[0].description,
+	"Internal roadmap markers must not leak into public descriptions",
+);
 const checkedInRoadmap = JSON.parse(
 	await readFile(new URL("../src/data/roadmap.json", import.meta.url)),
 );

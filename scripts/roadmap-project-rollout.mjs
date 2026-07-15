@@ -131,12 +131,12 @@ function assertRoadmapShape(roadmap) {
 	}
 }
 
-function indexItemsBySlug(items) {
+function indexItemsBySlug(items, { requireLegacyStatus = true } = {}) {
 	const bySlug = new Map();
 	for (const item of items ?? []) {
 		const slug = typeof item.fields?.Slug === "string" ? item.fields.Slug.trim() : "";
 		if (!slug) throw new Error(`Missing slug in Project item: ${item.content?.title ?? item.id}`);
-		if (!LEGACY_STATUSES.has(item.fields?.Status)) {
+		if (requireLegacyStatus && !LEGACY_STATUSES.has(item.fields?.Status)) {
 			throw new Error(`Unknown legacy status for ${slug}: ${item.fields?.Status ?? "(empty)"}`);
 		}
 		if (bySlug.has(slug)) throw new Error(`Duplicate slug in Project: ${slug}`);
@@ -163,7 +163,9 @@ export function buildMigrationPlan(inventory, restoredRoadmap) {
 		else assertCompatibleField(existing, spec);
 	}
 
-	const projectItems = indexItemsBySlug(inventory.items);
+	const projectItems = indexItemsBySlug(inventory.items, {
+		requireLegacyStatus: existingFields.has("Public"),
+	});
 	const restoredSlugs = new Set(restoredRoadmap.items.map((item) => item.slug));
 	const items = [];
 	const backfills = [];
