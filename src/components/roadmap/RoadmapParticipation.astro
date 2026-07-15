@@ -1,0 +1,51 @@
+---
+import type { RoadmapItem } from "../../lib/product-data";
+import { roadmapPresentation } from "../../lib/roadmap-presentation.mjs";
+
+interface Props {
+	item: RoadmapItem;
+	variant?: "card" | "detail";
+}
+
+const { item, variant = "card" } = Astro.props;
+const presentation = roadmapPresentation(item);
+const isIdea = item.status === "ideas";
+const awaitsModeration = isIdea && item.voting === "open" && !presentation.hasIssue;
+const shouldRender = presentation.underReview || isIdea || presentation.canDiscuss;
+---
+
+{shouldRender && (
+	<div
+		class:list={[
+			variant === "card"
+				? "project-actions relative z-10 mt-4 border-t border-line pt-3 font-mono text-[10px]"
+				: "mt-4",
+		]}
+		data-roadmap-participation
+	>
+		<div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+			{presentation.underReview && (
+				<span class="rounded-full border border-accent/30 px-2 py-1 font-mono text-[9px] uppercase tracking-[.1em] text-accent-bright">Under review</span>
+			)}
+			{isIdea && <span class="font-mono text-xs text-accent-bright" aria-label={`${item.votes} votes`}>👍 {item.votes}</span>}
+			{presentation.canVote && (
+				<a href={item.githubUrl} target="_blank" rel="noopener" class="text-muted hover:text-cream">Vote on GitHub ↗</a>
+			)}
+			{variant === "card" && presentation.canDiscuss && (
+				<a href={item.githubUrl} target="_blank" rel="noopener" class="text-muted hover:text-cream">Discuss on GitHub ↗</a>
+			)}
+		</div>
+
+		{variant === "detail" && presentation.canDiscuss && (
+			<a href={item.githubUrl} target="_blank" rel="noopener" class="btn mt-4 w-full border border-line-strong text-sm text-cream hover:border-accent/50">Discuss on GitHub ↗</a>
+		)}
+		{awaitsModeration && (
+			<p class:list={["leading-relaxed text-faint", variant === "card" ? "mt-2 text-[10px]" : "mt-3 text-xs"]}>
+				Voting opens after moderation links this idea to its GitHub discussion.
+			</p>
+		)}
+		{variant === "detail" && presentation.canDiscuss && (
+			<p class="mt-3 text-center text-[11px] text-faint">A GitHub account is needed only to participate.</p>
+		)}
+	</div>
+)}

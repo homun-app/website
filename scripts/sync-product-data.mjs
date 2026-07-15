@@ -1,19 +1,31 @@
-import { mkdir, rename, rm, writeFile } from "node:fs/promises";
-import { dirname, resolve } from "node:path";
+import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import {
 	normalizeProject,
 	normalizeReleases,
 	validateSnapshot,
 } from "./lib/github-product-data.mjs";
+import { applyPublicationPolicy } from "./lib/publication-policy.mjs";
+import { applyReleasePublicationPolicy } from "./lib/release-publication-policy.mjs";
+import {
+	assertSafeReplacement,
+	hasSemanticChanges,
+	persistSnapshotPair,
+	readSnapshotPair,
+	recoverSnapshotPair,
+} from "./lib/snapshot-store.mjs";
+
+export const MAX_GITHUB_PAGES = 100;
+export const GITHUB_REQUEST_TIMEOUT_MS = 30_000;
 
 const PROJECT_QUERY = `
-query HomunPublicRoadmap($owner: String!, $number: Int!) {
+query HomunPublicRoadmap($owner: String!, $number: Int!, $after: String) {
   organization(login: $owner) {
     projectV2(number: $number) {
-      items(first: 100) {
+      items(first: 100, after: $after) {
+        pageInfo { hasNextPage endCursor }
         nodes {
-          fieldValues(first: 30) {
+          fieldValues(first: 100) {
             nodes {
               ... on ProjectV2ItemFieldSingleSelectValue {
                 name
@@ -41,7 +53,6 @@ query HomunPublicRoadmap($owner: String!, $number: Int!) {
               url
               updatedAt
               reactions(content: THUMBS_UP) { totalCount }
-              labels(first: 20) { nodes { name } }
             }
           }
         }
@@ -66,9 +77,33 @@ export function readConfig(env = process.env) {
 	};
 }
 
-async function githubRequest(url, token, init = {}, fetchImpl = fetch) {
+export function parseSyncArgs(args = []) {
+	const supported = new Set(["--dry-run", "--write", "--allow-empty"]);
+	for (const arg of args) {
+		if (!supported.has(arg)) throw new Error(`Unknown option: ${arg}`);
+	}
+	if (new Set(args).size !== args.length) {
+		const duplicate = args.find((arg, index) => args.indexOf(arg) !== index);
+		throw new Error(`Duplicate option: ${duplicate}`);
+	}
+	const dryRun = args.includes("--dry-run");
+	const write = args.includes("--write");
+	const allowEmpty = args.includes("--allow-empty");
+	if (dryRun && write) throw new Error("Cannot combine --dry-run and --write");
+	if (allowEmpty && !write) throw new Error("--allow-empty requires --write");
+	return { mode: write ? "write" : "dry-run", allowEmpty };
+}
+
+async function githubRequest(
+	url,
+	token,
+	init = {},
+	fetchImpl = fetch,
+	timeoutMs = GITHUB_REQUEST_TIMEOUT_MS,
+) {
 	const response = await fetchImpl(url, {
 		...init,
+		signal: init.signal ?? AbortSignal.timeout(timeoutMs),
 		headers: {
 			Accept: "application/vnd.github+json",
 			Authorization: `Bearer ${token}`,
@@ -84,64 +119,204 @@ async function githubRequest(url, token, init = {}, fetchImpl = fetch) {
 	return response.json();
 }
 
-export async function fetchProductData(config, fetchImpl = fetch) {
-	const syncedAt = new Date().toISOString();
-	const projectPayload = await githubRequest(
-		"https://api.github.com/graphql",
-		config.token,
-		{
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				query: PROJECT_QUERY,
-				variables: { owner: config.owner, number: config.projectNumber },
-			}),
-		},
-		fetchImpl,
-	);
-	if (projectPayload.errors?.length) {
-		throw new Error(`GitHub Project query failed: ${projectPayload.errors[0].message}`);
+export async function fetchProductData(
+	config,
+	fetchImpl = fetch,
+	clock = () => new Date().toISOString(),
+	{
+		maxPages = MAX_GITHUB_PAGES,
+		timeoutMs = GITHUB_REQUEST_TIMEOUT_MS,
+	} = {},
+) {
+	if (!Number.isInteger(maxPages) || maxPages < 1) {
+		throw new Error("maxPages must be a positive integer");
 	}
-	projectPayload.syncedAt = syncedAt;
-	const releasePayload = await githubRequest(
-		`https://api.github.com/repos/${config.releasesRepo}/releases?per_page=100`,
-		config.token,
-		{},
-		fetchImpl,
-	);
+	const syncedAt = clock();
+	const projectNodes = [];
+	const seenCursors = new Set();
+	let after = null;
+	let projectPage = 0;
+	while (true) {
+		projectPage += 1;
+		if (projectPage > maxPages) {
+			throw new Error(`GitHub Project pagination exceeded ${maxPages} pages`);
+		}
+		const projectPayload = await githubRequest(
+			"https://api.github.com/graphql",
+			config.token,
+			{
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					query: PROJECT_QUERY,
+					variables: { owner: config.owner, number: config.projectNumber, after },
+				}),
+			},
+			fetchImpl,
+			timeoutMs,
+		);
+		if (projectPayload.errors?.length) {
+			throw new Error(`GitHub Project query failed: ${projectPayload.errors[0].message}`);
+		}
+		const organization = projectPayload?.data?.organization;
+		if (organization == null) {
+			throw new Error(`GitHub organization not found: ${config.owner}`);
+		}
+		const project = organization.projectV2;
+		if (project == null) {
+			throw new Error(`GitHub Project ${config.projectNumber} not found`);
+		}
+		if (!Array.isArray(project.items?.nodes)) {
+			throw new Error("GitHub Project response is missing items.nodes");
+		}
+		const pageInfo = project.items.pageInfo;
+		if (!pageInfo) {
+			throw new Error("GitHub Project response is missing items.pageInfo");
+		}
+		if (
+			typeof pageInfo.hasNextPage !== "boolean"
+			|| !Object.hasOwn(pageInfo, "endCursor")
+			|| (pageInfo.endCursor !== null && typeof pageInfo.endCursor !== "string")
+		) {
+			throw new Error("GitHub Project response has invalid items.pageInfo");
+		}
+		projectNodes.push(...project.items.nodes);
+		if (!pageInfo.hasNextPage) break;
+		const endCursor = pageInfo.endCursor;
+		if (typeof endCursor !== "string" || !endCursor.trim()) {
+			throw new Error("GitHub Project response has no end cursor");
+		}
+		if (seenCursors.has(endCursor)) {
+			throw new Error(`GitHub Project pagination repeated cursor: ${endCursor}`);
+		}
+		seenCursors.add(endCursor);
+		after = endCursor;
+	}
+	const projectPayload = {
+		syncedAt,
+		data: {
+			organization: {
+				projectV2: { items: { nodes: projectNodes } },
+			},
+		},
+	};
+	const releasePayload = [];
+	for (let page = 1; ; page += 1) {
+		if (page > maxPages) {
+			throw new Error(`GitHub releases pagination exceeded ${maxPages} pages`);
+		}
+		const releasePage = await githubRequest(
+			`https://api.github.com/repos/${config.releasesRepo}/releases?per_page=100&page=${page}`,
+			config.token,
+			{},
+			fetchImpl,
+			timeoutMs,
+		);
+		if (!Array.isArray(releasePage)) {
+			throw new Error(`GitHub releases response page ${page} is not an array`);
+		}
+		releasePayload.push(...releasePage);
+		if (releasePage.length < 100) break;
+	}
 	const roadmap = normalizeProject(projectPayload);
-	const releases = normalizeReleases(releasePayload, roadmap.items, syncedAt);
+	const releases = normalizeReleases(releasePayload, roadmap.candidates, syncedAt);
 	validateSnapshot(roadmap, releases);
 	return { roadmap, releases };
 }
 
-export async function writeSnapshots(roadmap, releases, paths = {}) {
-	validateSnapshot(roadmap, releases);
-	const roadmapPath = resolve(paths.roadmapPath ?? "src/data/roadmap.json");
-	const releasesPath = resolve(paths.releasesPath ?? "src/data/releases.json");
-	await mkdir(dirname(roadmapPath), { recursive: true });
-	await mkdir(dirname(releasesPath), { recursive: true });
-	const nonce = `${process.pid}-${Date.now()}`;
-	const roadmapTemp = `${roadmapPath}.${nonce}.tmp`;
-	const releasesTemp = `${releasesPath}.${nonce}.tmp`;
-	try {
-		await writeFile(roadmapTemp, `${JSON.stringify(roadmap, null, 2)}\n`);
-		await writeFile(releasesTemp, `${JSON.stringify(releases, null, 2)}\n`);
-		await rename(roadmapTemp, roadmapPath);
-		await rename(releasesTemp, releasesPath);
-	} finally {
-		await Promise.all([
-			rm(roadmapTemp, { force: true }),
-			rm(releasesTemp, { force: true }),
-		]);
+export async function syncProductData({
+	env = process.env,
+	fetchImpl = fetch,
+	paths = {},
+	clock = () => new Date().toISOString(),
+	mode = "dry-run",
+	allowEmpty = false,
+} = {}) {
+	if (!new Set(["dry-run", "write"]).has(mode)) {
+		throw new Error(`Unknown sync mode: ${mode}`);
 	}
+	if (allowEmpty && mode !== "write") {
+		throw new Error("allowEmpty requires write mode");
+	}
+	await recoverSnapshotPair(paths);
+	const current = await readSnapshotPair(paths);
+	if (current.roadmap?.schemaVersion !== 2 || !Array.isArray(current.roadmap.items)) {
+		throw new Error("Previous roadmap must use schemaVersion 2 with public items");
+	}
+	validateSnapshot(current.roadmap, current.releases);
+
+	const config = readConfig(env);
+	const syncedAt = clock();
+	const raw = await fetchProductData(config, fetchImpl, () => syncedAt);
+	const publishedRoadmap = raw.roadmap.candidates.length === 0
+		? {
+			schemaVersion: 2,
+			contentUpdatedAt: current.roadmap.contentUpdatedAt,
+			items: [],
+		}
+		: applyPublicationPolicy(current.roadmap, raw.roadmap.candidates);
+	const releasePublication = applyReleasePublicationPolicy(
+		current.releases,
+		raw.releases,
+		raw.roadmap.candidates,
+		current.roadmap,
+	);
+	const candidate = {
+		roadmap: publishedRoadmap,
+		releases: releasePublication.releases,
+	};
+	const validation = validateSnapshot(candidate.roadmap, candidate.releases, {
+		knownRoadmapSlugs: raw.roadmap.candidates.map(({ slug }) => slug),
+	});
+	const warnings = [...new Set([
+		...releasePublication.warnings,
+		...validation.warnings,
+	])];
+	assertSafeReplacement(current, candidate, {
+		allowEmpty: mode === "write" && allowEmpty,
+	});
+	const changed = hasSemanticChanges(current, candidate);
+	if (!changed) {
+		return {
+			status: "NO_CHANGE",
+			snapshots: current,
+			roadmapCount: current.roadmap.items.length,
+			releaseCount: current.releases.items.length,
+			warnings,
+		};
+	}
+	candidate.roadmap.contentUpdatedAt = syncedAt;
+	candidate.releases.contentUpdatedAt = syncedAt;
+	if (mode === "dry-run") {
+		return {
+			status: "WOULD_CHANGE",
+			snapshots: candidate,
+			roadmapCount: candidate.roadmap.items.length,
+			releaseCount: candidate.releases.items.length,
+			warnings,
+		};
+	}
+	const persisted = await persistSnapshotPair(current, candidate, paths, { allowEmpty });
+	return {
+		status: persisted.status,
+		snapshots: candidate,
+		roadmapCount: candidate.roadmap.items.length,
+		releaseCount: candidate.releases.items.length,
+		warnings,
+	};
 }
 
-export async function syncProductData(env = process.env, fetchImpl = fetch, paths) {
-	const config = readConfig(env);
-	const snapshots = await fetchProductData(config, fetchImpl);
-	await writeSnapshots(snapshots.roadmap, snapshots.releases, paths);
-	return snapshots;
+export function formatSyncSummary(result) {
+	const warningLines = (result?.warnings ?? [])
+		.map((warning) => `WARNING: ${warning}`)
+		.join("\n");
+	let summary;
+	if (result?.status) {
+		summary = `${result.status} ${result.roadmapCount} roadmap items and ${result.releaseCount} releases`;
+	} else {
+		summary = `Synced ${result.roadmap.candidates.length} roadmap candidates and ${result.releases.items.length} releases`;
+	}
+	return warningLines ? `${summary}\n${warningLines}` : summary;
 }
 
 const isCli = process.argv[1]
@@ -149,10 +324,9 @@ const isCli = process.argv[1]
 
 if (isCli) {
 	try {
-		const snapshots = await syncProductData();
-		console.log(
-			`Synced ${snapshots.roadmap.items.length} roadmap items and ${snapshots.releases.items.length} releases`,
-		);
+		const options = parseSyncArgs(process.argv.slice(2));
+		const result = await syncProductData(options);
+		console.log(formatSyncSummary(result));
 	} catch (error) {
 		console.error(error instanceof Error ? error.message : error);
 		process.exitCode = 1;
