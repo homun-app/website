@@ -120,6 +120,14 @@ assert.ok(
 	!heroSource.includes("lg:text-[5.2rem]"),
 	"Hero title must not use its largest size at the 1024px split breakpoint",
 );
+assert.ok(
+	heroSource.includes('data-hero-proof class="mt-4 sm:mt-1'),
+	"Hero proof must render independently of the desktop reveal threshold",
+);
+assert.ok(
+	!heroSource.includes('data-hero-proof class="reveal'),
+	"Hero proof must not remain hidden below the reveal observer margin",
+);
 
 const connectedSource = await readFile(
 	new URL("../src/components/illustrations/ConnectedWorkspaceIllustration.astro", import.meta.url),

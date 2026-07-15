@@ -9,6 +9,10 @@ const roadmap = JSON.parse(
 
 for (const required of [
 	"Your work. Your models. Your system.",
+	"Independent AI workspace",
+	"An AI workspace for people who build, research and create—not just chat.",
+	"Use persistent memory, tools and automations with compatible cloud, open-source or local models, while keeping your work under your control.",
+	"No account required · Installers for macOS, Windows and Linux",
 	"Start without creating an account.",
 	"A new chat. The same understanding.",
 	"Not a transcript. Not an opaque embedding blob.",
