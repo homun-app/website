@@ -56,6 +56,7 @@ function fieldMap(node) {
 
 function firstParagraph(markdown = "") {
 	return markdown
+		.replace(/<!--\s*roadmap-slug:\s*[a-z0-9-]+\s*-->\s*/gi, "")
 		.split(/^##\s+/m)[0]
 		.replace(/\s+/g, " ")
 		.trim();

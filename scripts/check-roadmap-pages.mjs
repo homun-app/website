@@ -47,6 +47,11 @@ const changelogText = plain(changelogHtml);
 const detailText = plain(detailHtml);
 const ideaDetailText = plain(ideaDetailHtml);
 const sharedSpaces = roadmapSnapshot.items.find((item) => item.slug === "shared-spaces");
+const fallbackIdea = {
+	...sharedSpaces,
+	issueNumber: null,
+	githubUrl: "https://github.com/homun-app/homun/issues/new",
+};
 const canonicalIdea = {
 	...sharedSpaces,
 	issueNumber: 123,
@@ -76,7 +81,7 @@ assert.equal(
 );
 
 assert.deepEqual(
-	roadmapPresentation(sharedSpaces),
+	roadmapPresentation(fallbackIdea),
 	{ underReview: false, hasIssue: false, canDiscuss: false, canVote: false },
 	"Fallback idea URLs must not enable participation",
 );
@@ -101,7 +106,7 @@ for (const candidate of [
 	{ issueNumber: null, githubUrl: "https://github.com/homun-app/homun/issues/123" },
 ]) {
 	assert.deepEqual(
-		roadmapPresentation({ ...sharedSpaces, ...candidate }),
+		roadmapPresentation({ ...fallbackIdea, ...candidate }),
 		{ underReview: false, hasIssue: false, canDiscuss: false, canVote: false },
 		"New, mismatched, and missing issue references must stay non-participatory",
 	);
@@ -133,7 +138,7 @@ try {
 	}
 
 	const fallbackHtml = await container.renderToString(RoadmapParticipation, {
-		props: { item: sharedSpaces, variant: "detail" },
+		props: { item: fallbackIdea, variant: "detail" },
 	});
 	assert.ok(!fallbackHtml.includes("Under review"), "Fallback component leaks a review badge");
 	assert.ok(!fallbackHtml.includes("Vote on GitHub"), "Fallback component invents a voting link");
@@ -191,12 +196,9 @@ assert.ok(
 );
 assert.ok(!detailText.includes("Under review"), "Published apprentice is incorrectly marked under review");
 assert.ok(!detailText.includes("Vote on GitHub"), "Voting is incorrectly shown outside open Ideas");
-for (const required of ["Ideas", "👍 0"]) {
+for (const required of ["Ideas", "👍 0", "Vote on GitHub", "Discuss on GitHub"]) {
 	assert.ok(ideaDetailText.includes(required), `Open idea detail missing: ${required}`);
 }
-assert.ok(!ideaDetailText.includes("Vote on GitHub"), "Fallback idea URL incorrectly enables voting");
-assert.ok(!ideaDetailText.includes("Discuss on GitHub"), "Fallback idea URL incorrectly enables discussion");
-assert.ok(ideaDetailText.includes(moderationCopy), "Fallback idea detail is missing moderation copy");
 assert.match(
 	detailSource,
 	/RoadmapParticipation[\s\S]*item=\{project\}/,
@@ -221,9 +223,8 @@ for (const required of [
 	assert.ok(roadmapText.includes(required), `Roadmap missing: ${required}`);
 }
 assert.ok(!roadmapText.includes("Exploring"), "Roadmap still exposes the retired Exploring stage");
-assert.ok(!roadmapText.includes("Vote on GitHub"), "Roadmap exposes voting without a real issue");
-assert.ok(!roadmapText.includes("Discuss on GitHub"), "Roadmap exposes discussion without a real issue");
-assert.ok(roadmapText.includes(moderationCopy), "Roadmap is missing neutral moderation copy");
+assert.ok(roadmapText.includes("Vote on GitHub"), "Roadmap hides voting for real open Ideas");
+assert.ok(roadmapText.includes("Discuss on GitHub"), "Roadmap hides discussion for real public issues");
 assert.deepEqual(
 	[...roadmapHtml.matchAll(/<h3[^>]*>(Ideas|Next|Building|Shipped)<\/h3>/g)].map((match) => match[1]),
 	["Ideas", "Next", "Building", "Shipped"],
