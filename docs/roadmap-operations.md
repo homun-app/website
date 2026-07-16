@@ -1,79 +1,98 @@
 # Public roadmap operations
 
-The public roadmap is a reviewed projection of one GitHub Project. GitHub Issues hold
-the public problem, discussion, and thumbs-up votes; the Project controls publication;
-published Releases provide evidence for shipped work. The website never infers a
-commitment from votes or issue activity.
+The public roadmap is a reviewed product narrative projected from GitHub Project #1.
+GitHub Issues hold the public outcome, discussion and thumbs-up votes; the Project
+controls editorial state; published Releases remain the evidence for what has shipped.
+Votes and issue activity never create commitments automatically.
 
-## Moderating a new idea
+## Editorial model
 
-1. A new issue carrying the `idea` label remains outside the Project until a maintainer
-   checks duplicates, product fit, clarity, and safety.
-2. Add an accepted proposal to the Project and set `Publication status: Draft` before
-   setting any other public field. Missing required fields may make synchronization fail
-   while the previous snapshot stays live; they must never be inferred as Published.
-3. Complete `Slug`, `Area`, `Public status: Ideas`, `Voting`, `Order`, public copy, and
-   `Public update date`. Set `Publication status: Published` only after reviewing the
-   complete public representation.
-4. Archive a rejected or duplicate proposal with `Publication status: Archived` and an
-   `Archive reason`. Do not delete the item or merely remove it from the Project.
+Every active record has one product state and one publication state:
 
-## Changing a published initiative
+- Strategic program: `Available`, `Building now`, `Up next`, or `Exploring`.
+- Workflow idea: `Evaluating`, `Selected for pilot`, or `Removed`.
+- Publication: `Draft`, `Review`, `Published`, or `Archived`.
 
-1. Promotion to `Next`, `Building`, or `Shipped` requires `Publication status: Review`
-   first. During Review, the website preserves the last approved record and displays
-   only `Under review`.
-2. Review the new public status, order, progress, target direction, featured state,
-   update text, and update date before returning the item to Published.
-3. Never move a previously published item back to Draft. Use Review for changes and
-   Archived for removal.
-4. At most one Building initiative may have `Featured: Yes`.
+Progress is expressed only through named milestone checkboxes in the issue body. Do
+not add percentages or dates that have not been committed. Voting is open only for
+workflow ideas and deliberately selected Exploring programs. Votes inform discovery;
+they do not change stage, priority, order or publication.
 
-## Shipping and releases
+The website tells two related but distinct stories:
 
-1. `Shipped` requires a verified `Roadmap: slug` line in a published, non-draft,
-   non-prerelease Homun Release before the Project item returns to Published.
-2. A release may exist without roadmap links, but it cannot prove an initiative was
-   shipped unless it names the exact stable slug.
-3. Publishing a release triggers the website reconciliation. Scheduled reconciliation
-   remains the recovery path.
+1. Strategic programs explain the product journey and what Homun is building.
+2. Workflow ideas identify repeatable business processes that could become official,
+   paid Homun workflow packs after validation with real teams.
 
-## Voting
+## Creating or changing a record
 
-Thumbs-up reactions on the linked public issue are advisory. Vote totals may update the
-website snapshot, but never move, order, feature, publish, or ship an initiative
-automatically.
+1. Create or update the issue using the stable `roadmap-slug` marker and the required
+   sections: outcome, Why now, First release, Milestones, Not included yet and
+   Strategic role. Workflow ideas also require Target team, Example process, Likely
+   connected systems and Expected output.
+2. Add the issue to Project #1 with `Publication status: Draft`. Complete Roadmap
+   stage, Item type, Evaluation status when applicable, Public area, Slug, Featured,
+   Public update, Public update date, Voting and Order.
+3. Move the record to `Review`. During Review the public site keeps the last approved
+   version, if one exists, and marks it as under review.
+4. Validate the generated snapshot and page locally. Move to `Published` only after
+   the public copy, scope, links and ordering have been reviewed.
+5. Never return a previously published record to Draft. Use Review for changes and
+   Archived for removal. Keep archived issues and Project items as historical evidence.
 
-## Migration and recovery commands
+Only one strategic program in `Building now` may have `Featured: Yes`. An `Available`
+program must be named by its stable slug in a published Homun Release using a
+`Roadmap: slug` line.
 
-When the organization Project is new and contains no roadmap items, preview the
-idempotent bootstrap first:
+## Roadmap v3 migration
 
-```bash
-npm run roadmap:project-bootstrap -- --project-number <number> --dry-run
-```
+Freeze roadmap editorial changes while migrating. The guarded migration never deletes
+issues or Project items and does not publish records during its preparation phase.
 
-After approving the exact fields and public issues, apply it with `--apply` and type
-`bootstrap` at the confirmation prompt. A repeated dry-run must report zero fields and
-zero issues to create before continuing.
+1. Preview the exact live operations:
 
-Inventory and preview the Project without writes:
+   ```bash
+   npm run roadmap:v3-rollout -- --project-number 1 --dry-run
+   ```
 
-```bash
-npm run roadmap:project-rollout -- --project-number <number> --dry-run
-```
+   The initial approved plan creates four Project fields, creates ten issues,
+   transforms issues #5, #7 and #8 without changing their URLs, and archives issues
+   #2, #3, #4, #6, #9, #10 and #11 with a supersession comment.
 
-Apply only after reviewing the printed operations and receiving approval:
+2. After explicit approval of that printed plan, prepare the Project:
 
-```bash
-npm run roadmap:project-rollout -- --project-number <number> --apply
-```
+   ```bash
+   npm run roadmap:v3-rollout -- --project-number 1 --apply
+   ```
 
-Type `apply` at the confirmation prompt. The command creates only missing governance
-fields, updates items by stable slug, re-fetches the Project, and fails unless the
-follow-up plan contains zero operations. Keep the legacy `Public` and `Status` fields
-through at least one successful scheduled no-op reconciliation.
+   Type `roadmap-v3` at the prompt. The command leaves all thirteen active records in
+   Review, comments before closing legacy issues, re-fetches the Project and fails if
+   any preparation operation remains.
 
-An empty candidate must never replace a non-empty public snapshot. Use the workflow's
-`allow_empty` recovery input only for an intentional, separately reviewed empty
+3. Generate the local snapshot with the explicit one-time schema gate, then validate:
+
+   ```bash
+   npm run sync:product-data -- --allow-schema-upgrade --write
+   npm run check
+   ```
+
+   Review `/roadmap/`, `/roadmap/homun-flow/`, `/roadmap/client-work/` and the legacy
+   redirects before publishing. Never merge the branch-only preview fixtures.
+
+4. After separate approval of the reviewed public output, publish only the active
+   records:
+
+   ```bash
+   npm run roadmap:v3-rollout -- --project-number 1 --publish
+   ```
+
+   Type `publish-v3` at the prompt. Run the normal product-data synchronization again,
+   validate the resulting snapshots, and deploy the website.
+
+5. Re-run `--dry-run`. A successful reconciliation reports zero operations. Keep the
+   legacy fields until a later, separately reviewed cleanup; they are not read by the
+   version 3 public projection.
+
+An empty candidate must never replace a non-empty public snapshot. The workflow's
+`allow_empty` recovery input is reserved for an intentional, separately reviewed empty
 publication.

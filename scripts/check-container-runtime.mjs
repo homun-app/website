@@ -219,7 +219,7 @@ function wait(milliseconds) {
 	return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
-async function checkRoute(baseUrl, { path, content }, deadline) {
+async function checkRoute(baseUrl, { path, content, redirectTo }, deadline) {
 	const remaining = deadline - Date.now();
 	if (remaining <= 0) throw new Error("runtime check deadline exceeded");
 
@@ -230,10 +230,13 @@ async function checkRoute(baseUrl, { path, content }, deadline) {
 		throw new Error(`${path} returned HTTP ${response.status}, expected 200`);
 	}
 
-	if (content) {
+	if (content || redirectTo) {
 		const html = await response.text();
-		if (!html.includes(content)) {
+		if (content && !html.includes(content)) {
 			throw new Error(`${path} did not contain ${JSON.stringify(content)}`);
+		}
+		if (redirectTo && !html.includes(`url=${redirectTo}`)) {
+			throw new Error(`${path} did not redirect to ${redirectTo}`);
 		}
 	}
 }
@@ -241,8 +244,12 @@ async function checkRoute(baseUrl, { path, content }, deadline) {
 async function waitForRoutes(baseUrl) {
 	const routes = [
 		{ path: "/health" },
-		{ path: "/roadmap/", content: "Ideas" },
-		{ path: "/roadmap/apprentice/", content: "The Apprentice" },
+		{ path: "/roadmap/", content: "Homun turns requests, messages and recurring work" },
+		{ path: "/roadmap/homun-flow/", content: "Homun Flow" },
+		{ path: "/roadmap/client-work/", content: "Client Work" },
+		{ path: "/roadmap/mobile-companion/", redirectTo: "/roadmap/homun-mobile" },
+		{ path: "/roadmap/shared-spaces/", redirectTo: "/roadmap/team-spaces-roles" },
+		{ path: "/roadmap/voice-capture/", redirectTo: "/roadmap/voice-meeting-capture" },
 	];
 	const deadline = Date.now() + 30_000;
 	let lastError;
