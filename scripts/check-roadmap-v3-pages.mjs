@@ -28,6 +28,15 @@ const clientText = plain(clientHtml);
 const adaptiveText = plain(adaptiveHtml);
 const mobileText = plain(mobileHtml);
 
+for (const [legacy, target] of [
+	["mobile-companion", "/roadmap/homun-mobile"],
+	["shared-spaces", "/roadmap/team-spaces-roles"],
+	["voice-capture", "/roadmap/voice-meeting-capture"],
+]) {
+	const redirectHtml = await read(`roadmap/${legacy}/index.html`);
+	assert.ok(redirectHtml.includes(target), `Legacy route ${legacy} does not redirect to ${target}`);
+}
+
 for (const required of [
 	"BUILT FOR SMALL TEAMS",
 	"AI that keeps work moving.",

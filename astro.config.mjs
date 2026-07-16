@@ -7,6 +7,11 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://homun.app',
+	redirects: {
+		'/roadmap/mobile-companion': '/roadmap/homun-mobile',
+		'/roadmap/shared-spaces': '/roadmap/team-spaces-roles',
+		'/roadmap/voice-capture': '/roadmap/voice-meeting-capture',
+	},
 	integrations: [
 		// Documentation lives under /docs (and /it/docs), served by Starlight and
 		// themed espresso to match the marketing site. Marketing pages (/, /roadmap,
