@@ -70,4 +70,38 @@ noEvidence.items.find(({ version }) => version === "v0.1.1059").projectSlugs = [
 ];
 assert.throws(() => validateSnapshot(preview, noEvidence), /Available roadmap item has no published release/);
 
+const withArchivedLegacyItem = structuredClone(fixture);
+const archived = structuredClone(withArchivedLegacyItem.data.organization.projectV2.items.nodes[0]);
+archived.id = "PVTI_archived_legacy";
+archived.content = {
+	...archived.content,
+	number: 2,
+	title: "Legacy marketplace direction",
+	url: "https://github.com/homun-app/homun/issues/2",
+	body: "A historical roadmap item retained for auditability.",
+};
+archived.fieldValues.nodes = archived.fieldValues.nodes.filter(({ field }) =>
+	["Publication status", "Slug"].includes(field.name));
+archived.fieldValues.nodes.find(({ field }) => field.name === "Publication status").name = "Archived";
+archived.fieldValues.nodes.find(({ field }) => field.name === "Slug").text = "marketplace";
+withArchivedLegacyItem.data.organization.projectV2.items.nodes.push(archived);
+const normalizedWithArchive = normalizeProject(withArchivedLegacyItem);
+assert.deepEqual(
+	normalizedWithArchive.candidates.find(({ slug }) => slug === "marketplace"),
+	{
+		slug: "marketplace",
+		title: "Legacy marketplace direction",
+		publicationStatus: "archived",
+		updatedAt: archived.content.updatedAt,
+		githubUrl: archived.content.url,
+		issueNumber: 2,
+		votes: archived.content.reactions.totalCount,
+	},
+);
+const { contentUpdatedAt, ...releaseItems } = releases;
+assert.doesNotThrow(() => validateSnapshot(normalizedWithArchive, {
+	...releaseItems,
+	fetchedAt: contentUpdatedAt,
+}));
+
 console.log("Roadmap v3 product data contract passed");

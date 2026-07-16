@@ -218,16 +218,38 @@ function normalizeProjectNodeV3(node) {
 	const fields = fieldMap(node);
 	const content = node?.content;
 	if (!content?.title || !content?.url) throw new Error("Missing roadmap content");
-
-	const sourceStage = fields.get("Roadmap stage") ?? "";
-	const stage = ROADMAP_STAGES.get(sourceStage);
-	if (!stage) throw new Error(`Unknown roadmap stage: ${sourceStage || "(empty)"}`);
-
 	const sourcePublicationStatus = fields.get("Publication status") ?? "";
 	const publicationStatus = PUBLICATION_STATUSES.get(sourcePublicationStatus);
 	if (!publicationStatus) {
 		throw new Error(`Unknown publication status: ${sourcePublicationStatus || "(empty)"}`);
 	}
+	const sourceSlug = fields.get("Slug");
+	if (sourceSlug != null && typeof sourceSlug !== "string") {
+		throw new Error(`Invalid roadmap slug: ${sourceSlug}`);
+	}
+	const slug = (sourceSlug ?? "").trim();
+	if (!slug) throw new Error(`Missing roadmap slug: ${content.title}`);
+	if (!ROADMAP_SLUG.test(slug)) throw new Error(`Invalid roadmap slug: ${slug}`);
+	if (!content.reactions || !Object.hasOwn(content.reactions, "totalCount")) {
+		throw new Error(`Missing votes: ${slug}`);
+	}
+	const votes = content.reactions.totalCount;
+	if (!Number.isInteger(votes) || votes < 0) throw new Error(`Invalid votes: ${slug}`);
+	if (publicationStatus === "archived") {
+		return {
+			slug,
+			title: content.title,
+			publicationStatus,
+			updatedAt: content.updatedAt,
+			githubUrl: content.url,
+			issueNumber: content.number,
+			votes,
+		};
+	}
+
+	const sourceStage = fields.get("Roadmap stage") ?? "";
+	const stage = ROADMAP_STAGES.get(sourceStage);
+	if (!stage) throw new Error(`Unknown roadmap stage: ${sourceStage || "(empty)"}`);
 
 	const sourceItemType = fields.get("Item type");
 	if (sourceItemType == null || sourceItemType === "") throw new Error("Missing item type");
@@ -254,14 +276,6 @@ function normalizeProjectNodeV3(node) {
 	if (voting === "open" && itemType !== "workflow_idea" && stage !== "exploring") {
 		throw new Error(`Voting is not allowed for committed program: ${content.title}`);
 	}
-
-	const sourceSlug = fields.get("Slug");
-	if (sourceSlug != null && typeof sourceSlug !== "string") {
-		throw new Error(`Invalid roadmap slug: ${sourceSlug}`);
-	}
-	const slug = (sourceSlug ?? "").trim();
-	if (!slug) throw new Error(`Missing roadmap slug: ${content.title}`);
-	if (!ROADMAP_SLUG.test(slug)) throw new Error(`Invalid roadmap slug: ${slug}`);
 
 	const order = fields.get("Order");
 	if (!Number.isInteger(order)) throw new Error(`Invalid order: ${slug}`);
@@ -292,12 +306,6 @@ function normalizeProjectNodeV3(node) {
 		publicUpdateDate = sourcePublicUpdateDate.trim();
 	}
 	if (publicUpdate && !publicUpdateDate) throw new Error(`Missing public update date: ${slug}`);
-
-	if (!content.reactions || !Object.hasOwn(content.reactions, "totalCount")) {
-		throw new Error(`Missing votes: ${slug}`);
-	}
-	const votes = content.reactions.totalCount;
-	if (!Number.isInteger(votes) || votes < 0) throw new Error(`Invalid votes: ${slug}`);
 
 	const body = content.body ?? "";
 	const sections = markdownSections(body);
@@ -482,9 +490,24 @@ export function validateSnapshot(
 				if (Object.hasOwn(item, "underReview")) {
 					throw new Error(`Raw roadmap candidate must not contain underReview: ${item.slug}`);
 				}
-				if (!isIsoTimestamp(item.updatedAt)) {
-					throw new Error(`Invalid roadmap updatedAt: ${item.slug}`);
+			if (!isIsoTimestamp(item.updatedAt)) {
+				throw new Error(`Invalid roadmap updatedAt: ${item.slug}`);
+			}
+			if (![...PUBLICATION_STATUSES.values()].includes(item.publicationStatus)) {
+				throw new Error(`Unknown publication status: ${item.publicationStatus}`);
+			}
+			if (item.publicationStatus === "archived") {
+				if (typeof item.title !== "string" || !item.title.trim()) {
+					throw new Error(`Invalid roadmap title: ${item.slug}`);
 				}
+				if (typeof item.githubUrl !== "string" || !item.githubUrl.trim()) {
+					throw new Error(`Invalid roadmap GitHub URL: ${item.slug}`);
+				}
+				if (!Number.isInteger(item.votes) || item.votes < 0) {
+					throw new Error(`Invalid votes: ${item.slug}`);
+				}
+				continue;
+			}
 		}
 		if (isPublicRoadmap) {
 				for (const field of ["publicationStatus", "archiveReason", "projectItemId", "labels"]) {
