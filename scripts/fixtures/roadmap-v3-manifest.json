@@ -1,6 +1,5 @@
 {
   "schemaVersion": 3,
-  "contentUpdatedAt": "2026-07-16T00:00:00.000Z",
   "items": [
     {
       "slug": "operational-workspace",
@@ -20,22 +19,10 @@
         "Connected services, automations and approvals"
       ],
       "milestones": [
-        {
-          "title": "Persistent project memory and continuity",
-          "completed": true
-        },
-        {
-          "title": "Controlled local computer and browser",
-          "completed": true
-        },
-        {
-          "title": "Model-independent routing",
-          "completed": true
-        },
-        {
-          "title": "Connected channels, services and approvals",
-          "completed": true
-        }
+        { "title": "Persistent project memory and continuity", "completed": true },
+        { "title": "Controlled local computer and browser", "completed": true },
+        { "title": "Model-independent routing", "completed": true },
+        { "title": "Connected channels, services and approvals", "completed": true }
       ],
       "notIncludedYet": [
         "Shared team assignment and permissions",
@@ -50,11 +37,7 @@
       "voting": "closed",
       "order": 10,
       "publicUpdate": "Available in current Homun desktop releases; shipped improvements remain in the changelog.",
-      "publicUpdateDate": "2026-07-16",
-      "githubUrl": "https://github.com/homun-app/homun/issues/new?template=roadmap-idea.yml",
-      "issueNumber": null,
-      "votes": 0,
-      "underReview": false
+      "publicUpdateDate": "2026-07-16"
     },
     {
       "slug": "homun-flow",
@@ -78,30 +61,12 @@
         "Synchronization with selected external boards"
       ],
       "milestones": [
-        {
-          "title": "Process foundation",
-          "completed": false
-        },
-        {
-          "title": "Visible board",
-          "completed": false
-        },
-        {
-          "title": "Review handoffs",
-          "completed": false
-        },
-        {
-          "title": "Connected execution",
-          "completed": false
-        },
-        {
-          "title": "Pilot workflow",
-          "completed": false
-        },
-        {
-          "title": "Team beta",
-          "completed": false
-        }
+        { "title": "Process foundation", "completed": false },
+        { "title": "Visible board", "completed": false },
+        { "title": "Review handoffs", "completed": false },
+        { "title": "Connected execution", "completed": false },
+        { "title": "Pilot workflow", "completed": false },
+        { "title": "Team beta", "completed": false }
       ],
       "notIncludedYet": [
         "A second agent engine",
@@ -117,11 +82,7 @@
       "voting": "closed",
       "order": 20,
       "publicUpdate": "Durable task, approval and audit foundations are verified; the product process model and visible board come next.",
-      "publicUpdateDate": "2026-07-16",
-      "githubUrl": "https://github.com/homun-app/homun/issues/new?template=roadmap-idea.yml",
-      "issueNumber": null,
-      "votes": 0,
-      "underReview": false
+      "publicUpdateDate": "2026-07-16"
     },
     {
       "slug": "team-spaces-roles",
@@ -141,9 +102,7 @@
         "Separation of personal and company memory"
       ],
       "milestones": [],
-      "notIncludedYet": [
-        "A general-purpose replacement for Slack or Microsoft Teams"
-      ],
+      "notIncludedYet": ["A general-purpose replacement for Slack or Microsoft Teams"],
       "strategicRole": "The identity and responsibility layer for multi-person Homun Flow processes.",
       "targetTeam": null,
       "exampleProcess": [],
@@ -153,11 +112,7 @@
       "voting": "closed",
       "order": 30,
       "publicUpdate": "The first release is bounded around roles, ownership, review and permissioned shared context.",
-      "publicUpdateDate": "2026-07-16",
-      "githubUrl": "https://github.com/homun-app/homun/issues/7",
-      "issueNumber": 7,
-      "votes": 0,
-      "underReview": false
+      "publicUpdateDate": "2026-07-16"
     },
     {
       "slug": "homun-mobile",
@@ -176,10 +131,7 @@
         "Photo and document capture"
       ],
       "milestones": [],
-      "notIncludedYet": [
-        "Continuous ambient capture",
-        "Full desktop administration"
-      ],
+      "notIncludedYet": ["Continuous ambient capture", "Full desktop administration"],
       "strategicRole": "The review, approval and capture surface that keeps team processes moving away from the desk.",
       "targetTeam": null,
       "exampleProcess": [],
@@ -189,11 +141,7 @@
       "voting": "closed",
       "order": 40,
       "publicUpdate": "Mobile is a decided product extension; secure pairing and approval continuity define the first boundary.",
-      "publicUpdateDate": "2026-07-16",
-      "githubUrl": "https://github.com/homun-app/homun/issues/5",
-      "issueNumber": 5,
-      "votes": 0,
-      "underReview": false
+      "publicUpdateDate": "2026-07-16"
     },
     {
       "slug": "more-ways-to-reach-homun",
@@ -211,11 +159,7 @@
         "Shared channel permission and audit rules"
       ],
       "milestones": [],
-      "notIncludedYet": [
-        "Microsoft Teams",
-        "Web inbox or widget",
-        "Channels without a validated workflow need"
-      ],
+      "notIncludedYet": ["Microsoft Teams", "Web inbox or widget", "Channels without a validated workflow need"],
       "strategicRole": "The channel layer that brings external requests and internal coordination into governed processes.",
       "targetTeam": null,
       "exampleProcess": [],
@@ -225,11 +169,7 @@
       "voting": "closed",
       "order": 50,
       "publicUpdate": "WhatsApp and Telegram are available; email and Slack are the next channel priorities.",
-      "publicUpdateDate": "2026-07-16",
-      "githubUrl": "https://github.com/homun-app/homun/issues/new?template=roadmap-idea.yml",
-      "issueNumber": null,
-      "votes": 0,
-      "underReview": false
+      "publicUpdateDate": "2026-07-16"
     },
     {
       "slug": "adaptive-company-intelligence",
@@ -247,31 +187,13 @@
         "Measurable evaluations before specialized training"
       ],
       "milestones": [
-        {
-          "title": "Company Profile",
-          "completed": false
-        },
-        {
-          "title": "Company Knowledge",
-          "completed": false
-        },
-        {
-          "title": "Process Learning",
-          "completed": false
-        },
-        {
-          "title": "Evaluation",
-          "completed": false
-        },
-        {
-          "title": "Specialized SLM",
-          "completed": false
-        }
+        { "title": "Company Profile", "completed": false },
+        { "title": "Company Knowledge", "completed": false },
+        { "title": "Process Learning", "completed": false },
+        { "title": "Evaluation", "completed": false },
+        { "title": "Specialized SLM", "completed": false }
       ],
-      "notIncludedYet": [
-        "One-click SLM training without sufficient examples",
-        "Replacing RAG or memory with fine-tuning"
-      ],
+      "notIncludedYet": ["One-click SLM training without sufficient examples", "Replacing RAG or memory with fine-tuning"],
       "strategicRole": "A credible path from company knowledge and measured workflow outcomes to specialized small models.",
       "targetTeam": null,
       "exampleProcess": [],
@@ -281,11 +203,7 @@
       "voting": "closed",
       "order": 60,
       "publicUpdate": "The research sequence is Company Profile, Company Knowledge, Process Learning, Evaluation and only then a Specialized SLM.",
-      "publicUpdateDate": "2026-07-16",
-      "githubUrl": "https://github.com/homun-app/homun/issues/new?template=roadmap-idea.yml",
-      "issueNumber": null,
-      "votes": 0,
-      "underReview": false
+      "publicUpdateDate": "2026-07-16"
     },
     {
       "slug": "voice-meeting-capture",
@@ -304,10 +222,7 @@
         "Explicit recording and privacy controls"
       ],
       "milestones": [],
-      "notIncludedYet": [
-        "Always-on ambient observation",
-        "Capture without explicit permission"
-      ],
+      "notIncludedYet": ["Always-on ambient observation", "Capture without explicit permission"],
       "strategicRole": "A controlled input layer for decisions and work that currently disappear after meetings.",
       "targetTeam": null,
       "exampleProcess": [],
@@ -317,11 +232,7 @@
       "voting": "open",
       "order": 70,
       "publicUpdate": "Privacy boundaries and process linkage come before interface exploration.",
-      "publicUpdateDate": "2026-07-16",
-      "githubUrl": "https://github.com/homun-app/homun/issues/8",
-      "issueNumber": 8,
-      "votes": 0,
-      "underReview": false
+      "publicUpdateDate": "2026-07-16"
     },
     {
       "slug": "developer-platform",
@@ -338,10 +249,7 @@
         "A selected partner program"
       ],
       "milestones": [],
-      "notIncludedYet": [
-        "Open third-party publishing",
-        "An unreviewed public marketplace"
-      ],
+      "notIncludedYet": ["Open third-party publishing", "An unreviewed public marketplace"],
       "strategicRole": "The later ecosystem multiplier after official vertical products validate the platform contract.",
       "targetTeam": null,
       "exampleProcess": [],
@@ -351,11 +259,7 @@
       "voting": "closed",
       "order": 80,
       "publicUpdate": "Official workflow packs come first; the developer platform follows their validation and maturation.",
-      "publicUpdateDate": "2026-07-16",
-      "githubUrl": "https://github.com/homun-app/homun/issues/new?template=roadmap-idea.yml",
-      "issueNumber": null,
-      "votes": 0,
-      "underReview": false
+      "publicUpdateDate": "2026-07-16"
     },
     {
       "slug": "client-work",
@@ -366,44 +270,19 @@
       "area": "Client work",
       "outcome": "From a client request to a researched, reviewed and approved deliverable.",
       "whyNow": "Service teams already combine messages, research, documents, review and approvals—the strongest fit for a first complete Homun Flow pilot.",
-      "firstRelease": [
-        "Process template",
-        "Connected-tool setup",
-        "Review rules",
-        "Measurable delivery outcome"
-      ],
+      "firstRelease": ["Process template", "Connected-tool setup", "Review rules", "Measurable delivery outcome"],
       "milestones": [],
-      "notIncludedYet": [
-        "A delivery commitment before a pilot is selected"
-      ],
+      "notIncludedYet": ["A delivery commitment before a pilot is selected"],
       "strategicRole": "Recommended first vertical pilot because it exercises Homun's existing research, artifact, connection and approval foundations.",
       "targetTeam": "Agencies, consultants, professional practices and small service companies.",
-      "exampleProcess": [
-        "Request",
-        "Brief",
-        "Research",
-        "Draft",
-        "Review",
-        "Approval",
-        "Delivery",
-        "Follow-up"
-      ],
-      "likelySystems": [
-        "Email",
-        "Documents and cloud drives",
-        "Project boards",
-        "CRM where relevant"
-      ],
+      "exampleProcess": ["Request", "Brief", "Research", "Draft", "Review", "Approval", "Delivery", "Follow-up"],
+      "likelySystems": ["Email", "Documents and cloud drives", "Project boards", "CRM where relevant"],
       "expectedOutput": "A reviewed client deliverable with evidence, approval history and follow-up.",
       "featured": false,
       "voting": "open",
       "order": 110,
       "publicUpdate": "Evaluating pilot teams and the minimum repeatable process definition.",
-      "publicUpdateDate": "2026-07-16",
-      "githubUrl": "https://github.com/homun-app/homun/issues/new?template=roadmap-idea.yml",
-      "issueNumber": null,
-      "votes": 0,
-      "underReview": false
+      "publicUpdateDate": "2026-07-16"
     },
     {
       "slug": "sales-operations",
@@ -414,44 +293,19 @@
       "area": "Sales",
       "outcome": "Research leads, prepare outreach, update the CRM and maintain consistent follow-up.",
       "whyNow": "Small sales teams lose continuity between research, approval, CRM updates and follow-up across disconnected tools.",
-      "firstRelease": [
-        "Process template",
-        "CRM and communication setup",
-        "Approval rules",
-        "Follow-up measurement"
-      ],
+      "firstRelease": ["Process template", "CRM and communication setup", "Approval rules", "Follow-up measurement"],
       "milestones": [],
-      "notIncludedYet": [
-        "Unapproved bulk outreach",
-        "A delivery commitment before validation"
-      ],
+      "notIncludedYet": ["Unapproved bulk outreach", "A delivery commitment before validation"],
       "strategicRole": "A repeatable revenue workflow that combines research, review and connected execution.",
       "targetTeam": "Small B2B sales teams, founders and account managers.",
-      "exampleProcess": [
-        "Lead",
-        "Research",
-        "Qualification",
-        "Draft",
-        "Approval",
-        "CRM",
-        "Follow-up"
-      ],
-      "likelySystems": [
-        "CRM",
-        "Email",
-        "Calendar",
-        "Company research sources"
-      ],
+      "exampleProcess": ["Lead", "Research", "Qualification", "Draft", "Approval", "CRM", "Follow-up"],
+      "likelySystems": ["CRM", "Email", "Calendar", "Company research sources"],
       "expectedOutput": "A qualified lead record, approved outreach and a visible follow-up sequence.",
       "featured": false,
       "voting": "open",
       "order": 120,
       "publicUpdate": "Evaluating which CRM and outreach sequence creates the clearest small-team pilot.",
-      "publicUpdateDate": "2026-07-16",
-      "githubUrl": "https://github.com/homun-app/homun/issues/new?template=roadmap-idea.yml",
-      "issueNumber": null,
-      "votes": 0,
-      "underReview": false
+      "publicUpdateDate": "2026-07-16"
     },
     {
       "slug": "content-marketing",
@@ -462,44 +316,19 @@
       "area": "Marketing",
       "outcome": "Plan, produce, review and publish content while preserving brand rules and approvals.",
       "whyNow": "Content teams need consistent context and review more than another isolated generation interface.",
-      "firstRelease": [
-        "Editorial process template",
-        "Brand context",
-        "Review rules",
-        "Selected publishing connection"
-      ],
+      "firstRelease": ["Editorial process template", "Brand context", "Review rules", "Selected publishing connection"],
       "milestones": [],
-      "notIncludedYet": [
-        "Automatic publication without approval",
-        "A delivery commitment before validation"
-      ],
+      "notIncludedYet": ["Automatic publication without approval", "A delivery commitment before validation"],
       "strategicRole": "A visible creative workflow where company adaptation and human review can produce measurable quality gains.",
       "targetTeam": "Small marketing teams, agencies and founder-led companies.",
-      "exampleProcess": [
-        "Idea",
-        "Research",
-        "Draft",
-        "Brand review",
-        "Approval",
-        "Publish",
-        "Measure"
-      ],
-      "likelySystems": [
-        "Documents and cloud drives",
-        "CMS",
-        "Social scheduling tools",
-        "Analytics"
-      ],
+      "exampleProcess": ["Idea", "Research", "Draft", "Brand review", "Approval", "Publish", "Measure"],
+      "likelySystems": ["Documents and cloud drives", "CMS", "Social scheduling tools", "Analytics"],
       "expectedOutput": "Approved, brand-consistent content with source context and publication history.",
       "featured": false,
       "voting": "open",
       "order": 130,
       "publicUpdate": "Evaluating the smallest useful pack across brand context, review and publication.",
-      "publicUpdateDate": "2026-07-16",
-      "githubUrl": "https://github.com/homun-app/homun/issues/new?template=roadmap-idea.yml",
-      "issueNumber": null,
-      "votes": 0,
-      "underReview": false
+      "publicUpdateDate": "2026-07-16"
     },
     {
       "slug": "internal-operations",
@@ -510,43 +339,19 @@
       "area": "Operations",
       "outcome": "Turn company procedures and recurring controls into visible, repeatable work.",
       "whyNow": "Small companies often depend on undocumented routines and manual checks that disappear when ownership changes.",
-      "firstRelease": [
-        "Procedure template",
-        "Recurring triggers",
-        "Evidence collection",
-        "Exception and report rules"
-      ],
+      "firstRelease": ["Procedure template", "Recurring triggers", "Evidence collection", "Exception and report rules"],
       "milestones": [],
-      "notIncludedYet": [
-        "Replacing specialist ERP systems",
-        "A delivery commitment before validation"
-      ],
+      "notIncludedYet": ["Replacing specialist ERP systems", "A delivery commitment before validation"],
       "strategicRole": "A broad operational vertical that turns company procedures into measurable process data.",
       "targetTeam": "Operations managers, administration teams and small manufacturers or service companies.",
-      "exampleProcess": [
-        "Trigger",
-        "Checklist",
-        "Data collection",
-        "Verification",
-        "Exception",
-        "Report"
-      ],
-      "likelySystems": [
-        "Spreadsheets",
-        "Email",
-        "Shared drives",
-        "ERP or line-of-business systems through governed connections"
-      ],
+      "exampleProcess": ["Trigger", "Checklist", "Data collection", "Verification", "Exception", "Report"],
+      "likelySystems": ["Spreadsheets", "Email", "Shared drives", "ERP or line-of-business systems through governed connections"],
       "expectedOutput": "A completed recurring control with evidence, exceptions and a reviewable report.",
       "featured": false,
       "voting": "open",
       "order": 140,
       "publicUpdate": "Evaluating which recurring procedure provides the strongest pilot evidence.",
-      "publicUpdateDate": "2026-07-16",
-      "githubUrl": "https://github.com/homun-app/homun/issues/new?template=roadmap-idea.yml",
-      "issueNumber": null,
-      "votes": 0,
-      "underReview": false
+      "publicUpdateDate": "2026-07-16"
     },
     {
       "slug": "customer-support",
@@ -557,45 +362,35 @@
       "area": "Support",
       "outcome": "Coordinate incoming requests, proposed answers, escalation and human handoff across channels.",
       "whyNow": "Support combines channel intake, company knowledge, quality review and clear human ownership in one measurable process.",
-      "firstRelease": [
-        "Request intake",
-        "Knowledge retrieval",
-        "Draft and escalation rules",
-        "Human handoff",
-        "Follow-up measurement"
-      ],
+      "firstRelease": ["Request intake", "Knowledge retrieval", "Draft and escalation rules", "Human handoff", "Follow-up measurement"],
       "milestones": [],
-      "notIncludedYet": [
-        "Unsafeguarded autonomous replies",
-        "A delivery commitment before validation"
-      ],
+      "notIncludedYet": ["Unsafeguarded autonomous replies", "A delivery commitment before validation"],
       "strategicRole": "A channel-rich workflow that demonstrates controlled company knowledge and human escalation.",
       "targetTeam": "Small support teams, service desks and customer-facing operations.",
-      "exampleProcess": [
-        "Request",
-        "Classify",
-        "Retrieve context",
-        "Draft",
-        "Review",
-        "Reply",
-        "Follow-up"
-      ],
-      "likelySystems": [
-        "Email",
-        "WhatsApp",
-        "Telegram",
-        "Helpdesk and CRM through governed connections"
-      ],
+      "exampleProcess": ["Request", "Classify", "Retrieve context", "Draft", "Review", "Reply", "Follow-up"],
+      "likelySystems": ["Email", "WhatsApp", "Telegram", "Helpdesk and CRM through governed connections"],
       "expectedOutput": "A contextual response with review, escalation and follow-up history.",
       "featured": false,
       "voting": "open",
       "order": 150,
       "publicUpdate": "Evaluating channel intake and escalation boundaries for a small-team pilot.",
-      "publicUpdateDate": "2026-07-16",
-      "githubUrl": "https://github.com/homun-app/homun/issues/new?template=roadmap-idea.yml",
-      "issueNumber": null,
-      "votes": 0,
-      "underReview": false
+      "publicUpdateDate": "2026-07-16"
     }
-  ]
+  ],
+  "legacy": {
+    "transform": {
+      "5": "homun-mobile",
+      "7": "team-spaces-roles",
+      "8": "voice-meeting-capture"
+    },
+    "archive": {
+      "2": ["homun-flow", "adaptive-company-intelligence"],
+      "3": ["client-work", "sales-operations", "content-marketing", "internal-operations", "customer-support", "developer-platform"],
+      "4": ["homun-flow"],
+      "6": [],
+      "9": ["operational-workspace"],
+      "10": ["operational-workspace"],
+      "11": ["operational-workspace"]
+    }
+  }
 }
