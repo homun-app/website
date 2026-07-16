@@ -1,0 +1,62 @@
+{
+  "syncedAt": "2026-07-16T10:00:00.000Z",
+  "data": {
+    "organization": {
+      "projectV2": {
+        "items": {
+          "nodes": [
+            {
+              "fieldValues": {
+                "nodes": [
+                  { "name": "Building now", "field": { "name": "Roadmap stage" } },
+                  { "name": "Published", "field": { "name": "Publication status" } },
+                  { "name": "Strategic program", "field": { "name": "Item type" } },
+                  { "text": "Team processes", "field": { "name": "Public area" } },
+                  { "text": "homun-flow", "field": { "name": "Slug" } },
+                  { "name": "Yes", "field": { "name": "Featured" } },
+                  { "text": "Durable foundations are verified; the process model and board come next.", "field": { "name": "Public update" } },
+                  { "date": "2026-07-16", "field": { "name": "Public update date" } },
+                  { "name": "Closed", "field": { "name": "Voting" } },
+                  { "number": 20, "field": { "name": "Order" } }
+                ]
+              },
+              "content": {
+                "number": 12,
+                "title": "Homun Flow",
+                "body": "<!-- roadmap-slug: homun-flow -->\n\nTurn recurring work into a visible process that people and Homun can complete, review and hand over together.\n\n## Why now\n\nSmall teams need reliable process continuity without specialist automation staff.\n\n## First release\n\n- Processes with explicit activities and dependencies\n- A lightweight board derived from canonical process state\n\n## Milestones\n\n- [x] Durable task and approval foundations\n- [ ] Visible process board\n\n## Not included yet\n\n- General third-party workflow development\n\n## Strategic role\n\nThe reusable foundation for every official business workflow developed next.",
+                "url": "https://github.com/homun-app/homun/issues/12",
+                "updatedAt": "2026-07-16T09:00:00Z",
+                "reactions": { "totalCount": 0 }
+              }
+            },
+            {
+              "fieldValues": {
+                "nodes": [
+                  { "name": "Exploring", "field": { "name": "Roadmap stage" } },
+                  { "name": "Published", "field": { "name": "Publication status" } },
+                  { "name": "Workflow idea", "field": { "name": "Item type" } },
+                  { "name": "Evaluating", "field": { "name": "Evaluation status" } },
+                  { "text": "Client work", "field": { "name": "Public area" } },
+                  { "text": "client-work", "field": { "name": "Slug" } },
+                  { "name": "No", "field": { "name": "Featured" } },
+                  { "text": "Evaluating pilot teams and the minimum repeatable process definition.", "field": { "name": "Public update" } },
+                  { "date": "2026-07-16", "field": { "name": "Public update date" } },
+                  { "name": "Open", "field": { "name": "Voting" } },
+                  { "number": 110, "field": { "name": "Order" } }
+                ]
+              },
+              "content": {
+                "number": 13,
+                "title": "Client Work",
+                "body": "<!-- roadmap-slug: client-work -->\n\nFrom a client request to a researched, reviewed and approved deliverable.\n\n## Why now\n\nService teams already combine messages, research, documents, review and approvals.\n\n## First release\n\n- Process template\n- Connected-tool setup\n\n## Milestones\n\n## Not included yet\n\n- A delivery commitment before a pilot is selected\n\n## Strategic role\n\nRecommended first vertical pilot.\n\n## Target team\n\nAgencies, consultants and small service companies.\n\n## Example process\n\n- Request\n- Brief\n- Research\n- Draft\n- Review\n- Approval\n- Delivery\n- Follow-up\n\n## Likely connected systems\n\n- Email\n- Documents and cloud drives\n\n## Expected output\n\nA reviewed client deliverable with evidence and approval history.",
+                "url": "https://github.com/homun-app/homun/issues/13",
+                "updatedAt": "2026-07-16T09:30:00Z",
+                "reactions": { "totalCount": 7 }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

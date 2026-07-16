@@ -5,6 +5,24 @@ export const PUBLIC_STATUSES = new Map([
 	["Shipped", "shipped"],
 ]);
 
+export const ROADMAP_STAGES = new Map([
+	["Available", "available"],
+	["Building now", "building"],
+	["Up next", "next"],
+	["Exploring", "exploring"],
+]);
+
+export const ITEM_TYPES = new Map([
+	["Strategic program", "strategic_program"],
+	["Workflow idea", "workflow_idea"],
+]);
+
+export const EVALUATION_STATES = new Map([
+	["Evaluating", "evaluating"],
+	["Selected for pilot", "selected_for_pilot"],
+	["Removed", "removed"],
+]);
+
 export const PUBLICATION_STATUSES = new Map([
 	["Draft", "draft"],
 	["Review", "review"],
@@ -81,6 +99,24 @@ function listItems(value = "") {
 		.filter(Boolean);
 }
 
+function milestoneItems(value = "") {
+	const lines = value.split("\n").map((line) => line.trim()).filter(Boolean);
+	const milestones = lines.map((line) => {
+		const match = line.match(/^[-*]\s+\[([ xX])\]\s+(.+)$/);
+		if (!match || !match[2].trim()) return null;
+		return { title: match[2].trim(), completed: match[1].toLowerCase() === "x" };
+	});
+	if (milestones.some((milestone) => milestone === null)) {
+		throw new Error("Invalid milestone list");
+	}
+	return milestones;
+}
+
+function sectionText(sections, name) {
+	const value = sections.get(name);
+	return typeof value === "string" ? value.replace(/\s+/g, " ").trim() : "";
+}
+
 function optionalText(fields, fieldName, slug, errorLabel) {
 	if (!fields.has(fieldName) || fields.get(fieldName) == null) return null;
 	const value = fields.get(fieldName);
@@ -88,7 +124,7 @@ function optionalText(fields, fieldName, slug, errorLabel) {
 	return value.trim() || null;
 }
 
-function normalizeProjectNode(node) {
+function normalizeProjectNodeV2(node) {
 	const fields = fieldMap(node);
 	const content = node?.content;
 	if (!content?.title || !content?.url) throw new Error("Missing roadmap content");
@@ -178,17 +214,151 @@ function normalizeProjectNode(node) {
 	};
 }
 
+function normalizeProjectNodeV3(node) {
+	const fields = fieldMap(node);
+	const content = node?.content;
+	if (!content?.title || !content?.url) throw new Error("Missing roadmap content");
+
+	const sourceStage = fields.get("Roadmap stage") ?? "";
+	const stage = ROADMAP_STAGES.get(sourceStage);
+	if (!stage) throw new Error(`Unknown roadmap stage: ${sourceStage || "(empty)"}`);
+
+	const sourcePublicationStatus = fields.get("Publication status") ?? "";
+	const publicationStatus = PUBLICATION_STATUSES.get(sourcePublicationStatus);
+	if (!publicationStatus) {
+		throw new Error(`Unknown publication status: ${sourcePublicationStatus || "(empty)"}`);
+	}
+
+	const sourceItemType = fields.get("Item type");
+	if (sourceItemType == null || sourceItemType === "") throw new Error("Missing item type");
+	const itemType = ITEM_TYPES.get(sourceItemType);
+	if (!itemType) throw new Error(`Unknown item type: ${sourceItemType}`);
+
+	const sourceEvaluationState = fields.get("Evaluation status");
+	const evaluationState = sourceEvaluationState == null || sourceEvaluationState === ""
+		? null
+		: EVALUATION_STATES.get(sourceEvaluationState);
+	if (sourceEvaluationState && !evaluationState) {
+		throw new Error(`Unknown evaluation status: ${sourceEvaluationState}`);
+	}
+	if (itemType === "workflow_idea" && !evaluationState) {
+		throw new Error("Missing evaluation status for workflow idea");
+	}
+	if (itemType === "strategic_program" && evaluationState !== null) {
+		throw new Error("Strategic program cannot define an evaluation status");
+	}
+
+	const sourceVoting = fields.get("Voting") ?? "";
+	const voting = VOTING_STATES.get(sourceVoting);
+	if (!voting) throw new Error(`Unknown voting state: ${sourceVoting || "(empty)"}`);
+	if (voting === "open" && itemType !== "workflow_idea" && stage !== "exploring") {
+		throw new Error(`Voting is not allowed for committed program: ${content.title}`);
+	}
+
+	const sourceSlug = fields.get("Slug");
+	if (sourceSlug != null && typeof sourceSlug !== "string") {
+		throw new Error(`Invalid roadmap slug: ${sourceSlug}`);
+	}
+	const slug = (sourceSlug ?? "").trim();
+	if (!slug) throw new Error(`Missing roadmap slug: ${content.title}`);
+	if (!ROADMAP_SLUG.test(slug)) throw new Error(`Invalid roadmap slug: ${slug}`);
+
+	const order = fields.get("Order");
+	if (!Number.isInteger(order)) throw new Error(`Invalid order: ${slug}`);
+	const sourceArea = fields.get("Public area");
+	if (sourceArea == null || sourceArea === "") throw new Error(`Missing public area: ${slug}`);
+	if (typeof sourceArea !== "string") throw new Error(`Invalid public area: ${slug}`);
+	const area = sourceArea.trim();
+	if (!area) throw new Error(`Missing public area: ${slug}`);
+
+	const sourceFeatured = fields.get("Featured");
+	if (sourceFeatured !== "Yes" && sourceFeatured !== "No") {
+		throw new Error(`Invalid featured: ${slug}`);
+	}
+	const featured = sourceFeatured === "Yes";
+	if (featured && (itemType !== "strategic_program" || stage !== "building")) {
+		throw new Error(`Featured roadmap item must be Building: ${slug}`);
+	}
+
+	const publicUpdate = optionalText(fields, "Public update", slug, "public update");
+	const sourcePublicUpdateDate = fields.get("Public update date");
+	let publicUpdateDate = null;
+	if (sourcePublicUpdateDate != null) {
+		if (
+			typeof sourcePublicUpdateDate !== "string"
+			|| !sourcePublicUpdateDate.trim()
+			|| !isIsoDate(sourcePublicUpdateDate.trim())
+		) throw new Error(`Invalid public update date: ${slug}`);
+		publicUpdateDate = sourcePublicUpdateDate.trim();
+	}
+	if (publicUpdate && !publicUpdateDate) throw new Error(`Missing public update date: ${slug}`);
+
+	if (!content.reactions || !Object.hasOwn(content.reactions, "totalCount")) {
+		throw new Error(`Missing votes: ${slug}`);
+	}
+	const votes = content.reactions.totalCount;
+	if (!Number.isInteger(votes) || votes < 0) throw new Error(`Invalid votes: ${slug}`);
+
+	const body = content.body ?? "";
+	const sections = markdownSections(body);
+	const outcome = firstParagraph(body);
+	const whyNow = sectionText(sections, "why now");
+	const firstRelease = listItems(sections.get("first release"));
+	const milestones = milestoneItems(sections.get("milestones"));
+	const notIncludedYet = listItems(sections.get("not included yet"));
+	const strategicRole = sectionText(sections, "strategic role") || null;
+	const targetTeam = sectionText(sections, "target team") || null;
+	const exampleProcess = listItems(sections.get("example process"));
+	const likelySystems = listItems(sections.get("likely connected systems"));
+	const expectedOutput = sectionText(sections, "expected output") || null;
+	if (!outcome) throw new Error(`Missing outcome: ${slug}`);
+	if (!whyNow) throw new Error(`Missing why now: ${slug}`);
+	if (itemType === "strategic_program" && stage === "building" && milestones.length === 0) {
+		throw new Error(`Building program must define milestones: ${slug}`);
+	}
+
+	return {
+		slug,
+		title: content.title,
+		itemType,
+		stage,
+		evaluationState,
+		publicationStatus,
+		area,
+		outcome,
+		whyNow,
+		firstRelease,
+		milestones,
+		notIncludedYet,
+		strategicRole,
+		targetTeam,
+		exampleProcess,
+		likelySystems,
+		expectedOutput,
+		featured,
+		publicUpdate,
+		publicUpdateDate,
+		voting,
+		order,
+		updatedAt: content.updatedAt,
+		githubUrl: content.url,
+		issueNumber: content.number,
+		votes,
+	};
+}
+
 export function normalizeProject(payload) {
 	const nodes = payload?.data?.organization?.projectV2?.items?.nodes ?? [];
+	const schemaVersion = nodes.some((node) => fieldMap(node).has("Roadmap stage")) ? 3 : 2;
 	const candidates = nodes
-		.map(normalizeProjectNode)
+		.map(schemaVersion === 3 ? normalizeProjectNodeV3 : normalizeProjectNodeV2)
 		.sort((a, b) => a.order - b.order || compareText(a.slug, b.slug));
 	const slugs = new Set();
 	for (const candidate of candidates) {
 		if (slugs.has(candidate.slug)) throw new Error(`Duplicate roadmap slug: ${candidate.slug}`);
 		slugs.add(candidate.slug);
 	}
-	return { schemaVersion: 2, fetchedAt: payload.syncedAt, candidates };
+	return { schemaVersion, fetchedAt: payload.syncedAt, candidates };
 }
 
 function platformsForAssets(assets = []) {
@@ -253,9 +423,10 @@ export function validateSnapshot(
 	{ knownRoadmapSlugs = [] } = {},
 ) {
 	const warnings = [];
-	if (roadmap?.schemaVersion !== 2 || releases?.schemaVersion !== 2) {
+	if (![2, 3].includes(roadmap?.schemaVersion) || releases?.schemaVersion !== 2) {
 		throw new Error("Unsupported product data schema");
 	}
+	const isRoadmapV3 = roadmap.schemaVersion === 3;
 	const hasCandidates = Object.hasOwn(roadmap, "candidates");
 	const hasItems = Object.hasOwn(roadmap, "items");
 	if (
@@ -331,19 +502,8 @@ export function validateSnapshot(
 		if (typeof item.area !== "string" || !item.area.trim()) {
 			throw new Error(`Invalid roadmap area: ${item.slug}`);
 		}
-		if (typeof item.description !== "string" || !item.description.trim()) {
-			throw new Error(`Invalid roadmap description: ${item.slug}`);
-		}
 		if (typeof item.githubUrl !== "string" || !item.githubUrl.trim()) {
 			throw new Error(`Invalid roadmap GitHub URL: ${item.slug}`);
-		}
-		if (
-			!Array.isArray(item.capabilities)
-			|| item.capabilities.some(
-				(capability) => typeof capability !== "string" || !capability.trim(),
-			)
-		) {
-			throw new Error(`Invalid capabilities: ${item.slug}`);
 		}
 		if (typeof item.featured !== "boolean") {
 			throw new Error(`Invalid featured: ${item.slug}`);
@@ -358,14 +518,11 @@ export function validateSnapshot(
 			throw new Error(`Invalid issue number: ${item.slug}`);
 		}
 		if (isPublicRoadmap) {
-			for (const field of ["targetRelease", "publicUpdate", "publicUpdateDate"]) {
+			for (const field of ["publicUpdate", "publicUpdateDate"]) {
 				if (!Object.hasOwn(item, field)) {
 					throw new Error(`Missing ${field}: ${item.slug}`);
 				}
 			}
-		}
-		if (item.targetRelease !== null && typeof item.targetRelease !== "string") {
-			throw new Error(`Invalid target release: ${item.slug}`);
 		}
 		if (item.publicUpdate !== null && typeof item.publicUpdate !== "string") {
 			throw new Error(`Invalid public update: ${item.slug}`);
@@ -375,12 +532,6 @@ export function validateSnapshot(
 		}
 		if (isPublicRoadmap && typeof item.underReview !== "boolean") {
 			throw new Error(`Invalid underReview: ${item.slug}`);
-		}
-		if (![...PUBLIC_STATUSES.values()].includes(item.status)) {
-			throw new Error(`Unknown public status: ${item.status}`);
-		}
-		if (item.featured && item.status !== "building") {
-			throw new Error(`Featured roadmap item must be Building: ${item.slug}`);
 		}
 		if (
 			isRawRoadmap
@@ -395,8 +546,81 @@ export function validateSnapshot(
 		if (item.publicUpdate && !item.publicUpdateDate) {
 			throw new Error(`Missing public update date: ${item.slug}`);
 		}
-		if (!Number.isFinite(item.progress) || item.progress < 0 || item.progress > 100) {
-			throw new Error(`Invalid progress: ${item.slug}`);
+		if (isRoadmapV3) {
+			if (![...ITEM_TYPES.values()].includes(item.itemType)) {
+				throw new Error(`Unknown item type: ${item.slug}`);
+			}
+			if (![...ROADMAP_STAGES.values()].includes(item.stage)) {
+				throw new Error(`Unknown roadmap stage: ${item.slug}`);
+			}
+			if (item.itemType === "strategic_program" && item.evaluationState !== null) {
+				throw new Error(`Strategic program cannot define evaluation state: ${item.slug}`);
+			}
+			if (
+				item.itemType === "workflow_idea"
+				&& ![...EVALUATION_STATES.values()].includes(item.evaluationState)
+			) throw new Error(`Missing evaluation state: ${item.slug}`);
+			for (const field of ["outcome", "whyNow"]) {
+				if (typeof item[field] !== "string" || !item[field].trim()) {
+					throw new Error(`Invalid ${field}: ${item.slug}`);
+				}
+			}
+			for (const field of ["firstRelease", "notIncludedYet", "exampleProcess", "likelySystems"]) {
+				if (!Array.isArray(item[field]) || item[field].some((value) => typeof value !== "string" || !value.trim())) {
+					throw new Error(`Invalid ${field}: ${item.slug}`);
+				}
+			}
+			if (
+				!Array.isArray(item.milestones)
+				|| item.milestones.some(
+					(milestone) => !milestone
+						|| typeof milestone.title !== "string"
+						|| !milestone.title.trim()
+						|| typeof milestone.completed !== "boolean",
+				)
+			) throw new Error(`Invalid milestones: ${item.slug}`);
+			for (const field of ["strategicRole", "targetTeam", "expectedOutput"]) {
+				if (item[field] !== null && (typeof item[field] !== "string" || !item[field].trim())) {
+					throw new Error(`Invalid ${field}: ${item.slug}`);
+				}
+			}
+			if (item.itemType === "workflow_idea") {
+				if (!item.targetTeam || item.exampleProcess.length === 0 || item.likelySystems.length === 0 || !item.expectedOutput) {
+					throw new Error(`Incomplete workflow idea detail: ${item.slug}`);
+				}
+			}
+			if (item.featured && (item.itemType !== "strategic_program" || item.stage !== "building")) {
+				throw new Error(`Featured roadmap item must be Building: ${item.slug}`);
+			}
+			if (item.itemType === "strategic_program" && item.stage === "building" && item.milestones.length === 0) {
+				throw new Error(`Building program must define milestones: ${item.slug}`);
+			}
+			if (item.voting === "open" && item.itemType !== "workflow_idea" && item.stage !== "exploring") {
+				throw new Error(`Voting is not allowed: ${item.slug}`);
+			}
+			for (const retiredField of ["status", "description", "capabilities", "progress", "targetRelease"]) {
+				if (Object.hasOwn(item, retiredField)) throw new Error(`Roadmap v3 item contains ${retiredField}: ${item.slug}`);
+			}
+		} else {
+			if (typeof item.description !== "string" || !item.description.trim()) {
+				throw new Error(`Invalid roadmap description: ${item.slug}`);
+			}
+			if (!Array.isArray(item.capabilities) || item.capabilities.some((value) => typeof value !== "string" || !value.trim())) {
+				throw new Error(`Invalid capabilities: ${item.slug}`);
+			}
+			if (![...PUBLIC_STATUSES.values()].includes(item.status)) {
+				throw new Error(`Unknown public status: ${item.status}`);
+			}
+			if (item.featured && item.status !== "building") {
+				throw new Error(`Featured roadmap item must be Building: ${item.slug}`);
+			}
+			if (!Object.hasOwn(item, "targetRelease")) throw new Error(`Missing targetRelease: ${item.slug}`);
+			if (item.targetRelease !== null && typeof item.targetRelease !== "string") {
+				throw new Error(`Invalid target release: ${item.slug}`);
+			}
+			if (!Number.isFinite(item.progress) || item.progress < 0 || item.progress > 100) {
+				throw new Error(`Invalid progress: ${item.slug}`);
+			}
 		}
 		if (item.featured) featured += 1;
 	}
@@ -481,8 +705,11 @@ export function validateSnapshot(
 	}
 	if (isPublicRoadmap) {
 		for (const item of roadmapEntries) {
-			if (item.status === "shipped" && !publishedReleasesByRoadmapSlug.has(item.slug)) {
+			if (!isRoadmapV3 && item.status === "shipped" && !publishedReleasesByRoadmapSlug.has(item.slug)) {
 				throw new Error(`Shipped roadmap item has no published release: ${item.slug}`);
+			}
+			if (isRoadmapV3 && item.itemType === "strategic_program" && item.stage === "available" && !publishedReleasesByRoadmapSlug.has(item.slug)) {
+				throw new Error(`Available roadmap item has no published release: ${item.slug}`);
 			}
 		}
 	}

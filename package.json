@@ -15,6 +15,7 @@
     "test:roadmap-rollout": "node scripts/check-roadmap-project-rollout.mjs",
     "test:roadmap-bootstrap": "node scripts/check-roadmap-project-bootstrap.mjs",
     "test:roadmap-v3-manifest": "node scripts/check-roadmap-v3-manifest.mjs",
+    "test:roadmap-v3-product-data": "node scripts/check-roadmap-v3-product-data.mjs",
     "test:roadmap": "node scripts/check-roadmap-pages.mjs",
     "test:container": "node scripts/check-container-deployment.mjs",
     "test:container-runtime": "node scripts/check-container-runtime.mjs",

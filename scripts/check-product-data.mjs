@@ -58,7 +58,7 @@ assert.equal(
 	"Internal roadmap markers must not leak into public descriptions",
 );
 const checkedInRoadmap = JSON.parse(
-	await readFile(new URL("../src/data/roadmap.json", import.meta.url)),
+	await readFile(new URL("./fixtures/public-roadmap-v2.json", import.meta.url)),
 );
 const checkedInReleases = JSON.parse(
 	await readFile(new URL("../src/data/releases.json", import.meta.url)),
