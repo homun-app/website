@@ -1535,12 +1535,13 @@ assert.throws(
 	() => readConfig({ HOMUN_GITHUB_TOKEN: "secret" }),
 	/Missing HOMUN_PROJECT_NUMBER/,
 );
-assert.deepEqual(parseSyncArgs([]), { mode: "dry-run", allowEmpty: false });
-assert.deepEqual(parseSyncArgs(["--dry-run"]), { mode: "dry-run", allowEmpty: false });
-assert.deepEqual(parseSyncArgs(["--write"]), { mode: "write", allowEmpty: false });
+assert.deepEqual(parseSyncArgs([]), { mode: "dry-run", allowEmpty: false, allowSchemaUpgrade: false });
+assert.deepEqual(parseSyncArgs(["--dry-run"]), { mode: "dry-run", allowEmpty: false, allowSchemaUpgrade: false });
+assert.deepEqual(parseSyncArgs(["--write"]), { mode: "write", allowEmpty: false, allowSchemaUpgrade: false });
 assert.deepEqual(parseSyncArgs(["--write", "--allow-empty"]), {
 	mode: "write",
 	allowEmpty: true,
+	allowSchemaUpgrade: false,
 });
 assert.throws(() => parseSyncArgs(["--wat"]), /Unknown option: --wat/);
 assert.throws(

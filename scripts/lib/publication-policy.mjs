@@ -1,24 +1,48 @@
+import { upgradePublishedRoadmap } from "./roadmap-schema-upgrade.mjs";
+
 const PUBLICATION_STATUSES = new Set(["draft", "review", "published", "archived"]);
 
-function cloneCapabilities(capabilities) {
-	return [...capabilities];
-}
-
 function cloneApprovedRecord(record) {
-	return {
-		...record,
-		capabilities: cloneCapabilities(record.capabilities),
-	};
+	return structuredClone(record);
 }
 
-function publicRecord(candidate) {
+export function publicRecord(candidate) {
+	if (candidate.itemType) {
+		return {
+			slug: candidate.slug,
+			title: candidate.title,
+			itemType: candidate.itemType,
+			stage: candidate.stage,
+			evaluationState: candidate.evaluationState,
+			area: candidate.area,
+			outcome: candidate.outcome,
+			whyNow: candidate.whyNow,
+			firstRelease: [...candidate.firstRelease],
+			milestones: candidate.milestones.map((milestone) => ({ ...milestone })),
+			notIncludedYet: [...candidate.notIncludedYet],
+			strategicRole: candidate.strategicRole,
+			targetTeam: candidate.targetTeam,
+			exampleProcess: [...candidate.exampleProcess],
+			likelySystems: [...candidate.likelySystems],
+			expectedOutput: candidate.expectedOutput,
+			featured: candidate.featured,
+			publicUpdate: candidate.publicUpdate,
+			publicUpdateDate: candidate.publicUpdateDate,
+			voting: candidate.voting,
+			order: candidate.order,
+			githubUrl: candidate.githubUrl,
+			issueNumber: candidate.issueNumber,
+			votes: candidate.votes,
+			underReview: false,
+		};
+	}
 	return {
 		slug: candidate.slug,
 		title: candidate.title,
 		status: candidate.status,
 		area: candidate.area,
 		description: candidate.description,
-		capabilities: cloneCapabilities(candidate.capabilities),
+		capabilities: [...candidate.capabilities],
 		featured: candidate.featured,
 		progress: candidate.progress,
 		targetRelease: candidate.targetRelease,
@@ -46,13 +70,14 @@ export function assertNoPublishedDraftRegression(previous, candidates) {
 		if (
 			candidate.publicationStatus === "draft"
 			&& previouslyPublishedSlugs.has(candidate.slug)
-		) {
-			throw new Error(`Published roadmap item cannot return to Draft: ${candidate.slug}`);
-		}
+		) throw new Error(`Published roadmap item cannot return to Draft: ${candidate.slug}`);
 	}
 }
 
 export function applyPublicationPolicy(previous, candidates) {
+	if (![2, 3].includes(previous?.schemaVersion) || !Array.isArray(previous.items)) {
+		throw new Error("Previous roadmap must contain published items");
+	}
 	const previousBySlug = new Map(previous.items.map((item) => [item.slug, item]));
 	const candidatesBySlug = new Map();
 
@@ -74,16 +99,13 @@ export function applyPublicationPolicy(previous, candidates) {
 	}
 
 	const items = [];
-
 	for (const candidate of candidates) {
 		const approved = previousBySlug.get(candidate.slug);
 		switch (candidate.publicationStatus) {
 			case "draft":
 				break;
 			case "review":
-				if (approved) {
-					items.push({ ...cloneApprovedRecord(approved), underReview: true });
-				}
+				if (approved) items.push({ ...cloneApprovedRecord(approved), underReview: true });
 				break;
 			case "published":
 				items.push(publicRecord(candidate));
@@ -95,8 +117,10 @@ export function applyPublicationPolicy(previous, candidates) {
 
 	items.sort(byOrderThenSlug);
 	return {
-		schemaVersion: 2,
+		schemaVersion: previous.schemaVersion,
 		contentUpdatedAt: previous.contentUpdatedAt,
 		items,
 	};
 }
+
+export { upgradePublishedRoadmap };

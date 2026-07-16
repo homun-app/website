@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import {
@@ -6,6 +7,7 @@ import {
 	validateSnapshot,
 } from "./lib/github-product-data.mjs";
 import { applyPublicationPolicy } from "./lib/publication-policy.mjs";
+import { upgradePublishedRoadmap } from "./lib/roadmap-schema-upgrade.mjs";
 import { applyReleasePublicationPolicy } from "./lib/release-publication-policy.mjs";
 import {
 	assertSafeReplacement,
@@ -78,7 +80,7 @@ export function readConfig(env = process.env) {
 }
 
 export function parseSyncArgs(args = []) {
-	const supported = new Set(["--dry-run", "--write", "--allow-empty"]);
+	const supported = new Set(["--dry-run", "--write", "--allow-empty", "--allow-schema-upgrade"]);
 	for (const arg of args) {
 		if (!supported.has(arg)) throw new Error(`Unknown option: ${arg}`);
 	}
@@ -89,9 +91,13 @@ export function parseSyncArgs(args = []) {
 	const dryRun = args.includes("--dry-run");
 	const write = args.includes("--write");
 	const allowEmpty = args.includes("--allow-empty");
+	const allowSchemaUpgrade = args.includes("--allow-schema-upgrade");
 	if (dryRun && write) throw new Error("Cannot combine --dry-run and --write");
 	if (allowEmpty && !write) throw new Error("--allow-empty requires --write");
-	return { mode: write ? "write" : "dry-run", allowEmpty };
+	if (allowEmpty && allowSchemaUpgrade) {
+		throw new Error("Cannot combine --allow-empty and --allow-schema-upgrade");
+	}
+	return { mode: write ? "write" : "dry-run", allowEmpty, allowSchemaUpgrade };
 }
 
 async function githubRequest(
@@ -231,6 +237,7 @@ export async function syncProductData({
 	clock = () => new Date().toISOString(),
 	mode = "dry-run",
 	allowEmpty = false,
+	allowSchemaUpgrade = false,
 } = {}) {
 	if (!new Set(["dry-run", "write"]).has(mode)) {
 		throw new Error(`Unknown sync mode: ${mode}`);
@@ -238,23 +245,36 @@ export async function syncProductData({
 	if (allowEmpty && mode !== "write") {
 		throw new Error("allowEmpty requires write mode");
 	}
+	if (allowEmpty && allowSchemaUpgrade) {
+		throw new Error("Cannot combine allowEmpty and allowSchemaUpgrade");
+	}
 	await recoverSnapshotPair(paths);
 	const current = await readSnapshotPair(paths);
-	if (current.roadmap?.schemaVersion !== 2 || !Array.isArray(current.roadmap.items)) {
-		throw new Error("Previous roadmap must use schemaVersion 2 with public items");
+	if (![2, 3].includes(current.roadmap?.schemaVersion) || !Array.isArray(current.roadmap.items)) {
+		throw new Error("Previous roadmap must use schemaVersion 2 or 3 with public items");
 	}
 	validateSnapshot(current.roadmap, current.releases);
 
 	const config = readConfig(env);
 	const syncedAt = clock();
 	const raw = await fetchProductData(config, fetchImpl, () => syncedAt);
+	if (raw.roadmap.schemaVersion !== current.roadmap.schemaVersion && !allowSchemaUpgrade) {
+		throw new Error(
+			`Roadmap schema change ${current.roadmap.schemaVersion} -> ${raw.roadmap.schemaVersion} requires --allow-schema-upgrade`,
+		);
+	}
+	const manifest = allowSchemaUpgrade
+		? JSON.parse(await readFile(new URL("./fixtures/roadmap-v3-manifest.json", import.meta.url), "utf8"))
+		: null;
 	const publishedRoadmap = raw.roadmap.candidates.length === 0
 		? {
-			schemaVersion: 2,
+			schemaVersion: current.roadmap.schemaVersion,
 			contentUpdatedAt: current.roadmap.contentUpdatedAt,
 			items: [],
 		}
-		: applyPublicationPolicy(current.roadmap, raw.roadmap.candidates);
+		: allowSchemaUpgrade
+			? upgradePublishedRoadmap(current.roadmap, raw.roadmap.candidates, manifest)
+			: applyPublicationPolicy(current.roadmap, raw.roadmap.candidates);
 	const releasePublication = applyReleasePublicationPolicy(
 		current.releases,
 		raw.releases,
