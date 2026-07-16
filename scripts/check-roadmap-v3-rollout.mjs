@@ -5,6 +5,7 @@ import {
 	buildRolloutPlan,
 	issueBodyFor,
 	parseRolloutArgs,
+	reconcileUntilZero,
 } from "./roadmap-v3-rollout.mjs";
 
 const manifest = JSON.parse(await readFile(
@@ -117,5 +118,25 @@ assert.deepEqual(parseRolloutArgs(["--project-number", "1", "--dry-run"]), { pro
 assert.deepEqual(parseRolloutArgs(["--project-number", "1", "--apply"]), { projectNumber: 1, mode: "apply" });
 assert.deepEqual(parseRolloutArgs(["--project-number", "1", "--publish"]), { projectNumber: 1, mode: "publish" });
 assert.throws(() => parseRolloutArgs(["--project-number", "1", "--apply", "--publish"]), /mutually exclusive/i);
+
+let reconciliationReads = 0;
+let reconciliationApplies = 0;
+const reconciled = await reconcileUntilZero({
+	readState: async () => ({ operationCount: reconciliationReads++ === 0 ? 11 : 0 }),
+	applyState: async () => { reconciliationApplies += 1; },
+	wait: async () => {},
+});
+assert.equal(reconciled.operationCount, 0);
+assert.equal(reconciliationReads, 2);
+assert.equal(reconciliationApplies, 1);
+await assert.rejects(
+	() => reconcileUntilZero({
+		readState: async () => ({ operationCount: 1 }),
+		applyState: async () => {},
+		wait: async () => {},
+		maxAttempts: 2,
+	}),
+	/did not converge; 1 operations remain/,
+);
 
 console.log("Roadmap v3 rollout contract passed");

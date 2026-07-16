@@ -220,7 +220,7 @@ export async function fetchProjectInventory(projectNumber, gh = runGh) {
 	};
 }
 
-async function listIssues(gh = runGh) {
+export async function listIssues(gh = runGh) {
 	return JSON.parse(await gh(["issue", "list", "--repo", REPOSITORY, "--state", "all", "--limit", "200", "--json", "number,title,body,url,state"]));
 }
 
@@ -249,6 +249,26 @@ async function confirmExact(expected, message) {
 		const answer = await input.question(`${message} Type "${expected}" to continue: `);
 		if (answer.trim() !== expected) throw new Error("Roadmap rollout cancelled");
 	} finally { input.close(); }
+}
+
+export async function reconcileUntilZero({
+	readState,
+	applyState,
+	maxAttempts = 4,
+	wait = () => new Promise((resolve) => setTimeout(resolve, 1_000)),
+}) {
+	let state;
+	for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+		state = await readState();
+		if (state.operationCount === 0) return state;
+		await applyState(state);
+		await wait(attempt);
+	}
+	state = await readState();
+	if (state.operationCount !== 0) {
+		throw new Error(`Roadmap v3 rollout did not converge; ${state.operationCount} operations remain`);
+	}
+	return state;
 }
 
 async function setFields(inventory, entries, gh) {
@@ -289,24 +309,32 @@ async function ensureActiveIssuesAndItems(projectNumber, manifest, gh) {
 export async function applyRollout(projectNumber, manifest, gh = runGh) {
 	await confirmExact("roadmap-v3", "This creates or updates roadmap issues and Project fields, archives seven legacy records, and leaves thirteen active records in Review.");
 	let inventory = await fetchProjectInventory(projectNumber, gh);
-	let issues = await listIssues(gh);
-	let plan = buildRolloutPlan(inventory, manifest, issues);
+	let plan = buildRolloutPlan(inventory, manifest, await listIssues(gh));
 	for (const field of plan.fieldsToCreate) await gh(fieldCreateArgs(projectNumber, field));
-	await ensureActiveIssuesAndItems(projectNumber, manifest, gh);
-	inventory = await fetchProjectInventory(projectNumber, gh);
-	issues = await listIssues(gh);
-	plan = buildRolloutPlan(inventory, manifest, issues);
-	await setFields(inventory, plan.activeItemUpdates, gh);
-	const publicationField = inventory.fields.find(({ name }) => name === "Publication status");
-	for (const item of plan.itemsToArchive) {
-		if (item.needsClose) {
-			await gh(["issue", "comment", String(item.number), "--repo", REPOSITORY, "--body", item.comment]);
-			await gh(["issue", "close", String(item.number), "--repo", REPOSITORY, "--reason", "not planned"]);
-		}
-		if (item.needsStatus) await gh(fieldEditArgs(inventory.project.id, item.itemId, publicationField, "Archived"));
-	}
-	const followUp = buildRolloutPlan(await fetchProjectInventory(projectNumber, gh), manifest, await listIssues(gh));
-	if (followUp.operationCount !== 0) throw new Error(`Roadmap v3 rollout did not converge; ${followUp.operationCount} operations remain`);
+	await reconcileUntilZero({
+		readState: async () => {
+			const currentInventory = await fetchProjectInventory(projectNumber, gh);
+			const currentPlan = buildRolloutPlan(currentInventory, manifest, await listIssues(gh));
+			return { ...currentPlan, inventory: currentInventory };
+		},
+		applyState: async (state) => {
+			if (state.issuesToCreate.length || state.issuesToTransform.length) {
+				await ensureActiveIssuesAndItems(projectNumber, manifest, gh);
+			}
+			await setFields(state.inventory, state.activeItemUpdates, gh);
+			const publicationField = state.inventory.fields.find(({ name }) => name === "Publication status");
+			for (const item of state.itemsToArchive) {
+				if (item.needsClose) {
+					await gh(["issue", "comment", String(item.number), "--repo", REPOSITORY, "--body", item.comment]);
+					await gh(["issue", "close", String(item.number), "--repo", REPOSITORY, "--reason", "not planned"]);
+				}
+				if (item.needsStatus) {
+					if (!publicationField) throw new Error("Missing Publication status field");
+					await gh(fieldEditArgs(state.inventory.project.id, item.itemId, publicationField, "Archived"));
+				}
+			}
+		},
+	});
 }
 
 export async function publishRollout(projectNumber, manifest, gh = runGh) {
@@ -318,12 +346,13 @@ export async function publishRollout(projectNumber, manifest, gh = runGh) {
 	if (buildPublishPlan(inventory, manifest).operationCount !== 0) throw new Error("Roadmap v3 publication did not converge");
 }
 
-function formatPlan(plan, mode) {
+export function formatPlan(plan, mode) {
 	const lines = [`ROADMAP V3 ${mode.toUpperCase()}`, `Project: ${plan.project.title} (#${plan.project.number})`];
 	if (mode === "publish") return [...lines, `Records to publish: ${plan.itemsToPublish.length}`, ...plan.itemsToPublish.map((item) => `  ~ ${item.slug}: Review -> Published`)].join("\n");
 	lines.push(`Fields to create: ${plan.fieldsToCreate.length}`, ...plan.fieldsToCreate.map((field) => `  + ${field.name}`));
 	lines.push(`Issues to create: ${plan.issuesToCreate.length}`, ...plan.issuesToCreate.map((item) => `  + ${item.slug}`));
 	lines.push(`Issues to transform: ${plan.issuesToTransform.length}`, ...plan.issuesToTransform.map((item) => `  ~ #${item.number} -> ${item.slug}`));
+	lines.push(`Active item field updates: ${plan.activeItemUpdates.length}`, ...plan.activeItemUpdates.map((item) => `  ~ ${item.slug}: ${Object.entries(item.set).map(([name, value]) => `${name}=${value}`).join(", ")}`));
 	lines.push(`Legacy items to archive: ${plan.itemsToArchive.length}`, ...plan.itemsToArchive.map((item) => `  - #${item.number}`));
 	lines.push(`Total operations: ${plan.operationCount}`);
 	return lines.join("\n");
