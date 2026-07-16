@@ -2,19 +2,34 @@ import roadmapSnapshot from "../data/roadmap.json";
 import releaseSnapshot from "../data/releases.json";
 import { selectFeaturedProject } from "./roadmap-presentation.mjs";
 
-export type RoadmapStatus = "ideas" | "next" | "building" | "shipped";
+export type RoadmapStage = "available" | "building" | "next" | "exploring";
+export type RoadmapItemType = "strategic_program" | "workflow_idea";
+export type EvaluationState = "evaluating" | "selected_for_pilot" | "removed";
 export type VotingState = "open" | "closed";
+
+export interface RoadmapMilestone {
+	title: string;
+	completed: boolean;
+}
 
 export interface RoadmapItem {
 	slug: string;
 	title: string;
-	status: RoadmapStatus;
+	itemType: RoadmapItemType;
+	stage: RoadmapStage;
+	evaluationState: EvaluationState | null;
 	area: string;
-	description: string;
-	capabilities: string[];
+	outcome: string;
+	whyNow: string;
+	firstRelease: string[];
+	milestones: RoadmapMilestone[];
+	notIncludedYet: string[];
+	strategicRole: string | null;
+	targetTeam: string | null;
+	exampleProcess: string[];
+	likelySystems: string[];
+	expectedOutput: string | null;
 	featured: boolean;
-	progress: number;
-	targetRelease: string | null;
 	publicUpdate: string | null;
 	publicUpdateDate: string | null;
 	underReview: boolean;
@@ -51,11 +66,21 @@ export const releases = [...(releaseSnapshot.items as ReleaseItem[])].sort(
 );
 export const roadmapSyncedAt = roadmapSnapshot.contentUpdatedAt;
 export const releasesSyncedAt = releaseSnapshot.contentUpdatedAt;
-export const featuredProject = selectFeaturedProject(roadmapItems);
+export const strategicPrograms = roadmapItems.filter(
+	(item) => item.itemType === "strategic_program",
+);
+export const workflowIdeas = roadmapItems.filter(
+	(item) => item.itemType === "workflow_idea",
+);
+export const featuredProject = selectFeaturedProject(strategicPrograms);
 export const latestRelease = releases[0];
 
-export function itemsByStatus(status: RoadmapStatus) {
-	return roadmapItems.filter((item) => item.status === status);
+export function programsByStage(stage: RoadmapStage) {
+	return strategicPrograms.filter((item) => item.stage === stage);
+}
+
+export function itemsByStatus(stage: RoadmapStage) {
+	return roadmapItems.filter((item) => item.stage === stage);
 }
 
 export function projectBySlug(slug: string) {
