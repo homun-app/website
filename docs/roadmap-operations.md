@@ -69,15 +69,17 @@ issues or Project items and does not publish records during its preparation phas
    Review, comments before closing legacy issues, re-fetches the Project and fails if
    any preparation operation remains.
 
-3. Generate the local snapshot with the explicit one-time schema gate, then validate:
+3. Re-run the preparation dry-run and validate the reviewed source and preview:
 
    ```bash
-   npm run sync:product-data -- --allow-schema-upgrade --write
+   npm run roadmap:v3-rollout -- --project-number 1 --dry-run
    npm run check
    ```
 
-   Review `/roadmap/`, `/roadmap/homun-flow/`, `/roadmap/client-work/` and the legacy
-   redirects before publishing. Never merge the branch-only preview fixtures.
+   The dry-run must report zero operations. Review the thirteen live Project records
+   in Review together with `/roadmap/`, `/roadmap/homun-flow/`,
+   `/roadmap/client-work/` and the legacy redirects. The branch-only fixtures provide
+   this pre-publication preview but must never be merged.
 
 4. After separate approval of the reviewed public output, publish only the active
    records:
@@ -86,10 +88,19 @@ issues or Project items and does not publish records during its preparation phas
    npm run roadmap:v3-rollout -- --project-number 1 --publish
    ```
 
-   Type `publish-v3` at the prompt. Run the normal product-data synchronization again,
-   validate the resulting snapshots, and deploy the website.
+   Type `publish-v3` at the prompt. The one-time schema upgrade deliberately accepts
+   only Published candidates, so generate the real snapshot immediately afterwards:
 
-5. Re-run `--dry-run`. A successful reconciliation reports zero operations. Keep the
+   ```bash
+   npm run sync:product-data -- --allow-schema-upgrade --write
+   npm run check
+   ```
+
+   Review the generated pages again, replace every preview snapshot with these real
+   synchronized files, and only then merge and deploy the website.
+
+5. Re-run `--dry-run` and the normal product-data synchronization. A successful
+   reconciliation reports zero operations and no semantic snapshot changes. Keep the
    legacy fields until a later, separately reviewed cleanup; they are not read by the
    version 3 public projection.
 
