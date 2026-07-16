@@ -19,7 +19,7 @@
     "test:roadmap-v3-publication": "node scripts/check-roadmap-v3-publication.mjs",
     "test:roadmap-v3-presentation": "node scripts/check-roadmap-v3-presentation.mjs",
     "test:roadmap-v3-projections": "node scripts/check-roadmap-v3-product-projections.mjs",
-    "test:roadmap": "node scripts/check-roadmap-pages.mjs",
+    "test:roadmap": "node scripts/check-roadmap-v3-pages.mjs",
     "test:container": "node scripts/check-container-deployment.mjs",
     "test:container-runtime": "node scripts/check-container-runtime.mjs",
     "test:container-runtime-ownership": "node scripts/check-container-runtime-ownership.mjs",

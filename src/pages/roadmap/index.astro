@@ -2,14 +2,17 @@
 import Page from "../../layouts/Page.astro";
 import FeaturedProject from "../../components/roadmap/FeaturedProject.astro";
 import LatestRelease from "../../components/roadmap/LatestRelease.astro";
-import RoadmapJourney from "../../components/roadmap/RoadmapJourney.astro";
+import ProductJourney from "../../components/roadmap/ProductJourney.astro";
 import ReleaseHistory from "../../components/roadmap/ReleaseHistory.astro";
+import RoadmapJourney from "../../components/roadmap/RoadmapJourney.astro";
+import WorkflowIdeas from "../../components/roadmap/WorkflowIdeas.astro";
 import {
 	featuredProject,
 	latestRelease,
+	programsByStage,
 	releases,
-	roadmapItems,
 	roadmapSyncedAt,
+	workflowIdeas,
 } from "../../lib/product-data";
 
 const synced = new Date(roadmapSyncedAt).toLocaleDateString("en-US", {
@@ -17,42 +20,97 @@ const synced = new Date(roadmapSyncedAt).toLocaleDateString("en-US", {
 	day: "numeric",
 	year: "numeric",
 });
+const available = programsByStage("available");
+const upNext = programsByStage("next");
+const exploring = programsByStage("exploring");
+const adaptive = exploring.filter(({ slug }) => slug === "adaptive-company-intelligence");
+const otherExploring = exploring.filter(({ slug }) => slug !== "adaptive-company-intelligence");
 ---
 
-<Page title="Roadmap — Homun" description="A living view of Homun ideas, active work, and shipped releases.">
-	<section class="relative overflow-hidden pb-12 pt-36 sm:pt-44">
+<Page title="Roadmap — Homun" description="How Homun is becoming an operational process system for small teams.">
+	<section class="relative overflow-hidden pb-14 pt-36 sm:pt-44">
 		<div class="atmosphere absolute inset-0 -z-10" aria-hidden="true"></div>
 		<div class="glow left-1/2 top-0 h-80 w-[42rem] -translate-x-1/2 opacity-25" aria-hidden="true"></div>
 		<div class="mx-auto max-w-6xl px-5">
 			<div class="flex flex-wrap items-center justify-between gap-4">
-				<p class="eyebrow reveal">A living product, built in public</p>
+				<p class="eyebrow reveal">BUILT FOR SMALL TEAMS</p>
 				<p class="reveal flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.12em] text-faint">
 					<span class="status-dot"></span> Synced with GitHub · {synced}
 				</p>
 			</div>
-			<h1 class="reveal text-gradient mt-5 max-w-4xl text-5xl font-semibold sm:text-6xl lg:text-7xl">
-				What we're building.<br />What just shipped.
-			</h1>
-			<p class="reveal mt-6 max-w-2xl text-lg leading-relaxed text-muted">
-				Follow the ideas becoming real parts of Homun, see where they are headed, and discover what changes with every release.
+			<h1 class="reveal text-gradient mt-5 max-w-4xl text-5xl font-semibold sm:text-6xl lg:text-7xl">AI that keeps work moving.</h1>
+			<p class="reveal mt-6 max-w-3xl text-lg leading-relaxed text-muted">
+				Homun turns requests, messages and recurring work into visible processes that people and AI can complete, review and hand over together.
+			</p>
+			<p class="reveal mt-5 max-w-3xl font-mono text-xs leading-relaxed text-faint">
+				One operational foundation. Multiple business workflows. Your models, your tools and your data remain under your control.
 			</p>
 		</div>
 	</section>
 
-	<section class="pb-16">
-		<div class="mx-auto grid max-w-6xl gap-5 px-5 lg:grid-cols-[1.2fr_.8fr]">
-			{featuredProject && <FeaturedProject project={featuredProject} />}
-			{latestRelease && <LatestRelease release={latestRelease} />}
+	<section class="pb-20 pt-4">
+		<div class="mx-auto max-w-6xl px-5"><ProductJourney /></div>
+	</section>
+
+	<section class="pb-20">
+		<div class="mx-auto max-w-6xl px-5">
+			<RoadmapJourney
+				items={available}
+				eyebrow="Available now"
+				title="Available today"
+				hint="The operational foundation small teams can use in current Homun releases. Shipped improvements remain in the changelog."
+			/>
 		</div>
 	</section>
 
-	<section class="pb-20 pt-5">
-		<div class="mx-auto max-w-6xl px-5"><RoadmapJourney items={roadmapItems} /></div>
+	{featuredProject && (
+		<section class="pb-20">
+			<div class="mx-auto max-w-6xl px-5"><FeaturedProject project={featuredProject} /></div>
+		</section>
+	)}
+
+	<section class="pb-20">
+		<div class="mx-auto max-w-6xl px-5">
+			<RoadmapJourney
+				items={upNext}
+				eyebrow="Decided product direction"
+				title="Up next"
+				hint="Team identity, mobile continuity and more communication channels extend Homun Flow into daily company work."
+				filterable
+			/>
+		</div>
+	</section>
+
+	<section class="pb-20">
+		<div class="mx-auto max-w-6xl px-5"><WorkflowIdeas items={workflowIdeas} /></div>
+	</section>
+
+	<section class="pb-20">
+		<div class="mx-auto max-w-6xl px-5">
+			<RoadmapJourney
+				items={adaptive}
+				eyebrow="Long-term product advantage"
+				title="Adaptive Company Intelligence"
+				hint="A measured progression from company profile and knowledge to process learning, evaluation and specialized small models."
+			/>
+		</div>
+	</section>
+
+	<section class="pb-20">
+		<div class="mx-auto max-w-6xl px-5">
+			<RoadmapJourney
+				items={otherExploring}
+				eyebrow="Research, not commitments"
+				title="Exploring"
+				hint="Directions we are evaluating after the core team-process product becomes demonstrably useful."
+			/>
+		</div>
 	</section>
 
 	<section class="pb-28">
-		<div class="mx-auto max-w-6xl px-5">
+		<div class="mx-auto grid max-w-6xl gap-5 px-5 lg:grid-cols-[1.2fr_.8fr]">
 			{releases.length > 0 && <ReleaseHistory releases={releases.slice(0, 4)} />}
+			{latestRelease && <LatestRelease release={latestRelease} />}
 		</div>
 	</section>
 </Page>

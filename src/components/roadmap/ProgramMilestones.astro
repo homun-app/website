@@ -1,0 +1,28 @@
+---
+import type { RoadmapMilestone } from "../../lib/product-data";
+
+interface Props { milestones: RoadmapMilestone[]; compact?: boolean }
+const { milestones, compact = false } = Astro.props;
+---
+
+{milestones.length > 0 && (
+	<ul class:list={["grid", compact ? "mt-5 gap-2" : "mt-6 gap-3 sm:grid-cols-2"]} aria-label="Program milestones">
+		{milestones.map((milestone) => (
+			<li class:list={[
+				"flex items-start gap-3 rounded-xl border",
+				compact ? "border-line bg-bg/35 px-3 py-2 text-xs" : "border-line bg-surface/45 p-4 text-sm",
+			]}>
+				<span
+					class:list={[
+						"mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border font-mono text-[9px]",
+						milestone.completed
+							? "border-accent/60 bg-accent/15 text-accent-bright"
+							: "border-line-strong text-faint",
+					]}
+					aria-label={milestone.completed ? "Completed" : "Planned"}
+				>{milestone.completed ? "✓" : "·"}</span>
+				<span class={milestone.completed ? "text-cream" : "text-muted"}>{milestone.title}</span>
+			</li>
+		))}
+	</ul>
+)}
