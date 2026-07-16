@@ -58,8 +58,17 @@ for (const item of manifest.items) {
 
 assert.equal(preview.schemaVersion, 3);
 assert.deepEqual(preview.items.map(({ slug }) => slug), [...strategicSlugs, ...workflowSlugs]);
-assert.deepEqual(checkedInRoadmap, preview);
-assert.deepEqual(checkedInReleases, previewReleases);
+const withoutRuntimeMetadata = ({ githubUrl, issueNumber, votes, underReview, ...item }) => item;
+assert.deepEqual(
+	checkedInRoadmap.items.map(withoutRuntimeMetadata),
+	preview.items.map(withoutRuntimeMetadata),
+);
+assert.deepEqual(checkedInReleases.items, previewReleases.items);
+assert.ok(checkedInRoadmap.contentUpdatedAt !== preview.contentUpdatedAt);
+assert.ok(checkedInRoadmap.items.every(({ githubUrl, issueNumber }) =>
+	Number.isInteger(issueNumber)
+	&& githubUrl === `https://github.com/homun-app/homun/issues/${issueNumber}`),
+"Published roadmap records must link to their real GitHub issues");
 assert.ok(
 	preview.items.filter(({ issueNumber }) => issueNumber !== null).every(({ issueNumber }) => [5, 7, 8].includes(issueNumber)),
 	"Only transformed public issues may have real issue numbers in the branch preview",
@@ -69,4 +78,4 @@ assert.ok(
 	"The Available program needs published release evidence",
 );
 
-console.log("Roadmap v3 manifest and preview contract passed");
+console.log("Roadmap v3 manifest and synchronized snapshot contract passed");
