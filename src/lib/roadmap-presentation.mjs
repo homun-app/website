@@ -2,7 +2,8 @@
  * Derive public presentation flags from an approved roadmap item.
  *
  * @param {{
- *   status?: string,
+ *   stage?: string,
+ *   itemType?: string,
  *   voting?: string,
  *   issueNumber?: number | null,
  *   githubUrl?: string,
@@ -31,7 +32,7 @@ export function roadmapPresentation(item) {
 		hasIssue: issueUrlMatches,
 		canDiscuss: issueUrlMatches,
 		canVote: issueUrlMatches
-			&& item?.status === "ideas"
+			&& (item?.itemType === "workflow_idea" || item?.stage === "exploring")
 			&& item?.voting === "open"
 	};
 }
@@ -39,11 +40,14 @@ export function roadmapPresentation(item) {
 /**
  * Select the one initiative that can truthfully be presented as currently building.
  *
- * @template {{ status?: string, featured?: boolean }} T
+ * @template {{ itemType?: string, stage?: string, featured?: boolean }} T
  * @param {T[]} items
  * @returns {T | undefined}
  */
 export function selectFeaturedProject(items = []) {
-	return items.find((item) => item.status === "building" && item.featured)
-		?? items.find((item) => item.status === "building");
+	return items.find(
+		(item) => item.itemType === "strategic_program" && item.stage === "building" && item.featured,
+	) ?? items.find(
+		(item) => item.itemType === "strategic_program" && item.stage === "building",
+	);
 }

@@ -58,7 +58,7 @@ assert.equal(
 	"Internal roadmap markers must not leak into public descriptions",
 );
 const checkedInRoadmap = JSON.parse(
-	await readFile(new URL("../src/data/roadmap.json", import.meta.url)),
+	await readFile(new URL("./fixtures/public-roadmap-v2.json", import.meta.url)),
 );
 const checkedInReleases = JSON.parse(
 	await readFile(new URL("../src/data/releases.json", import.meta.url)),
@@ -1535,12 +1535,13 @@ assert.throws(
 	() => readConfig({ HOMUN_GITHUB_TOKEN: "secret" }),
 	/Missing HOMUN_PROJECT_NUMBER/,
 );
-assert.deepEqual(parseSyncArgs([]), { mode: "dry-run", allowEmpty: false });
-assert.deepEqual(parseSyncArgs(["--dry-run"]), { mode: "dry-run", allowEmpty: false });
-assert.deepEqual(parseSyncArgs(["--write"]), { mode: "write", allowEmpty: false });
+assert.deepEqual(parseSyncArgs([]), { mode: "dry-run", allowEmpty: false, allowSchemaUpgrade: false });
+assert.deepEqual(parseSyncArgs(["--dry-run"]), { mode: "dry-run", allowEmpty: false, allowSchemaUpgrade: false });
+assert.deepEqual(parseSyncArgs(["--write"]), { mode: "write", allowEmpty: false, allowSchemaUpgrade: false });
 assert.deepEqual(parseSyncArgs(["--write", "--allow-empty"]), {
 	mode: "write",
 	allowEmpty: true,
+	allowSchemaUpgrade: false,
 });
 assert.throws(() => parseSyncArgs(["--wat"]), /Unknown option: --wat/);
 assert.throws(

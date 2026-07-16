@@ -1,6 +1,7 @@
 ---
 import Page from "../../layouts/Page.astro";
 import RoadmapOrbitIllustration from "../../components/illustrations/RoadmapOrbitIllustration.astro";
+import ProgramMilestones from "../../components/roadmap/ProgramMilestones.astro";
 import RoadmapParticipation from "../../components/roadmap/RoadmapParticipation.astro";
 import {
 	roadmapItems,
@@ -15,14 +16,25 @@ export function getStaticPaths() {
 interface Props { project: RoadmapItem }
 const { project } = Astro.props;
 const relatedReleases = releasesForProject(project.slug);
-const statusLabel = { ideas: "Ideas", next: "Next", building: "Building", shipped: "Shipped" }[project.status];
+const stageLabel = {
+	available: "Available today",
+	building: "Building now",
+	next: "Up next",
+	exploring: "Exploring",
+}[project.stage];
+const evaluationLabel = project.evaluationState ? {
+	evaluating: "Evaluating",
+	selected_for_pilot: "Selected for pilot",
+	removed: "Removed",
+}[project.evaluationState] : null;
 const publicUpdateDate = project.publicUpdateDate
 	? new Date(`${project.publicUpdateDate}T00:00:00Z`).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })
 	: null;
+const isWorkflowIdea = project.itemType === "workflow_idea";
 ---
 
-<Page title={`${project.title} — Homun Roadmap`} description={project.description}>
-	<section class="relative overflow-hidden pb-12 pt-36 sm:pt-44">
+<Page title={`${project.title} — Homun Roadmap`} description={project.outcome}>
+	<section class="relative overflow-hidden pb-14 pt-36 sm:pt-44">
 		<div class="atmosphere absolute inset-0 -z-10" aria-hidden="true"></div>
 		<div class="mx-auto max-w-5xl px-5">
 			<a href="/roadmap/" class="reveal inline-flex items-center gap-2 text-sm text-faint hover:text-cream">← Back to roadmap</a>
@@ -30,15 +42,12 @@ const publicUpdateDate = project.publicUpdateDate
 				<div>
 					<div class="reveal flex flex-wrap items-center gap-3">
 						<span class="eyebrow">{project.area}</span>
-						<span class="pill text-xs">{statusLabel}</span>
+						<span class="pill text-xs">{stageLabel}</span>
+						{evaluationLabel && <span class="pill border-accent/35 text-xs text-accent-bright">Evaluation status · {evaluationLabel}</span>}
 					</div>
 					<h1 class="reveal text-gradient mt-5 text-5xl font-semibold sm:text-6xl">{project.title}</h1>
-					<p class="reveal mt-6 text-lg leading-relaxed text-muted">{project.description}</p>
-					<div class="reveal mt-7 flex flex-wrap gap-2">
-						<span class="pill">{project.progress}% complete</span>
-						{publicUpdateDate && <span class="pill" data-public-update-date={project.publicUpdateDate}>Public update {publicUpdateDate}</span>}
-						{project.targetRelease && <span class="pill">Direction: {project.targetRelease}</span>}
-					</div>
+					<p class="reveal mt-6 text-lg leading-relaxed text-muted">{project.outcome}</p>
+					{publicUpdateDate && <p class="reveal mt-6 font-mono text-[10px] uppercase tracking-[.12em] text-faint" data-public-update-date={project.publicUpdateDate}>Public update · {publicUpdateDate}</p>}
 				</div>
 				<div class="reveal mx-auto w-full max-w-md"><RoadmapOrbitIllustration /></div>
 			</div>
@@ -49,36 +58,82 @@ const publicUpdateDate = project.publicUpdateDate
 		<div class="mx-auto grid max-w-5xl gap-5 px-5 lg:grid-cols-[1fr_.72fr]">
 			<div class="space-y-5">
 				<article class="card p-6 sm:p-8">
-					<p class="eyebrow">Latest public update</p>
-					<p class="mt-4 text-lg leading-relaxed text-cream">{project.publicUpdate ?? "No public update yet."}</p>
-					<div class="mt-7 h-1.5 overflow-hidden rounded-full bg-white/5" aria-label={`${project.progress}% complete`}>
-						<div class="h-full rounded-full bg-gradient-to-r from-accent to-[#6c8fee]" style={`width:${project.progress}%`}></div>
-					</div>
+					<p class="eyebrow">Why now</p>
+					<p class="mt-4 text-lg leading-relaxed text-cream">{project.whyNow}</p>
 				</article>
 
-				<article class="card p-6 sm:p-8">
-					<h2 class="text-2xl font-semibold">Intended capabilities</h2>
-					{project.capabilities.length > 0 ? (
-						<ul class="mt-5 grid gap-3 sm:grid-cols-2">
-							{project.capabilities.map((capability) => <li class="rounded-xl border border-line bg-surface/50 p-4 text-sm leading-relaxed text-muted"><span class="mr-2 text-accent-bright">+</span>{capability}</li>)}
-						</ul>
-					) : <p class="mt-4 text-sm text-faint">Capabilities will be added as the direction becomes clearer.</p>}
-				</article>
+				{isWorkflowIdea ? (
+					<>
+						<article class="card p-6 sm:p-8">
+							<p class="eyebrow">Target team</p>
+							<p class="mt-4 text-lg leading-relaxed text-cream">{project.targetTeam}</p>
+						</article>
+						<article class="card p-6 sm:p-8">
+							<h2 class="text-2xl font-semibold">Example process</h2>
+							<div class="mt-5 flex flex-wrap items-center gap-2">
+								{project.exampleProcess.map((step, index) => (
+									<><span class="pill text-xs">{step}</span>{index < project.exampleProcess.length - 1 && <span class="text-faint">→</span>}</>
+								))}
+							</div>
+						</article>
+						<article class="card p-6 sm:p-8">
+							<h2 class="text-2xl font-semibold">Likely connected systems</h2>
+							<ul class="mt-5 grid gap-3 sm:grid-cols-2">
+								{project.likelySystems.map((system) => <li class="rounded-xl border border-line bg-surface/50 p-4 text-sm leading-relaxed text-muted">{system}</li>)}
+							</ul>
+						</article>
+						<article class="card p-6 sm:p-8">
+							<p class="eyebrow">Expected output</p>
+							<p class="mt-4 text-lg leading-relaxed text-cream">{project.expectedOutput}</p>
+						</article>
+					</>
+				) : (
+					<>
+						<article class="card p-6 sm:p-8">
+							<h2 class="text-2xl font-semibold">First usable release</h2>
+							<ul class="mt-5 grid gap-3 sm:grid-cols-2">
+								{project.firstRelease.map((item) => <li class="rounded-xl border border-line bg-surface/50 p-4 text-sm leading-relaxed text-muted"><span class="mr-2 text-accent-bright">+</span>{item}</li>)}
+							</ul>
+						</article>
+						{project.milestones.length > 0 && (
+							<article class="card p-6 sm:p-8">
+								<h2 class="text-2xl font-semibold">Milestones</h2>
+								<ProgramMilestones milestones={project.milestones} />
+							</article>
+						)}
+					</>
+				)}
+
+				{project.notIncludedYet.length > 0 && (
+					<article class="card p-6 sm:p-8">
+						<h2 class="text-2xl font-semibold">Not included yet</h2>
+						<ul class="mt-5 space-y-3">{project.notIncludedYet.map((item) => <li class="flex gap-3 text-sm leading-relaxed text-muted"><span class="text-faint">—</span>{item}</li>)}</ul>
+					</article>
+				)}
+				{project.strategicRole && (
+					<article class="card p-6 sm:p-8">
+						<p class="eyebrow">Strategic role</p>
+						<p class="mt-4 text-lg leading-relaxed text-cream">{project.strategicRole}</p>
+					</article>
+				)}
 			</div>
 
 			<aside class="space-y-5">
+				<section class="card p-6">
+					<p class="eyebrow">Latest public update</p>
+					<p class="mt-4 text-sm leading-relaxed text-muted">{project.publicUpdate ?? "No public update yet."}</p>
+				</section>
 				<section class="card p-6">
 					<h2 class="text-xl font-semibold">Related releases</h2>
 					{relatedReleases.length > 0 ? (
 						<div class="mt-4 divide-y divide-line">
 							{relatedReleases.map((release) => <a href={`/changelog/#${release.version.replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}`} class="flex items-center justify-between gap-3 py-4 font-mono text-xs text-muted hover:text-cream"><span>{release.version}</span><span>→</span></a>)}
 						</div>
-					) : <p class="mt-4 text-sm leading-relaxed text-faint">No published release is linked to this project yet.</p>}
+					) : <p class="mt-4 text-sm leading-relaxed text-faint">No published release is linked to this program yet.</p>}
 				</section>
-
 				<section class="card p-6">
-					<h2 class="text-xl font-semibold">Shape this project</h2>
-					<p class="mt-3 text-sm leading-relaxed text-faint">Read the public context, add a useful example, or vote when discussion is open.</p>
+					<h2 class="text-xl font-semibold">Public context</h2>
+					<p class="mt-3 text-sm leading-relaxed text-faint">Read the public context, add a useful example, or vote when evaluation is open.</p>
 					<RoadmapParticipation item={project} variant="detail" />
 				</section>
 			</aside>

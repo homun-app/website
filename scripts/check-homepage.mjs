@@ -34,10 +34,12 @@ for (const required of [
 	"Correct, export or remove knowledge from active recall when it no longer belongs in the system.",
 	"Cloud, open source, or local",
 	"Real work, not isolated prompts",
-	"Official Homun plugins. Free at launch.",
+	"Official Homun workflow packs.",
+	"Developed and maintained by Homun",
+	"The developer platform follows after official packs prove the product contract.",
 	"Browse Projects",
-	"Submit ideas through GitHub now.",
-	"Voting opens after moderation, when an idea has a public GitHub discussion.",
+	"Submit workflow ideas through GitHub now.",
+	"Voting stays advisory and never creates a delivery commitment.",
 	"Browsing the roadmap does not require a Homun account.",
 	"Proposing ideas and voting require a GitHub account.",
 ]) {
@@ -48,12 +50,13 @@ for (const required of [
 }
 
 assert.ok(
-	html.includes("GitHub idea submissions · Available now"),
-	"Homepage does not identify GitHub idea submissions as available",
+	html.includes("GitHub workflow proposals · Available now"),
+	"Homepage does not identify GitHub workflow proposals as available",
 );
 
 for (const obsolete of [
 	"Exploring",
+	"Official Homun plugins. Free at launch.",
 	"Community voting and suggestions will use an optional Homun account when enabled.",
 	"Propose ideas and vote through public GitHub discussions.",
 	"GitHub voting &amp; suggestions · Available now",
@@ -63,8 +66,10 @@ for (const obsolete of [
 	assert.ok(!html.includes(obsolete), `Homepage contains obsolete roadmap message: ${obsolete}`);
 }
 
-for (const status of ["ideas", "building", "shipped"]) {
-	const expectedCount = roadmap.items.filter((item) => item.status === status).length;
+for (const status of ["available", "building", "next"]) {
+	const expectedCount = roadmap.items.filter(
+		(item) => item.itemType === "strategic_program" && item.stage === status,
+	).length;
 	const metric = html.match(
 		new RegExp(
 			`<div[^>]*data-status="${status}"[^>]*data-count="${expectedCount}"[^>]*>([\\s\\S]*?)<\\/div>`,

@@ -1,16 +1,16 @@
 ---
 import EcosystemIllustration from "./illustrations/EcosystemIllustration.astro";
-import { itemsByStatus } from "../lib/product-data";
+import { programsByStage, type RoadmapStage } from "../lib/product-data";
 
 const roadmapMetricDefinitions = [
-	{ status: "ideas", label: "Ideas" },
+	{ status: "available", label: "Available" },
 	{ status: "building", label: "Building" },
-	{ status: "shipped", label: "Shipped" },
-] as const;
+	{ status: "next", label: "Up next" },
+] satisfies { status: RoadmapStage; label: string }[];
 const roadmapMetrics = roadmapMetricDefinitions.map(({ status, label }) => ({
 	status,
 	label,
-	count: itemsByStatus(status).length,
+	count: programsByStage(status).length,
 }));
 ---
 
@@ -51,33 +51,33 @@ const roadmapMetrics = roadmapMetricDefinitions.map(({ status, label }) => ({
 				<div>
 					<h3 class="text-3xl text-cream">See the direction.<br />Help shape what comes next.</h3>
 					<p class="mt-4 max-w-xl text-sm leading-relaxed text-muted">
-						See the ideas Homun is considering, what comes next, what is being built and what has shipped. Submit ideas through GitHub now. Voting opens after moderation, when an idea has a public GitHub discussion. Browsing the roadmap does not require a Homun account. Proposing ideas and voting require a GitHub account.
+						See what Homun already provides, the team-process product being built and the decided extensions that come next. Submit workflow ideas through GitHub now. Voting stays advisory and never creates a delivery commitment. Browsing the roadmap does not require a Homun account. Proposing ideas and voting require a GitHub account.
 					</p>
 					<div class="mt-7 flex flex-wrap items-center gap-4">
 						<a href="/roadmap" class="btn btn-ghost">Browse Projects</a>
-						<span class="font-mono text-[10px] uppercase tracking-wider text-faint">GitHub idea submissions · Available now</span>
+					<span class="font-mono text-[10px] uppercase tracking-wider text-faint">GitHub workflow proposals · Available now</span>
 					</div>
 				</div>
 			</article>
 
 			<article class="card reveal flex min-h-[25rem] flex-col justify-between p-7 sm:p-9" style="--reveal-delay: 80ms">
 				<div class="flex items-center justify-between">
-					<span class="eyebrow">Marketplace</span>
-					<span class="rounded-full border border-accent/30 bg-accent/8 px-2.5 py-1 font-mono text-[9px] uppercase tracking-wider text-accent-bright">Free</span>
+					<span class="eyebrow">Workflow packs</span>
+					<span class="rounded-full border border-accent/30 bg-accent/8 px-2.5 py-1 font-mono text-[9px] uppercase tracking-wider text-accent-bright">Official first</span>
 				</div>
 				<div class="my-10 space-y-2.5" aria-hidden="true">
-					<div class="flex items-center justify-between rounded-lg border border-line bg-bg/45 px-4 py-3"><span class="text-sm text-cream">Presentations</span><span class="metric-label">Official</span></div>
-					<div class="flex items-center justify-between rounded-lg border border-line bg-bg/45 px-4 py-3"><span class="text-sm text-cream">Proactivity</span><span class="metric-label">Official</span></div>
-					<div class="flex items-center justify-between rounded-lg border border-dashed border-line px-4 py-3"><span class="text-sm text-faint">More capabilities</span><span class="metric-label">Next</span></div>
+					<div class="flex items-center justify-between rounded-lg border border-line bg-bg/45 px-4 py-3"><span class="text-sm text-cream">Client Work</span><span class="metric-label">Evaluating</span></div>
+					<div class="flex items-center justify-between rounded-lg border border-line bg-bg/45 px-4 py-3"><span class="text-sm text-cream">Sales Operations</span><span class="metric-label">Evaluating</span></div>
+					<div class="flex items-center justify-between rounded-lg border border-dashed border-line px-4 py-3"><span class="text-sm text-faint">Internal Operations</span><span class="metric-label">Evaluating</span></div>
 				</div>
 				<div>
-					<h3 class="text-3xl text-cream">Official Homun plugins. Free at launch.</h3>
+					<h3 class="text-3xl text-cream">Official Homun workflow packs.</h3>
 					<p class="mt-4 text-sm leading-relaxed text-muted">
-						Browse verified plugins, understand their permissions and add new capabilities. Account-backed downloads will arrive when the online library is enabled.
+						Developed and maintained by Homun, each pack combines a process, connected tools, permissions, templates and review rules. The developer platform follows after official packs prove the product contract.
 					</p>
 					<div class="mt-7 flex flex-wrap items-center gap-4">
-						<a href="/marketplace" class="btn btn-ghost">Explore Marketplace</a>
-						<span class="font-mono text-[10px] uppercase tracking-wider text-faint">Account library · Coming later</span>
+						<a href="/roadmap/#workflow-ideas-title" class="btn btn-ghost">Explore workflow ideas</a>
+						<span class="font-mono text-[10px] uppercase tracking-wider text-faint">Official pilots · Before developer access</span>
 					</div>
 				</div>
 			</article>

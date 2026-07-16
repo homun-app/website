@@ -9,9 +9,10 @@ interface Props {
 
 const { item, variant = "card" } = Astro.props;
 const presentation = roadmapPresentation(item);
-const isIdea = item.status === "ideas";
-const awaitsModeration = isIdea && item.voting === "open" && !presentation.hasIssue;
-const shouldRender = presentation.underReview || isIdea || presentation.canDiscuss;
+const isWorkflowIdea = item.itemType === "workflow_idea";
+const isOpenExploration = item.stage === "exploring" && item.voting === "open";
+const awaitsModeration = (isWorkflowIdea || isOpenExploration) && item.voting === "open" && !presentation.hasIssue;
+const shouldRender = presentation.underReview || isWorkflowIdea || isOpenExploration || presentation.canDiscuss;
 ---
 
 {shouldRender && (
@@ -27,7 +28,7 @@ const shouldRender = presentation.underReview || isIdea || presentation.canDiscu
 			{presentation.underReview && (
 				<span class="rounded-full border border-accent/30 px-2 py-1 font-mono text-[9px] uppercase tracking-[.1em] text-accent-bright">Under review</span>
 			)}
-			{isIdea && <span class="font-mono text-xs text-accent-bright" aria-label={`${item.votes} votes`}>👍 {item.votes}</span>}
+			{(isWorkflowIdea || isOpenExploration) && <span class="font-mono text-xs text-accent-bright" aria-label={`${item.votes} votes`}>👍 {item.votes}</span>}
 			{presentation.canVote && (
 				<a href={item.githubUrl} target="_blank" rel="noopener" class="text-muted hover:text-cream">Vote on GitHub ↗</a>
 			)}

@@ -41,5 +41,16 @@ assert.match(
 	/await wait\(Math\.min\(250, deadline - Date\.now\(\)\)\)/,
 	"runtime route polling must not sleep past its deadline",
 );
+for (const route of [
+	'/roadmap/", content: "Homun turns requests, messages and recurring work',
+	'/roadmap/homun-flow/", content: "Homun Flow',
+	'/roadmap/client-work/", content: "Client Work',
+	'/roadmap/mobile-companion/", redirectTo: "/roadmap/homun-mobile"',
+	'/roadmap/shared-spaces/", redirectTo: "/roadmap/team-spaces-roles"',
+	'/roadmap/voice-capture/", redirectTo: "/roadmap/voice-meeting-capture"',
+]) {
+	assert.ok(runtimeCheck.includes(route), `runtime smoke test must cover ${route}`);
+}
+assert.doesNotMatch(runtimeCheck, /roadmap\/apprentice/);
 
 console.log("Container deployment contract passed");
