@@ -2,7 +2,6 @@
 import Page from "../../layouts/Page.astro";
 import RoadmapDirections from "../../components/roadmap/RoadmapDirections.astro";
 import RoadmapEvidence from "../../components/roadmap/RoadmapEvidence.astro";
-import RoadmapJourney from "../../components/roadmap/RoadmapJourney.astro";
 import RoadmapNow from "../../components/roadmap/RoadmapNow.astro";
 import RoadmapVisionHero from "../../components/roadmap/RoadmapVisionHero.astro";
 import WorkflowProducts from "../../components/roadmap/WorkflowProducts.astro";
@@ -31,7 +30,7 @@ if (!adaptive) throw new Error("Adaptive Company Intelligence program is missing
 if (!voice || !developerPlatform || !latestRelease) throw new Error("Roadmap evidence data is missing");
 ---
 
-<Page title="Roadmap — Homun" description="How Homun is becoming an operational process system for small teams.">
+<Page title="Roadmap — Homun" description="How Homun is becoming an operational process system for small companies and teams.">
 	<RoadmapVisionHero synced={synced} />
 	<section class="pb-20 pt-4">
 		<div class="mx-auto max-w-6xl px-5"><RoadmapNow operational={operational} flow={flow} /></div>

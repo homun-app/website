@@ -37,57 +37,57 @@ for (const [legacy, target] of [
 	assert.ok(redirectHtml.includes(target), `Legacy route ${legacy} does not redirect to ${target}`);
 }
 
-for (const required of [
+const requiredMainCopy = [
 	"BUILT FOR SMALL COMPANIES AND TEAMS",
 	"AI that keeps your company moving.",
-	"Homun coordinates requests, recurring work and reviews across people and AI",
-	"One operational foundation. Official workflow products. Company intelligence under your control.",
 	"Where Homun is today",
 	"From capable workspace to coordinated work.",
-	"Available",
 	"Homun Operational Workspace",
-	"Building now",
 	"Homun Flow",
-	"Request", "Work", "Review", "Deliver",
-]) assert.ok(roadmapText.includes(required), `Roadmap current-product story missing: ${required}`);
-
-for (const required of [
 	"How the system expands",
 	"One core. Three directions.",
-	"Adoption layer", "Team & Reach", "Up next",
-	"Commercial layer", "Workflow Products", "Evaluate → Pilot",
-	"Intelligence layer", "Company Intelligence", "Research · Long term",
-	"Team processes", "Verified outcomes", "Better company-specific assistance",
-]) assert.ok(roadmapText.includes(required), `Roadmap direction missing: ${required}`);
-
-for (const required of [
-	"Official workflow products",
+	"Team & Reach",
+	"Workflow Products",
+	"Company Intelligence",
 	"Where should Homun work first?",
 	"First pilot candidate",
-	"Client Work", "Sales Operations", "Content & Marketing", "Internal Operations", "Customer Support",
-]) assert.ok(roadmapText.includes(required), `Workflow product section missing: ${required}`);
-assert.ok(!roadmapText.includes("Business workflows we are evaluating"));
-
-for (const required of [
 	"Evidence and future directions",
-	"Voice & Meeting Capture",
-	"Developer Platform",
 	"Product evidence",
-	"Latest release",
 	"v0.1.1060",
-	"All versions",
-]) assert.ok(roadmapText.includes(required), `Roadmap evidence band missing: ${required}`);
-for (const removed of ["Research, not commitments", "Release history"]) {
-	assert.ok(!roadmapText.includes(removed), `Roadmap still renders legacy evidence section: ${removed}`);
+];
+for (const required of requiredMainCopy) assert.ok(roadmapText.includes(required), `Roadmap missing: ${required}`);
+
+const orderedSections = [
+	"AI that keeps your company moving.",
+	"Where Homun is today",
+	"Homun Flow",
+	"How the system expands",
+	"Team & Reach",
+	"Workflow Products",
+	"Company Intelligence",
+	"Where should Homun work first?",
+	"Evidence and future directions",
+];
+for (let index = 1; index < orderedSections.length; index += 1) {
+	assert.ok(roadmapText.indexOf(orderedSections[index - 1]) < roadmapText.indexOf(orderedSections[index]), `Roadmap section order is wrong at ${orderedSections[index]}`);
 }
 
-for (const removed of ["Decided product direction", "Long-term product advantage"]) {
-	assert.ok(!roadmapText.includes(removed), `Roadmap still renders legacy direction band: ${removed}`);
-}
+for (const removed of [
+	"One continuous product journey",
+	"Available today",
+	"Decided product direction",
+	"Business workflows we are evaluating",
+	"Long-term product advantage",
+	"Research, not commitments",
+	"Release history",
+]) assert.ok(!roadmapText.includes(removed), `Roadmap still renders removed section: ${removed}`);
 
-for (const removed of ["One continuous product journey", "Available today"]) {
-	assert.ok(!roadmapText.includes(removed), `Roadmap still renders removed section: ${removed}`);
-}
+for (const slug of [
+	"operational-workspace", "homun-flow", "team-spaces-roles", "homun-mobile",
+	"more-ways-to-reach-homun", "adaptive-company-intelligence", "voice-meeting-capture",
+	"developer-platform", "client-work", "sales-operations", "content-marketing",
+	"internal-operations", "customer-support",
+]) assert.ok(roadmapHtml.includes(`/roadmap/${slug}/`), `Published roadmap item is not reachable from the main page: ${slug}`);
 
 assert.ok(!/\d+% complete/.test(roadmapText), "Roadmap exposes an arbitrary percentage");
 assert.equal((roadmapText.match(/Suggest an idea/g) ?? []).length, 1);
