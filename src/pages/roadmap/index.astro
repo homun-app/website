@@ -6,7 +6,7 @@ import RoadmapDirections from "../../components/roadmap/RoadmapDirections.astro"
 import RoadmapJourney from "../../components/roadmap/RoadmapJourney.astro";
 import RoadmapNow from "../../components/roadmap/RoadmapNow.astro";
 import RoadmapVisionHero from "../../components/roadmap/RoadmapVisionHero.astro";
-import WorkflowIdeas from "../../components/roadmap/WorkflowIdeas.astro";
+import WorkflowProducts from "../../components/roadmap/WorkflowProducts.astro";
 import {
 	latestRelease,
 	programsByStage,
@@ -42,7 +42,7 @@ if (!adaptive) throw new Error("Adaptive Company Intelligence program is missing
 	</section>
 
 	<section class="pb-20">
-		<div class="mx-auto max-w-6xl px-5"><WorkflowIdeas items={workflowIdeas} /></div>
+		<div class="mx-auto max-w-6xl px-5"><WorkflowProducts items={workflowIdeas} /></div>
 	</section>
 
 	<section class="pb-20">

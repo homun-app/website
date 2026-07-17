@@ -52,7 +52,6 @@ for (const required of [
 ]) assert.ok(roadmapText.includes(required), `Roadmap current-product story missing: ${required}`);
 
 for (const required of [
-	"Business workflows we are evaluating",
 	"Client Work", "Sales Operations", "Content & Marketing", "Internal Operations", "Customer Support",
 	"Exploring",
 	"Release history",
@@ -67,6 +66,14 @@ for (const required of [
 	"Intelligence layer", "Company Intelligence", "Research · Long term",
 	"Team processes", "Verified outcomes", "Better company-specific assistance",
 ]) assert.ok(roadmapText.includes(required), `Roadmap direction missing: ${required}`);
+
+for (const required of [
+	"Official workflow products",
+	"Where should Homun work first?",
+	"First pilot candidate",
+	"Client Work", "Sales Operations", "Content & Marketing", "Internal Operations", "Customer Support",
+]) assert.ok(roadmapText.includes(required), `Workflow product section missing: ${required}`);
+assert.ok(!roadmapText.includes("Business workflows we are evaluating"));
 
 for (const removed of ["Decided product direction", "Long-term product advantage"]) {
 	assert.ok(!roadmapText.includes(removed), `Roadmap still renders legacy direction band: ${removed}`);
