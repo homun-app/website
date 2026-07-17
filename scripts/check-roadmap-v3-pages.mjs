@@ -52,14 +52,25 @@ for (const required of [
 ]) assert.ok(roadmapText.includes(required), `Roadmap current-product story missing: ${required}`);
 
 for (const required of [
-	"Up next",
 	"Business workflows we are evaluating",
 	"Client Work", "Sales Operations", "Content & Marketing", "Internal Operations", "Customer Support",
-	"Adaptive Company Intelligence",
 	"Exploring",
 	"Release history",
 	"v0.1.1060",
 ]) assert.ok(roadmapText.includes(required), `Roadmap downstream section missing: ${required}`);
+
+for (const required of [
+	"How the system expands",
+	"One core. Three directions.",
+	"Adoption layer", "Team & Reach", "Up next",
+	"Commercial layer", "Workflow Products", "Evaluate → Pilot",
+	"Intelligence layer", "Company Intelligence", "Research · Long term",
+	"Team processes", "Verified outcomes", "Better company-specific assistance",
+]) assert.ok(roadmapText.includes(required), `Roadmap direction missing: ${required}`);
+
+for (const removed of ["Decided product direction", "Long-term product advantage"]) {
+	assert.ok(!roadmapText.includes(removed), `Roadmap still renders legacy direction band: ${removed}`);
+}
 
 for (const removed of ["One continuous product journey", "Available today"]) {
 	assert.ok(!roadmapText.includes(removed), `Roadmap still renders removed section: ${removed}`);
