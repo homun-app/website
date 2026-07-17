@@ -1,8 +1,7 @@
 ---
 import Page from "../../layouts/Page.astro";
-import LatestRelease from "../../components/roadmap/LatestRelease.astro";
-import ReleaseHistory from "../../components/roadmap/ReleaseHistory.astro";
 import RoadmapDirections from "../../components/roadmap/RoadmapDirections.astro";
+import RoadmapEvidence from "../../components/roadmap/RoadmapEvidence.astro";
 import RoadmapJourney from "../../components/roadmap/RoadmapJourney.astro";
 import RoadmapNow from "../../components/roadmap/RoadmapNow.astro";
 import RoadmapVisionHero from "../../components/roadmap/RoadmapVisionHero.astro";
@@ -22,13 +21,14 @@ const synced = new Date(roadmapSyncedAt).toLocaleDateString("en-US", {
 	year: "numeric",
 });
 const teamItems = programsByStage("next");
-const exploring = programsByStage("exploring");
 const adaptive = projectBySlug("adaptive-company-intelligence");
-const otherExploring = exploring.filter(({ slug }) => slug !== "adaptive-company-intelligence");
 const operational = projectBySlug("operational-workspace");
 const flow = projectBySlug("homun-flow");
+const voice = projectBySlug("voice-meeting-capture");
+const developerPlatform = projectBySlug("developer-platform");
 if (!operational || !flow) throw new Error("Roadmap current-product programs are missing");
 if (!adaptive) throw new Error("Adaptive Company Intelligence program is missing");
+if (!voice || !developerPlatform || !latestRelease) throw new Error("Roadmap evidence data is missing");
 ---
 
 <Page title="Roadmap — Homun" description="How Homun is becoming an operational process system for small teams.">
@@ -45,21 +45,7 @@ if (!adaptive) throw new Error("Adaptive Company Intelligence program is missing
 		<div class="mx-auto max-w-6xl px-5"><WorkflowProducts items={workflowIdeas} /></div>
 	</section>
 
-	<section class="pb-20">
-		<div class="mx-auto max-w-6xl px-5">
-			<RoadmapJourney
-				items={otherExploring}
-				eyebrow="Research, not commitments"
-				title="Exploring"
-				hint="Directions we are evaluating after the core team-process product becomes demonstrably useful."
-			/>
-		</div>
-	</section>
-
 	<section class="pb-28">
-		<div class="mx-auto grid max-w-6xl gap-5 px-5 lg:grid-cols-[1.2fr_.8fr]">
-			{releases.length > 0 && <ReleaseHistory releases={releases.slice(0, 4)} />}
-			{latestRelease && <LatestRelease release={latestRelease} />}
-		</div>
+		<div class="mx-auto max-w-6xl px-5"><RoadmapEvidence researchItems={[voice, developerPlatform]} latestRelease={latestRelease} releases={releases} /></div>
 	</section>
 </Page>
