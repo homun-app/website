@@ -91,6 +91,8 @@ for (const removed of ["One continuous product journey", "Available today"]) {
 
 Later tasks shrink the downstream loop as each legacy section is replaced. Do not keep the original loop because it requires headings this task intentionally removes.
 
+Remove the original `orderedSections` block at this stage. Task 5 restores the final order contract after all new sections exist; keeping the legacy order assertion during the incremental replacement would require headings that this task intentionally removes.
+
 - [ ] **Step 2: Run the focused contract and verify it fails**
 
 Run:
