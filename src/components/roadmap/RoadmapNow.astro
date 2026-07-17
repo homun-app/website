@@ -1,0 +1,51 @@
+---
+import type { RoadmapItem } from "../../lib/product-data";
+import RoadmapOrbitIllustration from "../illustrations/RoadmapOrbitIllustration.astro";
+import ProgramMilestones from "./ProgramMilestones.astro";
+
+interface Props { operational: RoadmapItem; flow: RoadmapItem }
+const { operational, flow } = Astro.props;
+const updated = flow.publicUpdateDate
+	? new Date(`${flow.publicUpdateDate}T00:00:00Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" })
+	: null;
+const lifecycle = ["Request", "Work", "Review", "Deliver"];
+---
+
+<section aria-labelledby="roadmap-now-title">
+	<p class="eyebrow">Where Homun is today</p>
+	<h2 id="roadmap-now-title" class="mt-3 text-3xl font-semibold sm:text-4xl">From capable workspace to coordinated work.</h2>
+	<p class="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
+		Homun already performs useful work. Homun Flow turns those capabilities into processes a team can see, review and improve.
+	</p>
+	<div class="mt-8 grid gap-4 lg:grid-cols-[.72fr_1.28fr]">
+		<article class="card card-hover relative flex flex-col p-6">
+			<div class="flex items-center justify-between gap-3">
+				<p class="eyebrow">Available</p><span class="pill text-[10px]">Product foundation</span>
+			</div>
+			<h3 class="mt-5 text-2xl font-semibold"><a class="card-link focus-visible:outline-none" href={`/roadmap/${operational.slug}/`}>{operational.title}</a></h3>
+			<p class="mt-3 text-sm leading-relaxed text-muted">{operational.outcome}</p>
+			<ul class="mt-6 flex flex-wrap gap-2" aria-label="Available capabilities">
+				{operational.firstRelease.slice(0, 6).map((capability) => <li class="pill text-[10px]">{capability}</li>)}
+			</ul>
+		</article>
+		<article class="flow-card card sheen relative min-h-[27rem] overflow-hidden p-6 sm:p-8">
+			<div class="relative z-10 max-w-[34rem]">
+				<div class="flex flex-wrap items-center gap-3"><p class="eyebrow">Building now</p>{updated && <span class="pill text-[10px]">Updated {updated}</span>}</div>
+				<h3 class="mt-6 text-3xl font-semibold sm:text-4xl">{flow.title}</h3>
+				<p class="mt-4 text-[15px] leading-relaxed text-muted">{flow.outcome}</p>
+				<ol class="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-4" aria-label="Homun Flow lifecycle">
+					{lifecycle.map((step, index) => <li class="rounded-xl border border-line bg-bg/35 px-3 py-3 text-center text-xs text-muted"><span class="mr-1 font-mono text-accent-bright">{index + 1}</span> {step}</li>)}
+				</ol>
+				<ProgramMilestones milestones={flow.milestones.slice(0, 3)} compact />
+				<a href={`/roadmap/${flow.slug}/`} class="link-accent mt-7 inline-flex items-center gap-2 text-sm font-semibold">See the milestones <span aria-hidden="true">→</span></a>
+			</div>
+			<div class="absolute -bottom-16 -right-14 w-[24rem] opacity-35 sm:w-[28rem] lg:opacity-55" aria-hidden="true"><RoadmapOrbitIllustration /></div>
+		</article>
+	</div>
+</section>
+
+<style>
+	.card-link::after { content: ""; position: absolute; inset: 0; }
+	.card-link:focus-visible::after { border-radius: inherit; outline: 2px solid var(--color-accent); outline-offset: 2px; }
+	.flow-card { background: radial-gradient(circle at 83% 52%, rgba(53, 171, 145, .15), transparent 38%), linear-gradient(145deg, rgba(13, 36, 31, .95), rgba(6, 13, 11, .96)); }
+</style>

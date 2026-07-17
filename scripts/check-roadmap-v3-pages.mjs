@@ -38,31 +38,31 @@ for (const [legacy, target] of [
 }
 
 for (const required of [
-	"BUILT FOR SMALL TEAMS",
-	"AI that keeps work moving.",
-	"Homun turns requests, messages and recurring work into visible processes",
-	"One operational foundation. Multiple business workflows.",
-	"Remember", "Coordinate", "Connect", "Adapt",
-	"Available today", "Building now", "Up next", "Exploring",
-	"Business workflows we are evaluating",
-	"Client Work", "Sales Operations", "Content & Marketing", "Internal Operations", "Customer Support",
-	"Release history", "v0.1.1060",
-]) assert.ok(roadmapText.includes(required), `Roadmap missing: ${required}`);
-
-const orderedSections = [
-	"Remember",
-	"Available today",
+	"BUILT FOR SMALL COMPANIES AND TEAMS",
+	"AI that keeps your company moving.",
+	"Homun coordinates requests, recurring work and reviews across people and AI",
+	"One operational foundation. Official workflow products. Company intelligence under your control.",
+	"Where Homun is today",
+	"From capable workspace to coordinated work.",
+	"Available",
+	"Homun Operational Workspace",
+	"Building now",
 	"Homun Flow",
+	"Request", "Work", "Review", "Deliver",
+]) assert.ok(roadmapText.includes(required), `Roadmap current-product story missing: ${required}`);
+
+for (const required of [
 	"Up next",
 	"Business workflows we are evaluating",
+	"Client Work", "Sales Operations", "Content & Marketing", "Internal Operations", "Customer Support",
 	"Adaptive Company Intelligence",
+	"Exploring",
 	"Release history",
-];
-for (let index = 1; index < orderedSections.length; index += 1) {
-	assert.ok(
-		roadmapText.indexOf(orderedSections[index - 1]) < roadmapText.indexOf(orderedSections[index]),
-		`Roadmap section order is wrong at ${orderedSections[index]}`,
-	);
+	"v0.1.1060",
+]) assert.ok(roadmapText.includes(required), `Roadmap downstream section missing: ${required}`);
+
+for (const removed of ["One continuous product journey", "Available today"]) {
+	assert.ok(!roadmapText.includes(removed), `Roadmap still renders removed section: ${removed}`);
 }
 
 assert.ok(!/\d+% complete/.test(roadmapText), "Roadmap exposes an arbitrary percentage");

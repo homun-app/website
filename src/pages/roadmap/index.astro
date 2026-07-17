@@ -1,15 +1,15 @@
 ---
 import Page from "../../layouts/Page.astro";
-import FeaturedProject from "../../components/roadmap/FeaturedProject.astro";
 import LatestRelease from "../../components/roadmap/LatestRelease.astro";
-import ProductJourney from "../../components/roadmap/ProductJourney.astro";
 import ReleaseHistory from "../../components/roadmap/ReleaseHistory.astro";
 import RoadmapJourney from "../../components/roadmap/RoadmapJourney.astro";
+import RoadmapNow from "../../components/roadmap/RoadmapNow.astro";
+import RoadmapVisionHero from "../../components/roadmap/RoadmapVisionHero.astro";
 import WorkflowIdeas from "../../components/roadmap/WorkflowIdeas.astro";
 import {
-	featuredProject,
 	latestRelease,
 	programsByStage,
+	projectBySlug,
 	releases,
 	roadmapSyncedAt,
 	workflowIdeas,
@@ -20,54 +20,20 @@ const synced = new Date(roadmapSyncedAt).toLocaleDateString("en-US", {
 	day: "numeric",
 	year: "numeric",
 });
-const available = programsByStage("available");
 const upNext = programsByStage("next");
 const exploring = programsByStage("exploring");
 const adaptive = exploring.filter(({ slug }) => slug === "adaptive-company-intelligence");
 const otherExploring = exploring.filter(({ slug }) => slug !== "adaptive-company-intelligence");
+const operational = projectBySlug("operational-workspace");
+const flow = projectBySlug("homun-flow");
+if (!operational || !flow) throw new Error("Roadmap current-product programs are missing");
 ---
 
 <Page title="Roadmap — Homun" description="How Homun is becoming an operational process system for small teams.">
-	<section class="relative overflow-hidden pb-14 pt-36 sm:pt-44">
-		<div class="atmosphere absolute inset-0 -z-10" aria-hidden="true"></div>
-		<div class="glow left-1/2 top-0 h-80 w-[42rem] -translate-x-1/2 opacity-25" aria-hidden="true"></div>
-		<div class="mx-auto max-w-6xl px-5">
-			<div class="flex flex-wrap items-center justify-between gap-4">
-				<p class="eyebrow reveal">BUILT FOR SMALL TEAMS</p>
-				<p class="reveal flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.12em] text-faint">
-					<span class="status-dot"></span> Synced with GitHub · {synced}
-				</p>
-			</div>
-			<h1 class="reveal text-gradient mt-5 max-w-4xl text-5xl font-semibold sm:text-6xl lg:text-7xl">AI that keeps work moving.</h1>
-			<p class="reveal mt-6 max-w-3xl text-lg leading-relaxed text-muted">
-				Homun turns requests, messages and recurring work into visible processes that people and AI can complete, review and hand over together.
-			</p>
-			<p class="reveal mt-5 max-w-3xl font-mono text-xs leading-relaxed text-faint">
-				One operational foundation. Multiple business workflows. Your models, your tools and your data remain under your control.
-			</p>
-		</div>
-	</section>
-
+	<RoadmapVisionHero synced={synced} />
 	<section class="pb-20 pt-4">
-		<div class="mx-auto max-w-6xl px-5"><ProductJourney /></div>
+		<div class="mx-auto max-w-6xl px-5"><RoadmapNow operational={operational} flow={flow} /></div>
 	</section>
-
-	<section class="pb-20">
-		<div class="mx-auto max-w-6xl px-5">
-			<RoadmapJourney
-				items={available}
-				eyebrow="Available now"
-				title="Available today"
-				hint="The operational foundation small teams can use in current Homun releases. Shipped improvements remain in the changelog."
-			/>
-		</div>
-	</section>
-
-	{featuredProject && (
-		<section class="pb-20">
-			<div class="mx-auto max-w-6xl px-5"><FeaturedProject project={featuredProject} /></div>
-		</section>
-	)}
 
 	<section class="pb-20">
 		<div class="mx-auto max-w-6xl px-5">

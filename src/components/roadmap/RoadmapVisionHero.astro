@@ -1,0 +1,26 @@
+---
+interface Props { synced: string }
+const { synced } = Astro.props;
+---
+
+<section class="relative overflow-hidden pb-16 pt-36 sm:pt-44" aria-labelledby="roadmap-title">
+	<div class="atmosphere absolute inset-0 -z-10" aria-hidden="true"></div>
+	<div class="glow left-1/2 top-0 h-80 w-[42rem] -translate-x-1/2 opacity-25" aria-hidden="true"></div>
+	<div class="mx-auto max-w-6xl px-5">
+		<div class="flex flex-wrap items-center justify-between gap-4">
+			<p class="eyebrow reveal">BUILT FOR SMALL COMPANIES AND TEAMS</p>
+			<p class="reveal flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.12em] text-faint">
+				<span class="status-dot" aria-hidden="true"></span> Synced with GitHub · {synced}
+			</p>
+		</div>
+		<h1 id="roadmap-title" class="reveal text-gradient mt-5 max-w-5xl text-5xl font-semibold sm:text-6xl lg:text-7xl">
+			AI that keeps your company moving.
+		</h1>
+		<p class="reveal mt-6 max-w-3xl text-lg leading-relaxed text-muted">
+			Homun coordinates requests, recurring work and reviews across people and AI—then learns from the knowledge and outcomes your company chooses to preserve.
+		</p>
+		<p class="reveal mt-5 max-w-3xl font-mono text-xs leading-relaxed text-faint">
+			One operational foundation. Official workflow products. Company intelligence under your control.
+		</p>
+	</div>
+</section>
