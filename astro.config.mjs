@@ -8,6 +8,7 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
 	site: 'https://homun.app',
 	redirects: {
+		'/it': '/it/docs/',
 		'/roadmap/mobile-companion': '/roadmap/homun-mobile',
 		'/roadmap/shared-spaces': '/roadmap/team-spaces-roles',
 		'/roadmap/voice-capture': '/roadmap/voice-meeting-capture',

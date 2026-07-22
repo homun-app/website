@@ -24,8 +24,17 @@ function isRedirectStub(html) {
 	return (
 		!html.includes("<html") &&
 		/<title>Redirecting to: [^<]+<\/title>/.test(html) &&
-		/<meta http-equiv="refresh" content="0;url=[^"]+">/.test(html)
+		redirectTarget(html) !== undefined
 	);
+}
+
+function redirectTarget(html) {
+	const refresh = (html.match(/<meta\b[^>]*>/gi) ?? []).find((tag) => {
+		const httpEquiv = tag.match(/\bhttp-equiv=(["'])(.*?)\1/i)?.[2];
+		return httpEquiv?.toLowerCase() === "refresh";
+	});
+	const content = refresh?.match(/\bcontent=(["'])(.*?)\1/i)?.[2];
+	return content?.match(/^0;\s*url=(.+)$/i)?.[1];
 }
 
 const englishPrivacy = await read("privacy/index.html");
@@ -63,6 +72,17 @@ for (const content of [
 		`Italian privacy page is missing: ${content}`,
 	);
 }
+
+const italianHomeRedirect = await read("it/index.html");
+assert.ok(
+	isRedirectStub(italianHomeRedirect),
+	"it/index.html must be an Astro redirect stub",
+);
+assert.equal(
+	redirectTarget(italianHomeRedirect),
+	"/it/docs/",
+	"it/index.html must redirect exactly to /it/docs/",
+);
 
 for (const output of ["index.html", "roadmap/index.html", "changelog/index.html"]) {
 	assert.ok(
