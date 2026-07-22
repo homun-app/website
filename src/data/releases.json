@@ -1,7 +1,64 @@
 {
   "schemaVersion": 2,
-  "contentUpdatedAt": "2026-07-22T12:23:54.726Z",
+  "contentUpdatedAt": "2026-07-22T23:23:31.594Z",
   "items": [
+    {
+      "version": "v0.1.1077",
+      "name": "0.1.1077",
+      "publishedAt": "2026-07-22T23:23:12Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1077",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "Linux",
+        "macOS",
+        "Windows"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1077-amd64.deb",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1077/Homun-0.1.1077-amd64.deb"
+        },
+        {
+          "name": "Homun-0.1.1077-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1077/Homun-0.1.1077-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1077-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1077/Homun-0.1.1077-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1077-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1077/Homun-0.1.1077-arm64.zip.blockmap"
+        },
+        {
+          "name": "Homun-0.1.1077-x64.exe",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1077/Homun-0.1.1077-x64.exe"
+        },
+        {
+          "name": "Homun-0.1.1077-x64.exe.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1077/Homun-0.1.1077-x64.exe.blockmap"
+        },
+        {
+          "name": "Homun-0.1.1077-x86_64.AppImage",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1077/Homun-0.1.1077-x86_64.AppImage"
+        },
+        {
+          "name": "latest-linux.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1077/latest-linux.yml"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1077/latest-mac.yml"
+        },
+        {
+          "name": "latest.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1077/latest.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
     {
       "version": "v0.1.1076",
       "name": "0.1.1076",
