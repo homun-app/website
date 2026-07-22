@@ -40,4 +40,18 @@ for (const action of ["vote", "discuss", "suggest"]) {
 	);
 }
 
+const englishSecurity = await readFile(
+	new URL("../dist/guides/security/index.html", import.meta.url),
+	"utf8",
+);
+assert.ok(englishSecurity.includes("Umami Cloud"));
+assert.ok(englishSecurity.includes("page views"));
+
+const italianSecurity = await readFile(
+	new URL("../dist/it/guides/security/index.html", import.meta.url),
+	"utf8",
+);
+assert.ok(italianSecurity.includes("Umami Cloud"));
+assert.ok(italianSecurity.includes("visualizzazioni di pagina"));
+
 console.log("Analytics build contract passed");

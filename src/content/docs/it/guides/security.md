@@ -65,3 +65,11 @@ raggiungere in silenzio oltre la sua sandbox.
 
 Puoi **esportare** i tuoi dati in qualsiasi momento, e la retention è applicata (cascade
 purge + VACUUM) così le cancellazioni sono reali, non soft.
+
+## Analisi del sito
+
+Questo sito usa Umami Cloud per misurare visualizzazioni di pagina aggregate e alcune
+interazioni selezionate, come i tentativi di download, i link in uscita verso GitHub e
+la partecipazione alla roadmap. Le analisi del sito non ricevono dati dell'account
+Homun, contenuti degli spazi di lavoro, prompt o file, e Homun non le usa per
+identificare i singoli visitatori.

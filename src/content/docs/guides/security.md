@@ -62,3 +62,10 @@ can't quietly reach beyond its sandbox.
 
 You can **export** your data at any time, and retention is enforced with cascade purge
 (and VACUUM) so deletions are real, not soft.
+
+## Website analytics
+
+This website uses Umami Cloud to measure aggregate page views and selected interactions,
+such as download attempts, outbound GitHub links, and roadmap participation. The website
+analytics do not receive Homun account data, workspace content, prompts, or files, and
+Homun does not use them to identify individual visitors.
