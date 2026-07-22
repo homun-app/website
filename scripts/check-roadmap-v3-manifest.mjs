@@ -63,7 +63,16 @@ assert.deepEqual(
 	checkedInRoadmap.items.map(withoutRuntimeMetadata),
 	preview.items.map(withoutRuntimeMetadata),
 );
-assert.deepEqual(checkedInReleases.items, previewReleases.items);
+const checkedInReleaseVersions = new Set(
+	checkedInReleases.items.map(({ version }) => version),
+);
+assert.deepEqual(
+	previewReleases.items
+		.map(({ version }) => version)
+		.filter((version) => !checkedInReleaseVersions.has(version)),
+	[],
+	"Published releases must retain the roadmap v3 evidence baseline",
+);
 assert.ok(checkedInRoadmap.contentUpdatedAt !== preview.contentUpdatedAt);
 assert.ok(checkedInRoadmap.items.every(({ githubUrl, issueNumber }) =>
 	Number.isInteger(issueNumber)
@@ -74,7 +83,7 @@ assert.ok(
 	"Only transformed public issues may have real issue numbers in the branch preview",
 );
 assert.ok(
-	previewReleases.items.find(({ version }) => version === "v0.1.1059").projectSlugs.includes("operational-workspace"),
+	checkedInReleases.items.find(({ version }) => version === "v0.1.1059").projectSlugs.includes("operational-workspace"),
 	"The Available program needs published release evidence",
 );
 

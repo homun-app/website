@@ -3,6 +3,11 @@ import { readFile } from "node:fs/promises";
 
 const read = (path) => readFile(new URL(`../dist/${path}`, import.meta.url), "utf8");
 const plain = (html) => html.replace(/<[^>]+>/g, " ").replace(/&amp;/g, "&").replace(/&#39;/g, "'").replace(/\s+/g, " ");
+const releases = JSON.parse(
+	await readFile(new URL("../src/data/releases.json", import.meta.url), "utf8"),
+);
+const visibleRoadmapReleases = releases.items.slice(0, 4).map(({ version }) => version);
+const [latestVersion, previousVersion] = visibleRoadmapReleases;
 
 function assertNoNestedAnchors(html) {
 	let depth = 0;
@@ -53,9 +58,11 @@ const requiredMainCopy = [
 	"First pilot candidate",
 	"Evidence and future directions",
 	"Product evidence",
-	"v0.1.1060",
 ];
 for (const required of requiredMainCopy) assert.ok(roadmapText.includes(required), `Roadmap missing: ${required}`);
+for (const version of visibleRoadmapReleases) {
+	assert.ok(roadmapText.includes(version), `Roadmap is missing visible release: ${version}`);
+}
 
 const orderedSections = [
 	"AI that keeps your company moving.",
@@ -115,8 +122,11 @@ for (const required of ["Homun Mobile", "Review and approval", "Secure pairing",
 	assert.ok(mobileText.includes(required), `Mobile detail missing: ${required}`);
 }
 
-assert.ok(changelogHtml.includes("v0.1.1060"), "Changelog is missing the latest release");
-assert.ok(changelogHtml.indexOf("v0.1.1060") < changelogHtml.indexOf("v0.1.1059"), "Changelog release order is wrong");
-assert.ok(rss.indexOf("Homun v0.1.1060") < rss.indexOf("Homun v0.1.1059"), "RSS release order is wrong");
+assert.ok(changelogHtml.includes(latestVersion), "Changelog is missing the latest release");
+assert.ok(changelogHtml.includes(previousVersion), "Changelog is missing the previous release");
+assert.ok(changelogHtml.indexOf(latestVersion) < changelogHtml.indexOf(previousVersion), "Changelog release order is wrong");
+assert.ok(rss.includes(latestVersion), "RSS is missing the latest release");
+assert.ok(rss.includes(previousVersion), "RSS is missing the previous release");
+assert.ok(rss.indexOf(latestVersion) < rss.indexOf(previousVersion), "RSS release order is wrong");
 
 console.log("Roadmap v3 rendered page contract passed");
