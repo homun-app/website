@@ -69,3 +69,5 @@ This website uses Umami Cloud to measure aggregate page views and selected inter
 such as download attempts, outbound GitHub links, and roadmap participation. The website
 analytics do not receive Homun account data, workspace content, prompts, or files, and
 Homun does not use them to identify individual visitors.
+
+For the controller, provider, retention, and rights information, read the [website privacy notice](/privacy/).

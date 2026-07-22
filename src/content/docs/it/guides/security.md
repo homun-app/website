@@ -73,3 +73,5 @@ interazioni selezionate, come i tentativi di download, i link in uscita verso Gi
 la partecipazione alla roadmap. Le analisi del sito non ricevono dati dell'account
 Homun, contenuti degli spazi di lavoro, prompt o file, e Homun non le usa per
 identificare i singoli visitatori.
+
+Per informazioni su titolare, fornitore, conservazione e diritti, leggi l'[informativa privacy del sito](/it/privacy/).
