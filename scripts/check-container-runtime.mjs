@@ -223,9 +223,25 @@ async function checkRoute(baseUrl, { path, content, redirectTo }, deadline) {
 	const remaining = deadline - Date.now();
 	if (remaining <= 0) throw new Error("runtime check deadline exceeded");
 
-	const response = await fetch(`${baseUrl}${path}`, {
+	const requestUrl = `${baseUrl}${path}`;
+	let response = await fetch(requestUrl, {
+		redirect: "manual",
 		signal: AbortSignal.timeout(Math.min(2_000, remaining)),
 	});
+	const location = response.headers.get("location");
+	if (response.status >= 300 && response.status < 400 && location) {
+		const redirectedUrl = new URL(location, requestUrl);
+		const redirectedRemaining = deadline - Date.now();
+		if (redirectedRemaining <= 0) {
+			throw new Error("runtime check deadline exceeded");
+		}
+		response = await fetch(
+			`${baseUrl}${redirectedUrl.pathname}${redirectedUrl.search}`,
+			{
+				signal: AbortSignal.timeout(Math.min(2_000, redirectedRemaining)),
+			},
+		);
+	}
 	if (response.status !== 200) {
 		throw new Error(`${path} returned HTTP ${response.status}, expected 200`);
 	}
@@ -244,6 +260,7 @@ async function checkRoute(baseUrl, { path, content, redirectTo }, deadline) {
 async function waitForRoutes(baseUrl) {
 	const routes = [
 		{ path: "/health" },
+		{ path: "/it", redirectTo: "/it/docs/" },
 		{ path: "/roadmap/", content: "AI that keeps your company moving." },
 		{ path: "/roadmap/homun-flow/", content: "Homun Flow" },
 		{ path: "/roadmap/client-work/", content: "Client Work" },

@@ -42,6 +42,7 @@ assert.match(
 	"runtime route polling must not sleep past its deadline",
 );
 for (const route of [
+	'/it", redirectTo: "/it/docs/"',
 	'/roadmap/", content: "AI that keeps your company moving.',
 	'/roadmap/homun-flow/", content: "Homun Flow',
 	'/roadmap/client-work/", content: "Client Work',

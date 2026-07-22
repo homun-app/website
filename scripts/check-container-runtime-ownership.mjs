@@ -31,9 +31,12 @@ function closeServer(server) {
 	});
 }
 
+const requestedPaths = new Set();
 const server = createServer((request, response) => {
+	requestedPaths.add(request.url);
 	response.statusCode = 200;
-	if (request.url === "/roadmap/") response.end("AI that keeps your company moving.");
+	if (request.url === "/it") response.end("url=/it/docs/");
+	else if (request.url === "/roadmap/") response.end("AI that keeps your company moving.");
 	else if (request.url === "/roadmap/homun-flow/") response.end("Homun Flow");
 	else if (request.url === "/roadmap/client-work/") response.end("Client Work");
 	else if (request.url === "/roadmap/mobile-companion/") response.end("url=/roadmap/homun-mobile");
@@ -111,6 +114,7 @@ try {
 	assert.equal(run.at(-1), imageName);
 	assert.deepEqual(removeContainer, ["rm", "--force", containerName]);
 	assert.deepEqual(removeImage, ["image", "rm", "--force", imageName]);
+	assert.ok(requestedPaths.has("/it"), "Runtime checker did not cover /it");
 
 	console.log("Container runtime ownership contract passed");
 } finally {
