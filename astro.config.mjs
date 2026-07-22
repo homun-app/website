@@ -29,6 +29,7 @@ export default defineConfig({
 			// Default the docs to dark (matching the marketing site); toggle still works.
 			components: {
 				Head: './src/components/docs/AnalyticsHead.astro',
+				Footer: './src/components/docs/Footer.astro',
 				ThemeProvider: './src/components/docs/ThemeProvider.astro',
 			},
 			expressiveCode: {
