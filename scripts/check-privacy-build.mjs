@@ -115,6 +115,25 @@ function assertNotice(name, html, markers, forbiddenMarker) {
 	);
 }
 
+function visibleSectionText(html, headingId) {
+	const headings = [...html.matchAll(/<h2\b[^>]*>/gi)];
+	const headingIndex = headings.findIndex(
+		([tag]) => singleAttribute(attributesFor(tag), "id") === headingId,
+	);
+	assert.notEqual(headingIndex, -1, `Privacy page is missing section #${headingId}`);
+	const heading = headings[headingIndex];
+	const start = heading.index + heading[0].length;
+	const end = headings[headingIndex + 1]?.index ?? html.length;
+	return visibleText(html.slice(start, end));
+}
+
+function assertSectionIncludes(name, html, headingId, expectedText) {
+	assert.ok(
+		visibleSectionText(html, headingId).includes(expectedText),
+		`${name} privacy section #${headingId} is missing: ${expectedText}`,
+	);
+}
+
 async function filesContaining(directory, prefix, search) {
 	const entries = (await readdir(directory, { withFileTypes: true })).sort((a, b) =>
 		a.name.localeCompare(b.name),
@@ -154,6 +173,19 @@ function parsedScripts(html) {
 	}));
 }
 
+function scriptSources(script) {
+	return script.attributes.get("src") ?? [];
+}
+
+function assertUniqueScriptSources(path, scripts) {
+	for (const script of scripts) {
+		assert.ok(
+			scriptSources(script).length <= 1,
+			`${path} scripts must not contain duplicate src attributes`,
+		);
+	}
+}
+
 function isUmamiScriptSource(source) {
 	if (typeof source !== "string") return false;
 	try {
@@ -177,6 +209,7 @@ function assertTrackedPage(path, html) {
 	);
 
 	const scripts = parsedScripts(html);
+	assertUniqueScriptSources(path, scripts);
 	const exactTrackerScripts = scripts.filter(
 		({ attributes }) => singleAttribute(attributes, "src") === tracker,
 	);
@@ -209,8 +242,8 @@ function assertTrackedPage(path, html) {
 		`${path} website ID must belong to the exact Umami tracker script`,
 	);
 
-	const umamiSourceScripts = scripts.filter(({ attributes }) =>
-		isUmamiScriptSource(singleAttribute(attributes, "src")),
+	const umamiSourceScripts = scripts.filter((script) =>
+		scriptSources(script).some(isUmamiScriptSource),
 	);
 	assert.equal(
 		umamiSourceScripts.length,
@@ -226,14 +259,20 @@ function assertTrackedPage(path, html) {
 
 function assertNoAnalytics(path, html) {
 	const scripts = parsedScripts(html);
+	assertUniqueScriptSources(path, scripts);
+	assert.equal(
+		countOccurrences(html, websiteId),
+		0,
+		`${path} must not contain the configured website ID anywhere`,
+	);
 	assert.equal(
 		scripts.filter(({ attributes }) => attributes.has("data-website-id")).length,
 		0,
 		`${path} must not include any website ID script attribute`,
 	);
 	assert.equal(
-		scripts.filter(({ attributes }) =>
-			isUmamiScriptSource(singleAttribute(attributes, "src")),
+		scripts.filter((script) =>
+			scriptSources(script).some(isUmamiScriptSource),
 		).length,
 		0,
 		`${path} must not load any Umami-hosted script source`,
@@ -323,6 +362,12 @@ assertNotice(
 	],
 	"designed to be anonymous",
 );
+assertSectionIncludes(
+	"English",
+	englishPrivacy,
+	"what-is-excluded",
+	"Website analytics do not collect Homun account data, workspace content, prompts, files, personal names, email addresses, advertising identifiers, custom distinct IDs, or session replay data.",
+);
 
 const italianPrivacy = await read("it/privacy/index.html");
 assertNotice(
@@ -387,6 +432,12 @@ assertNotice(
 		"Se le analisi del sito o questa informativa cambiano in modo sostanziale, aggiorneremo questa informativa e la sua data di efficacia.",
 	],
 	"progettate per essere anonime",
+);
+assertSectionIncludes(
+	"Italian",
+	italianPrivacy,
+	"cosa-è-escluso",
+	"Le analisi del sito non raccolgono dati dell’account Homun, contenuti degli spazi di lavoro, prompt, file, nomi personali, indirizzi email, identificatori pubblicitari, ID distinti personalizzati o dati di session replay.",
 );
 
 const expectedWebsiteIdLocations = [
