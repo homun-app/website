@@ -102,6 +102,11 @@ to match what can actually be enforced before deployment.
 - External links to Umami documentation and the supervisory authority must use
   safe external-link attributes.
 - Missing analytics must never block navigation or download behavior.
+- The production server must return the generated Homun `404.html` with a true
+  HTTP 404 status for arbitrary missing paths. That rendered 404 remains a
+  substantive page with the global privacy link, but it must not load Umami or
+  contain the analytics website ID because the missing pathname may contain
+  personal information.
 
 ## Verification
 
@@ -110,12 +115,12 @@ Automated checks must verify that:
 1. both privacy pages build successfully and contain the controller name,
    contact email, provider, tracked categories, exclusions, retention, rights,
    and effective date;
-2. English and Italian global navigation routes visitors to the matching
-   privacy page;
-3. every substantive rendered HTML page, including the rendered 404 page,
-   contains exactly one Umami script; framework-generated redirect stubs that
-   perform no page rendering are explicitly excluded and must contain none;
-4. both Umami script integrations contain all four minimization attributes;
+2. every substantive rendered HTML page routes visitors to the locale-matching
+   privacy page; framework-generated redirect stubs are explicitly exempt;
+3. every substantive rendered HTML page except the generated 404 contains
+   exactly one Umami script and website ID; the generated 404 contains neither;
+4. every tracked page's exact Umami script contains all four minimization
+   attributes and no alternate script or data attribute can satisfy the check;
 5. no query string, fragment, email address, account data, prompt, file, or
    workspace content is attached to custom events;
 6. the existing analytics event-classification and fail-open tests continue to
