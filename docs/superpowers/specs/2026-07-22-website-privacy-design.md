@@ -112,7 +112,9 @@ Automated checks must verify that:
    and effective date;
 2. English and Italian global navigation routes visitors to the matching
    privacy page;
-3. every generated page still contains exactly one Umami script;
+3. every substantive rendered HTML page, including the rendered 404 page,
+   contains exactly one Umami script; framework-generated redirect stubs that
+   perform no page rendering are explicitly excluded and must contain none;
 4. both Umami script integrations contain all four minimization attributes;
 5. no query string, fragment, email address, account data, prompt, file, or
    workspace content is attached to custom events;

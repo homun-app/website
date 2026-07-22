@@ -7,8 +7,34 @@ const DOWNLOAD_FORMATS = [
 
 const ROADMAP_ACTIONS = new Set(["vote", "discuss", "suggest"]);
 const PLATFORMS = new Set(["macos", "windows", "linux", "unknown"]);
-const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-
+const DOWNLOAD_SOURCES = new Set([
+	"hero",
+	"navigation",
+	"download_section",
+	"footer",
+	"download_selector",
+]);
+const ROADMAP_SOURCES = new Set([
+	"roadmap_overview",
+	"roadmap_card",
+	"roadmap_detail",
+]);
+export const ROADMAP_PROJECT_ALLOWLIST = new Set([
+	"operational-workspace",
+	"homun-flow",
+	"team-spaces-roles",
+	"homun-mobile",
+	"more-ways-to-reach-homun",
+	"adaptive-company-intelligence",
+	"voice-meeting-capture",
+	"developer-platform",
+	"client-work",
+	"sales-operations",
+	"content-marketing",
+	"internal-operations",
+	"customer-support",
+	"new",
+]);
 function normalizedUrl(href) {
 	try {
 		return new URL(href, "https://homun.app");
@@ -61,9 +87,11 @@ export function classifyAnalyticsClick({
 	const isRelease =
 		isHomunGithub &&
 		url.pathname.startsWith("/homun-app/homun-releases/releases");
-	const downloadSource =
-		dataset.analyticsDownloadSource ||
-		(inDownloadList ? "download_selector" : "");
+	const downloadSource = DOWNLOAD_SOURCES.has(dataset.analyticsDownloadSource)
+		? dataset.analyticsDownloadSource
+		: inDownloadList
+			? "download_selector"
+			: "";
 
 	if (downloadSource || isRelease) {
 		const details = installerDetails(url.pathname);
@@ -88,7 +116,7 @@ export function classifyAnalyticsClick({
 
 	const action = dataset.analyticsRoadmapAction;
 	if (ROADMAP_ACTIONS.has(action)) {
-		const project = SLUG.test(dataset.analyticsRoadmapProject ?? "")
+		const project = ROADMAP_PROJECT_ALLOWLIST.has(dataset.analyticsRoadmapProject)
 			? dataset.analyticsRoadmapProject
 			: "unknown";
 		return {
@@ -96,8 +124,9 @@ export function classifyAnalyticsClick({
 			data: {
 				action,
 				project,
-				source:
-					dataset.analyticsRoadmapSource || sourceFromPath(currentPath),
+				source: ROADMAP_SOURCES.has(dataset.analyticsRoadmapSource)
+					? dataset.analyticsRoadmapSource
+					: sourceFromPath(currentPath),
 			},
 		};
 	}
@@ -125,7 +154,7 @@ export function classifyAnalyticsClick({
 			return {
 				name: "roadmap_project_open",
 				data: {
-					project: match[1],
+					project: ROADMAP_PROJECT_ALLOWLIST.has(match[1]) ? match[1] : "unknown",
 					source: sourceFromPath(currentPath),
 				},
 			};
@@ -152,7 +181,17 @@ export function initAnalyticsTracking(root = document, browserWindow = window) {
 		if (!classified) return;
 
 		try {
-			browserWindow.umami?.track(classified.name, classified.data);
+			const trackingResult = browserWindow.umami?.track(
+				classified.name,
+				classified.data,
+			);
+			if (trackingResult && typeof trackingResult.then === "function") {
+				if (typeof trackingResult.catch === "function") {
+					trackingResult.catch(() => {});
+				} else {
+					Promise.resolve(trackingResult).catch(() => {});
+				}
+			}
 		} catch {
 			// Analytics must never interfere with navigation.
 		}

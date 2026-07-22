@@ -36,7 +36,16 @@ const ogImage = new URL("/og.png", Astro.site);
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
-		<script defer src="https://cloud.umami.is/script.js" data-website-id="f3bdb523-4352-430b-b2a2-c7fdf4c0131f"></script>
+		<script
+			is:inline
+			defer
+			src="https://cloud.umami.is/script.js"
+			data-website-id="f3bdb523-4352-430b-b2a2-c7fdf4c0131f"
+			data-do-not-track="true"
+			data-exclude-search="true"
+			data-exclude-hash="true"
+			data-domains="homun.app,www.homun.app"
+		></script>
 		<noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
 	</head>
 	<body class="grain antialiased">

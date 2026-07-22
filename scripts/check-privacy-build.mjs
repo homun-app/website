@@ -1,11 +1,31 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 
 const tracker = "https://cloud.umami.is/script.js";
 const websiteId = "f3bdb523-4352-430b-b2a2-c7fdf4c0131f";
 
 function read(path) {
 	return readFile(new URL(`../dist/${path}`, import.meta.url), "utf8");
+}
+
+async function htmlFiles(directory) {
+	const entries = await readdir(directory, { withFileTypes: true });
+	const files = await Promise.all(
+		entries.map(async (entry) => {
+			const path = new URL(entry.name, directory);
+			if (entry.isDirectory()) return htmlFiles(new URL(`${entry.name}/`, directory));
+			return entry.isFile() && entry.name.endsWith(".html") ? [path] : [];
+		}),
+	);
+	return files.flat();
+}
+
+function isRedirectStub(html) {
+	return (
+		!html.includes("<html") &&
+		/<title>Redirecting to: [^<]+<\/title>/.test(html) &&
+		/<meta http-equiv="refresh" content="0;url=[^"]+">/.test(html)
+	);
 }
 
 const englishPrivacy = await read("privacy/index.html");
@@ -65,17 +85,17 @@ for (const output of ["it/docs/index.html", "it/guides/security/index.html"]) {
 	);
 }
 
-for (const output of [
-	"index.html",
-	"docs/index.html",
-	"privacy/index.html",
-	"it/privacy/index.html",
-]) {
-	const html = await read(output);
+for (const output of await htmlFiles(new URL("../dist/", import.meta.url))) {
+	const html = await readFile(output, "utf8");
 	const scripts = (html.match(/<script\b[^>]*>/g) ?? []).filter((script) =>
 		script.includes(tracker),
 	);
-	assert.equal(scripts.length, 1, `${output} must load Umami exactly once`);
+	if (isRedirectStub(html)) {
+		assert.equal(scripts.length, 0, `${output.pathname} must not load Umami`);
+		continue;
+	}
+
+	assert.equal(scripts.length, 1, `${output.pathname} must load Umami exactly once`);
 
 	const [script] = scripts;
 	for (const attribute of [
@@ -87,7 +107,7 @@ for (const output of [
 	]) {
 		assert.ok(
 			script.includes(attribute),
-			`${output} Umami script is missing ${attribute}`,
+			`${output.pathname} Umami script is missing ${attribute}`,
 		);
 	}
 }
