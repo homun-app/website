@@ -28,6 +28,7 @@ export default defineConfig({
 			customCss: ['./src/styles/starlight-theme.css'],
 			// Default the docs to dark (matching the marketing site); toggle still works.
 			components: {
+				Head: './src/components/docs/AnalyticsHead.astro',
 				ThemeProvider: './src/components/docs/ThemeProvider.astro',
 			},
 			expressiveCode: {

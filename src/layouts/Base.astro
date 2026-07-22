@@ -36,6 +36,7 @@ const ogImage = new URL("/og.png", Astro.site);
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
+		<script defer src="https://cloud.umami.is/script.js" data-website-id="f3bdb523-4352-430b-b2a2-c7fdf4c0131f"></script>
 		<noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
 	</head>
 	<body class="grain antialiased">
@@ -107,6 +108,10 @@ const ogImage = new URL("/og.png", Astro.site);
 		<script>
 			import { initDownloadControls } from "../scripts/downloads.mjs";
 			initDownloadControls();
+		</script>
+		<script>
+			import { initAnalyticsTracking } from "../scripts/analytics.mjs";
+			initAnalyticsTracking();
 		</script>
 	</body>
 </html>
