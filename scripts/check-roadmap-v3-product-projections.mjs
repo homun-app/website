@@ -5,6 +5,7 @@ import { createServer } from "vite";
 const viteConfig = await getViteConfig({
 	appType: "custom",
 	logLevel: "silent",
+	optimizeDeps: { noDiscovery: true },
 	server: { middlewareMode: true },
 }, {
 	configFile: false,
@@ -13,6 +14,11 @@ const viteConfig = await getViteConfig({
 
 const viteServer = await createServer(viteConfig);
 try {
+	assert.equal(
+		viteServer.environments.client.config.optimizeDeps.noDiscovery,
+		true,
+		"SSR-only projection checks must disable client dependency discovery",
+	);
 	const productData = await viteServer.ssrLoadModule("/src/lib/product-data.ts");
 	assert.deepEqual(
 		productData.strategicPrograms.map(({ slug }) => slug),
