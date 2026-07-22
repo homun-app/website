@@ -30,15 +30,15 @@ const shouldRender = presentation.underReview || isWorkflowIdea || isOpenExplora
 			)}
 			{(isWorkflowIdea || isOpenExploration) && <span class="font-mono text-xs text-accent-bright" aria-label={`${item.votes} votes`}>👍 {item.votes}</span>}
 			{presentation.canVote && (
-				<a href={item.githubUrl} target="_blank" rel="noopener" class="text-muted hover:text-cream">Vote on GitHub ↗</a>
+				<a href={item.githubUrl} target="_blank" rel="noopener" data-analytics-roadmap-action="vote" data-analytics-roadmap-project={item.slug} data-analytics-roadmap-source={variant === "detail" ? "roadmap_detail" : "roadmap_card"} class="text-muted hover:text-cream">Vote on GitHub ↗</a>
 			)}
 			{variant === "card" && presentation.canDiscuss && (
-				<a href={item.githubUrl} target="_blank" rel="noopener" class="text-muted hover:text-cream">Discuss on GitHub ↗</a>
+				<a href={item.githubUrl} target="_blank" rel="noopener" data-analytics-roadmap-action="discuss" data-analytics-roadmap-project={item.slug} data-analytics-roadmap-source="roadmap_card" class="text-muted hover:text-cream">Discuss on GitHub ↗</a>
 			)}
 		</div>
 
 		{variant === "detail" && presentation.canDiscuss && (
-			<a href={item.githubUrl} target="_blank" rel="noopener" class="btn mt-4 w-full border border-line-strong text-sm text-cream hover:border-accent/50">Discuss on GitHub ↗</a>
+			<a href={item.githubUrl} target="_blank" rel="noopener" data-analytics-roadmap-action="discuss" data-analytics-roadmap-project={item.slug} data-analytics-roadmap-source="roadmap_detail" class="btn mt-4 w-full border border-line-strong text-sm text-cream hover:border-accent/50">Discuss on GitHub ↗</a>
 		)}
 		{awaitsModeration && (
 			<p class:list={["leading-relaxed text-faint", variant === "card" ? "mt-2 text-[10px]" : "mt-3 text-xs"]}>

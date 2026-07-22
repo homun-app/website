@@ -50,7 +50,7 @@ const columns = [
 					<h3 class="metric-label">{column.heading}</h3>
 					<ul class="mt-5 space-y-3">
 						{column.links.map((link) => (
-							<li><a href={link.href} target={link.href.startsWith("http") ? "_blank" : undefined} rel={link.href.startsWith("http") ? "noopener" : undefined} class="text-sm text-muted transition-colors hover:text-cream">{link.label}</a></li>
+							<li><a href={link.href} target={link.href.startsWith("http") ? "_blank" : undefined} rel={link.href.startsWith("http") ? "noopener" : undefined} data-analytics-download-source={link.label === "All releases" ? "footer" : undefined} class="text-sm text-muted transition-colors hover:text-cream">{link.label}</a></li>
 						))}
 					</ul>
 				</div>

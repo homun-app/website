@@ -18,4 +18,26 @@ for (const output of ["../dist/index.html", "../dist/docs/index.html"]) {
 	);
 }
 
+const homepage = await readFile(
+	new URL("../dist/index.html", import.meta.url),
+	"utf8",
+);
+for (const source of ["hero", "navigation", "download_section", "footer"]) {
+	assert.ok(
+		homepage.includes(`data-analytics-download-source="${source}"`),
+		`Homepage is missing the ${source} download marker`,
+	);
+}
+
+const roadmap = await readFile(
+	new URL("../dist/roadmap/index.html", import.meta.url),
+	"utf8",
+);
+for (const action of ["vote", "discuss", "suggest"]) {
+	assert.ok(
+		roadmap.includes(`data-analytics-roadmap-action="${action}"`),
+		`Roadmap is missing the ${action} analytics marker`,
+	);
+}
+
 console.log("Analytics build contract passed");

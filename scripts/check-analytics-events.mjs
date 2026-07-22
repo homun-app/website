@@ -17,6 +17,24 @@ assert.deepEqual(
 	},
 );
 
+const releasePrecedence = classifyAnalyticsClick({
+	href: "https://github.com/homun-app/homun-releases/releases/latest",
+	currentPath: "/",
+	dataset: { analyticsDownloadSource: "navigation" },
+});
+assert.equal(releasePrecedence?.name, "download_click");
+
+const roadmapPrecedence = classifyAnalyticsClick({
+	href: "https://github.com/homun-app/homun/issues/42",
+	currentPath: "/roadmap/",
+	dataset: {
+		analyticsRoadmapAction: "vote",
+		analyticsRoadmapProject: "client-work",
+		analyticsRoadmapSource: "roadmap_card",
+	},
+});
+assert.equal(roadmapPrecedence?.name, "roadmap_participation");
+
 assert.deepEqual(
 	classifyAnalyticsClick({
 		href: "https://github.com/homun-app/homun-releases/releases/download/v1/Homun.exe",

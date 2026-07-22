@@ -19,7 +19,7 @@ const systems = [
 
 		<div class="reveal mx-auto mt-12 grid max-w-5xl gap-4 sm:grid-cols-3" style="--reveal-delay: 120ms">
 			{systems.map((system) => (
-				<a href="https://github.com/homun-app/homun-releases/releases/latest" data-download-platform={system.platform} class="operator-panel sheen group p-6 text-left transition-transform duration-300 hover:-translate-y-1">
+				<a href="https://github.com/homun-app/homun-releases/releases/latest" data-download-platform={system.platform} data-analytics-download-source="download_section" class="operator-panel sheen group p-6 text-left transition-transform duration-300 hover:-translate-y-1">
 					<div class="flex items-center justify-between"><span class="metric-label text-accent-bright">Available</span><span class="status-dot"></span></div>
 					<h3 class="mt-12 text-2xl text-cream">{system.os}</h3>
 					<p class="mt-3 text-sm leading-relaxed text-muted">{system.detail}</p>
