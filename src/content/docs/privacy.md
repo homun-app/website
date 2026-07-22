@@ -67,5 +67,5 @@ the Italian supervisory authority, the [Garante per la protezione dei dati perso
 
 ## Changes to this notice
 
-If this notice changes materially, we will reflect the change here and update its
-effective date.
+If website analytics or this notice changes materially, we will update this notice and
+its effective date.

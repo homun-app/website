@@ -19,11 +19,12 @@ quarterly. The first hard deletion deadline is **22 July 2028**.
    target; do not rely on a partial name or an assumed selection. Record its website ID,
    then create a replacement website and record the new website ID before changing the
    live integration.
-4. Replace the website ID in all five ID-bearing locations:
+4. Replace the website ID in all six ID-bearing locations:
    - `src/layouts/Base.astro`;
    - `src/components/docs/AnalyticsHead.astro`;
    - `scripts/check-privacy-build.mjs`;
    - `scripts/check-analytics-build.mjs`;
+   - `scripts/check-container-runtime.mjs`;
    - this runbook, `docs/operations/umami-retention.md`, including the current ID in the
      scope and the new/current ID in the review log.
 5. Run `npm run build`, `npm run test:analytics-build`, and `npm run test:privacy`.

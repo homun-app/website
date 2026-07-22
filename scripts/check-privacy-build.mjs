@@ -115,12 +115,53 @@ function assertNotice(name, html, markers, forbiddenMarker) {
 	);
 }
 
+async function filesContaining(directory, prefix, search) {
+	const entries = (await readdir(directory, { withFileTypes: true })).sort((a, b) =>
+		a.name.localeCompare(b.name),
+	);
+	const matches = await Promise.all(
+		entries.map(async (entry) => {
+			const relativePath = `${prefix}${entry.name}`;
+			const url = new URL(entry.name, directory);
+			if (entry.isDirectory()) {
+				return filesContaining(
+					new URL(`${entry.name}/`, directory),
+					`${relativePath}/`,
+					search,
+				);
+			}
+			if (!entry.isFile() || !/\.(?:astro|js|json|md|mjs|ts)$/.test(entry.name)) {
+				return [];
+			}
+			return (await readFile(url, "utf8")).includes(search) ? [relativePath] : [];
+		}),
+	);
+	return matches.flat();
+}
+
 function assertPrivacyLink(path, html) {
 	const expectedHref = path.startsWith("/it/") ? "/it/privacy/" : "/privacy/";
 	const hasExpectedLink = openingTags(html, "a").some(
 		(tag) => singleAttribute(attributesFor(tag), "href") === expectedHref,
 	);
 	assert.ok(hasExpectedLink, `${path} must link to ${expectedHref}`);
+}
+
+function parsedScripts(html) {
+	return openingTags(html, "script").map((tag) => ({
+		tag,
+		attributes: attributesFor(tag),
+	}));
+}
+
+function isUmamiScriptSource(source) {
+	if (typeof source !== "string") return false;
+	try {
+		const hostname = new URL(source, "https://homun.app").hostname.toLowerCase();
+		return hostname === "umami.is" || hostname.endsWith(".umami.is");
+	} catch {
+		return false;
+	}
 }
 
 function assertTrackedPage(path, html) {
@@ -135,10 +176,7 @@ function assertTrackedPage(path, html) {
 		`${path} must contain the exact website ID once`,
 	);
 
-	const scripts = openingTags(html, "script").map((tag) => ({
-		tag,
-		attributes: attributesFor(tag),
-	}));
+	const scripts = parsedScripts(html);
 	const exactTrackerScripts = scripts.filter(
 		({ attributes }) => singleAttribute(attributes, "src") === tracker,
 	);
@@ -172,38 +210,33 @@ function assertTrackedPage(path, html) {
 	);
 
 	const umamiSourceScripts = scripts.filter(({ attributes }) =>
-		(singleAttribute(attributes, "src") ?? "").includes("cloud.umami.is"),
+		isUmamiScriptSource(singleAttribute(attributes, "src")),
 	);
 	assert.equal(
 		umamiSourceScripts.length,
 		1,
 		`${path} must not load an alternate Umami script source`,
 	);
+	assert.equal(
+		umamiSourceScripts[0].tag,
+		trackerScript.tag,
+		`${path} Umami source must be the exact configured tracker script`,
+	);
 }
 
-function assertUntracked404(path, html) {
+function assertNoAnalytics(path, html) {
+	const scripts = parsedScripts(html);
 	assert.equal(
-		countOccurrences(html, tracker),
+		scripts.filter(({ attributes }) => attributes.has("data-website-id")).length,
 		0,
-		`${path} must not contain the Umami tracker URL`,
+		`${path} must not include any website ID script attribute`,
 	);
 	assert.equal(
-		countOccurrences(html, websiteId),
-		0,
-		`${path} must not contain the Umami website ID`,
-	);
-	const scripts = openingTags(html, "script").map(attributesFor);
-	assert.equal(
-		scripts.filter((attributes) => attributes.has("data-website-id")).length,
-		0,
-		`${path} must not include any analytics website ID attribute`,
-	);
-	assert.equal(
-		scripts.filter((attributes) =>
-			(singleAttribute(attributes, "src") ?? "").includes("cloud.umami.is"),
+		scripts.filter(({ attributes }) =>
+			isUmamiScriptSource(singleAttribute(attributes, "src")),
 		).length,
 		0,
-		`${path} must not load any Umami script source`,
+		`${path} must not load any Umami-hosted script source`,
 	);
 }
 
@@ -235,6 +268,7 @@ assertNotice(
 	[
 		"Effective date: 22 July 2026",
 		"Fabio Cantone",
+		"responsible for the Homun project, Italy",
 		"hello@homun.app",
 		"aggregate analytics",
 		"downloads",
@@ -264,8 +298,18 @@ assertNotice(
 		"workspace content",
 		"prompts",
 		"files",
+		"personal names",
+		"email addresses",
+		"advertising identifiers",
+		"custom distinct IDs",
+		"session replay data",
+		"do not identify visitors across websites",
+		"do not use analytics cookies",
 		"Umami Software, Inc.",
 		"Umami Cloud",
+		"EU and the US",
+		"data processing agreement",
+		"Standard Contractual Clauses (SCCs)",
 		"24 months",
 		"access",
 		"rectification",
@@ -275,6 +319,7 @@ assertNotice(
 		"right to object",
 		"Garante per la protezione dei dati personali",
 		"designed not to identify individual visitors",
+		"If website analytics or this notice changes materially, we will update this notice and its effective date.",
 	],
 	"designed to be anonymous",
 );
@@ -287,6 +332,7 @@ assertNotice(
 		"Data di efficacia: 22 luglio 2026",
 		"Titolare del trattamento",
 		"Fabio Cantone",
+		"responsabile del progetto Homun, Italia",
 		"hello@homun.app",
 		"analisi aggregate",
 		"download",
@@ -317,8 +363,18 @@ assertNotice(
 		"contenuti degli spazi di lavoro",
 		"prompt",
 		"file",
+		"nomi personali",
+		"indirizzi email",
+		"identificatori pubblicitari",
+		"ID distinti personalizzati",
+		"dati di session replay",
+		"non identificano i visitatori tra siti diversi",
+		"Non usano cookie di analisi",
 		"Umami Software, Inc.",
 		"Umami Cloud",
+		"UE e negli Stati Uniti",
+		"data processing agreement del fornitore",
+		"Clausole Contrattuali Standard (SCC)",
 		"24 mesi",
 		"accesso",
 		"rettifica",
@@ -328,9 +384,55 @@ assertNotice(
 		"diritto di opposizione",
 		"Garante per la protezione dei dati personali",
 		"progettate per non identificare i singoli visitatori",
+		"Se le analisi del sito o questa informativa cambiano in modo sostanziale, aggiorneremo questa informativa e la sua data di efficacia.",
 	],
 	"progettate per essere anonime",
 );
+
+const expectedWebsiteIdLocations = [
+	"docs/operations/umami-retention.md",
+	"scripts/check-analytics-build.mjs",
+	"scripts/check-container-runtime.mjs",
+	"scripts/check-privacy-build.mjs",
+	"src/components/docs/AnalyticsHead.astro",
+	"src/layouts/Base.astro",
+];
+const actualWebsiteIdLocations = (
+	await Promise.all([
+		filesContaining(
+			new URL("../docs/operations/", import.meta.url),
+			"docs/operations/",
+			websiteId,
+		),
+		filesContaining(
+			new URL("../scripts/", import.meta.url),
+			"scripts/",
+			websiteId,
+		),
+		filesContaining(new URL("../src/", import.meta.url), "src/", websiteId),
+	])
+).flat();
+assert.deepEqual(
+	actualWebsiteIdLocations.sort(),
+	expectedWebsiteIdLocations,
+	"Active website ID locations changed; update the integration, tests, and retention runbook together",
+);
+
+const retentionRunbook = await readFile(
+	new URL("../docs/operations/umami-retention.md", import.meta.url),
+	"utf8",
+);
+assert.match(
+	retentionRunbook,
+	/all six ID-bearing locations/,
+	"Retention runbook must state the exact active ID-location count",
+);
+for (const location of expectedWebsiteIdLocations) {
+	assert.ok(
+		retentionRunbook.includes(`\`${location}\``),
+		`Retention runbook must list ${location}`,
+	);
+}
 
 const docsFooter = await readFile(
 	new URL("../src/components/docs/Footer.astro", import.meta.url),
@@ -389,16 +491,7 @@ for (const output of builtPages) {
 			expectedRedirect,
 			`${path} must redirect exactly to ${expectedRedirect}`,
 		);
-		assert.equal(
-			countOccurrences(html, tracker),
-			0,
-			`${path} redirect stub must not contain the tracker URL`,
-		);
-		assert.equal(
-			countOccurrences(html, websiteId),
-			0,
-			`${path} redirect stub must not contain the website ID`,
-		);
+		assertNoAnalytics(path, html);
 		continue;
 	}
 
@@ -412,7 +505,7 @@ for (const output of builtPages) {
 	assertPrivacyLink(path, html);
 
 	if (output.outputPath === "404.html") {
-		assertUntracked404(path, html);
+		assertNoAnalytics(path, html);
 	} else {
 		assertTrackedPage(path, html);
 		trackedPages += 1;

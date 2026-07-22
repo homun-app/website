@@ -110,6 +110,45 @@ assert.deepEqual(
 	},
 );
 
+for (const href of [
+	"https://github.com/homun-app",
+	"https://github.com/homun-app/",
+	"https://github.com/homun-app?source=footer#organization",
+]) {
+	assert.deepEqual(
+		classifyAnalyticsClick({ href, currentPath: "/" }),
+		{
+			name: "github_click",
+			data: { destination: "other", source: "homepage" },
+		},
+		`${href} must classify as the Homun GitHub organization`,
+	);
+}
+
+assert.deepEqual(
+	classifyAnalyticsClick({
+		href: "https://github.com/homun-app/example-repository?tab=readme#usage",
+		currentPath: "/guides/getting-started/",
+	}),
+	{
+		name: "github_click",
+		data: { destination: "other", source: "documentation" },
+	},
+);
+
+for (const href of [
+	"https://github.com/homun-application",
+	"https://github.com/homun-app-lookalike/repository",
+	"https://github.com.example/homun-app/repository",
+	"http://github.com/homun-app/repository",
+]) {
+	assert.equal(
+		classifyAnalyticsClick({ href, currentPath: "/" }),
+		null,
+		`${href} must not classify as a Homun GitHub destination`,
+	);
+}
+
 assert.deepEqual(
 	classifyAnalyticsClick({
 		href: "/roadmap/client-work/",

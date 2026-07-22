@@ -84,7 +84,10 @@ export function classifyAnalyticsClick({
 	if (!url) return null;
 
 	const isHomunGithub =
-		url.hostname === "github.com" && url.pathname.startsWith("/homun-app/");
+		url.protocol === "https:" &&
+		url.hostname === "github.com" &&
+		(url.pathname === "/homun-app" ||
+			url.pathname.startsWith("/homun-app/"));
 	const isRelease =
 		isHomunGithub &&
 		url.pathname.startsWith("/homun-app/homun-releases/releases");

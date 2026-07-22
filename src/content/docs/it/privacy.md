@@ -69,5 +69,5 @@ presentare un reclamo al [Garante per la protezione dei dati personali](https://
 
 ## Modifiche a questa informativa
 
-Se questa informativa cambia in modo sostanziale, rifletteremo la modifica qui e
-aggiorneremo la data di efficacia.
+Se le analisi del sito o questa informativa cambiano in modo sostanziale, aggiorneremo
+questa informativa e la sua data di efficacia.
