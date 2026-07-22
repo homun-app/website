@@ -42,7 +42,7 @@ assert.match(
 	"runtime route polling must not sleep past its deadline",
 );
 for (const route of [
-	'/roadmap/", content: "Homun turns requests, messages and recurring work',
+	'/roadmap/", content: "AI that keeps your company moving.',
 	'/roadmap/homun-flow/", content: "Homun Flow',
 	'/roadmap/client-work/", content: "Client Work',
 	'/roadmap/mobile-companion/", redirectTo: "/roadmap/homun-mobile"',

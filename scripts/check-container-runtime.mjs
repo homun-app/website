@@ -244,7 +244,7 @@ async function checkRoute(baseUrl, { path, content, redirectTo }, deadline) {
 async function waitForRoutes(baseUrl) {
 	const routes = [
 		{ path: "/health" },
-		{ path: "/roadmap/", content: "Homun turns requests, messages and recurring work" },
+		{ path: "/roadmap/", content: "AI that keeps your company moving." },
 		{ path: "/roadmap/homun-flow/", content: "Homun Flow" },
 		{ path: "/roadmap/client-work/", content: "Client Work" },
 		{ path: "/roadmap/mobile-companion/", redirectTo: "/roadmap/homun-mobile" },

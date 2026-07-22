@@ -33,7 +33,7 @@ function closeServer(server) {
 
 const server = createServer((request, response) => {
 	response.statusCode = 200;
-	if (request.url === "/roadmap/") response.end("Homun turns requests, messages and recurring work");
+	if (request.url === "/roadmap/") response.end("AI that keeps your company moving.");
 	else if (request.url === "/roadmap/homun-flow/") response.end("Homun Flow");
 	else if (request.url === "/roadmap/client-work/") response.end("Client Work");
 	else if (request.url === "/roadmap/mobile-companion/") response.end("url=/roadmap/homun-mobile");
