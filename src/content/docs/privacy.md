@@ -59,8 +59,9 @@ limit.
 ## Your rights
 
 Where applicable, you may request access, rectification, erasure, restriction,
-portability, or object to processing. Because the analytics are designed to be anonymous,
-we may be unable to associate a record with you without additional information. Contact
+portability, or object to processing. Because the analytics are designed not to identify
+individual visitors, we may be unable to associate a record with you without additional
+information. Contact
 [hello@homun.app](mailto:hello@homun.app) to exercise a right. You may also complain to
 the Italian supervisory authority, the [Garante per la protezione dei dati personali](https://www.garanteprivacy.it/).
 

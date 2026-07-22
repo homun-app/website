@@ -22,7 +22,7 @@ const privacyLabel = italian ? "Informativa privacy" : "Privacy notice";
 		gap: 0.5rem;
 		margin-block: 1.5rem 2rem;
 		font-size: var(--sl-text-xs);
-		color: var(--sl-color-gray-3);
+		color: var(--sl-color-gray-2);
 	}
 
 	.homun-legal-footer a {
@@ -33,5 +33,12 @@ const privacyLabel = italian ? "Informativa privacy" : "Privacy notice";
 	.homun-legal-footer a:hover {
 		color: var(--sl-color-white);
 		text-decoration: underline;
+	}
+
+	.homun-legal-footer a:focus-visible {
+		color: var(--sl-color-white);
+		border-radius: 0.125rem;
+		outline: 2px solid var(--sl-color-text-accent);
+		outline-offset: 3px;
 	}
 </style>

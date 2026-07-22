@@ -19,6 +19,7 @@ const ROADMAP_SOURCES = new Set([
 	"roadmap_card",
 	"roadmap_detail",
 ]);
+const PRODUCTION_HOSTNAMES = new Set(["homun.app", "www.homun.app"]);
 export const ROADMAP_PROJECT_ALLOWLIST = new Set([
 	"operational-workspace",
 	"homun-flow",
@@ -146,7 +147,10 @@ export function classifyAnalyticsClick({
 		};
 	}
 
-	if (url.origin === "https://homun.app") {
+	if (
+		url.protocol === "https:" &&
+		PRODUCTION_HOSTNAMES.has(url.hostname)
+	) {
 		const match = url.pathname.match(
 			/^\/roadmap\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/,
 		);

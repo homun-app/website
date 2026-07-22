@@ -61,8 +61,9 @@ manuale documentata per applicare questo limite.
 ## I tuoi diritti
 
 Dove applicabile, puoi chiedere accesso, rettifica, cancellazione, limitazione,
-portabilità o opporti al trattamento. Poiché le analisi sono progettate per essere
-anonime, potremmo non riuscire ad associare un record a te senza informazioni aggiuntive.
+portabilità o opporti al trattamento. Poiché le analisi sono progettate per non
+identificare i singoli visitatori, potremmo non riuscire ad associare un record a te senza
+informazioni aggiuntive.
 Contatta [hello@homun.app](mailto:hello@homun.app) per esercitare un diritto. Puoi anche
 presentare un reclamo al [Garante per la protezione dei dati personali](https://www.garanteprivacy.it/).
 

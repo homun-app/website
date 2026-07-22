@@ -122,6 +122,35 @@ assert.deepEqual(
 	},
 );
 
+for (const hostname of ["homun.app", "www.homun.app"]) {
+	assert.deepEqual(
+		classifyAnalyticsClick({
+			href: `https://${hostname}/roadmap/client-work/`,
+			currentPath: "/roadmap/",
+			dataset: {},
+		}),
+		{
+			name: "roadmap_project_open",
+			data: { project: "client-work", source: "roadmap_overview" },
+		},
+		`HTTPS roadmap links on ${hostname} must be classified as internal`,
+	);
+}
+
+for (const href of [
+	"http://homun.app/roadmap/client-work/",
+	"http://www.homun.app/roadmap/client-work/",
+	"ftp://homun.app/roadmap/client-work/",
+	"https://preview.homun.app/roadmap/client-work/",
+	"https://homun.app.example.com/roadmap/client-work/",
+]) {
+	assert.equal(
+		classifyAnalyticsClick({ href, currentPath: "/roadmap/" }),
+		null,
+		`${href} must not be classified as an internal roadmap link`,
+	);
+}
+
 assert.equal(
 	classifyAnalyticsClick({
 		href: "https://example.com/elsewhere",
