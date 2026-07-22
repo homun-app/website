@@ -34,15 +34,31 @@ function closeServer(server) {
 const requestedPaths = new Set();
 const server = createServer((request, response) => {
 	requestedPaths.add(request.url);
-	response.statusCode = 200;
-	if (request.url === "/it") response.end("url=/it/docs/");
-	else if (request.url === "/roadmap/") response.end("AI that keeps your company moving.");
-	else if (request.url === "/roadmap/homun-flow/") response.end("Homun Flow");
-	else if (request.url === "/roadmap/client-work/") response.end("Client Work");
-	else if (request.url === "/roadmap/mobile-companion/") response.end("url=/roadmap/homun-mobile");
-	else if (request.url === "/roadmap/shared-spaces/") response.end("url=/roadmap/team-spaces-roles");
-	else if (request.url === "/roadmap/voice-capture/") response.end("url=/roadmap/voice-meeting-capture");
-	else response.end("ok");
+	if (request.url === "/it") {
+		response.statusCode = 301;
+		response.setHeader("Location", "/it/");
+		response.end();
+	} else if (request.url === "/it/") {
+		response.statusCode = 200;
+		response.end('<meta http-equiv="refresh" content="0;url=/it/docs/">');
+	} else if (request.url === "/roadmap/") {
+		response.end("AI that keeps your company moving.");
+	} else if (request.url === "/roadmap/homun-flow/") {
+		response.end("Homun Flow");
+	} else if (request.url === "/roadmap/client-work/") {
+		response.end("Client Work");
+	} else if (request.url === "/roadmap/mobile-companion/") {
+		response.end("url=/roadmap/homun-mobile");
+	} else if (request.url === "/roadmap/shared-spaces/") {
+		response.end("url=/roadmap/team-spaces-roles");
+	} else if (request.url === "/roadmap/voice-capture/") {
+		response.end("url=/roadmap/voice-meeting-capture");
+	} else if (request.url === "/visitor@example.com/private-workspace") {
+		response.statusCode = 404;
+		response.end('Page not found. <a href="/privacy/">Privacy notice</a>');
+	} else {
+		response.end("ok");
+	}
 });
 
 let checker;
@@ -115,6 +131,14 @@ try {
 	assert.deepEqual(removeContainer, ["rm", "--force", containerName]);
 	assert.deepEqual(removeImage, ["image", "rm", "--force", imageName]);
 	assert.ok(requestedPaths.has("/it"), "Runtime checker did not cover /it");
+	assert.ok(
+		requestedPaths.has("/it/"),
+		"Runtime checker did not follow and parse the /it/ redirect stub",
+	);
+	assert.ok(
+		requestedPaths.has("/visitor@example.com/private-workspace"),
+		"Runtime checker did not cover the privacy-safe custom 404",
+	);
 
 	console.log("Container runtime ownership contract passed");
 } finally {

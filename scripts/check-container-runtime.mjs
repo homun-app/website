@@ -8,6 +8,8 @@ const ownershipLabel = `dev.homun.smoke-run=${runId}`;
 const imageName = `homun-website-roadmap-smoke:${runId}`;
 const containerName = `homun-website-roadmap-smoke-${runId}`;
 const cleanupTimeoutMilliseconds = 5_000;
+const tracker = "https://cloud.umami.is/script.js";
+const websiteId = "f3bdb523-4352-430b-b2a2-c7fdf4c0131f";
 const activeChildren = new Set();
 
 let dockerAvailable = false;
@@ -219,7 +221,18 @@ function wait(milliseconds) {
 	return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
-async function checkRoute(baseUrl, { path, content, redirectTo }, deadline) {
+async function checkRoute(
+	baseUrl,
+	{
+		path,
+		content,
+		redirectTo,
+		expectedStatus = 200,
+		mustContain = [],
+		mustNotContain = [],
+	},
+	deadline,
+) {
 	const remaining = deadline - Date.now();
 	if (remaining <= 0) throw new Error("runtime check deadline exceeded");
 
@@ -242,17 +255,33 @@ async function checkRoute(baseUrl, { path, content, redirectTo }, deadline) {
 			},
 		);
 	}
-	if (response.status !== 200) {
-		throw new Error(`${path} returned HTTP ${response.status}, expected 200`);
+	if (response.status !== expectedStatus) {
+		throw new Error(
+			`${path} returned HTTP ${response.status}, expected ${expectedStatus}`,
+		);
 	}
 
-	if (content || redirectTo) {
+	if (content || redirectTo || mustContain.length > 0 || mustNotContain.length > 0) {
 		const html = await response.text();
 		if (content && !html.includes(content)) {
 			throw new Error(`${path} did not contain ${JSON.stringify(content)}`);
 		}
 		if (redirectTo && !html.includes(`url=${redirectTo}`)) {
 			throw new Error(`${path} did not redirect to ${redirectTo}`);
+		}
+		for (const expectedContent of mustContain) {
+			if (!html.includes(expectedContent)) {
+				throw new Error(
+					`${path} did not contain ${JSON.stringify(expectedContent)}`,
+				);
+			}
+		}
+		for (const forbiddenContent of mustNotContain) {
+			if (html.includes(forbiddenContent)) {
+				throw new Error(
+					`${path} contained forbidden ${JSON.stringify(forbiddenContent)}`,
+				);
+			}
 		}
 	}
 }
@@ -267,6 +296,12 @@ async function waitForRoutes(baseUrl) {
 		{ path: "/roadmap/mobile-companion/", redirectTo: "/roadmap/homun-mobile" },
 		{ path: "/roadmap/shared-spaces/", redirectTo: "/roadmap/team-spaces-roles" },
 		{ path: "/roadmap/voice-capture/", redirectTo: "/roadmap/voice-meeting-capture" },
+		{
+			path: "/visitor@example.com/private-workspace",
+			expectedStatus: 404,
+			mustContain: ["Page not found.", 'href="/privacy/"'],
+			mustNotContain: [tracker, websiteId],
+		},
 	];
 	const deadline = Date.now() + 30_000;
 	let lastError;
@@ -292,9 +327,10 @@ async function runRuntimeCheck() {
 	try {
 		await runDocker(["--version"]);
 		await runDocker(["info", "--format", "{{.ServerVersion}}"]);
-	} catch {
-		console.log("SKIP: Docker unavailable");
-		return;
+	} catch (error) {
+		throw new Error("Docker is required for the container runtime smoke test", {
+			cause: error,
+		});
 	}
 	dockerAvailable = true;
 
@@ -336,7 +372,7 @@ async function runRuntimeCheck() {
 	}
 
 	await waitForRoutes(`http://127.0.0.1:${portMatch[1]}`);
-	console.log("Container runtime roadmap smoke test passed");
+	console.log("Container runtime privacy smoke test passed");
 }
 
 let runtimeError;
