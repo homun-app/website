@@ -1,0 +1,33 @@
+---
+import { createHash } from "node:crypto";
+import licenseText from "../../data/homun-core-license.md?raw";
+
+const expectedSha256 = "5904c160d2d93c62e0113b5cc9d20a6880e04839bff3a130bd622cc141a64429";
+const actualSha256 = createHash("sha256").update(licenseText).digest("hex");
+if (actualSha256 !== expectedSha256) {
+	throw new Error(`Published Homun license hash mismatch: ${actualSha256}`);
+}
+
+interface Props {
+	locale?: "en" | "it";
+}
+
+const { locale = "en" } = Astro.props;
+const heading = locale === "it" ? "Testo vincolante (in inglese)" : "Binding license text";
+---
+
+<section aria-labelledby="binding-license-text">
+	<h2 id="binding-license-text">{heading}</h2>
+	<pre class="license-text"><code>{licenseText}</code></pre>
+</section>
+
+<style>
+	.license-text {
+		max-height: 42rem;
+		overflow: auto;
+		white-space: pre-wrap;
+		overflow-wrap: anywhere;
+		font-size: var(--sl-text-xs);
+		line-height: 1.65;
+	}
+</style>

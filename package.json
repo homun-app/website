@@ -13,6 +13,7 @@
     "test:analytics-events": "node scripts/check-analytics-events.mjs",
     "test:analytics-build": "node scripts/check-analytics-build.mjs",
     "test:privacy": "node scripts/check-privacy-build.mjs",
+    "test:license": "node scripts/check-license-build.mjs",
     "test:illustrations": "node scripts/check-homepage-illustrations.mjs",
     "test:product-data": "node scripts/check-product-data.mjs",
     "test:roadmap-v3-rollout": "node scripts/check-roadmap-v3-rollout.mjs",
@@ -28,7 +29,7 @@
     "test:container-runtime-signals": "node scripts/check-container-runtime-signals.mjs",
     "sync:product-data": "node scripts/sync-product-data.mjs",
     "roadmap:v3-rollout": "node scripts/roadmap-v3-rollout.mjs",
-    "check": "npm run build && npm run test:analytics-events && npm run test:analytics-build && npm run test:privacy && npm run test:homepage && npm run test:marketing-backgrounds && npm run test:downloads && npm run test:illustrations && npm run test:product-data && npm run test:roadmap-v3-manifest && npm run test:roadmap-v3-product-data && npm run test:roadmap-v3-publication && npm run test:roadmap-v3-presentation && npm run test:roadmap-v3-projections && npm run test:roadmap-v3-rollout && npm run test:roadmap && npm run test:container && npm run test:container-runtime-ownership && npm run test:container-runtime-signals",
+    "check": "npm run build && npm run test:analytics-events && npm run test:analytics-build && npm run test:privacy && npm run test:license && npm run test:homepage && npm run test:marketing-backgrounds && npm run test:downloads && npm run test:illustrations && npm run test:product-data && npm run test:roadmap-v3-manifest && npm run test:roadmap-v3-product-data && npm run test:roadmap-v3-publication && npm run test:roadmap-v3-presentation && npm run test:roadmap-v3-projections && npm run test:roadmap-v3-rollout && npm run test:roadmap && npm run test:container && npm run test:container-runtime-ownership && npm run test:container-runtime-signals",
     "preview": "astro preview",
     "astro": "astro"
   },

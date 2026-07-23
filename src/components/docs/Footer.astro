@@ -4,11 +4,15 @@ import DefaultFooter from "@astrojs/starlight/components/Footer.astro";
 const italian = Astro.url.pathname.startsWith("/it/");
 const privacyHref = italian ? "/it/privacy/" : "/privacy/";
 const privacyLabel = italian ? "Informativa privacy" : "Privacy notice";
+const licenseHref = italian ? "/it/license/" : "/license/";
+const licenseLabel = italian ? "Licenza" : "License";
 ---
 
 <DefaultFooter />
 <div class="homun-legal-footer">
 	<a href={privacyHref}>{privacyLabel}</a>
+	<span aria-hidden="true">·</span>
+	<a href={licenseHref}>{licenseLabel}</a>
 	<span aria-hidden="true">·</span>
 	<a href="mailto:hello@homun.app">hello@homun.app</a>
 </div>

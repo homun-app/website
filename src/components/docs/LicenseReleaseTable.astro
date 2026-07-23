@@ -1,0 +1,59 @@
+---
+import { releases } from "../../lib/product-data";
+import { changeDate } from "../../lib/license-dates.mjs";
+
+interface Props {
+	locale: "en" | "it";
+}
+
+const { locale } = Astro.props;
+const isItalian = locale === "it";
+const formatter = new Intl.DateTimeFormat(isItalian ? "it-IT" : "en-GB", {
+	dateStyle: "medium",
+	timeZone: "UTC",
+});
+---
+
+<div class="release-table-wrap" tabindex="0" aria-label={isItalian ? "Date di cambio licenza per versione" : "License change dates by version"}>
+	<table>
+		<thead>
+			<tr>
+				<th>{isItalian ? "Versione" : "Version"}</th>
+				<th>{isItalian ? "Disponibile dal" : "Available"}</th>
+				<th>{isItalian ? "Passaggio ad Apache-2.0" : "Changes to Apache-2.0"}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{releases.map((release) => {
+				const conversionDate = changeDate(release.publishedAt);
+				return (
+					<tr>
+						<td><a href={release.githubUrl}>{release.version}</a></td>
+						<td><time datetime={new Date(release.publishedAt).toISOString()}>{formatter.format(new Date(release.publishedAt))}</time></td>
+						<td><time datetime={conversionDate}>{formatter.format(new Date(conversionDate))}</time></td>
+					</tr>
+				);
+			})}
+		</tbody>
+	</table>
+</div>
+
+<style>
+	.release-table-wrap {
+		overflow-x: auto;
+	}
+
+	.release-table-wrap:focus-visible {
+		outline: 2px solid var(--sl-color-text-accent);
+		outline-offset: 3px;
+	}
+
+	table {
+		min-width: 44rem;
+	}
+
+	td:first-child {
+		font-family: var(--__sl-font-mono);
+		white-space: nowrap;
+	}
+</style>
