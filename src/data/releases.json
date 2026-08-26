@@ -1,7 +1,88 @@
 {
   "schemaVersion": 2,
-  "contentUpdatedAt": "2026-08-04T17:39:21.280Z",
+  "contentUpdatedAt": "2026-08-26T19:28:14.463Z",
   "items": [
+    {
+      "version": "v0.1.1095",
+      "name": "0.1.1095",
+      "publishedAt": "2026-08-26T19:27:47Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1095",
+      "highlights": [
+        "**The chat runtime now has one typed turn contract.** Goal, policy, perimeter, recall, tools, execution identity, tracing and tail state now move through explicit owners instead of scattered scalar state.",
+        "**The UI follows the canonical runtime projection.** Active turn, submission state, task queue, composer mode and thread status now render from the runtime view model instead of independent fallbacks.",
+        "**Release readiness is stricter.** The pre-release and kernel gates now cover canonical turn lifecycle, gateway ownership, browser semantic progress and packaged-app smoke behavior before a release can be cut."
+      ],
+      "improvements": [
+        "**Legacy fallback paths have been removed.** Mock transcripts, preview seeds, starter-message helpers, local-ready copy and unused mock runtime exports no longer compete with real task state.",
+        "**Planning and browser flow are easier to audit.** RC status evidence now records where planning, browser semantics and terminal task state come from, so regressions are checked against owners rather than screenshots.",
+        "**Resource reservations no longer self-block a task.** A running turn can reuse its own browser reservation without being incorrectly held in `waiting_resource`."
+      ],
+      "fixes": [
+        "**Requests for an already-past time fail fast.** A same-day request such as “today at 8” is completed canonically with a visible explanation instead of launching browser automation.",
+        "**Preflight completions close the whole turn.** The assistant message, terminal task state and terminal event are written together, so the UI no longer keeps showing a task as still thinking after a preflight answer.",
+        "**Browser smoke tests reject cosmetic success.** A browser task must now produce semantic evidence from the page; generic “completed” states or unavailable-browser fallbacks fail the release gate."
+      ],
+      "platforms": [
+        "Linux",
+        "macOS",
+        "Windows"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1095-amd64.deb",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1095/Homun-0.1.1095-amd64.deb"
+        },
+        {
+          "name": "Homun-0.1.1095-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1095/Homun-0.1.1095-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1095-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1095/Homun-0.1.1095-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1095-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1095/Homun-0.1.1095-arm64.zip.blockmap"
+        },
+        {
+          "name": "Homun-0.1.1095-x64.exe",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1095/Homun-0.1.1095-x64.exe"
+        },
+        {
+          "name": "Homun-0.1.1095-x64.exe.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1095/Homun-0.1.1095-x64.exe.blockmap"
+        },
+        {
+          "name": "Homun-0.1.1095-x86_64.AppImage",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1095/Homun-0.1.1095-x86_64.AppImage"
+        },
+        {
+          "name": "SHA256SUMS-linux.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1095/SHA256SUMS-linux.txt"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1095/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "SHA256SUMS-win.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1095/SHA256SUMS-win.txt"
+        },
+        {
+          "name": "latest-linux.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1095/latest-linux.yml"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1095/latest-mac.yml"
+        },
+        {
+          "name": "latest.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1095/latest.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
     {
       "version": "v0.1.1094",
       "name": "0.1.1094",
