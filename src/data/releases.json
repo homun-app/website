@@ -1,7 +1,89 @@
 {
   "schemaVersion": 2,
-  "contentUpdatedAt": "2026-08-30T07:33:23.485Z",
+  "contentUpdatedAt": "2026-09-01T09:20:14.383Z",
   "items": [
+    {
+      "version": "v0.1.1098",
+      "name": "0.1.1098",
+      "publishedAt": "2026-09-01T09:19:50Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1098",
+      "highlights": [
+        "**Real profile integrity can now be audited and repaired.** Homun can detect stale streaming turns, orphaned approvals and browser tasks that exhausted their action budget, then close them canonically with backups.",
+        "**Model selection is easier to trust.** The composer treats `Unavailable` as a placeholder, keeps `Auto` visible for automatic routing and records the effective model choice as routing metadata.",
+        "**Browser automation failures are more explicit.** Browser tasks that make no semantic progress now end as failures with preserved evidence instead of looking like successful assistant text."
+      ],
+      "improvements": [
+        "**Production smoke coverage now includes longer agentic scenarios.** The local release gate covers browser no-progress, long-process checkpointing, subagent probes, automation dry-runs and runtime integrity checks.",
+        "**Packaged builds use the right gateway and token contract.** Desktop packaging and development startup now verify the bundled gateway path and keep the gateway token outside the renderer bundle.",
+        "**Automation and project-graph diagnostics expose safer integrity signals.** Gateway routes now support dry-run checks and compact lifecycle audit output without leaking local paths."
+      ],
+      "fixes": [
+        "**Sensitive trace logs can be repaired locally.** A dedicated privacy repair tool redacts known sensitive values from historical turn traces and writes an auditable backup.",
+        "**Waiting approval tasks no longer stay orphaned forever.** The integrity repair path can fail stale HITL waits that no longer have an active runtime owner.",
+        "**Completed browser-budget tasks no longer pollute the runtime audit.** Historical tasks that finished after exhausting browser budget are reclassified so real-profile audits can return to zero hard errors.",
+        "**The skill runtime no longer ships a vulnerable Wasmtime build.** Wasmtime is updated to the patched `46.0.3` release required by the RustSec gate."
+      ],
+      "platforms": [
+        "Linux",
+        "macOS",
+        "Windows"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1098-amd64.deb",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1098/Homun-0.1.1098-amd64.deb"
+        },
+        {
+          "name": "Homun-0.1.1098-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1098/Homun-0.1.1098-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1098-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1098/Homun-0.1.1098-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1098-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1098/Homun-0.1.1098-arm64.zip.blockmap"
+        },
+        {
+          "name": "Homun-0.1.1098-x64.exe",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1098/Homun-0.1.1098-x64.exe"
+        },
+        {
+          "name": "Homun-0.1.1098-x64.exe.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1098/Homun-0.1.1098-x64.exe.blockmap"
+        },
+        {
+          "name": "Homun-0.1.1098-x86_64.AppImage",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1098/Homun-0.1.1098-x86_64.AppImage"
+        },
+        {
+          "name": "SHA256SUMS-linux.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1098/SHA256SUMS-linux.txt"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1098/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "SHA256SUMS-win.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1098/SHA256SUMS-win.txt"
+        },
+        {
+          "name": "latest-linux.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1098/latest-linux.yml"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1098/latest-mac.yml"
+        },
+        {
+          "name": "latest.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1098/latest.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
     {
       "version": "v0.1.1096",
       "name": "0.1.1096",
