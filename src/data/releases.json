@@ -1,7 +1,82 @@
 {
   "schemaVersion": 2,
-  "contentUpdatedAt": "2026-09-01T14:25:55.484Z",
+  "contentUpdatedAt": "2026-09-07T11:42:33.501Z",
   "items": [
+    {
+      "version": "v0.1.1100",
+      "name": "0.1.1100",
+      "publishedAt": "2026-09-07T11:42:13Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1100",
+      "highlights": [
+        "**The assistant now proposes a plan for approval before complex work.** For non-trivial multi-step requests that create or mutate things, Homun defers the work tools and asks the model to propose a plan the user can accept or edit, instead of choosing a language or folder and proceeding on its own."
+      ],
+      "improvements": [
+        "**Read-only and single-step requests still pass straight through.** Browsing, searching, reading and simple one-shot actions skip the approval step, so everyday use stays fast."
+      ],
+      "fixes": [
+        "**The plan-approval flow is now actually reachable.** The plan-proposal card (Accept/Edit) was wired end-to-end but never activated; the gate now triggers it instead of bootstrapping a generic plan and proceeding."
+      ],
+      "platforms": [
+        "Linux",
+        "macOS",
+        "Windows"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.1.1100-amd64.deb",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1100/Homun-0.1.1100-amd64.deb"
+        },
+        {
+          "name": "Homun-0.1.1100-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1100/Homun-0.1.1100-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.1.1100-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1100/Homun-0.1.1100-arm64.zip"
+        },
+        {
+          "name": "Homun-0.1.1100-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1100/Homun-0.1.1100-arm64.zip.blockmap"
+        },
+        {
+          "name": "Homun-0.1.1100-x64.exe",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1100/Homun-0.1.1100-x64.exe"
+        },
+        {
+          "name": "Homun-0.1.1100-x64.exe.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1100/Homun-0.1.1100-x64.exe.blockmap"
+        },
+        {
+          "name": "Homun-0.1.1100-x86_64.AppImage",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1100/Homun-0.1.1100-x86_64.AppImage"
+        },
+        {
+          "name": "SHA256SUMS-linux.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1100/SHA256SUMS-linux.txt"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1100/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "SHA256SUMS-win.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1100/SHA256SUMS-win.txt"
+        },
+        {
+          "name": "latest-linux.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1100/latest-linux.yml"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1100/latest-mac.yml"
+        },
+        {
+          "name": "latest.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.1.1100/latest.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
     {
       "version": "v0.1.1099",
       "name": "0.1.1099",
