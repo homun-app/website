@@ -1,7 +1,22 @@
 {
   "schemaVersion": 2,
-  "contentUpdatedAt": "2026-09-23T07:24:22.219Z",
+  "contentUpdatedAt": "2026-09-23T08:26:34.323Z",
   "items": [
+    {
+      "version": "v0.2.1",
+      "name": "0.2.1",
+      "publishedAt": "2026-09-23T08:25:57Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.2.1",
+      "highlights": [],
+      "improvements": [],
+      "fixes": [
+        "**Identità neutra per il primo avvio.** Un nuovo utente si chiama «Tu» (modificabile in Impostazioni), non più con l'identità demo dello sviluppo.",
+        "**Rimossi i riferimenti di sviluppo dall'interfaccia**: il link «Versione precedente» nella barra laterale, l'indicatore tecnico nell'intestazione, l'etichetta «PROTOTIPO», la sezione e i link dei dati demo (restano solo nell'ambiente di sviluppo), e le diciture fuorvianti «Archivio locale» e «Catalogo dimostrativo»."
+      ],
+      "platforms": [],
+      "assets": [],
+      "projectSlugs": []
+    },
     {
       "version": "v0.2.0",
       "name": "0.2.0",
