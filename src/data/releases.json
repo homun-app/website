@@ -1,7 +1,58 @@
 {
   "schemaVersion": 2,
-  "contentUpdatedAt": "2026-09-07T11:42:33.501Z",
+  "contentUpdatedAt": "2026-09-23T07:24:22.219Z",
   "items": [
+    {
+      "version": "v0.2.0",
+      "name": "0.2.0",
+      "publishedAt": "2026-09-23T07:23:58Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.2.0",
+      "highlights": [
+        "**Il collaboratore scrive il lavoro con il suo modello.** Le fasi di sintesi producono bozze vere (cataloghi, relazioni) a partire da materiali, vincoli e procedure approvate, sempre consegnate in revisione alla persona; ogni modello usato è dichiarato nell'artifact.",
+        "**Niente più esecuzioni silenziose.** Confronto CSV, lettura materiali, chiamate a strumenti MCP e sintesi nascono come proposte con digest che approvi tu: il motore non esegue nulla senza un tuo via esplicito.",
+        "**Lavori multi-fase dall'accordo all'esito.** L'intake conversazionale propone obiettivo, collaboratore e fasi; ogni fase avanza con la tua verifica e il lavoro si chiude con un risultato revisionato.",
+        "**Ogni collaboratore ha il suo modello.** La connessione preferita per agente è scelta dalla sua scheda e usata davvero dalla sua fase di sintesi, con fallback dichiarato.",
+        "**Le procedure imparate guidano il lavoro.** I messaggi dell'agente diventano procedure approvate («Salva come procedura») e il loro corpo entra nel contesto delle sintesi successive.",
+        "**Automazioni a motore.** Routine ricorrenti su scheduler durevole con pausa, ripresa, salta-prossima e revisione del modello; ogni ricorrenza resta supervisionata.",
+        "**Strumenti esterni MCP con catalogo curato.** Server dichiarati con allowlist e probe onesto, esecuzione supervisionata con risultato in revisione; voci verificate nel repository, inerti finché non le dichiari."
+      ],
+      "improvements": [
+        "**Impostazioni complete**: persone, modelli con consigli per attività, budget e routing, agenti, team, plugin, skill, automazioni, memoria, archivio.",
+        "**Budget per lavoro**: tentativi e token contati per ogni lavoro, con riserve atomiche ed esaurimento tipizzato che si alza solo esplicitamente.",
+        "**Documenti e scadenze**: libreria degli artifact del motore e vista scadenze collegata ai lavori.",
+        "**Motore Python locale autonomo**: bundle verificato da receipt con dipendenze hash-lockate, incluso nell'app; nessun servizio esterno richiesto.",
+        "**Sicurezza dell'app**: fuses di hardening, sandbox, context isolation, CSP e proxy delle API con token mai nel renderer."
+      ],
+      "fixes": [
+        "**Aggiornamenti non firmati impossibili**: la pipeline di rilascio rifiuta una release macOS senza firma e notarizzazione invece di pubblicarla nel feed di aggiornamento."
+      ],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.2.0-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.0/Homun-0.2.0-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.2.0-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.0/Homun-0.2.0-arm64.zip"
+        },
+        {
+          "name": "Homun-0.2.0-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.0/Homun-0.2.0-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.0/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.0/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
     {
       "version": "v0.1.1100",
       "name": "0.1.1100",
