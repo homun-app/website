@@ -1,7 +1,25 @@
 {
   "schemaVersion": 2,
-  "contentUpdatedAt": "2026-09-23T09:05:49.236Z",
+  "contentUpdatedAt": "2026-09-23T09:58:34.285Z",
   "items": [
+    {
+      "version": "v0.2.1001",
+      "name": "0.2.1001",
+      "publishedAt": "2026-09-23T09:57:36Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.2.1001",
+      "highlights": [],
+      "improvements": [
+        "**Download progress window.** Accepting an update now opens a small progress window (percentage and megabytes); the Dock icon mirrors the progress. Homun keeps working while it downloads.",
+        "**Explicit restart consent.** When the download completes the app asks whether to close and restart now to install, or install on the next quit. Nothing is ever installed silently."
+      ],
+      "fixes": [
+        "**A malformed update event can no longer crash the main process** (defensive guards around the update offer, the download start and the Dock progress call).",
+        "**A staged download equal to the running version no longer prompts again** (leftover from an install-on-quit is ignored unless genuinely newer)."
+      ],
+      "platforms": [],
+      "assets": [],
+      "projectSlugs": []
+    },
     {
       "version": "v0.2.1000",
       "name": "0.2.1000",
