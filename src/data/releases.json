@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "contentUpdatedAt": "2026-09-23T09:58:34.285Z",
+  "contentUpdatedAt": "2026-09-23T11:34:13.989Z",
   "items": [
     {
       "version": "v0.2.1001",
@@ -16,8 +16,31 @@
         "**A malformed update event can no longer crash the main process** (defensive guards around the update offer, the download start and the Dock progress call).",
         "**A staged download equal to the running version no longer prompts again** (leftover from an install-on-quit is ignored unless genuinely newer)."
       ],
-      "platforms": [],
-      "assets": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.2.1001-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1001/Homun-0.2.1001-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.2.1001-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1001/Homun-0.2.1001-arm64.zip"
+        },
+        {
+          "name": "Homun-0.2.1001-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1001/Homun-0.2.1001-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1001/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1001/latest-mac.yml"
+        }
+      ],
       "projectSlugs": []
     },
     {
@@ -31,8 +54,31 @@
         "**Release notes are written in English.**"
       ],
       "fixes": [],
-      "platforms": [],
-      "assets": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.2.1000-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1000/Homun-0.2.1000-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.2.1000-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1000/Homun-0.2.1000-arm64.zip"
+        },
+        {
+          "name": "Homun-0.2.1000-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1000/Homun-0.2.1000-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1000/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1000/latest-mac.yml"
+        }
+      ],
       "projectSlugs": []
     },
     {
@@ -46,8 +92,27 @@
         "**Identità neutra per il primo avvio.** Un nuovo utente si chiama «Tu» (modificabile in Impostazioni), non più con l'identità demo dello sviluppo.",
         "**Rimossi i riferimenti di sviluppo dall'interfaccia**: il link «Versione precedente» nella barra laterale, l'indicatore tecnico nell'intestazione, l'etichetta «PROTOTIPO», la sezione e i link dei dati demo (restano solo nell'ambiente di sviluppo), e le diciture fuorvianti «Archivio locale» e «Catalogo dimostrativo»."
       ],
-      "platforms": [],
-      "assets": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.2.1-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1/Homun-0.2.1-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.2.1-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1/Homun-0.2.1-arm64.zip"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1/latest-mac.yml"
+        }
+      ],
       "projectSlugs": []
     },
     {
