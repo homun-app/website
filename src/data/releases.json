@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "contentUpdatedAt": "2026-10-08T12:27:12.071Z",
+  "contentUpdatedAt": "2026-10-08T15:35:23.670Z",
   "items": [
     {
       "version": "v0.2.1002",
@@ -28,9 +28,14 @@
         "**Date grouping in the sidebar uses real engine timestamps** on calendar days, never invented ones."
       ],
       "platforms": [
+        "Linux",
         "macOS"
       ],
       "assets": [
+        {
+          "name": "Homun-0.2.1002-amd64.deb",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1002/Homun-0.2.1002-amd64.deb"
+        },
         {
           "name": "Homun-0.2.1002-arm64.dmg",
           "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1002/Homun-0.2.1002-arm64.dmg"
@@ -42,6 +47,14 @@
         {
           "name": "Homun-0.2.1002-arm64.zip.blockmap",
           "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1002/Homun-0.2.1002-arm64.zip.blockmap"
+        },
+        {
+          "name": "Homun-0.2.1002-x86_64.AppImage",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1002/Homun-0.2.1002-x86_64.AppImage"
+        },
+        {
+          "name": "SHA256SUMS-linux.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1002/SHA256SUMS-linux.txt"
         },
         {
           "name": "SHA256SUMS-mac.txt",
