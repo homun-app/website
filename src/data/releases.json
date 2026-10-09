@@ -1,7 +1,71 @@
 {
   "schemaVersion": 2,
-  "contentUpdatedAt": "2026-10-08T15:35:23.670Z",
+  "contentUpdatedAt": "2026-10-09T17:25:36.946Z",
   "items": [
+    {
+      "version": "v0.2.1003",
+      "name": "0.2.1003",
+      "publishedAt": "2026-10-09T17:25:16Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.2.1003",
+      "highlights": [
+        "**Sealed object transfers between host and peer.** Chunked, resumable HTTP transfers with per-object wraps; credentials and secret stores never enter the transfer payload.",
+        "**Transfers announced on the remote event cursor**, so a peer learns about new sealed versions while reading the shared project — without a second polling channel.",
+        "**Revoked devices cannot receive new wraps.** Publishing a version whose wrap targets a revoked fingerprint is rejected; already-downloaded plaintext stays a local concern (declared in Settings → Persone).",
+        "**Peer delegation tied to the work budget**, with hold/release on offer, return, revoke and expiry; after a timeout the peer can reconcile the previous attempt instead of blind reassignment.",
+        "**Linux installers in the multi-OS pipeline** (.deb and AppImage) alongside the notarized macOS build path."
+      ],
+      "improvements": [
+        "**UX quick wins for first-run and navigation**: Squadra and Altro in the nav, clearer settings levels, and a tighter first-run path.",
+        "**Hermes streaming P0 gaps closed** so live battery scenarios stay green under interruption and partial usage.",
+        "**Engine recovery when the data directory is busy**, with a clear path instead of a silent startup failure.",
+        "**Recipient names for all work readers** and safer parity-command defaults."
+      ],
+      "fixes": [
+        "**Linux: the bundled engine no longer requests an executable stack.** Some python-build-standalone interpreters ship libpython with a RWE GNU_STACK that recent glibc refuses to load; the build now clears and verifies that flag on every ELF in the bundle, so .deb/AppImage installs start the engine on first run without manual patchelf.",
+        "**Live battery hygiene** for T2/T6 scripts and cron→chat leftovers.",
+        "**Copilot leftovers**: diagnostics auth, routine templates gated on real engine data, and the ddgs lock aligned with the engine env.",
+        "**Desktop packaging metadata** (homepage and author) required by electron-builder for `.deb`."
+      ],
+      "platforms": [
+        "Linux",
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.2.1003-amd64.deb",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1003/Homun-0.2.1003-amd64.deb"
+        },
+        {
+          "name": "Homun-0.2.1003-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1003/Homun-0.2.1003-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.2.1003-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1003/Homun-0.2.1003-arm64.zip"
+        },
+        {
+          "name": "Homun-0.2.1003-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1003/Homun-0.2.1003-arm64.zip.blockmap"
+        },
+        {
+          "name": "Homun-0.2.1003-x86_64.AppImage",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1003/Homun-0.2.1003-x86_64.AppImage"
+        },
+        {
+          "name": "SHA256SUMS-linux.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1003/SHA256SUMS-linux.txt"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1003/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.2.1003/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
     {
       "version": "v0.2.1002",
       "name": "0.2.1002",
