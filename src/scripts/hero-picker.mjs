@@ -44,9 +44,16 @@ export function initHeroPicker(root = document, win = window) {
 		timers = [];
 	};
 
+	// Pending messages keep their place (visibility, not display) so the
+	// window has its final height from the start and the page below never
+	// jumps while the scene plays.
 	const reveal = (scene, upTo) => {
 		scene.querySelectorAll("[data-from]").forEach((message, index) => {
-			message.hidden = index >= upTo;
+			const pending = index >= upTo;
+			message.style.transition = reducedMotion ? "" : "opacity 0.35s ease, transform 0.35s ease";
+			message.style.visibility = pending ? "hidden" : "";
+			message.style.opacity = pending ? "0" : "";
+			message.style.transform = pending && !reducedMotion ? "translateY(6px)" : "";
 		});
 	};
 

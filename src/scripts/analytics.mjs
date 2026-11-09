@@ -1,3 +1,5 @@
+import { detectPlatform } from "./downloads.mjs";
+
 const DOWNLOAD_FORMATS = [
 	[".appimage", "appimage", "linux"],
 	[".dmg", "dmg", "macos"],
@@ -61,13 +63,6 @@ function installerDetails(pathname) {
 	return { format: "release_page", platform: "unknown" };
 }
 
-function detectPlatform(navigatorLike = {}) {
-	const value = `${navigatorLike.userAgentData?.platform ?? ""} ${navigatorLike.platform ?? ""} ${navigatorLike.userAgent ?? ""}`.toLowerCase();
-	if (value.includes("mac")) return "macos";
-	if (value.includes("win")) return "windows";
-	if (value.includes("linux") || value.includes("x11")) return "linux";
-	return "unknown";
-}
 
 function sourceFromPath(pathname) {
 	if (pathname === "/") return "homepage";

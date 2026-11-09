@@ -7,6 +7,12 @@ export const CORE_REPOSITORY_URL = "https://github.com/homun-app/homun-core";
 
 export function detectPlatform(navigatorLike = {}) {
 	const value = `${navigatorLike.userAgentData?.platform ?? ""} ${navigatorLike.platform ?? ""} ${navigatorLike.userAgent ?? ""}`.toLowerCase();
+	// Phones and tablets first: iOS user agents say "like Mac OS X", Android
+	// ones say "Linux", and iPadOS Safari poses as a Mac with a touch screen.
+	// None of them can run a desktop installer.
+	if (navigatorLike.userAgentData?.mobile === true) return "unknown";
+	if (/android|iphone|ipad|ipod|mobile/.test(value)) return "unknown";
+	if (value.includes("mac") && (navigatorLike.maxTouchPoints ?? 0) > 1) return "unknown";
 	if (value.includes("mac")) return "macos";
 	if (value.includes("win")) return "windows";
 	if (value.includes("linux") || value.includes("x11")) return "linux";
@@ -242,7 +248,9 @@ export function initDownloadControls(root = document, navigatorLike = navigator,
 		const list = options.querySelector?.("[data-download-list]");
 		const status = options.querySelector?.("[data-download-status]");
 
-		chooser.addEventListener("click", async () => {
+		chooser.addEventListener("click", async (event) => {
+			// A link-shaped chooser keeps its href as the no-JS fallback.
+			event?.preventDefault?.();
 			const opening = options.hidden;
 			options.hidden = !opening;
 			chooser.setAttribute("aria-expanded", String(opening));

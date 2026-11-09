@@ -25,6 +25,39 @@ assert.equal(detectPlatform({ userAgentData: { platform: "macOS" } }), "macos");
 assert.equal(detectPlatform({ userAgentData: { platform: "Windows" } }), "windows");
 assert.equal(detectPlatform({ platform: "Linux x86_64" }), "linux");
 assert.equal(detectPlatform({ platform: "PlayStation" }), "unknown");
+// Phones and tablets never get a desktop installer.
+assert.equal(
+	detectPlatform({
+		platform: "iPhone",
+		userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1",
+	}),
+	"unknown",
+);
+assert.equal(
+	detectPlatform({
+		platform: "Linux armv81",
+		userAgent: "Mozilla/5.0 (Linux; Android 15; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Mobile Safari/537.36",
+		userAgentData: { platform: "Android", mobile: true },
+	}),
+	"unknown",
+);
+assert.equal(
+	detectPlatform({
+		platform: "MacIntel",
+		maxTouchPoints: 5,
+		userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15",
+	}),
+	"unknown",
+	"iPadOS Safari poses as a Mac with a touch screen",
+);
+assert.equal(
+	detectPlatform({
+		platform: "MacIntel",
+		maxTouchPoints: 0,
+		userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15",
+	}),
+	"macos",
+);
 
 const grouped = groupInstallers(assets);
 assert.deepEqual(grouped.macos.map((asset) => asset.name), ["Homun-1.2.3-arm64.dmg"]);
