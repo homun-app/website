@@ -47,5 +47,5 @@ const lifecycle = ["Request", "Work", "Review", "Deliver"];
 <style>
 	.card-link::after { content: ""; position: absolute; inset: 0; }
 	.card-link:focus-visible::after { border-radius: inherit; outline: 2px solid var(--color-accent); outline-offset: 2px; }
-	.flow-card { background: radial-gradient(circle at 83% 52%, rgba(53, 171, 145, .15), transparent 38%), linear-gradient(145deg, rgba(13, 36, 31, .95), rgba(6, 13, 11, .96)); }
+	.flow-card { background: radial-gradient(circle at 83% 52%, color-mix(in srgb, var(--color-accent) 15%, transparent), transparent 38%), linear-gradient(145deg, var(--color-surface-2), var(--color-surface)); }
 </style>
