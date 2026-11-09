@@ -1,0 +1,123 @@
+---
+import AppWindow from "../ui/AppWindow.astro";
+import ChatMessage from "../ui/ChatMessage.astro";
+import DownloadButton from "./DownloadButton.astro";
+import {
+	BOT_TEMPLATES,
+	DEFAULT_TEMPLATE_ID,
+	findTemplate,
+} from "../../data/bot-templates.mjs";
+
+// "Choose your first bot" hero. All six scenes are rendered in the static
+// HTML — only the default one is visible — so without JavaScript the page
+// shows the complete Inbox Manager scene and a working download link.
+// hero-picker.mjs swaps the visible scene and reveals its messages one at a
+// time; it never generates markup.
+const defaultTemplate = findTemplate(DEFAULT_TEMPLATE_ID);
+---
+
+<section class="relative overflow-hidden pb-20 pt-32 sm:pb-28 sm:pt-44">
+	<div class="atmosphere absolute inset-0 -z-10" aria-hidden="true"></div>
+	<div class="glow left-1/2 top-[-12rem] h-[36rem] w-[52rem] -translate-x-1/2 opacity-30" aria-hidden="true"></div>
+
+	<div class="section-shell">
+		<header class="mx-auto max-w-3xl text-center">
+			<p class="eyebrow reveal">Open source · Apache-2.0</p>
+			<h1
+				class="text-gradient reveal mx-auto pb-[0.08em] text-[clamp(2.4rem,8vw,3.4rem)] leading-[1.04] sm:text-[3.8rem] min-[1100px]:text-[5rem]"
+				style="--reveal-delay: 60ms"
+			>
+				Your bot team.<br />On your computer.
+			</h1>
+			<p class="reveal mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted sm:text-lg" style="--reveal-delay: 130ms">
+				Every bot has one job, a computer of its own and a memory you can read. It reads, drafts and remembers — you approve what goes out.
+			</p>
+		</header>
+
+		<div class="reveal mt-9" style="--reveal-delay: 200ms">
+			<div
+				data-hero-templates
+				role="tablist"
+				aria-label="Choose your first bot"
+				class="mx-auto flex max-w-full snap-x gap-2 overflow-x-auto pb-2 sm:justify-center"
+			>
+				{BOT_TEMPLATES.map((template) => (
+					<button
+						type="button"
+						id={`hero-tab-${template.id}`}
+						role="tab"
+						data-template-id={template.id}
+						aria-selected={template.id === DEFAULT_TEMPLATE_ID ? "true" : "false"}
+						aria-controls={`hero-scene-${template.id}`}
+						tabindex={template.id === DEFAULT_TEMPLATE_ID ? 0 : -1}
+						class="hero-tab flex shrink-0 snap-start items-center gap-1.5 whitespace-nowrap rounded-full border px-3.5 py-2 text-sm font-medium"
+					>
+						<span aria-hidden="true">{template.emoji}</span>
+						{template.name}
+					</button>
+				))}
+			</div>
+			<p data-template-tagline class="mt-2 text-center text-sm text-faint">{defaultTemplate.tagline}</p>
+		</div>
+
+		<div class="reveal mt-8" style="--reveal-delay: 240ms">
+			<DownloadButton source="hero" template={DEFAULT_TEMPLATE_ID} />
+			<p data-template-hint class="mt-4 text-center text-sm text-muted">
+				Then pick {defaultTemplate.name} from the templates — it's ready in the app.
+			</p>
+		</div>
+
+		<div class="reveal mx-auto mt-10 w-full max-w-[1100px]" style="--reveal-delay: 280ms">
+			{BOT_TEMPLATES.map((template) => (
+				<div
+					id={`hero-scene-${template.id}`}
+					data-hero-scene
+					data-template-id={template.id}
+					role="tabpanel"
+					aria-labelledby={`hero-tab-${template.id}`}
+					hidden={template.id !== DEFAULT_TEMPLATE_ID}
+				>
+					<AppWindow
+						title={`homun · ${template.name.toLowerCase()}`}
+						botName={template.name}
+						botEmoji={template.emoji}
+					>
+						{template.scene.map((message) => (
+							<ChatMessage from={message.from} status={message.status}>
+								{message.text}
+							</ChatMessage>
+						))}
+					</AppWindow>
+				</div>
+			))}
+		</div>
+	</div>
+</section>
+
+<style>
+	.hero-tab {
+		border-color: var(--color-line-strong);
+		background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+		color: var(--color-muted);
+		transition:
+			color 0.2s var(--ease-expo),
+			border-color 0.2s var(--ease-expo),
+			background 0.2s var(--ease-expo);
+	}
+
+	.hero-tab:hover {
+		border-color: color-mix(in srgb, var(--color-cream) 25%, transparent);
+		color: var(--color-cream);
+	}
+
+	.hero-tab[aria-selected="true"] {
+		border-color: var(--color-accent-bright);
+		background: color-mix(in srgb, var(--color-accent-soft) 45%, transparent);
+		color: var(--color-cream);
+	}
+</style>
+
+<script>
+	import { initHeroPicker } from "../../scripts/hero-picker.mjs";
+	initHeroPicker();
+</script>

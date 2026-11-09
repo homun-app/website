@@ -209,6 +209,104 @@ await assert.rejects(
 	/GitHub release request failed: 403/,
 );
 
+// Unknown platform (phone or unrecognized system): the button becomes a
+// "Get Homun for your computer" action — it opens the platform list with a
+// share control instead of navigating, without any network request.
+function unknownPlatformFixture(navigatorLike, dependencies = {}) {
+	const shareLabel = { textContent: "Share or copy the link" };
+	let shareClick;
+	const shareButton = {
+		querySelector(selector) {
+			return selector === "[data-share-label]" ? shareLabel : null;
+		},
+		addEventListener(type, handler) {
+			if (type === "click") shareClick = handler;
+		},
+	};
+	const options = { hidden: true };
+	const block = {
+		querySelector(selector) {
+			return selector === "[data-download-options]" ? options : null;
+		},
+	};
+	let controlClick;
+	const control = {
+		textContent: "",
+		closest(selector) {
+			return selector === "[data-download-block]" ? block : null;
+		},
+		matches() {
+			return true;
+		},
+		querySelector() {
+			return null;
+		},
+		addEventListener(type, handler) {
+			if (type === "click") controlClick = handler;
+		},
+		setAttribute() {},
+		getAttribute() {
+			return null;
+		},
+		removeAttribute() {},
+	};
+	const root = {
+		querySelectorAll(selector) {
+			if (selector === "[data-homun-download]") return [control];
+			if (selector === "[data-download-options] [data-share-link]") return [shareButton];
+			return [];
+		},
+		querySelector() {
+			return null;
+		},
+	};
+	initDownloadControls(root, navigatorLike, dependencies);
+	return {
+		control,
+		options,
+		shareLabel,
+		click: () => controlClick({ preventDefault() {} }),
+		share: () => shareClick({ preventDefault() {} }),
+	};
+}
+
+const shareCalls = [];
+const networkLoads = [];
+const shareFixture = unknownPlatformFixture(
+	{ platform: "PlayStation", share: async (data) => shareCalls.push(data) },
+	{
+		loadInstallers: async () => {
+			networkLoads.push("share fixture");
+			return grouped;
+		},
+		navigate: () => {
+			throw new Error("unknown platform must not navigate away");
+		},
+	},
+);
+assert.equal(
+	shareFixture.control.textContent,
+	"Get Homun for your computer",
+	"the unknown-platform button must invite the visitor back to a computer",
+);
+await shareFixture.click();
+assert.deepEqual(networkLoads, [], "opening the platform list must not hit the network");
+assert.equal(shareFixture.options.hidden, false, "the click must open the platform list");
+await shareFixture.share();
+assert.deepEqual(shareCalls, [{ url: "https://homun.app/" }], "Web Share must receive the site link");
+assert.equal(shareFixture.shareLabel.textContent, "Link copied");
+
+const copyCalls = [];
+const copyFixture = unknownPlatformFixture({
+	platform: "PlayStation",
+	clipboard: { writeText: async (text) => copyCalls.push(text) },
+});
+await copyFixture.click();
+assert.equal(copyFixture.options.hidden, false);
+await copyFixture.share();
+assert.deepEqual(copyCalls, ["https://homun.app/"], "without Web Share the link is copied");
+assert.equal(copyFixture.shareLabel.textContent, "Link copied");
+
 const homepage = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
 for (const marker of [
 	"data-homun-download",

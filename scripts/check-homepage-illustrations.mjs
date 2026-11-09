@@ -3,8 +3,9 @@ import { readFile } from "node:fs/promises";
 
 const homepage = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
 
+// The workshop illustration belonged to the Homun 2 hero, replaced by the
+// bot-team hero in Task 4; the remaining sections still render their scenes.
 for (const marker of [
-	'data-illustration="workshop"',
 	'data-illustration="engines"',
 	'data-illustration="memory-continuity"',
 	'data-illustration="work-code"',

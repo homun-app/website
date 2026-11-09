@@ -1,0 +1,68 @@
+---
+import { CORE_REPOSITORY_URL, RELEASES_PAGE_URL } from "../../scripts/downloads.mjs";
+
+interface Props {
+	source: string;
+	template?: string;
+}
+
+// Primary download control with the Docker Desktop note, the other-platforms
+// link and the platform list a phone (or unknown system) opens instead of
+// navigating away. The href is the static no-JS fallback: the releases list,
+// never a Homun 2 build.
+const { source, template } = Astro.props;
+const DOCKER_DESKTOP_URL = "https://www.docker.com/products/docker-desktop/";
+const platformTargets = [
+	{ platform: "macos", label: "macOS" },
+	{ platform: "windows", label: "Windows" },
+	{ platform: "linux", label: "Linux" },
+];
+---
+
+<div data-download-block class="flex w-full flex-col items-center">
+	<div class="flex w-full flex-col items-stretch justify-center gap-3 sm:w-auto sm:flex-row sm:items-center">
+		<a
+			data-homun-download
+			data-analytics-download-source={source}
+			data-analytics-template={template}
+			href={RELEASES_PAGE_URL}
+			class="btn btn-primary w-full sm:w-auto"
+		>
+			Download
+		</a>
+		<a href={CORE_REPOSITORY_URL} class="btn btn-ghost w-full sm:w-auto">Star on GitHub</a>
+	</div>
+
+	<p class="mt-4 text-center text-sm text-faint">
+		Requires <a class="link-accent" href={DOCKER_DESKTOP_URL} rel="noopener">Docker Desktop</a>
+		<span aria-hidden="true"> · </span>
+		<a class="link-accent" href={RELEASES_PAGE_URL}>Other platforms</a>
+	</p>
+
+	<div
+		data-download-options
+		hidden
+		class="mt-4 w-full max-w-md rounded-2xl border border-line bg-surface/70 p-4"
+	>
+		<div class="grid gap-2">
+			{platformTargets.map((target) => (
+				<a
+					data-download-platform={target.platform}
+					href={RELEASES_PAGE_URL}
+					class="flex items-center justify-between rounded-xl border border-line bg-bg/45 px-4 py-3 text-sm text-muted transition-colors hover:border-line-strong hover:text-cream"
+				>
+					<span>{target.label}</span>
+					<span class="text-accent-bright" aria-hidden="true">↓</span>
+				</a>
+			))}
+			<button
+				data-share-link
+				type="button"
+				class="flex items-center justify-between rounded-xl border border-line bg-bg/45 px-4 py-3 text-sm text-muted transition-colors hover:border-line-strong hover:text-cream"
+			>
+				<span data-share-label>Share or copy the link</span>
+				<span class="text-accent-bright" aria-hidden="true">↗</span>
+			</button>
+		</div>
+	</div>
+</div>

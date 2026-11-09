@@ -7,12 +7,11 @@ const roadmap = JSON.parse(
 	await readFile(new URL("../src/data/roadmap.json", import.meta.url), "utf8"),
 );
 
+// Task 4 replaced the Homun 2 hero with the bot-team hero; the strings that
+// lived only in the old hero were removed. Task 5 rewrites this contract on
+// the new homepage story.
 for (const required of [
 	"Your work. Your models. Your system.",
-	"Independent AI workspace",
-	"An AI workspace for people who build, research and create—not just chat.",
-	"Use persistent memory, tools and automations with compatible cloud, open-source or local models, while keeping your work under your control.",
-	"No account required · Installers for macOS, Windows and Linux",
 	"Start without creating an account.",
 	"A new chat. The same understanding.",
 	"Not a transcript. Not an opaque embedding blob.",

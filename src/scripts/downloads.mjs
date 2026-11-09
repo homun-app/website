@@ -13,6 +13,8 @@ export function detectPlatform(navigatorLike = {}) {
 	return "unknown";
 }
 
+export const SITE_URL = "https://homun.app/";
+
 export function groupInstallers(assets = []) {
 	const grouped = { macos: [], windows: [], linux: [] };
 	for (const asset of assets) {
@@ -39,7 +41,7 @@ const platformLabels = {
 	macos: "Download for macOS",
 	windows: "Download for Windows",
 	linux: "Download for Linux",
-	unknown: "Download Homun",
+	unknown: "Get Homun for your computer",
 };
 
 const platformNames = {
@@ -107,10 +109,26 @@ function responsiveDownloadLabels(control) {
 	return compact && full ? { compact, full } : null;
 }
 
-function wireDownloadControl(control, platform, dependencies = {}) {
+// The options panel that belongs to a control: the enclosing download block
+// when there is one, otherwise the control's own container.
+function scopedDownloadOptions(element, root = document) {
+	const scope = element.closest?.("[data-download-block]") ?? element.parentElement ?? root;
+	return scope?.querySelector?.("[data-download-options]") ?? null;
+}
+
+function wireDownloadControl(control, platform, root = document, dependencies = {}) {
 	const { loadInstallers = loadLatestInstallers, navigate = navigateTo } = dependencies;
 	control.addEventListener("click", async (event) => {
 		event.preventDefault();
+		if (platform === "unknown") {
+			const options = scopedDownloadOptions(control, root);
+			if (options) {
+				const opening = options.hidden;
+				options.hidden = !opening;
+				control.setAttribute("aria-expanded", String(opening));
+				return;
+			}
+		}
 		if (control.getAttribute("aria-busy") === "true") return;
 		control.setAttribute("aria-busy", "true");
 		const isPrimary = control.matches("[data-homun-download]");
@@ -145,6 +163,31 @@ function wireDownloadControl(control, platform, dependencies = {}) {
 			}
 		}
 	});
+}
+
+// Phone or unknown system: no installer to offer, so the visitor shares or
+// copies the site link instead. Web Share when the browser has it, clipboard
+// otherwise; no network request either way.
+function wireShareControls(root = document, navigatorLike = navigator) {
+	for (const shareButton of root.querySelectorAll("[data-download-options] [data-share-link]")) {
+		shareButton.addEventListener("click", async () => {
+			const label = shareButton.querySelector("[data-share-label]") ?? shareButton;
+			const share = navigatorLike?.share;
+			const writeText = navigatorLike?.clipboard?.writeText;
+			try {
+				if (typeof share === "function") {
+					await share.call(navigatorLike, { url: SITE_URL });
+				} else if (typeof writeText === "function") {
+					await writeText.call(navigatorLike.clipboard, SITE_URL);
+				} else {
+					return;
+				}
+			} catch {
+				return;
+			}
+			label.textContent = "Link copied";
+		});
+	}
 }
 
 function appendFallbackLink(list) {
@@ -186,37 +229,39 @@ export function initDownloadControls(root = document, navigatorLike = navigator,
 		} else {
 			control.textContent = platformLabels[platform];
 		}
-		wireDownloadControl(control, platform, dependencies);
+		wireDownloadControl(control, platform, root, dependencies);
 	}
 	for (const control of root.querySelectorAll("[data-download-platform]")) {
-		wireDownloadControl(control, control.dataset.downloadPlatform, dependencies);
+		wireDownloadControl(control, control.dataset.downloadPlatform, root, dependencies);
 	}
+	wireShareControls(root, navigatorLike);
 
-	const chooser = root.querySelector("[data-download-chooser]");
-	const options = root.querySelector("[data-download-options]");
-	const list = root.querySelector("[data-download-list]");
-	const status = root.querySelector("[data-download-status]");
-	if (!chooser || !options || !list || !status) return;
+	for (const chooser of root.querySelectorAll("[data-download-chooser]")) {
+		const options = scopedDownloadOptions(chooser, root);
+		if (!options) continue;
+		const list = options.querySelector?.("[data-download-list]");
+		const status = options.querySelector?.("[data-download-status]");
 
-	chooser.addEventListener("click", async () => {
-		const opening = options.hidden;
-		options.hidden = !opening;
-		chooser.setAttribute("aria-expanded", String(opening));
-		if (!opening || list.dataset.loaded === "true") return;
+		chooser.addEventListener("click", async () => {
+			const opening = options.hidden;
+			options.hidden = !opening;
+			chooser.setAttribute("aria-expanded", String(opening));
+			if (!opening || !list || !status || list.dataset.loaded === "true") return;
 
-		chooser.setAttribute("aria-busy", "true");
-		status.textContent = "Finding the latest installers…";
-		try {
-			const grouped = await loadLatestInstallers();
-			renderInstallerLinks(list, grouped);
-			list.dataset.loaded = "true";
-			status.textContent = "Choose the installer that matches your system.";
-		} catch {
-			list.replaceChildren();
-			appendFallbackLink(list);
-			status.textContent = "The installer list could not be loaded. Open all releases on GitHub.";
-		} finally {
-			chooser.removeAttribute("aria-busy");
-		}
-	});
+			chooser.setAttribute("aria-busy", "true");
+			status.textContent = "Finding the latest installers…";
+			try {
+				const grouped = await loadLatestInstallers();
+				renderInstallerLinks(list, grouped);
+				list.dataset.loaded = "true";
+				status.textContent = "Choose the installer that matches your system.";
+			} catch {
+				list.replaceChildren();
+				appendFallbackLink(list);
+				status.textContent = "The installer list could not be loaded. Open all releases on GitHub.";
+			} finally {
+				chooser.removeAttribute("aria-busy");
+			}
+		});
 	}
+}
