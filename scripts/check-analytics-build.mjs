@@ -22,7 +22,9 @@ const homepage = await readFile(
 	new URL("../dist/index.html", import.meta.url),
 	"utf8",
 );
-for (const source of ["hero", "navigation", "download_section", "footer"]) {
+// "download_section" returns with the Task 7 final CTA; the old Homun 2
+// download section is no longer part of the bot-team homepage.
+for (const source of ["hero", "navigation", "footer"]) {
 	assert.ok(
 		homepage.includes(`data-analytics-download-source="${source}"`),
 		`Homepage is missing the ${source} download marker`,

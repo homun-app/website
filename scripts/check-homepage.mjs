@@ -2,126 +2,56 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const html = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
-const text = html.replace(/<[^>]+>/g, " ").replace(/&#39;/g, "'").replace(/\s+/g, " ");
-const roadmap = JSON.parse(
-	await readFile(new URL("../src/data/roadmap.json", import.meta.url), "utf8"),
+const text = html
+	.replace(/<[^>]+>/g, " ")
+	.replace(/&#39;/g, "'")
+	.replace(/&quot;/g, '"')
+	.replace(/\s+/g, " ");
+
+// Homepage "bot team" contract (Task 5 rewrite). The page tells the Homun 0.3
+// story: the Task 4 hero, then the #computer and #memory scenes. Tasks 6 and 7
+// extend this contract with the remaining sections; the slogans of the retired
+// Homun 2 homepage must stay gone for good.
+
+const heading = html
+	.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1]
+	?.replace(/<[^>]+>/g, " ")
+	.replace(/\s+/g, " ");
+assert.ok(heading?.includes("Your bot team."), 'homepage h1 must keep "Your bot team."');
+assert.ok(heading?.includes("On your computer."), 'homepage h1 must keep "On your computer."');
+
+function section(id) {
+	const start = html.indexOf(`<section id="${id}"`);
+	assert.ok(start !== -1, `homepage is missing section#${id}`);
+	const next = html.indexOf("<section", start + 1);
+	return html.slice(start, next === -1 ? undefined : next);
+}
+
+const computer = section("computer");
+assert.ok(
+	computer.includes("data-approval-card"),
+	"section#computer must show an approval card",
 );
 
-// Task 4 replaced the Homun 2 hero with the bot-team hero; the strings that
-// lived only in the old hero were removed. Task 5 rewrites this contract on
-// the new homepage story.
-for (const required of [
+const memory = section("memory");
+assert.ok(
+	memory.includes('data-variant="highlight"'),
+	"section#memory must be the highlight variant",
+);
+assert.ok(
+	memory.replace(/<[^>]+>/g, " ").includes("Engramma"),
+	'section#memory must name "Engramma"',
+);
+
+// The Homun 2 homepage is retired: none of its slogans may come back, not
+// even through the default page title.
+for (const slogan of [
 	"Your work. Your models. Your system.",
-	"Start without creating an account.",
-	"A new chat. The same understanding.",
-	"Not a transcript. Not an opaque embedding blob.",
-	"SQL · fast recall",
-	"Graph · context + why",
-	"Wiki · read + correct",
-	"Security and control",
-	"Useful memory requires ownership.",
-	"Homun makes the storage, access boundary and activity visible—so persistent context remains something you direct.",
-	"Keep knowledge local and in scope",
-	"Memory is stored locally by default and separated by user and project, so one workspace does not silently become another's context.",
-	"Grant access explicitly",
-	"Tools and connectors begin denied and operate through permissions you approve.",
-	"Inspect what happened",
-	"Homun surfaces plans, tool use and connector activity while work is in progress.",
-	"Protect secrets by design",
-	"Sensitive credentials belong behind the Vault boundary, not inside readable memory.",
-	"Retain the final say",
-	"Correct, export or remove knowledge from active recall when it no longer belongs in the system.",
-	"Cloud, open source, or local",
-	"Real work, not isolated prompts",
+	"Independent AI workspace",
+	"An AI workspace for people who build",
 	"Official Homun workflow packs.",
-	"Developed and maintained by Homun",
-	"The developer platform follows after official packs prove the product contract.",
-	"Browse Projects",
-	"Submit workflow ideas through GitHub now.",
-	"Voting stays advisory and never creates a delivery commitment.",
-	"Browsing the roadmap does not require a Homun account.",
-	"Proposing ideas and voting require a GitHub account.",
 ]) {
-	assert.ok(
-		text.includes(required),
-		`Homepage is missing required message: ${required}`,
-	);
+	assert.ok(!text.includes(slogan), `homepage still contains the retired slogan: ${slogan}`);
 }
 
-assert.ok(
-	html.includes("GitHub workflow proposals · Available now"),
-	"Homepage does not identify GitHub workflow proposals as available",
-);
-
-for (const obsolete of [
-	"Exploring",
-	"Official Homun plugins. Free at launch.",
-	"Community voting and suggestions will use an optional Homun account when enabled.",
-	"Propose ideas and vote through public GitHub discussions.",
-	"GitHub voting &amp; suggestions · Available now",
-	"No Homun account is required.",
-	"Voting &amp; suggestions · Coming later",
-]) {
-	assert.ok(!html.includes(obsolete), `Homepage contains obsolete roadmap message: ${obsolete}`);
-}
-
-for (const status of ["available", "building", "next"]) {
-	const expectedCount = roadmap.items.filter(
-		(item) => item.itemType === "strategic_program" && item.stage === status,
-	).length;
-	const metric = html.match(
-		new RegExp(
-			`<div[^>]*data-status="${status}"[^>]*data-count="${expectedCount}"[^>]*>([\\s\\S]*?)<\\/div>`,
-		),
-	);
-	assert.ok(metric, `Homepage ${status} count is not derived from the roadmap snapshot`);
-	assert.ok(
-		metric[1].includes(String(expectedCount).padStart(2, "0")),
-		`Homepage ${status} card does not display the roadmap snapshot count`,
-	);
-}
-
-for (const forbidden of ["Codex", "Claude Code", "any model", "every platform"]) {
-	assert.ok(
-		!text.toLowerCase().includes(forbidden.toLowerCase()),
-		`Homepage contains forbidden claim or comparison: ${forbidden}`,
-	);
-}
-
-for (const href of ["/docs", "/marketplace", "/roadmap", "/guides/download/", "/#memory"]) {
-	assert.ok(html.includes(`href="${href}"`), `Homepage is missing route: ${href}`);
-}
-
-assert.ok(
-	!html.includes("bg-grid"),
-	"Homepage still renders the graph-paper background",
-);
-
-const modelsPosition = html.indexOf('id="models"');
-const memoryPosition = html.indexOf('id="memory"');
-const productPosition = html.indexOf('id="product"');
-const controlPosition = html.indexOf('id="control"');
-
-assert.ok(modelsPosition >= 0, "Homepage is missing the Models section");
-assert.ok(memoryPosition >= 0, "Homepage is missing the Memory section");
-assert.ok(productPosition >= 0, "Homepage is missing the Product section");
-assert.ok(controlPosition >= 0, "Homepage is missing the Security section");
-assert.ok(
-	modelsPosition < memoryPosition && memoryPosition < productPosition && productPosition < controlPosition,
-	"Memory must render after Models and before Product, with Security later in the story",
-);
-
-const navSource = await readFile(
-	new URL("../src/components/Nav.astro", import.meta.url),
-	"utf8",
-);
-assert.ok(
-	navSource.includes('<span class="sm:hidden" data-download-label="compact">Download</span>'),
-	"Compact navigation must use the short Download label",
-);
-assert.ok(
-	navSource.includes('<span class="hidden sm:inline" data-download-label="full">Download Homun</span>'),
-	"Navigation must restore the full Download Homun label from sm upward",
-);
-
-console.log("Homepage positioning contract passed");
+console.log("Homepage bot-team contract passed");

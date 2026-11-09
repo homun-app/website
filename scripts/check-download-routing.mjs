@@ -341,12 +341,13 @@ assert.deepEqual(copyCalls, ["https://homun.app/"], "without Web Share the link 
 assert.equal(copyFixture.shareLabel.textContent, "Link copied");
 
 const homepage = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
+// "data-download-action" and "Download for another platform" belonged to the
+// retired Homun 2 download section; the bot-team homepage routes downloads
+// through the hero button and the platform chooser instead.
 for (const marker of [
 	"data-homun-download",
 	"data-download-chooser",
 	"data-download-options",
-	"data-download-action",
-	"Download for another platform",
 	"https://github.com/homun-app/homun-core",
 	"https://github.com/homun-app/homun-releases/releases/latest",
 ]) {

@@ -6,13 +6,17 @@ interface Props {
 	body: string;
 	variant?: "default" | "highlight";
 	align?: "left" | "right";
+	layout?: "split" | "stacked";
 }
 
 // Section wrapper for the homepage scenes: eyebrow + title + body on one
 // side, the scene (default slot) on the other. `highlight` uses the slightly
 // different background reserved for the memory section; `align` moves the
-// text to the right. Reveals on scroll via the existing `reveal` class.
-const { id, eyebrow, title, body, variant = "default", align = "left" } = Astro.props;
+// text to the right. `layout` picks the geometry: "split" puts text and scene
+// in two columns, "stacked" centers the text above a full-width scene — use
+// it when the scene needs room (e.g. an app window with the Computer panel).
+// Reveals on scroll via the existing `reveal` class.
+const { id, eyebrow, title, body, variant = "default", align = "left", layout = "split" } = Astro.props;
 ---
 
 <section
@@ -21,13 +25,33 @@ const { id, eyebrow, title, body, variant = "default", align = "left" } = Astro.
 	data-variant={variant}
 	class:list={["relative scroll-mt-24 py-20 sm:py-28", variant === "highlight" && "border-y border-line bg-highlight"]}
 >
-	<div class="section-shell grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-		<div class:list={["reveal", align === "right" && "lg:order-2"]}>
+	<div
+		class:list={[
+			"section-shell",
+			layout === "split"
+				? "grid items-center gap-10 lg:grid-cols-2 lg:gap-16"
+				: "flex flex-col gap-10 lg:gap-14",
+		]}
+	>
+		<div
+			class:list={[
+				"reveal",
+				align === "right" && "lg:order-2",
+				layout === "stacked" && "mx-auto w-full max-w-2xl text-center",
+			]}
+		>
 			<p class="eyebrow">{eyebrow}</p>
 			<h2 class="text-gradient mt-4 text-3xl sm:text-5xl">{title}</h2>
-			<p class="mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg">{body}</p>
+			<p
+				class:list={[
+					"mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg",
+					layout === "stacked" && "mx-auto",
+				]}
+			>
+				{body}
+			</p>
 		</div>
-		<div class:list={["reveal", align === "right" && "lg:order-1"]} style="--reveal-delay: 90ms">
+		<div class:list={["reveal w-full", align === "right" && "lg:order-1"]} style="--reveal-delay: 90ms">
 			<slot />
 		</div>
 	</div>

@@ -1,22 +1,14 @@
 ---
 import Page from "../layouts/Page.astro";
 import Hero from "../components/home/Hero.astro";
-import ModelFreedom from "../components/ModelFreedom.astro";
-import Memory from "../components/Memory.astro";
-import WorkProof from "../components/WorkProof.astro";
-import ConnectedAction from "../components/ConnectedAction.astro";
-import Security from "../components/Security.astro";
-import Ecosystem from "../components/Ecosystem.astro";
-import Download from "../components/Download.astro";
+import ComputerScene from "../components/home/ComputerScene.astro";
+import MemoryScene from "../components/home/MemoryScene.astro";
 ---
 
+<!-- The bot-team homepage. The Homun 2 sections are unmounted; the remaining
+     scenes arrive with Tasks 6 and 7, the new nav/footer with Task 8. -->
 <Page>
 	<Hero />
-	<ModelFreedom />
-	<Memory />
-	<WorkProof />
-	<ConnectedAction />
-	<Security />
-	<Ecosystem />
-	<Download />
+	<ComputerScene />
+	<MemoryScene />
 </Page>
