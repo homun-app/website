@@ -3,12 +3,14 @@
 // the routine prompt each template ships with). Every scene is a short chat
 // arc grounded in what the template really does — free reads, reply drafts to
 // approve, silence on empty days, facts kept in memory — and always ends with
-// the decision left to the user: a bot never sends on its own.
+// the decision left to the user: a bot never sends on its own. `shortName` is
+// the chip label; `name` stays in the "Then pick …" line and the window title.
 
 export const BOT_TEMPLATES = [
 	{
 		id: "inbox-manager",
 		name: "Inbox manager",
+		shortName: "Inbox",
 		emoji: "📬",
 		tagline: "Triage the mail. Draft the replies.",
 		scene: [
@@ -23,6 +25,7 @@ export const BOT_TEMPLATES = [
 	{
 		id: "meeting-prep",
 		name: "Meeting preparation assistant",
+		shortName: "Meeting prep",
 		emoji: "🗓️",
 		tagline: "Tomorrow's meetings, prepared tonight.",
 		scene: [
@@ -37,6 +40,7 @@ export const BOT_TEMPLATES = [
 	{
 		id: "daily-briefing",
 		name: "Daily briefing editor",
+		shortName: "Daily briefing",
 		emoji: "☀️",
 		tagline: "Agenda, loose ends, news. One line each.",
 		scene: [
@@ -51,6 +55,7 @@ export const BOT_TEMPLATES = [
 	{
 		id: "chief-of-staff",
 		name: "Chief of staff",
+		shortName: "Chief of staff",
 		emoji: "🧭",
 		tagline: "What still stands. What needs you.",
 		scene: [
@@ -65,6 +70,7 @@ export const BOT_TEMPLATES = [
 	{
 		id: "mention-monitor",
 		name: "Mention monitor",
+		shortName: "Mentions",
 		emoji: "👂",
 		tagline: "Your name in public. Only what matters.",
 		scene: [
@@ -79,15 +85,16 @@ export const BOT_TEMPLATES = [
 	{
 		id: "executive-assistant",
 		name: "Executive assistant",
+		shortName: "Executive assistant",
 		emoji: "🤵",
-		tagline: "The few things that need your decision.",
+		tagline: "Your open list, kept from day to day.",
 		scene: [
-			{ from: "system", text: "⏱ start of day · 08:30" },
-			{ from: "bot", text: "three things deserve you today, in expiry order" },
-			{ from: "bot", text: "the renewal choice expires first — the doc is in your drive" },
-			{ from: "bot", text: "then the hire call, then the budget sign-off" },
-			{ from: "user", text: "and if i only get to one?" },
-			{ from: "bot", text: "the renewal — the other two survive a day, that one doesn't" },
+			{ from: "system", text: "⏱ morning · 08:30" },
+			{ from: "bot", text: "opening your list — one thing came over from yesterday: the insurance renewal is still unsigned" },
+			{ from: "bot", text: "adding one for today: the landlord wants an answer by noon" },
+			{ from: "user", text: "the insurance is done, i signed it last night" },
+			{ from: "bot", status: "done", text: "crossed out — the list is down to the landlord reply" },
+			{ from: "bot", text: "i'll carry the rest to tomorrow, nothing gets dropped" },
 		],
 	},
 ];

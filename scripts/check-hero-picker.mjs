@@ -43,6 +43,15 @@ for (const template of BOT_TEMPLATES) {
 		template.name && template.emoji && template.tagline,
 		`template ${template.id} needs name, emoji and tagline`,
 	);
+	assert.equal(
+		typeof template.shortName,
+		"string",
+		`template ${template.id} needs a shortName chip label`,
+	);
+	assert.ok(
+		template.shortName.length > 0 && template.shortName.length <= 20,
+		`shortName of ${template.id} must be at most 20 characters: ${template.shortName}`,
+	);
 	assert.ok(
 		template.scene.length >= 4 && template.scene.length <= 8,
 		`scene of ${template.id} must have 4–8 messages`,

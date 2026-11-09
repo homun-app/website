@@ -53,7 +53,7 @@ const defaultTemplate = findTemplate(DEFAULT_TEMPLATE_ID);
 						class="hero-tab flex shrink-0 snap-start items-center gap-1.5 whitespace-nowrap rounded-full border px-3.5 py-2 text-sm font-medium"
 					>
 						<span aria-hidden="true">{template.emoji}</span>
-						{template.name}
+						{template.shortName}
 					</button>
 				))}
 			</div>
@@ -95,6 +95,16 @@ const defaultTemplate = findTemplate(DEFAULT_TEMPLATE_ID);
 </section>
 
 <style>
+	/* The chip row scrolls on touch and keyboard, but never shows a scrollbar:
+	   the chips are the whole interface, a bar would only add noise. */
+	[data-hero-templates] {
+		scrollbar-width: none;
+	}
+
+	[data-hero-templates]::-webkit-scrollbar {
+		display: none;
+	}
+
 	.hero-tab {
 		border-color: var(--color-line-strong);
 		background: color-mix(in srgb, var(--color-surface) 72%, transparent);
