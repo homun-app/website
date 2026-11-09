@@ -28,7 +28,7 @@ const { title, botName, botEmoji, computer = false } = Astro.props;
 		)}
 	</div>
 
-	<div class="grid md:grid-cols-[minmax(0,1fr)_16rem]">
+	<div class:list={["grid", computer && "md:grid-cols-[minmax(0,1fr)_16rem]"]}>
 		<div data-chat class="flex min-h-56 flex-col gap-3 p-4 sm:p-5">
 			<slot />
 		</div>
