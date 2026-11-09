@@ -1,6 +1,8 @@
+import { compareVersions, MIN_PUBLIC_VERSION } from "../lib/versions.mjs";
+
 export const RELEASES_REPOSITORY_URL = "https://github.com/homun-app/homun-releases";
-export const RELEASES_PAGE_URL = `${RELEASES_REPOSITORY_URL}/releases/latest`;
-export const RELEASES_API_URL = "https://api.github.com/repos/homun-app/homun-releases/releases/latest";
+export const RELEASES_PAGE_URL = `${RELEASES_REPOSITORY_URL}/releases`;
+export const RELEASES_API_URL = "https://api.github.com/repos/homun-app/homun-releases/releases?per_page=30";
 export const CORE_REPOSITORY_URL = "https://github.com/homun-app/homun-core";
 
 export function detectPlatform(navigatorLike = {}) {
@@ -48,6 +50,24 @@ const platformNames = {
 
 let installersPromise;
 
+export function pickCurrentRelease(releases = [], min = MIN_PUBLIC_VERSION) {
+	if (!Array.isArray(releases)) return null;
+	let current = null;
+	for (const release of releases) {
+		if (!release || release.draft || release.prerelease) continue;
+		if (typeof release.tag_name !== "string") continue;
+		if (compareVersions(release.tag_name, min) < 0) continue;
+		if (!current) {
+			current = release;
+			continue;
+		}
+		const comparison = compareVersions(release.tag_name, current.tag_name);
+		if (comparison > 0) current = release;
+		else if (comparison === 0 && Date.parse(release.published_at ?? "") > Date.parse(current.published_at ?? "")) current = release;
+	}
+	return current;
+}
+
 export async function loadLatestInstallers(fetchImpl = fetch, { useCache = true } = {}) {
 	if (useCache && installersPromise) return installersPromise;
 	const request = (async () => {
@@ -55,8 +75,9 @@ export async function loadLatestInstallers(fetchImpl = fetch, { useCache = true 
 			headers: { Accept: "application/vnd.github+json" },
 		});
 		if (!response.ok) throw new Error(`GitHub release request failed: ${response.status}`);
-		const release = await response.json();
-		return groupInstallers(release.assets);
+		const releases = await response.json();
+		const current = pickCurrentRelease(releases);
+		return groupInstallers(current?.assets ?? []);
 	})();
 	if (useCache) installersPromise = request;
 	try {

@@ -1,10 +1,12 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { compareVersions, parseVersion } from "../src/lib/versions.mjs";
 import {
 	detectPlatform,
 	groupInstallers,
 	initDownloadControls,
 	loadLatestInstallers,
+	pickCurrentRelease,
 	preferredInstaller,
 	RELEASES_PAGE_URL,
 } from "../src/scripts/downloads.mjs";
@@ -35,7 +37,19 @@ assert.equal(preferredInstaller("macos", grouped)?.name, "Homun-1.2.3-arm64.dmg"
 assert.equal(preferredInstaller("windows", grouped)?.name, "Homun-1.2.3-x64.exe");
 assert.equal(preferredInstaller("linux", grouped)?.name, "Homun-1.2.3-x86_64.AppImage");
 assert.equal(preferredInstaller("unknown", grouped), null);
-assert.equal(RELEASES_PAGE_URL, "https://github.com/homun-app/homun-releases/releases/latest");
+assert.equal(RELEASES_PAGE_URL, "https://github.com/homun-app/homun-releases/releases");
+
+assert.deepEqual(parseVersion("v0.3.1001"), [0, 3, 1001]);
+assert.deepEqual(parseVersion("0.3.1001"), [0, 3, 1001]);
+assert.equal(parseVersion("v0.3.0-beta.1"), null);
+assert.equal(parseVersion("nightly"), null);
+assert.ok(compareVersions("v0.3.2", "v0.3.10") < 0);
+
+const rel = (tag, extra = {}) => ({ tag_name: tag, draft: false, prerelease: false, published_at: "2026-11-01T00:00:00Z", assets: [], ...extra });
+assert.equal(pickCurrentRelease([rel("v0.2.1004"), rel("v0.1.1078")]), null);
+assert.equal(pickCurrentRelease([rel("v0.2.1004"), rel("v0.3.1000"), rel("v0.3.1001")]).tag_name, "v0.3.1001");
+assert.equal(pickCurrentRelease([rel("v0.3.1002", { draft: true }), rel("v0.3.1001")]).tag_name, "v0.3.1001");
+assert.equal(pickCurrentRelease([rel("v0.3.1002", { prerelease: true }), rel("v0.3.1001")]).tag_name, "v0.3.1001");
 
 function deferred() {
 	let resolve;
@@ -137,14 +151,57 @@ assert.equal(failedControl.fullLabel.textContent, "Download for macOS");
 assert.equal(failedControl.control.getAttribute("aria-busy"), null);
 assert.equal(failedControl.textContentWasSet(), false);
 
-const successFetch = async () => ({
+const homun2Assets = [
+	{ name: "Homun-0.2.1004-arm64.dmg", browser_download_url: "https://example.test/homun2.dmg" },
+	{ name: "Homun-0.2.1004-x64.exe", browser_download_url: "https://example.test/homun2.exe" },
+	{ name: "Homun-0.2.1004-x86_64.AppImage", browser_download_url: "https://example.test/homun2.AppImage" },
+];
+
+const releasesFetch = async () => ({
 	ok: true,
-	json: async () => ({ assets }),
+	json: async () => [
+		rel("v0.3.1002", { draft: true, assets: homun2Assets }),
+		rel("v0.3.1001", { assets }),
+		rel("v0.2.1004", { assets: homun2Assets }),
+	],
 });
-assert.equal(
-	(await loadLatestInstallers(successFetch, { useCache: false })).linux[0].name,
-	"Homun-1.2.3-x86_64.AppImage",
-);
+const currentInstallers = await loadLatestInstallers(releasesFetch, { useCache: false });
+assert.equal(currentInstallers.macos[0]?.browser_download_url, "https://example.test/mac.dmg");
+assert.equal(currentInstallers.windows[0]?.browser_download_url, "https://example.test/win.exe");
+assert.equal(currentInstallers.linux[0]?.browser_download_url, "https://example.test/linux.AppImage");
+
+const homun2OnlyFetch = async () => ({
+	ok: true,
+	json: async () => [rel("v0.2.1004", { assets }), rel("v0.1.1078", { assets })],
+});
+assert.deepEqual(await loadLatestInstallers(homun2OnlyFetch, { useCache: false }), {
+	macos: [],
+	windows: [],
+	linux: [],
+});
+
+const homun2OnlyControl = responsiveControlFixture();
+const homun2Destinations = [];
+initDownloadControls(homun2OnlyControl.root, { platform: "MacIntel" }, {
+	loadInstallers: () => loadLatestInstallers(homun2OnlyFetch, { useCache: false }),
+	navigate: (url) => homun2Destinations.push(url),
+});
+await homun2OnlyControl.click();
+assert.deepEqual(homun2Destinations, [RELEASES_PAGE_URL]);
+assert.equal(homun2OnlyControl.control.getAttribute("aria-busy"), null);
+
+const rateLimitedFetch = async () => ({ ok: false, status: 403 });
+const rateLimitedControl = responsiveControlFixture();
+const rateLimitedDestinations = [];
+initDownloadControls(rateLimitedControl.root, { platform: "MacIntel" }, {
+	loadInstallers: () => loadLatestInstallers(rateLimitedFetch, { useCache: false }),
+	navigate: (url) => rateLimitedDestinations.push(url),
+});
+await rateLimitedControl.click();
+assert.deepEqual(rateLimitedDestinations, [RELEASES_PAGE_URL]);
+assert.equal(rateLimitedControl.control.getAttribute("aria-busy"), null);
+assert.equal(rateLimitedControl.compactLabel.textContent, "Download");
+assert.equal(rateLimitedControl.fullLabel.textContent, "Download for macOS");
 
 const failedFetch = async () => ({ ok: false, status: 403 });
 await assert.rejects(
