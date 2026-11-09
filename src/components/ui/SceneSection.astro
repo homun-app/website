@@ -1,0 +1,34 @@
+---
+interface Props {
+	id: string;
+	eyebrow: string;
+	title: string;
+	body: string;
+	variant?: "default" | "highlight";
+	align?: "left" | "right";
+}
+
+// Section wrapper for the homepage scenes: eyebrow + title + body on one
+// side, the scene (default slot) on the other. `highlight` uses the slightly
+// different background reserved for the memory section; `align` moves the
+// text to the right. Reveals on scroll via the existing `reveal` class.
+const { id, eyebrow, title, body, variant = "default", align = "left" } = Astro.props;
+---
+
+<section
+	id={id}
+	data-scene
+	data-variant={variant}
+	class:list={["relative scroll-mt-24 py-20 sm:py-28", variant === "highlight" && "border-y border-line bg-highlight"]}
+>
+	<div class="section-shell grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+		<div class:list={["reveal", align === "right" && "lg:order-2"]}>
+			<p class="eyebrow">{eyebrow}</p>
+			<h2 class="text-gradient mt-4 text-3xl sm:text-5xl">{title}</h2>
+			<p class="mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg">{body}</p>
+		</div>
+		<div class:list={["reveal", align === "right" && "lg:order-1"]} style="--reveal-delay: 90ms">
+			<slot />
+		</div>
+	</div>
+</section>

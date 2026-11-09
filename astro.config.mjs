@@ -92,7 +92,10 @@ export default defineConfig({
 				},
 			],
 		}),
-		sitemap(),
+		sitemap({
+			// /dev/* pages are internal specimen sheets: noindex, not in the sitemap.
+			filter: (page) => !page.includes('/dev/'),
+		}),
 	],
 	// Tailwind v4 powers the marketing pages only (imported via Base.astro).
 	vite: {

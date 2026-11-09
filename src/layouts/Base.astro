@@ -5,11 +5,13 @@ import "../styles/global.css";
 interface Props {
 	title?: string;
 	description?: string;
+	noindex?: boolean;
 }
 
 const {
 	title = "Homun — Your work. Your models. Your system.",
 	description = "Homun is a model-independent AI work environment for software, research, documents and presentations, powered by compatible cloud, open-source or local models.",
+	noindex = false,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -25,6 +27,7 @@ const ogImage = new URL("/og.png", Astro.site);
 		<link rel="canonical" href={canonical} />
 		<title>{title}</title>
 		<meta name="description" content={description} />
+		{noindex && <meta name="robots" content="noindex" />}
 		<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f9f8" />
 		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#050807" />
 		<meta name="color-scheme" content="light dark" />
