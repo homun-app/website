@@ -51,6 +51,32 @@ assert.ok((app.match(/<div\b[^>]*\bdata-bot-row(?=[\s>])/g) ?? []).length >= 4, 
 assert.match(app, /<div\b[^>]*\bdata-team-row(?=[\s>])/, "app needs a team row");
 assert.match(app, /<div\b[^>]*\bdata-card="draft"/, "app needs a draft card");
 
+const [drafts, apps, skills, computer, approvals] = [
+	"drafts", "apps", "skills", "computer", "approvals",
+].map(section);
+let previous = showcase;
+for (const current of [drafts, apps, skills, computer, approvals]) {
+	assert.ok(html.indexOf(current) >= html.indexOf(previous) + previous.length,
+		"feature sections must follow the showcase in plan order");
+	previous = current;
+}
+
+assert.equal((drafts.match(/data-card="draft"/g) ?? []).length, 2);
+assert.match(drafts, /draft — sent only if you confirm/);
+
+const tiles = apps.split(/<div\b[^>]*\bdata-app-tile(?=[\s>])/).slice(1)
+	.map((tile) => tile.split("</div>", 1)[0]);
+assert.ok(tiles.length >= 8, "apps needs at least eight app tiles");
+assert.match(apps, /Composio/);
+assert.match(apps, /MCP/);
+assert.ok(tiles.some((tile) => tile.includes("work · personal")), "one tile must show both Gmail accounts");
+
+assert.match(skills, /data-card="skill"[^>]*>[\s\S]*?Save skill/);
+assert.match(computer, /data-computer-screen(?=[\s>])[^>]*>[\s\S]*?Take over/);
+const approvalActions = [...approvals.matchAll(/data-pill(?=[\s>])[^>]*>\s*([^<]+?)\s*<\/span>/g)]
+	.map((match) => match[1]);
+assert.deepEqual(approvalActions, ["Allow", "For this turn", "Always allow", "Deny"]);
+
 assert.doesNotMatch(html, /\bdata-hero-templates\b|<section\b[^>]*\bid="meet"/);
 
 // The Homun 2 homepage is retired: none of its slogans may come back, not

@@ -1,0 +1,37 @@
+---
+import FeatureSection from "./FeatureSection.astro";
+import Surface from "../app/Surface.astro";
+import AppTile from "../app/AppTile.astro";
+
+const apps = [
+  { name: "Gmail", logo: "M", color: "#C73327", status: "work · personal", ok: true },
+  { name: "Google Calendar", logo: "31", color: "#1967D2", status: "Connected", ok: true },
+  { name: "Slack", logo: "#", color: "#4A154B", status: "Connected", ok: true },
+  { name: "Notion", logo: "N", color: "#191919", status: "Connected", ok: true },
+  { name: "GitHub", logo: "gh", color: "#24292F", status: "Direct", ok: true },
+  { name: "HubSpot", logo: "H", color: "#B74627", status: "Connected", ok: true },
+  { name: "Trello", logo: "T", color: "#006EA8", status: "via Composio" },
+  { name: "Linear", logo: "L", color: "#5E6AD2", status: "via Composio" },
+  { name: "Add MCP server", logo: "+", color: "#706C65", status: "your own tools" },
+];
+---
+
+<FeatureSection id="apps" eyebrow="Apps" layout="flip" title="Connect your apps once. Every bot can use them."
+  lead="Gmail, Calendar, Slack, Notion, GitHub and more than a thousand others through Composio, or any MCP server you add. Two Gmail accounts? Name them both, and the bot knows which one you mean.">
+  <Surface slot="visual" title="Apps" status="6 connected">
+    <div class="search"><span aria-hidden="true">⌕</span> Search apps and skills</div>
+    <div class="filters"><span class="selected">Connected</span><span>All apps</span><span>Skills</span><span>MCP servers</span></div>
+    <div class="apps-grid">
+      {apps.map((app, i) => <AppTile {...app} {i} />)}
+    </div>
+  </Surface>
+</FeatureSection>
+
+<style>
+  .search { background: var(--a-card); border-radius: 99px; padding: 8px 14px; color: var(--a-mfg); font-size: 13px; display: flex; gap: 8px; }
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; }
+  .filters span { font-size: 12px; padding: 4px 10px; border-radius: 99px; background: var(--a-card); }
+  .filters .selected { background: var(--a-fg); color: var(--a-bg); }
+  .apps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: 8px; }
+  .apps-grid :global([data-app-tile] b) { white-space: normal; }
+</style>
