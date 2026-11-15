@@ -1,0 +1,20 @@
+---
+interface Props {
+	detail: string;
+	i: number;
+	pending?: boolean;
+}
+
+const { detail, i, pending = false } = Astro.props;
+---
+
+<div class:list={["note", "play", { pending }]} style={{ "--i": i }}>
+	<slot />
+	<small>{detail}</small>
+</div>
+
+<style>
+	.note { display: grid; gap: 4px; padding: 12px 14px; border-radius: 14px; background: var(--a-card); font-size: 15px; }
+	small { font: .72rem/1.5 var(--mono); color: var(--a-mfg); }
+	.pending { border-inline-start: 3px solid var(--blue); }
+</style>

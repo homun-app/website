@@ -1,0 +1,13 @@
+---
+import { ENGRAMMA_LETTERS } from "../../data/brand.mjs";
+---
+
+<svg viewBox="-4 78 1632 263" role="img" aria-label="Engramma">
+	<g fill="none" stroke="currentColor" stroke-width="50" stroke-linecap="round" stroke-linejoin="round">
+		{ENGRAMMA_LETTERS.map((path) => <path d={path} />)}
+	</g>
+</svg>
+
+<style>
+	svg { display: block; width: min(100%, 36rem); height: auto; }
+</style>
