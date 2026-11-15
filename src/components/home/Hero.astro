@@ -1,133 +1,63 @@
 ---
-import AppWindow from "../ui/AppWindow.astro";
-import ChatMessage from "../ui/ChatMessage.astro";
+import ProductSymbol from "../brand/ProductSymbol.astro";
 import DownloadButton from "./DownloadButton.astro";
-import {
-	BOT_TEMPLATES,
-	DEFAULT_TEMPLATE_ID,
-	findTemplate,
-} from "../../data/bot-templates.mjs";
-
-// "Choose your first bot" hero. All six scenes are rendered in the static
-// HTML — only the default one is visible — so without JavaScript the page
-// shows the complete Inbox Manager scene and a working download link.
-// hero-picker.mjs swaps the visible scene and reveals its messages one at a
-// time; it never generates markup.
-const defaultTemplate = findTemplate(DEFAULT_TEMPLATE_ID);
+import { RELEASES_PAGE_URL } from "../../scripts/downloads.mjs";
 ---
 
-<section class="relative overflow-hidden pb-20 pt-32 sm:pb-28 sm:pt-44">
-	<div class="atmosphere absolute inset-0 -z-10" aria-hidden="true"></div>
-	<div class="glow left-1/2 top-[-12rem] h-[36rem] w-[52rem] -translate-x-1/2 opacity-30" aria-hidden="true"></div>
-
-	<div class="section-shell">
-		<header class="mx-auto max-w-3xl text-center">
-			<p class="eyebrow reveal">Open source · Apache-2.0</p>
-			<h1
-				class="text-gradient reveal mx-auto pb-[0.08em] text-[clamp(2.4rem,8vw,3.4rem)] leading-[1.04] sm:text-[3.8rem] min-[1100px]:text-[5rem]"
-				style="--reveal-delay: 60ms"
-			>
-				Your bot team.<br />On your computer.
-			</h1>
-			<p class="reveal mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted sm:text-lg" style="--reveal-delay: 130ms">
-				Every bot has one job, a computer of its own and a memory you can read. It reads, drafts and remembers — you approve what goes out.
-			</p>
-		</header>
-
-		<div class="reveal mt-9" style="--reveal-delay: 200ms">
-			<div
-				data-hero-templates
-				role="tablist"
-				aria-label="Choose your first bot"
-				class="mx-auto flex max-w-full snap-x gap-2 overflow-x-auto pb-2 sm:justify-center"
-			>
-				{BOT_TEMPLATES.map((template) => (
-					<button
-						type="button"
-						id={`hero-tab-${template.id}`}
-						role="tab"
-						data-template-id={template.id}
-						aria-selected={template.id === DEFAULT_TEMPLATE_ID ? "true" : "false"}
-						aria-controls={`hero-scene-${template.id}`}
-						tabindex={template.id === DEFAULT_TEMPLATE_ID ? 0 : -1}
-						class="hero-tab flex shrink-0 snap-start items-center gap-1.5 whitespace-nowrap rounded-full border px-3.5 py-2 text-sm font-medium"
-					>
-						<span aria-hidden="true">{template.emoji}</span>
-						{template.shortName}
-					</button>
-				))}
-			</div>
-			<p data-template-tagline class="mt-2 text-center text-sm text-faint">{defaultTemplate.tagline}</p>
+<section id="hero" aria-labelledby="hero-title">
+	<div class="stage"><ProductSymbol product="homun" size={270} wake /></div>
+	<p class="eyebrow">Open source · Apache-2.0</p>
+	<h1 id="hero-title">Your bot team.<br />On your computer.</h1>
+	<p class="lead">Give each bot one job. It works on a computer of its own, remembers what matters, and asks before anything goes out.</p>
+	<div class="download" data-download-block>
+		<div class="ctas">
+			<DownloadButton source="hero" />
+			<a class="see" href="#showcase">See it work <span aria-hidden="true">↓</span></a>
 		</div>
-
-		<div class="reveal mt-8" style="--reveal-delay: 240ms">
-			<DownloadButton source="hero" template={DEFAULT_TEMPLATE_ID} />
-			<p data-template-hint class="mt-4 text-center text-sm text-muted">
-				Then pick {defaultTemplate.name} from the templates — it's ready in the app.
-			</p>
-		</div>
-
-		<div class="reveal mx-auto mt-10 w-full max-w-[1100px]" style="--reveal-delay: 280ms">
-			{BOT_TEMPLATES.map((template) => (
-				<div
-					id={`hero-scene-${template.id}`}
-					data-hero-scene
-					data-template-id={template.id}
-					role="tabpanel"
-					aria-labelledby={`hero-tab-${template.id}`}
-					hidden={template.id !== DEFAULT_TEMPLATE_ID}
-				>
-					<AppWindow
-						title={`homun · ${template.name.toLowerCase()}`}
-						botName={template.name}
-						botEmoji={template.emoji}
-					>
-						{template.scene.map((message) => (
-							<ChatMessage from={message.from} status={message.status}>
-								{message.text}
-							</ChatMessage>
-						))}
-					</AppWindow>
-				</div>
-			))}
+		<div class="platforms" data-hero-platforms>
+			<a href={RELEASES_PAGE_URL} data-download-chooser aria-expanded="false" aria-label="Choose an installer for macOS, Windows beta or Linux beta">
+				<span class="chip">macOS</span>
+				<span class="chip">Windows <span class="beta">beta</span></span>
+				<span class="chip">Linux <span class="beta">beta</span></span>
+			</a>
 		</div>
 	</div>
 </section>
 
 <style>
-	/* The chip row scrolls on touch and keyboard, but never shows a scrollbar:
-	   the chips are the whole interface, a bar would only add noise. */
-	[data-hero-templates] {
-		scrollbar-width: none;
+	#hero { max-width: 1180px; margin-inline: auto; padding: clamp(36px, 7vh, 80px) 16px 0; text-align: center; }
+	.stage { display: grid; place-items: center; height: clamp(170px, 30vh, 310px); }
+	.stage :global(svg) { width: clamp(150px, 25vh, 270px); height: auto; }
+	.eyebrow { font: .76rem/1.55 var(--mono); letter-spacing: .08em; color: var(--teal-text); }
+	h1 { margin-top: 14px; font-size: clamp(2.7rem, 9vw, 6.2rem); }
+	.lead { margin: 22px auto 0; max-width: 36ch; font-size: clamp(1.05rem, 2vw, 1.25rem); line-height: 1.55; color: var(--muted); text-wrap: balance; }
+	.download { margin-top: 30px; }
+	.ctas { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: start; }
+	/* Keep the shared resolver and its platform options; the hero supplies its own secondary links. */
+	.ctas :global([data-download-block]) { display: contents; }
+	.ctas :global([data-download-block] > div:first-child) { width: auto; }
+	.ctas :global([data-download-block] > p),
+	.ctas :global([data-download-block] .btn-ghost) { display: none; }
+	.ctas :global([data-download-options]:not([hidden])) { order: 1; flex-basis: 100%; }
+	.ctas :global([data-homun-download]) {
+		border-radius: 999px; padding: .85em 1.5em; background: var(--fg);
+		color: var(--bg); font: 600 1rem/1.55 var(--body); box-shadow: none;
 	}
+	.see { padding: .85em .5em; color: var(--teal-text); font-size: 1rem; line-height: 1.55; font-weight: 600; }
+	.see:hover, .chip:hover { text-decoration: underline; }
+	.platforms { margin-top: 14px; }
+	.platforms a { display: inline-flex; flex-wrap: wrap; gap: 8px; justify-content: center; font-size: .86rem; color: var(--muted); }
+	.chip { border: 1px solid var(--line); border-radius: 999px; padding: .2em .75em; }
+	.beta { font: .66rem var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--teal-text); margin-left: .3em; }
 
-	[data-hero-templates]::-webkit-scrollbar {
-		display: none;
-	}
-
-	.hero-tab {
-		border-color: var(--color-line-strong);
-		background: color-mix(in srgb, var(--color-surface) 72%, transparent);
-		color: var(--color-muted);
-		transition:
-			color 0.2s var(--ease-expo),
-			border-color 0.2s var(--ease-expo),
-			background 0.2s var(--ease-expo);
-	}
-
-	.hero-tab:hover {
-		border-color: color-mix(in srgb, var(--color-cream) 25%, transparent);
-		color: var(--color-cream);
-	}
-
-	.hero-tab[aria-selected="true"] {
-		border-color: var(--color-accent-bright);
-		background: color-mix(in srgb, var(--color-accent-soft) 45%, transparent);
-		color: var(--color-cream);
+	@supports (animation-timeline: view()) {
+		@media (prefers-reduced-motion: no-preference) {
+			.stage :global(svg) {
+				animation: hero-mascot-exit linear both;
+				animation-timeline: scroll(root);
+				animation-range: 0 50vh;
+			}
+		}
+		@keyframes hero-mascot-exit { to { scale: .35; translate: 0 -30%; opacity: 0; } }
 	}
 </style>
-
-<script>
-	import { initHeroPicker } from "../../scripts/hero-picker.mjs";
-	initHeroPicker();
-</script>

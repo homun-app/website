@@ -1,14 +1,10 @@
 ---
 import Page from "../layouts/Page.astro";
 import Hero from "../components/home/Hero.astro";
-import ComputerScene from "../components/home/ComputerScene.astro";
-import MemoryScene from "../components/home/MemoryScene.astro";
+import Showcase from "../components/home/Showcase.astro";
 ---
 
-<!-- The bot-team homepage. The Homun 2 sections are unmounted; the remaining
-     scenes arrive with Tasks 6 and 7, the new nav/footer with Task 8. -->
-<Page>
+<Page title="Your bot team. On your computer.">
 	<Hero />
-	<ComputerScene />
-	<MemoryScene />
+	<Showcase />
 </Page>
