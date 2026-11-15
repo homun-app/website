@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import starlight from '@astrojs/starlight';
+import sidebarTopics from 'starlight-sidebar-topics';
 import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
@@ -27,10 +28,16 @@ export default defineConfig({
 				replacesTitle: true,
 				alt: 'Homun',
 			},
-			customCss: ['./src/styles/starlight-theme.css'],
+			customCss: [
+				'@fontsource-variable/figtree',
+				'@fontsource/m-plus-rounded-1c/latin-800.css',
+				'@fontsource/geist-mono/latin-400.css',
+				'./src/styles/starlight-theme.css',
+			],
 			// Default the docs to dark (matching the marketing site); toggle still works.
 			components: {
 				Head: './src/components/docs/AnalyticsHead.astro',
+				Banner: './src/components/docs/Banner.astro',
 				Footer: './src/components/docs/Footer.astro',
 				ThemeProvider: './src/components/docs/ThemeProvider.astro',
 			},
@@ -46,52 +53,70 @@ export default defineConfig({
 			social: [
 				{ icon: 'github', label: 'GitHub', href: 'https://github.com/homun-app' },
 			],
-			sidebar: [
+			plugins: [sidebarTopics([
 				{
-					label: 'Overview',
-					translations: { it: 'Panoramica' },
+					label: 'Homun',
+					link: '/docs/',
 					items: [
-						{ label: 'Welcome', translations: { it: 'Benvenuto' }, slug: 'docs' },
-						{ label: 'Getting started', translations: { it: 'Per iniziare' }, slug: 'guides/getting-started' },
-						{ label: 'Core concepts', translations: { it: 'Concetti base' }, slug: 'concepts' },
-						{ label: 'Settings', translations: { it: 'Impostazioni' }, slug: 'guides/settings' },
+						{
+							label: 'Overview',
+							translations: { it: 'Panoramica' },
+							items: [
+								{ label: 'Welcome', translations: { it: 'Benvenuto' }, slug: 'docs' },
+								{ label: 'Getting started', translations: { it: 'Per iniziare' }, slug: 'guides/getting-started' },
+								{ label: 'Core concepts', translations: { it: 'Concetti base' }, slug: 'concepts' },
+								{ label: 'Settings', translations: { it: 'Impostazioni' }, slug: 'guides/settings' },
+							],
+						},
+						{
+							label: 'Features',
+							translations: { it: 'Funzionalità' },
+							items: [
+								{ label: 'Chat', slug: 'guides/chat' },
+								{ label: 'Memory', translations: { it: 'Memoria' }, slug: 'guides/memory' },
+								{ label: 'Models & providers', translations: { it: 'Modelli e provider' }, slug: 'guides/models' },
+								{ label: 'Channels', translations: { it: 'Canali' }, slug: 'guides/channels' },
+								{ label: 'Automations', translations: { it: 'Automazioni' }, slug: 'guides/automations' },
+								{ label: 'Skills', translations: { it: 'Skill' }, slug: 'guides/skills' },
+								{ label: 'Connectors', translations: { it: 'Connettori' }, slug: 'guides/connectors' },
+								{ label: 'The local computer', translations: { it: 'Il computer locale' }, slug: 'guides/local-computer' },
+								{ label: 'Proactivity', translations: { it: 'Proattività' }, slug: 'guides/proactivity' },
+								{ label: 'Privacy & security', translations: { it: 'Privacy e sicurezza' }, slug: 'guides/security' },
+							],
+						},
+						{
+							label: 'Get Homun',
+							translations: { it: 'Ottieni Homun' },
+							items: [
+								{ label: 'Download', slug: 'guides/download' },
+								{ label: 'Self-hosting', slug: 'guides/self-hosting' },
+							],
+						},
+						{
+							label: 'Reference',
+							translations: { it: 'Riferimento' },
+							items: [
+								{ label: 'Architecture', translations: { it: 'Architettura' }, slug: 'reference/architecture' },
+								{ label: 'Components', translations: { it: 'Componenti' }, slug: 'reference/components' },
+								{ label: 'Memory model', translations: { it: 'Modello di memoria' }, slug: 'reference/memory-model' },
+								{ label: 'Design decisions', translations: { it: 'Decisioni di design' }, slug: 'reference/decisions' },
+							],
+						},
+						{ slug: 'privacy' },
+						{ slug: 'license' },
 					],
 				},
 				{
-					label: 'Features',
-					translations: { it: 'Funzionalità' },
+					label: 'Engramma',
+					link: '/docs/engramma/',
 					items: [
-						{ label: 'Chat', slug: 'guides/chat' },
-						{ label: 'Memory', translations: { it: 'Memoria' }, slug: 'guides/memory' },
-						{ label: 'Models & providers', translations: { it: 'Modelli e provider' }, slug: 'guides/models' },
-						{ label: 'Channels', translations: { it: 'Canali' }, slug: 'guides/channels' },
-						{ label: 'Automations', translations: { it: 'Automazioni' }, slug: 'guides/automations' },
-						{ label: 'Skills', translations: { it: 'Skill' }, slug: 'guides/skills' },
-						{ label: 'Connectors', translations: { it: 'Connettori' }, slug: 'guides/connectors' },
-						{ label: 'The local computer', translations: { it: 'Il computer locale' }, slug: 'guides/local-computer' },
-						{ label: 'Proactivity', translations: { it: 'Proattività' }, slug: 'guides/proactivity' },
-						{ label: 'Privacy & security', translations: { it: 'Privacy e sicurezza' }, slug: 'guides/security' },
+						{ slug: 'docs/engramma' },
+						{ slug: 'docs/engramma/how-it-works' },
+						{ slug: 'docs/engramma/privacy' },
+						{ slug: 'docs/engramma/whats-next' },
 					],
 				},
-				{
-					label: 'Get Homun',
-					translations: { it: 'Ottieni Homun' },
-					items: [
-						{ label: 'Download', slug: 'guides/download' },
-						{ label: 'Self-hosting', slug: 'guides/self-hosting' },
-					],
-				},
-				{
-					label: 'Reference',
-					translations: { it: 'Riferimento' },
-					items: [
-						{ label: 'Architecture', translations: { it: 'Architettura' }, slug: 'reference/architecture' },
-						{ label: 'Components', translations: { it: 'Componenti' }, slug: 'reference/components' },
-						{ label: 'Memory model', translations: { it: 'Modello di memoria' }, slug: 'reference/memory-model' },
-						{ label: 'Design decisions', translations: { it: 'Decisioni di design' }, slug: 'reference/decisions' },
-					],
-				},
-			],
+			])],
 		}),
 		sitemap({
 			// /dev/* pages are internal specimen sheets: noindex, not in the sitemap.

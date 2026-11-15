@@ -58,3 +58,21 @@ Riferimenti al README di Engramma:
 - Quarantena e conferma: [riga 19](/Users/fabio/Projects/Bot/engramma/README.md:19).
 - File locali e assenza di un server: [riga 10](/Users/fabio/Projects/Bot/engramma/README.md:10).
 - Rust, SQLite e strumenti MCP: [riga 3](/Users/fabio/Projects/Bot/engramma/README.md:3), [riga 10](/Users/fabio/Projects/Bot/engramma/README.md:10), [riga 100](/Users/fabio/Projects/Bot/engramma/README.md:100).
+
+## Task 9 · Docs divise per prodotto, più banner di transizione
+
+File: `astro.config.mjs`, `package.json`, `package-lock.json`, `src/styles/starlight-theme.css`, `src/components/UpdateNotice.astro`, `src/components/docs/Banner.astro`, `src/content/docs/{,it/}engramma/{index,how-it-works,privacy,whats-next}.md`, `src/pages/roadmap/{index,[slug]}.astro`, `src/pages/changelog.astro`, `scripts/check-docs-topics.mjs`, `scripts/check-transition-notices.mjs` e report.
+
+Prima del codice, i test sono falliti per `dist/docs/engramma/index.html` mancante e `English notice missing on docs/`. Dopo l’implementazione, `npm run check` è terminato con exit 0:
+
+```text
+
+> homun-website@0.1.0 test:container-runtime-signals
+> node scripts/check-container-runtime-signals.mjs
+
+Container runtime signal cleanup contract passed
+```
+
+La versione 0.8.0 del plugin è la più recente che dichiara compatibilità con Starlight 0.40.0. Il lockfile viene letto da Node e `npm ci --dry-run` ha restituito exit 0 con avvisi sugli script di installazione. Ho preservato gli slug effettivi della build, comprese le guide servite sotto `/guides/` e `/it/guides/`. I nuovi slug sono espliciti per collocare Engramma sotto `/docs/engramma/`. Ho usato la lista pagine del Task 10 del 9 novembre, richiamato dal Task 9, per il banner roadmap e il badge changelog. Il CSS esistente delle docs recepisce i font e i colori del mockup.
+
+Chromium, dev server, 360 px e movimento ridotto: entrambe le home docs, entrambe le guide Getting started, tutte e otto le nuove pagine docs, changelog e tutte le pagine roadmap hanno restituito `scrollWidth = innerWidth = 360`. Dopo il cambio del plugin è servito un riavvio del dev server per usare gli slug appena sincronizzati.

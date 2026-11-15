@@ -1,0 +1,10 @@
+---
+import Default from "@astrojs/starlight/components/Banner.astro";
+import UpdateNotice from "../UpdateNotice.astro";
+
+const { id } = Astro.locals.starlightRoute.entry;
+const engramma = /^(?:it\/)?docs\/engramma(?:\/|$)/.test(id);
+---
+
+<Default />
+{!engramma && <UpdateNotice locale={Astro.currentLocale === "it" ? "it" : "en"} />}
