@@ -1,113 +1,42 @@
 ---
 import HomunMark from "./brand/HomunMark.astro";
+import { RELEASES_PAGE_URL } from "../scripts/downloads.mjs";
 
 const isHome = Astro.url.pathname === "/";
-
-const links = [
-	{ label: "Product", href: "/#product" },
-	{ label: "Models", href: "/#models" },
-	{ label: "Memory", href: "/#memory" },
-	{ label: "Projects", href: "/roadmap" },
-	{ label: "Marketplace", href: "/marketplace" },
-	{ label: "Docs", href: "/docs" },
-] as const;
 ---
 
-<header id="site-nav" class:list={["inset-x-0 top-0 z-50 border-b border-transparent transition-all duration-300", isHome ? "home-nav sticky" : "fixed"]}>
-	<nav class="section-shell flex items-center justify-between gap-4 py-3.5" aria-label="Primary navigation">
-		<a href="/" class="nav-mark flex items-center" aria-label="Homun — home">
-			<HomunMark class="h-[1.3rem] w-auto" />
+<header id="site-nav" class:list={["inset-x-0 top-0 z-50", isHome ? "home-nav sticky" : "fixed"]}>
+	<nav aria-label="Primary navigation">
+		<a href="/" class="nav-mark" aria-label="Homun home"><HomunMark class="h-[22px] w-auto" /></a>
+		<ul>
+			<li><a href="/">Homun</a></li>
+			<li><a href="/engramma/">Engramma <span class="soon">Soon</span></a></li>
+			<li><a href="/docs/">Docs</a></li>
+		</ul>
+		<a href={RELEASES_PAGE_URL} data-homun-download data-analytics-download-source="navigation" class="download">
+			<span class="compact" data-download-label="compact">Download</span>
+			<span class="full" data-download-label="full">Download Homun</span>
 		</a>
-
-		<div class="hidden items-center gap-1 lg:flex">
-			{links.map((link) => (
-				<a href={link.href} class="rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:text-cream">
-					{link.label}
-				</a>
-			))}
-		</div>
-
-		<div class="flex items-center gap-2">
-			<span class="hidden items-center gap-1.5 px-2 text-sm text-faint lg:flex" aria-disabled="true">
-				Sign in <span class="rounded-full border border-line px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider">Soon</span>
-			</span>
-			<a href="https://github.com/homun-app/homun-releases/releases/latest" data-homun-download data-analytics-download-source="navigation" class="btn btn-primary min-h-9 px-4 py-2 text-sm">
-				<span class="sm:hidden" data-download-label="compact">Download</span>
-				<span class="hidden sm:inline" data-download-label="full">Download Homun</span>
-			</a>
-			<button
-				id="nav-toggle"
-				class="flex h-10 w-10 items-center justify-center rounded-lg text-cream lg:hidden"
-				aria-label="Open menu"
-				aria-expanded="false"
-				aria-controls="nav-mobile"
-			>
-				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-5 w-5" aria-hidden="true">
-					<path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"></path>
-				</svg>
-			</button>
-		</div>
 	</nav>
-
-	<div id="nav-mobile" class="hidden border-t border-line bg-bg/95 px-4 py-4 backdrop-blur-xl lg:hidden">
-		<div class="mx-auto flex max-w-6xl flex-col gap-1">
-			{links.map((link) => (
-				<a href={link.href} class="rounded-lg px-3 py-3 text-[15px] text-muted hover:bg-surface hover:text-cream">
-					{link.label}
-				</a>
-			))}
-			<div class="mt-2 flex items-center gap-2 border-t border-line px-3 pt-4 text-sm text-faint">
-				Sign in <span class="rounded-full border border-line px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider">Soon</span>
-			</div>
-		</div>
-	</div>
 </header>
 
-<script is:inline>
-	(() => {
-		const nav = document.getElementById("site-nav");
-		const toggle = document.getElementById("nav-toggle");
-		const sheet = document.getElementById("nav-mobile");
-		if (!nav || !toggle || !sheet) return;
-
-		const onScroll = () => nav.classList.toggle("nav-scrolled", window.scrollY > 12);
-		onScroll();
-		window.addEventListener("scroll", onScroll, { passive: true });
-
-		toggle.addEventListener("click", () => {
-			const open = sheet.classList.toggle("hidden") === false;
-			toggle.setAttribute("aria-expanded", String(open));
-			toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
-		});
-		sheet.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => {
-			sheet.classList.add("hidden");
-			toggle.setAttribute("aria-expanded", "false");
-			toggle.setAttribute("aria-label", "Open menu");
-		}));
-	})();
-</script>
-
 <style>
-	.home-nav,
-	#site-nav.home-nav.nav-scrolled {
+	header {
 		background: color-mix(in srgb, var(--bg) 82%, transparent);
-		border-bottom-color: color-mix(in srgb, var(--line) 70%, transparent);
+		border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
 		backdrop-filter: saturate(1.6) blur(14px);
 	}
-	.home-nav nav {
-		width: min(100% - 32px, 1148px);
-		height: 55px;
-		padding-block: 0;
-	}
-	.home-nav [data-homun-download] {
-		min-height: 0;
-		border-radius: 999px;
-		background: var(--fg);
-		color: var(--bg);
-		padding: .5em 1em;
-		font-size: .88rem;
-		line-height: 1.55;
-		box-shadow: none;
+	nav { width: min(100% - 32px, 1148px); margin-inline: auto; height: 55px; display: flex; align-items: center; gap: 22px; }
+	.nav-mark { flex: none; }
+	ul { display: flex; align-items: center; gap: 20px; margin-inline-start: auto; list-style: none; color: var(--muted); font-size: .92rem; }
+	ul a:hover { text-decoration: underline; }
+	.soon { background: var(--surface); border-radius: 6px; padding: .18em .5em; font: .64rem var(--mono); text-transform: uppercase; }
+	.download { flex: none; border-radius: 999px; padding: .5em 1em; background: var(--fg); color: var(--bg); font-size: .88rem; font-weight: 600; }
+	.compact { display: none; }
+	@media (max-width: 640px) {
+		ul, .full { display: none; }
+		.compact { display: inline; }
+		.download { margin-inline-start: auto; }
 	}
 	@supports (animation-timeline: view()) {
 		@media (prefers-reduced-motion: no-preference) {
@@ -118,12 +47,5 @@ const links = [
 			}
 		}
 		@keyframes nav-mark-enter { from { opacity: 0; translate: 0 6px; } }
-	}
-
-	#site-nav.nav-scrolled {
-		border-bottom-color: var(--color-line);
-		background: color-mix(in srgb, var(--color-bg) 78%, transparent);
-		backdrop-filter: blur(16px) saturate(1.35);
-		-webkit-backdrop-filter: blur(16px) saturate(1.35);
 	}
 </style>

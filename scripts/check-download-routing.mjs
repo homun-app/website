@@ -357,7 +357,7 @@ for (const marker of [
 	"data-download-chooser",
 	"data-download-options",
 	"https://github.com/homun-app/homun-core",
-	"https://github.com/homun-app/homun-releases/releases/latest",
+	RELEASES_PAGE_URL,
 ]) {
 	assert.ok(homepage.includes(marker), `Homepage is missing download integration: ${marker}`);
 }

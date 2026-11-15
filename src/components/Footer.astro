@@ -1,67 +1,32 @@
 ---
-import HomunMark from "./brand/HomunMark.astro";
+import ProductSymbol from "./brand/ProductSymbol.astro";
+import StarButton from "./ui/StarButton.astro";
+import { RELEASES_PAGE_URL } from "../scripts/downloads.mjs";
+import { fetchStarCount } from "../lib/github-stars.mjs";
 
-const columns = [
-	{
-		heading: "Product",
-		links: [
-			{ label: "How it works", href: "/#product" },
-			{ label: "Models", href: "/#models" },
-			{ label: "Local control", href: "/#control" },
-			{ label: "Download", href: "/#download" },
-		],
-	},
-	{
-		heading: "Ecosystem",
-		links: [
-			{ label: "Projects", href: "/roadmap" },
-			{ label: "Marketplace", href: "/marketplace" },
-			{ label: "Changelog", href: "/changelog" },
-		],
-	},
-	{
-		heading: "Resources",
-		links: [
-			{ label: "Documentation", href: "/docs" },
-			{ label: "Getting started", href: "/guides/getting-started/" },
-			{ label: "Privacy & security", href: "/guides/security/" },
-			{ label: "Privacy", href: "/privacy/" },
-			{ label: "License", href: "/license/" },
-			{ label: "Source code", href: "https://github.com/homun-app/homun-core" },
-			{ label: "All releases", href: "https://github.com/homun-app/homun-releases/releases" },
-		],
-	},
-] as const;
+const stars = await fetchStarCount();
 ---
 
-<footer class="border-t border-line bg-bg-raised/30">
-	<div class="section-shell py-16">
-		<div class="grid gap-12 md:grid-cols-[1.5fr_repeat(3,1fr)]">
-			<div>
-				<HomunMark class="h-6 w-auto" />
-				<p class="mt-5 max-w-xs text-sm leading-relaxed text-muted">
-					A model-independent AI work environment for projects that continue beyond a single prompt.
-				</p>
-				<div class="mt-6 inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-faint">
-					<span class="status-dot"></span> Cloud · source-available · local
-				</div>
-			</div>
-
-			{columns.map((column) => (
-				<div>
-					<h3 class="metric-label">{column.heading}</h3>
-					<ul class="mt-5 space-y-3">
-						{column.links.map((link) => (
-							<li><a href={link.href} target={link.href.startsWith("http") ? "_blank" : undefined} rel={link.href.startsWith("http") ? "noopener" : undefined} data-analytics-download-source={link.label === "All releases" ? "footer" : undefined} class="text-sm text-muted transition-colors hover:text-cream">{link.label}</a></li>
-						))}
-					</ul>
-				</div>
-			))}
-		</div>
-
-		<div class="mt-14 flex flex-col items-start justify-between gap-4 border-t border-line pt-7 sm:flex-row sm:items-center">
-			<p class="text-sm text-faint">© 2026 Homun. All rights reserved.</p>
-			<p class="font-mono text-[10px] uppercase tracking-[0.15em] text-faint">Your work · your models · your system</p>
+<footer>
+	<div class="links">
+		<a href="/license/">Open source · Apache-2.0</a>
+		<a href="/changelog/">Changelog</a>
+		<a href="/roadmap/">Roadmap</a>
+		<a href="/privacy/">Privacy</a>
+		<a href={RELEASES_PAGE_URL} data-analytics-download-source="footer">All releases</a>
+		<StarButton count={stars} />
+		<div class="family">
+			<a href="/"><ProductSymbol product="homun" size={18} animated={false} /> Homun</a>
+			<a href="/engramma/"><ProductSymbol product="engramma" size={18} animated={false} /> Engramma</a>
 		</div>
 	</div>
 </footer>
+
+<style>
+	footer { border-top: 1px solid var(--line); padding-block: 28px; color: var(--muted); font-size: .84rem; }
+	.links { width: min(100% - 32px, 1148px); margin-inline: auto; display: flex; align-items: center; flex-wrap: wrap; gap: 12px 18px; }
+	a:hover { text-decoration: underline; }
+	.family { display: flex; flex-wrap: wrap; gap: 14px; margin-inline-start: auto; }
+	.family a { display: inline-flex; align-items: center; gap: 6px; }
+	@media (max-width: 640px) { .family { margin-inline-start: 0; } }
+</style>

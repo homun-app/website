@@ -76,3 +76,21 @@ Container runtime signal cleanup contract passed
 La versione 0.8.0 del plugin è la più recente che dichiara compatibilità con Starlight 0.40.0. Il lockfile viene letto da Node e `npm ci --dry-run` ha restituito exit 0 con avvisi sugli script di installazione. Ho preservato gli slug effettivi della build, comprese le guide servite sotto `/guides/` e `/it/guides/`. I nuovi slug sono espliciti per collocare Engramma sotto `/docs/engramma/`. Ho usato la lista pagine del Task 10 del 9 novembre, richiamato dal Task 9, per il banner roadmap e il badge changelog. Il CSS esistente delle docs recepisce i font e i colori del mockup.
 
 Chromium, dev server, 360 px e movimento ridotto: entrambe le home docs, entrambe le guide Getting started, tutte e otto le nuove pagine docs, changelog e tutte le pagine roadmap hanno restituito `scrollWidth = innerWidth = 360`. Dopo il cambio del plugin è servito un riavvio del dev server per usare gli slug appena sincronizzati.
+
+## Task 10 · Nav, footer, stelle GitHub e pulizia
+
+File: `src/components/Nav.astro`, `src/components/Footer.astro`, `src/components/home/Hero.astro`, `src/components/ui/StarButton.astro`, `src/lib/github-stars.mjs`, `scripts/check-homepage.mjs`, `scripts/check-github-stars.mjs`, `scripts/check-license-build.mjs`, `scripts/check-download-routing.mjs`, `package.json` e report. Rimossi i 13 componenti Homun 2 elencati nel piano del 9 novembre e sette illustrazioni orfane. `RoadmapOrbitIllustration.astro` resta importata dalla roadmap.
+
+Test rossi iniziali: `Nav must link Engramma with a Soon label` e `ERR_MODULE_NOT_FOUND` per il nuovo modulo stelle. La prima suite ha evidenziato la vecchia asserzione sul fallback `/releases/latest`; ho allineato l’asserzione della homepage a `RELEASES_PAGE_URL`. Ho rimosso anche la sola asserzione licenza che pretendeva il vecchio slogan nel footer. Il resto dei controlli licenza resta per il Task 11.
+
+`npm run check`, exit 0:
+
+```text
+
+> homun-website@0.1.0 test:container-runtime-signals
+> node scripts/check-container-runtime-signals.mjs
+
+Container runtime signal cleanup contract passed
+```
+
+Chromium, dev server: tutte le 20 pagine che condividono nav e footer hanno restituito `scrollWidth = innerWidth = 360`. Come nel mockup, su schermi stretti la nav mostra marchio e download. Il footer conserva i link Privacy e All releases per mantenere accesso alle informative e tracciamento esistente. Il conteggio stelle è richiesto lato server con cache condivisa e timeout, con il solo link quando manca un conteggio. Nella build il conteggio è comparso in hero e footer.

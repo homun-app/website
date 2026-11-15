@@ -1,7 +1,11 @@
 ---
 import ProductSymbol from "../brand/ProductSymbol.astro";
+import StarButton from "../ui/StarButton.astro";
+import { fetchStarCount } from "../../lib/github-stars.mjs";
 import DownloadButton from "./DownloadButton.astro";
 import { RELEASES_PAGE_URL } from "../../scripts/downloads.mjs";
+
+const stars = await fetchStarCount();
 ---
 
 <section id="hero" aria-labelledby="hero-title">
@@ -12,6 +16,7 @@ import { RELEASES_PAGE_URL } from "../../scripts/downloads.mjs";
 	<div class="download" data-download-block>
 		<div class="ctas">
 			<DownloadButton source="hero" />
+			<div class="star"><StarButton count={stars} /></div>
 			<a class="see" href="#showcase">See it work <span aria-hidden="true">↓</span></a>
 		</div>
 		<div class="platforms" data-hero-platforms>
@@ -44,6 +49,7 @@ import { RELEASES_PAGE_URL } from "../../scripts/downloads.mjs";
 		color: var(--bg); font: 600 1rem/1.55 var(--body); box-shadow: none;
 	}
 	.see { padding: .85em .5em; color: var(--teal-text); font-size: 1rem; line-height: 1.55; font-weight: 600; }
+	.star { padding-block: .85em; }
 	.see:hover, .chip:hover { text-decoration: underline; }
 	.platforms { margin-top: 14px; }
 	.platforms a { display: inline-flex; flex-wrap: wrap; gap: 8px; justify-content: center; font-size: .86rem; color: var(--muted); }

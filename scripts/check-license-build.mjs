@@ -94,7 +94,6 @@ for (const release of releaseData.items) {
 assert.ok(english.includes('href="/license/"'), "English footer must link to /license/");
 assert.ok(italian.includes('href="/it/license/"'), "Italian footer must link to /it/license/");
 assert.ok(homepage.includes('href="/license/"'), "Marketing footer must link to /license/");
-assert.ok(homepage.includes("Cloud · source-available · local"));
 const builtHtml = await allHtml(new URL("../dist/", import.meta.url));
 for (const page of builtHtml) {
 	assert.ok(

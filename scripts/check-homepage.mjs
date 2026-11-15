@@ -163,3 +163,15 @@ assert.match(download, /<a\b[^>]*data-homun-download(?=[\s>])/);
 await import("./check-news.mjs");
 
 console.log("Homepage bot-team contract passed");
+
+const nav = html.match(/<nav\b[^>]*>[\s\S]*?<\/nav>/)?.[0] ?? "";
+assert.ok(nav.includes('href="/engramma/"') && nav.includes(">Soon<"), "Nav must link Engramma with a Soon label");
+for (const link of ["/marketplace", "#computer", "#memory"]) assert.ok(!nav.includes(link), "Unexpected nav link " + link);
+assert.match(nav, /href="\/docs\/?"/);
+assert.match(nav, /data-homun-download/);
+const footer = html.match(/<footer\b[^>]*>[\s\S]*?<\/footer>/)?.[0] ?? "";
+for (const value of ["Apache-2.0", "https://github.com/homun-app/homun-core", "Changelog", "Roadmap", 'data-product="engramma"', 'data-product="homun"']) {
+	assert.ok(footer.includes(value), "Footer needs " + value);
+}
+assert.doesNotMatch(footer, /Sign in|source-available|Your work · your models · your system/i);
+assert.match(html, /<title>[^<]*bot team/i);

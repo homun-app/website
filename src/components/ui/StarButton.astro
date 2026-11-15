@@ -1,0 +1,21 @@
+---
+import { CORE_REPOSITORY_URL } from "../../scripts/downloads.mjs";
+import { formatStars } from "../../lib/github-stars.mjs";
+
+interface Props {
+	count?: number | null;
+}
+
+const { count = null } = Astro.props;
+---
+
+<a href={CORE_REPOSITORY_URL} class="star-link">
+	Star on GitHub
+	{count !== null && <span aria-label={`${count} stars`}>★ {formatStars(count)}</span>}
+</a>
+
+<style>
+	.star-link { display: inline-flex; align-items: center; flex-wrap: wrap; gap: .45em; color: var(--teal-text); font-weight: 600; }
+	.star-link:hover { text-decoration: underline; }
+	span { padding: .15em .45em; border: 1px solid var(--line); border-radius: 6px; font-family: var(--mono); font-size: .8em; }
+</style>
