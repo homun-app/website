@@ -139,8 +139,10 @@ della memoria.
 ## Scelte mie (da controllare)
 
 - **Novità.** Il CHANGELOG dell'app è in italiano e il sito è in inglese. Le novità della homepage
-  vengono da un piccolo file curato in inglese, `src/data/news.mjs`. Un test verifica che ogni
-  versione citata esista in `src/data/releases.json` e sia almeno 0.3.
+  vengono da un piccolo file curato in inglese, `src/data/news.mjs`. Si citano solo release
+  **pubblicate** su `homun-app/homun-releases`, comprese le pre-release, con l'etichetta «beta».
+  Un test le confronta con una lista di versioni pubblicate, aggiornata a mano. Non si usa
+  `releases.json`, perché il sync scarta le pre-release.
 - **Roadmap della homepage.** Ha tre colonne (Now, Next, Later) in un file dati
   `src/data/home-roadmap.mjs`, con i testi del mockup. **Va approvata da Fabio** prima del merge,
   perché è una promessa pubblica. La pagina `/roadmap` esistente resta com'è finché non si rifà.

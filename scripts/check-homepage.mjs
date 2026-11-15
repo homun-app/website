@@ -127,4 +127,39 @@ for (const slogan of [
 	assert.ok(!text.includes(slogan), `homepage still contains the retired slogan: ${slogan}`);
 }
 
+const [uses, news, download] = ["uses", "news", "download"].map(section);
+for (const current of [uses, news, download]) {
+	assert.ok(html.indexOf(current) >= html.indexOf(previous) + previous.length,
+		"use cases, news and download must follow memory in plan order");
+	previous = current;
+}
+
+const articles = [...uses.matchAll(/<article\b[^>]*>([\s\S]*?)<\/article>/g)];
+assert.equal(articles.length, 6);
+// English display names from sandbot/src/main/templates.
+const templates = [
+	"Chief of staff", "Daily briefing editor", "Executive assistant",
+	"Inbox manager", "Meeting preparation assistant", "Mention monitor",
+];
+let templateCount = 0;
+for (const [, article] of articles) {
+	const template = article.match(/Template:\s*([^<]+)/)?.[1].trim();
+	if (template) {
+		assert.ok(templates.includes(template), `Unknown template: ${template}`);
+		templateCount++;
+	} else {
+		assert.match(article, /Ask in your own words/);
+	}
+}
+assert.equal(templateCount, 3);
+
+const releases = [...news.matchAll(/<article\b[^>]*data-news-version="[^"]+"[^>]*>([\s\S]*?)<\/article>/g)];
+assert.equal(releases.length, 4);
+for (const [, release] of releases) assert.match(release, /data-release-badge[^>]*>beta</);
+assert.deepEqual([...news.matchAll(/data-roadmap-lane="([^"]+)"/g)].map(([, lane]) => lane), ["Now", "Next", "Later"]);
+assert.match(download, /<svg\b[^>]*data-mascot(?=[\s>])/);
+assert.match(download, /<a\b[^>]*data-homun-download(?=[\s>])/);
+
+await import("./check-news.mjs");
+
 console.log("Homepage bot-team contract passed");

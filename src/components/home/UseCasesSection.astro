@@ -1,0 +1,71 @@
+---
+import BotAvatar from "../app/BotAvatar.astro";
+
+const cases = [
+	{
+		audience: "Founders", family: "creature", color: "#F26A2E",
+		prompt: "Every morning, get my inbox to zero and leave me only what needs me.",
+		details: "Gmail · drafts held for you · a routine at 7:00",
+		template: "Inbox manager",
+	},
+	{
+		audience: "Busy weeks", family: "device", color: "#E7B93A",
+		prompt: "Before every call, tell me who I’m meeting and what we promised them.",
+		details: "Calendar · Gmail · memory of past calls",
+		template: "Meeting preparation assistant",
+	},
+	{
+		audience: "Sales", family: "robo", color: "#3F7BEA",
+		prompt: "Research these 40 accounts and draft a first email for each. Don’t send.",
+		details: "Web search · its own browser · HubSpot",
+	},
+	{
+		audience: "Freelancers", family: "jelly", color: "#E9418A",
+		prompt: "Match my receipts to card payments and tell me what’s missing for my accountant.",
+		details: "Gmail · files in the Library · a Friday routine",
+	},
+	{
+		audience: "Teams of bots", family: "creature", color: "#2FA39A",
+		prompt: "Plan the offsite: venue, invites and a budget. Bring me one summary.",
+		details: "A coordinator with two helpers in a group",
+		template: "Chief of staff",
+	},
+	{
+		audience: "Developers", family: "robo", color: "#8A5CF0",
+		prompt: "Watch new GitHub issues, reproduce the bugs in your computer and write down the steps.",
+		details: "GitHub · terminal in its own computer",
+	},
+] as const;
+---
+
+<section id="uses" class="timeline-f" aria-labelledby="uses-title">
+	<header class="section-text">
+		<p class="eyebrow">What people use it for</p>
+		<h2 id="uses-title">One job each. Here are a few.</h2>
+		<p class="lead">Each one is a sentence you can type into a new bot today.</p>
+	</header>
+	<div class="uses">
+		{cases.map(({ audience, family, color, prompt, details, ...item }) => (
+			<article class="use rise-self">
+				<h3><BotAvatar family={family} color={color} />{audience}</h3>
+				<q>{prompt}</q>
+				<p>{details}</p>
+				<span class="template">{"template" in item ? `Template: ${item.template}` : "Ask in your own words"}</span>
+			</article>
+		))}
+	</div>
+</section>
+
+<style>
+	#uses { max-width: 1180px; margin-inline: auto; padding: clamp(90px, 14vh, 160px) 16px; }
+	header { display: grid; justify-items: center; gap: 18px; text-align: center; }
+	h2 { font-size: clamp(2.1rem, 5.6vw, 4.2rem); }
+	.eyebrow { font: .76rem/1.55 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--teal-text); }
+	.lead { font-size: clamp(1.05rem, 2vw, 1.25rem); color: var(--muted); max-width: 36ch; text-wrap: balance; }
+	.uses { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 14px; margin-top: 48px; }
+	.use { display: grid; gap: 12px; align-content: start; min-width: 0; padding: 20px; border-radius: 20px; background: var(--surface); }
+	h3 { display: flex; align-items: center; gap: 10px; color: var(--muted); font: .72rem/1.55 var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+	q { quotes: none; font: 800 1.15rem/1.25 var(--display); }
+	.use p { font-size: .9rem; color: var(--muted); }
+	.template { font-size: .8rem; font-weight: 600; color: var(--teal-text); }
+</style>

@@ -56,6 +56,17 @@ const platformNames = {
 	linux: "Linux",
 };
 
+export function platformBadge(platform) {
+	return platform === "windows" || platform === "linux" ? "beta" : null;
+}
+
+/** @returns {string | null} */
+export function platformRequirement(_platform) {
+	// No public stable release meets MIN_PUBLIC_VERSION yet. Add requirements
+	// when the changelog documents them for a release the resolver can offer.
+	return null;
+}
+
 let installersPromise;
 
 export function pickCurrentRelease(releases = [], min = MIN_PUBLIC_VERSION) {
@@ -214,7 +225,8 @@ function renderInstallerLinks(list, grouped) {
 			link.href = asset.browser_download_url;
 			link.className = "flex items-center justify-between rounded-xl border border-line bg-bg/45 px-4 py-3 text-sm text-muted transition-colors hover:border-line-strong hover:text-cream";
 			const label = document.createElement("span");
-			label.textContent = `${platformNames[platform]} · ${installerKind(asset.name)}`;
+			const badge = platformBadge(platform);
+			label.textContent = `${platformNames[platform]}${badge ? ` (${badge})` : ""} · ${installerKind(asset.name)}`;
 			const arrow = document.createElement("span");
 			arrow.className = "text-accent-bright";
 			arrow.textContent = "↓";
@@ -227,13 +239,15 @@ function renderInstallerLinks(list, grouped) {
 
 export function initDownloadControls(root = document, navigatorLike = navigator, dependencies = {}) {
 	const platform = detectPlatform(navigatorLike);
+	const badge = platformBadge(platform);
+	const label = badge ? `${platformLabels[platform]} (${badge})` : platformLabels[platform];
 	for (const control of root.querySelectorAll("[data-homun-download]")) {
 		const responsiveLabels = responsiveDownloadLabels(control);
 		if (responsiveLabels) {
 			responsiveLabels.compact.textContent = "Download";
-			responsiveLabels.full.textContent = platformLabels[platform];
+			responsiveLabels.full.textContent = label;
 		} else {
-			control.textContent = platformLabels[platform];
+			control.textContent = label;
 		}
 		wireDownloadControl(control, platform, root, dependencies);
 	}

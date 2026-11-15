@@ -7,9 +7,17 @@ import {
 	initDownloadControls,
 	loadLatestInstallers,
 	pickCurrentRelease,
+	platformBadge,
+	platformRequirement,
 	preferredInstaller,
 	RELEASES_PAGE_URL,
 } from "../src/scripts/downloads.mjs";
+
+assert.equal(platformBadge("windows"), "beta");
+assert.equal(platformBadge("linux"), "beta");
+assert.equal(platformBadge("macos"), null);
+assert.equal(platformBadge("unknown"), null);
+assert.equal(platformRequirement("unknown"), null);
 
 const assets = [
 	{ name: "Homun-1.2.3-arm64.dmg", browser_download_url: "https://example.test/mac.dmg" },

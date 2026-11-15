@@ -309,9 +309,19 @@ Cosa usano i task seguenti:
 **Interfaces:**
 - Produces:
   - **`news.mjs`:** `NEWS: Array<{ version: string, date: string, title: string, body: string }>`.
-    - Quattro voci, i testi del mockup.
-    - Le versioni sono esattamente `v0.3.1001-beta.5`, `v0.3.1001-beta.4`, `v0.3.1001-beta.3` e
-      `v0.3.1001-beta.1`.
+    - Quattro voci, solo release **pubblicate** su `homun-app/homun-releases`. Al 2026-11-15 sono le
+      pre-release da `v0.3.1001-beta.1` a `beta.4`; la beta.5 non è pubblicata e non va citata.
+      Ecco le voci (testi in inglese, dal CHANGELOG):
+      - `v0.3.1001-beta.4` (Nov 12): «One “New” button, and the bot introduces itself»; il bot
+        conosce le app collegate;
+      - `v0.3.1001-beta.3` (Nov 11): «Fewer approval cards»;
+      - `v0.3.1001-beta.2` (Nov 10): «The model lives in the bot's profile»: lo cambi dal pannello
+        del bot; Homun ti avvisa se lo apri fuori da Applicazioni;
+      - `v0.3.1001-beta.1` (Nov 10): «The beta channel».
+    - La voce del mockup sulla beta.5 («No Docker needed on macOS 26») entra solo quando la beta.5
+      è pubblicata.
+    - Ogni voce ha `prerelease: true|false`; nella sezione, le pre-release mostrano l'etichetta
+      «beta».
   - **`home-roadmap.mjs`:** `ROADMAP: { now: Item[], next: Item[], later: Item[] }`, dove
     `Item = { title, body }`, con i testi del mockup.
   - **In `downloads.mjs`:**
@@ -320,8 +330,10 @@ Cosa usano i task seguenti:
 
 - [ ] **Step 1: Test che falliscono.**
   - **`check-news.mjs`:**
-    - ogni `NEWS[i].version` esiste in `src/data/releases.json` (`items[].version`, confronto
-      tollerante sulla «v») ed è almeno 0.3;
+    - ogni `NEWS[i].version` sta in `PUBLISHED_VERSIONS`, una lista copiata nel test, con
+      `v0.3.1001-beta.1`…`beta.4`. Va aggiornata a mano a ogni nuova release pubblicata. Non si usa
+      `src/data/releases.json`, perché `sync-product-data` scarta le pre-release;
+    - ogni versione è almeno 0.3;
     - le date sono in ordine decrescente;
     - `ROADMAP` ha 1–3 voci per colonna.
   - **`check-download-routing.mjs`:**
@@ -334,8 +346,6 @@ Cosa usano i task seguenti:
     - `#news` ha 4 release e 3 colonne Now, Next, Later;
     - `#download` ha un `svg[data-mascot]` e un `[data-homun-download]`.
 
-  Se `releases.json` non contiene ancora le beta, fermati e chiedi: `sync:product-data` va eseguito
-  da Fabio.
 - [ ] **Step 2: Run** `npm run build && node scripts/check-news.mjs && node scripts/check-download-routing.mjs && node scripts/check-homepage.mjs`. Expected: FAIL.
 - [ ] **Step 3: Implementa** le sezioni 11–13 del mockup e le etichette «beta» nel `DownloadButton` e nell'elenco delle piattaforme.
   - La mascotte della chiusura salta quando entra nello schermo: `IntersectionObserver` e `is-hop`,

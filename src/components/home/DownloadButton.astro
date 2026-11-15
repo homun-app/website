@@ -1,17 +1,13 @@
 ---
-import { CORE_REPOSITORY_URL, RELEASES_PAGE_URL } from "../../scripts/downloads.mjs";
+import { CORE_REPOSITORY_URL, RELEASES_PAGE_URL, platformBadge, platformRequirement } from "../../scripts/downloads.mjs";
 
 interface Props {
 	source: string;
 	template?: string;
+	closing?: boolean;
 }
 
-// Primary download control with the Docker Desktop note, the other-platforms
-// link and the platform list a phone (or unknown system) opens instead of
-// navigating away. The href is the static no-JS fallback: the releases list,
-// never a Homun 2 build.
-const { source, template } = Astro.props;
-const DOCKER_DESKTOP_URL = "https://www.docker.com/products/docker-desktop/";
+const { source, template, closing = false } = Astro.props;
 const platformTargets = [
 	{ platform: "macos", label: "macOS" },
 	{ platform: "windows", label: "Windows" },
@@ -26,18 +22,24 @@ const platformTargets = [
 			data-analytics-download-source={source}
 			data-analytics-template={template}
 			href={RELEASES_PAGE_URL}
-			class="btn btn-primary w-full sm:w-auto"
+			class:list={["btn btn-primary", closing ? "closing-cta" : "w-full sm:w-auto"]}
 		>
-			Download
+			{closing ? "Download for macOS" : "Download"}
 		</a>
-		<a href={CORE_REPOSITORY_URL} class="btn btn-ghost w-full sm:w-auto">Star on GitHub</a>
+		{!closing && <a href={CORE_REPOSITORY_URL} class="btn btn-ghost w-full sm:w-auto">Star on GitHub</a>}
 	</div>
 
-	<p class="mt-4 text-center text-sm text-faint">
-		Requires <a class="link-accent" href={DOCKER_DESKTOP_URL} rel="noopener">Docker Desktop</a>
-		<span aria-hidden="true"> · </span>
-		<a class="link-accent" href={RELEASES_PAGE_URL} data-download-chooser aria-expanded="false">Other platforms</a>
-	</p>
+	{closing ? (
+		<a class="platforms" href={RELEASES_PAGE_URL} data-download-chooser aria-expanded="false">
+			{platformTargets.map(({ platform, label }) => (
+				<span class="chip">{label}{platformBadge(platform) && <span class="beta"> {platformBadge(platform)}</span>}</span>
+			))}
+		</a>
+	) : (
+		<p class="mt-4 text-center text-sm text-faint">
+			<a class="link-accent" href={RELEASES_PAGE_URL} data-download-chooser aria-expanded="false">Other platforms</a>
+		</p>
+	)}
 
 	<div
 		data-download-options
@@ -45,16 +47,23 @@ const platformTargets = [
 		class="mt-4 w-full max-w-md rounded-2xl border border-line bg-surface/70 p-4"
 	>
 		<div class="grid gap-2">
-			{platformTargets.map((target) => (
+			{platformTargets.map(({ platform, label }) => {
+				const badge = platformBadge(platform);
+				const requirement = platformRequirement(platform);
+				return (
 				<a
-					data-download-platform={target.platform}
+					data-download-platform={platform}
 					href={RELEASES_PAGE_URL}
 					class="flex items-center justify-between rounded-xl border border-line bg-bg/45 px-4 py-3 text-sm text-muted transition-colors hover:border-line-strong hover:text-cream"
 				>
-					<span>{target.label}</span>
+					<span>
+						{label}{badge && <span class="beta"> {badge}</span>}
+						{requirement && <small class="block">{requirement}</small>}
+					</span>
 					<span class="text-accent-bright" aria-hidden="true">↓</span>
 				</a>
-			))}
+				);
+			})}
 			<button
 				data-share-link
 				type="button"
@@ -66,3 +75,11 @@ const platformTargets = [
 		</div>
 	</div>
 </div>
+
+<style>
+	.closing-cta { align-self: center; border-radius: 999px; padding: .85em 1.5em; background: var(--fg); color: var(--bg); font: 600 1rem/1.55 var(--body); box-shadow: none; }
+	.platforms { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; font-size: .86rem; color: var(--muted); }
+	.chip { border: 1px solid var(--line); border-radius: 999px; padding: .2em .75em; }
+	.platforms:hover .chip { text-decoration: underline; }
+	.beta { margin-inline-start: .3em; color: var(--teal-text); font: .66rem var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+</style>
