@@ -77,6 +77,43 @@ const approvalActions = [...approvals.matchAll(/data-pill(?=[\s>])[^>]*>\s*([^<]
 	.map((match) => match[1]);
 assert.deepEqual(approvalActions, ["Allow", "For this turn", "Always allow", "Deny"]);
 
+const [teams, routines, models, memory] = ["teams", "routines", "models", "memory"].map(section);
+for (const current of [teams, routines, models, memory]) {
+	assert.ok(html.indexOf(current) >= html.indexOf(previous) + previous.length,
+		"teams, routines, models and memory must follow approvals in plan order");
+	previous = current;
+}
+
+const members = [...teams.matchAll(/<li\b[^>]*\bdata-team-member="(bot|user)"[^>]*>([\s\S]*?)<\/li>/g)];
+assert.deepEqual(members.map((member) => member[1]), ["bot", "bot", "bot", "user"]);
+for (const [, kind, member] of members) {
+	if (kind === "bot") assert.match(member, /data-bot-avatar="/);
+	else assert.match(member, />\s*You\s*</);
+}
+assert.equal((teams.match(/data-from="member"/g) ?? []).length, 3);
+
+assert.match(routines, /data-card="routine"[^>]*>[\s\S]*?data-pill(?=[\s>])[^>]*>\s*Activate\s*<\/span>/);
+
+for (const provider of ["Ollama", "LM Studio", "Anthropic", "OpenRouter", "OpenAI-compatible"]) {
+	assert.ok(models.includes(provider), `models must show ${provider}`);
+}
+assert.ok((models.match(/data-model-location="local"[^>]*>\s*local\s*<\/span>/g) ?? []).length >= 3);
+assert.match(models, /Homun local[\s\S]*?built into Homun/);
+const botModels = [...models.matchAll(/<li\b[^>]*\bdata-bot-model(?=[\s>])[^>]*>([\s\S]*?)<\/li>/g)];
+assert.equal(botModels.length, 3);
+const modelNames = botModels.map(([, row]) => {
+	assert.match(row, /data-bot-avatar="/);
+	const model = row.match(/<em\b[^>]*>\s*([^<]+?)\s*<\/em>/)?.[1];
+	assert.ok(model, "each bot must show its model");
+	return model;
+});
+assert.equal(new Set(modelNames).size, 3);
+
+assert.match(memory, /^<section\b[^>]*\bdata-tone="band"/);
+assert.match(memory, /<svg\b[^>]*\bdata-product="engramma"/);
+assert.match(memory, /<a\b[^>]*\bhref="\/engramma"/);
+assert.match(memory, /data-memory-note(?=[\s>])[^>]*>[\s\S]*?waiting for your OK/);
+
 assert.doesNotMatch(html, /\bdata-hero-templates\b|<section\b[^>]*\bid="meet"/);
 
 // The Homun 2 homepage is retired: none of its slogans may come back, not

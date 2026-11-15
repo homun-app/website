@@ -1,0 +1,83 @@
+---
+import FeatureSection from "./FeatureSection.astro";
+import BotAvatar from "../app/BotAvatar.astro";
+import Surface from "../app/Surface.astro";
+
+const bots = [
+  { name: "Daily briefing", family: "device", color: "#E7B93A", model: "Built-in local model" },
+  { name: "Account manager", family: "jelly", color: "#E9418A", model: "Ollama · on this Mac" },
+  { name: "Scout", family: "robo", color: "#3F7BEA", model: "Claude Sonnet" },
+] as const;
+
+const localProviders = [
+  { name: "Homun local", detail: "built into Homun" },
+  { name: "Ollama", detail: "found on this Mac" },
+  { name: "LM Studio", detail: "found on this Mac" },
+];
+
+const cloudProviders = [
+  "Anthropic", "OpenAI", "Mistral", "OpenRouter", "DeepSeek", "Groq", "xAI", "Z.ai", "Any OpenAI-compatible",
+];
+---
+
+<FeatureSection id="models" eyebrow="Any model" layout="flip" title="Your choice of model. Even fully local."
+  lead="Use Claude, GPT, Mistral, DeepSeek or anything on OpenRouter. Or run models on your own computer, with the one built into Homun, Ollama or LM Studio, and your conversations never leave it. Pick a different model for each bot.">
+  <div slot="visual" class="models">
+    <Surface>
+      <div class="group">
+        <p class="label">Each bot, its own model</p>
+        <ul class="rows" role="list">
+          {bots.map(({ name, family, color, model }, i) => (
+            <li data-bot-model class="bot play" style={{ "--i": i }}>
+              <BotAvatar family={family} color={color} size={28} />
+              <b>{name}</b>
+              <em>{model}</em>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="group">
+        <p class="label"><span>On this computer</span><span>nothing leaves</span></p>
+        <ul class="rows" role="list">
+          {localProviders.map(({ name, detail }, i) => (
+            <li class="provider play" style={{ "--i": i + 3 }}>
+              <span>{name}</span>
+              <small>{detail}</small>
+              <span class="tag" data-model-location="local">local</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="group">
+        <p class="label"><span>Cloud providers</span><span>your own key</span></p>
+        <ul class="cloud play" style={{ "--i": 6 }} role="list">
+          {cloudProviders.map((name) => <li>{name}</li>)}
+        </ul>
+      </div>
+    </Surface>
+  </div>
+</FeatureSection>
+
+<style>
+  .models :global([data-surface]) { gap: 14px; }
+  .group, .rows { display: grid; gap: 6px; }
+  .rows, .cloud { list-style: none; margin: 0; padding: 0; }
+  .label { display: flex; justify-content: space-between; gap: 8px; margin: 0; font-size: 12px; color: var(--a-mfg); }
+  .bot, .provider { display: flex; align-items: center; gap: 10px; font-size: 13.5px; }
+  .bot b { font-weight: 600; }
+  .bot em, .provider small { font-size: 12px; color: var(--a-mfg); }
+  .bot em { margin-left: auto; text-align: right; font-style: normal; }
+  .provider { background: var(--a-card); border-radius: 12px; padding: 9px 12px; }
+  .tag {
+    margin-left: auto;
+    font: 10.5px/1.45 var(--mono);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    padding: 3px 7px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--ok) 14%, transparent);
+    color: var(--teal-text);
+  }
+  .cloud { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cloud li { font-size: 12.5px; padding: 5px 10px; border-radius: 99px; background: var(--a-card); }
+</style>

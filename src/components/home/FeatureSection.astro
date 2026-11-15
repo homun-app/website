@@ -10,12 +10,14 @@ interface Props {
 const { id, eyebrow, title, lead, layout = "split", tone = "default" } = Astro.props;
 ---
 
-<section {id} class:list={["feature", "timeline-f", layout, tone]} aria-labelledby={`${id}-title`}>
+<section {id} data-tone={tone} class:list={["feature", "timeline-f", layout, tone]} aria-labelledby={`${id}-title`}>
 	<div class="feature-grid">
 		<div class="section-text">
-			<p class="feature-eyebrow">{eyebrow}</p>
+			{Astro.slots.has("eyebrow-icon") ? (
+				<p class="feature-eyebrow with-icon"><slot name="eyebrow-icon" />{eyebrow}</p>
+			) : <p class="feature-eyebrow">{eyebrow}</p>}
 			<h2 id={`${id}-title`}>{title}</h2>
-			<p class="lead">{lead}</p>
+			<p class="lead">{lead}</p><slot name="after-lead" />
 		</div>
 		<div class="section-visual"><slot name="visual" /></div>
 	</div>
@@ -33,6 +35,7 @@ const { id, eyebrow, title, lead, layout = "split", tone = "default" } = Astro.p
 	h2 { font-size: clamp(2.1rem, 5.6vw, 4.2rem); }
 	.feature-eyebrow { font: .76rem/1.55 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--teal-text); }
 	.lead { font-size: clamp(1.05rem, 2vw, 1.25rem); line-height: 1.55; color: var(--muted); max-width: 36ch; }
+	.with-icon { display: inline-flex; align-items: center; gap: 10px; }
 	.band { background: var(--band); color: var(--band-fg); }
 	.band .feature-eyebrow { color: #8EA3F2; }
 	.band .lead { color: var(--band-muted); }
