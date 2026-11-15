@@ -94,3 +94,33 @@ Container runtime signal cleanup contract passed
 ```
 
 Chromium, dev server: tutte le 20 pagine che condividono nav e footer hanno restituito `scrollWidth = innerWidth = 360`. Come nel mockup, su schermi stretti la nav mostra marchio e download. Il footer conserva i link Privacy e All releases per mantenere accesso alle informative e tracciamento esistente. Il conteggio stelle è richiesto lato server con cache condivisa e timeout, con il solo link quando manca un conteggio. Nella build il conteggio è comparso in hero e footer.
+
+## Task 11 · Licenza Apache-2.0
+
+File: `src/data/homun-core-license.md`, `src/content/docs/{,it/}license.mdx`, `src/components/docs/LicenseText.astro`, `scripts/check-license-build.mjs` e report. Rimossi `src/components/docs/LicenseReleaseTable.astro` e `src/lib/license-dates.mjs` dopo aver eliminato gli ultimi import.
+
+Test rosso dopo la build iniziale: `Published license must match the official Apache-2.0 text`. Il [testo ufficiale](https://www.apache.org/licenses/LICENSE-2.0.txt) ha SHA-256 `cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30`. Ho aggiornato anche l’hash nel componente esistente, che blocca la build se i byte del testo non coincidono. Dopo aver verificato il riferimento a `homun-core` nell’attributo del link, `npm run check` è terminato con exit 0:
+
+```text
+
+> homun-website@0.1.0 test:container-runtime-signals
+> node scripts/check-container-runtime-signals.mjs
+
+Container runtime signal cleanup contract passed
+```
+
+In Chromium a 360 px, `/license/` e `/it/license/` hanno restituito `scrollWidth = innerWidth = 360`. Le pagine presentano il testo inglese vincolante e il riferimento storico alla FSL.
+
+## Commit e passaggio a Fabio e Claude
+
+- Task 7 · `964ef94` (commit ereditato, verifica browser e collegamento del test news registrati nel Task 8).
+- Task 8 · `4100a04`.
+- Task 9 · `053523d`.
+- Task 10 · `59c2b14`.
+- Task 11 · commit che introduce questa sezione, risolvibile con `git rev-parse --short ':/^feat: Homun is open source under Apache-2[.]0'`. Scriverne l’hash qui prima del commit ne cambierebbe il valore.
+
+A Fabio resta l’approvazione dei testi di `src/data/home-roadmap.mjs` prima del merge. Verificare la licenza nel repo di Homun Core prima del lancio e rendere raggiungibile il link alla licenza d’archivio con il tag già presente in locale, quando autorizzato.
+
+Dubbi aperti per la revisione: il mockup apre una richiesta Google Fonts e contiene la beta.5, quindi nel confronto a 360 px i font remoti sono stati bloccati e i contenuti delle novità seguono la spec. Nella pagina Engramma la sezione quarantena usa la fascia scura del mockup con una scheda chiara in tema chiaro. Le vecchie guide di download conservano i link GitHub manuali a `/releases/latest`, segnalati dal banner di transizione. Il bottone del sito usa il resolver delle stabili e il fallback alla lista release.
+
+Il Task 12 è riservato a Claude.
