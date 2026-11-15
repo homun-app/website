@@ -1,0 +1,72 @@
+---
+interface Props {
+  i?: number;
+  class?: string;
+}
+
+const { i, class: className } = Astro.props;
+---
+
+<div class:list={["scaler", className, { play: i !== undefined }]} style={{ "--i": i }} data-app-window>
+  <div class="win">
+    <div class="titlebar" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="app">
+      <aside class="side" aria-label="Bots and teams"><slot name="sidebar" /></aside>
+      <section class="chat" aria-label="Chat"><slot name="chat" /></section>
+      <aside class="panel" aria-label="Bot details"><slot name="panel" /></aside>
+    </div>
+  </div>
+</div>
+
+<script>
+  if ("ResizeObserver" in window) {
+    const observer = new ResizeObserver((entries) => {
+      for (const { target, contentRect } of entries) {
+        (target as HTMLElement).style.setProperty("--k", String(contentRect.width / 1200));
+      }
+    });
+    document.querySelectorAll("[data-app-window]").forEach((element) => observer.observe(element));
+  }
+</script>
+
+<style>
+  .scaler {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin-inline: auto;
+    aspect-ratio: 1200 / 740;
+    container-type: inline-size;
+    overflow: hidden;
+    overflow: clip;
+    overflow-clip-margin: 16px;
+  }
+
+  .win {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 1200px;
+    height: 740px;
+    transform-origin: 0 0;
+    transform: scale(var(--k, .25));
+    /* The ratio of the container width to the design width, as a CSS number. */
+    transform: scale(var(--k, tan(atan2(100cqw, 1200px))));
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--a-bg);
+    color: var(--a-fg);
+    font: 14px/1.45 var(--body);
+    box-shadow: 0 40px 100px -36px rgb(10 20 18 / .5), 0 0 0 1px var(--a-line);
+    display: grid;
+    grid-template-rows: 34px 1fr;
+  }
+
+  .titlebar { display: flex; align-items: center; gap: 8px; padding-inline: 14px; background: var(--a-side); border-bottom: 1px solid var(--a-line); }
+  .titlebar i { width: 12px; height: 12px; border-radius: 50%; background: #FF5F57; }
+  .titlebar i:nth-child(2) { background: #FEBC2E; }
+  .titlebar i:nth-child(3) { background: #28C840; }
+  .app { display: grid; grid-template-columns: 250px minmax(0, 1fr) 310px; min-height: 0; }
+  .side { display: flex; flex-direction: column; gap: 4px; padding: 12px 10px; background: var(--a-side); border-right: 1px solid var(--a-line); }
+  .chat { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-width: 0; }
+  .panel { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 18px 16px; border-left: 1px solid var(--a-line); }
+</style>

@@ -186,7 +186,7 @@ Cosa usano i task seguenti:
 - Modify:
   - `src/pages/dev/primitives.astro` (diventa la tavola del kit nuovo)
   - `scripts/check-primitives.mjs`
-- Delete: `src/components/ui/` (`AppWindow`, `ApprovalCard`, `ChatMessage`, `SceneSection`), dopo aver verificato con `grep -r` chi li usa. I consumatori sono le sezioni che il Task 4 rifà: in questo task la homepage può restare temporaneamente con le sole sezioni che compilano.
+- **Non** cancellare `src/components/ui/` in questo task: la homepage attuale li usa ancora. La cancellazione avviene nel Task 4. La tavola `dev/primitives` mostra solo il kit nuovo.
 
 **Interfaces:**
 - Produces:
@@ -231,7 +231,7 @@ Cosa usano i task seguenti:
 **Files:**
 - Create: `src/components/home/Hero.astro` (riscritto), `src/components/home/Showcase.astro`, `src/components/home/FeatureSection.astro`
 - Modify: `src/pages/index.astro`, `src/components/Nav.astro` (comparsa del marchio legata allo scorrimento), `scripts/check-homepage.mjs`
-- Delete: `src/components/home/{ComputerScene,MemoryScene}.astro`, `src/scripts/hero-picker.mjs`, `scripts/check-hero-picker.mjs` (e la voce in `package.json`), `src/data/bot-templates.mjs` se non più importato
+- Delete: `src/components/ui/` (`AppWindow`, `ApprovalCard`, `ChatMessage`, `SceneSection`; spostato qui dal Task 3), `src/components/home/{ComputerScene,MemoryScene}.astro`, `src/scripts/hero-picker.mjs`, `scripts/check-hero-picker.mjs` (e la voce in `package.json`), `src/data/bot-templates.mjs` se non più importato
 
 **Interfaces:**
 - Consumes: il kit del Task 3, `ProductSymbol` e `HomunMark` del Task 1, `scroll.css` del Task 2,

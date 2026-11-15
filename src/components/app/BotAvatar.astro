@@ -1,0 +1,102 @@
+---
+import { botSvg, FAMILIES } from "../../data/bot-families.mjs";
+
+interface Props {
+  family: keyof typeof FAMILIES;
+  color: string;
+  state?: "idle" | "listening" | "thinking" | "speaking" | "waiting" | "happy";
+  size?: number;
+  label?: string;
+  mini?: boolean;
+  i?: number;
+  class?: string;
+}
+
+const { family, color, state = "idle", size = 34, label, mini = false, i, class: className } = Astro.props;
+const svg = botSvg({ family, color, state, mini });
+---
+
+<span
+  class:list={["av", className, { play: i !== undefined }]}
+  style={{ "--bot-size": `${size}px`, "--bot-color": color, "--i": i }}
+  data-bot-avatar={family}
+  data-state={state}
+  data-mini={mini || undefined}
+  role={label ? "img" : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : "true"}
+>
+  {state === "listening" && <span class="wave"></span>}
+  {state === "waiting" && <span class="attn"></span>}
+  <Fragment set:html={svg} />
+</span>
+
+<script>
+  const motion = matchMedia("(prefers-reduced-motion: reduce)");
+  const avatars = Array.from(document.querySelectorAll<HTMLElement>("[data-bot-avatar]:not([data-mini])"));
+
+  function syncMotion() {
+    const enabled = !motion.matches && !document.hidden;
+    for (const avatar of avatars) {
+      const svg = avatar.querySelector("svg");
+      const morph = svg?.querySelector("animate");
+      if (!svg || !morph) continue;
+
+      avatar.toggleAttribute("data-moving", enabled);
+      if (!enabled) {
+        if (motion.matches && avatar.hasAttribute("data-started")) {
+          svg.unpauseAnimations();
+          morph.endElement();
+          avatar.removeAttribute("data-started");
+        }
+        svg.pauseAnimations();
+        continue;
+      }
+
+      svg.unpauseAnimations();
+      if (!avatar.hasAttribute("data-started")) {
+        morph.beginElement();
+        avatar.setAttribute("data-started", "");
+      }
+    }
+  }
+
+  syncMotion();
+  document.addEventListener("visibilitychange", syncMotion);
+  motion.addEventListener("change", syncMotion);
+</script>
+
+<style>
+  .av {
+    position: relative;
+    display: inline-block;
+    width: var(--bot-size);
+    height: var(--bot-size);
+    flex: none;
+    vertical-align: middle;
+  }
+
+  .av :global(svg) { display: block; }
+  .av :global(.mb) { transform-box: fill-box; transform-origin: 50% 90%; }
+  .av :global(.blink) { transform-box: fill-box; transform-origin: center; }
+  .wave { position: absolute; inset: 6%; border: 2px solid var(--bot-color); border-radius: 999px; opacity: .6; }
+  .attn { position: absolute; top: 2%; right: 6%; width: 16%; height: 16%; border-radius: 50%; background: var(--bot-color); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-moving][data-state="idle"] :global(.mb) { animation: breathe 3.6s ease-in-out infinite; }
+    [data-moving][data-state="thinking"] :global(.mb) { animation: tilt 2.4s ease-in-out infinite; }
+    [data-moving][data-state="speaking"] :global(.mb) { animation: speak .45s ease-in-out infinite; }
+    [data-moving][data-state="happy"] :global(.mb) { animation: hop .8s cubic-bezier(.3,1.6,.5,1) infinite; }
+    [data-moving] :global(.blink) { animation: blink 4.5s infinite; }
+    [data-moving] :global(.dot3 circle), [data-moving] .attn { animation: pulse 1s ease-in-out infinite; }
+    [data-moving] .wave { animation: ripple 1.2s ease-out infinite; }
+  }
+
+  @keyframes breathe { 50% { scale: 1.03 .97; } }
+  @keyframes tilt { 25% { rotate: -4deg; } 75% { rotate: 4deg; } }
+  @keyframes speak { 50% { scale: 1.04 .96; } }
+  @keyframes hop { 40% { translate: 0 -10%; } }
+  @keyframes blink { 0%, 93%, 100% { scale: 1 1; } 96% { scale: 1 .12; } }
+  @keyframes pulse { 50% { opacity: .2; } }
+  @keyframes ripple { from { opacity: .6; scale: .9; } to { opacity: 0; scale: 1.35; } }
+</style>
