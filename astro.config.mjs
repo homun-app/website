@@ -20,9 +20,10 @@ export default defineConfig({
 		starlight({
 			title: 'Homun',
 			description: 'Local-first personal assistant — documentation.',
+			favicon: '/favicon.svg',
 			logo: {
-				light: './src/assets/wordmark-light.svg',
-				dark: './src/assets/wordmark-dark.svg',
+				light: './src/assets/brand/homun-wordmark-light.svg',
+				dark: './src/assets/brand/homun-wordmark-dark.svg',
 				replacesTitle: true,
 				alt: 'Homun',
 			},

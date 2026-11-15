@@ -7,6 +7,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
+    "test:brand": "node scripts/check-brand.mjs",
     "test:homepage": "node scripts/check-homepage.mjs",
     "test:primitives": "node scripts/check-primitives.mjs",
     "test:marketing-backgrounds": "node scripts/check-marketing-backgrounds.mjs",
@@ -30,7 +31,7 @@
     "test:container-runtime-signals": "node scripts/check-container-runtime-signals.mjs",
     "sync:product-data": "node scripts/sync-product-data.mjs",
     "roadmap:v3-rollout": "node scripts/roadmap-v3-rollout.mjs",
-    "check": "npm run build && npm run test:analytics-events && npm run test:analytics-build && npm run test:privacy && npm run test:license && npm run test:homepage && npm run test:primitives && npm run test:marketing-backgrounds && npm run test:downloads && npm run test:hero-picker && npm run test:product-data && npm run test:roadmap-v3-manifest && npm run test:roadmap-v3-product-data && npm run test:roadmap-v3-publication && npm run test:roadmap-v3-presentation && npm run test:roadmap-v3-projections && npm run test:roadmap-v3-rollout && npm run test:roadmap && npm run test:container && npm run test:container-runtime-ownership && npm run test:container-runtime-signals",
+    "check": "npm run build && npm run test:brand && npm run test:analytics-events && npm run test:analytics-build && npm run test:privacy && npm run test:license && npm run test:homepage && npm run test:primitives && npm run test:marketing-backgrounds && npm run test:downloads && npm run test:hero-picker && npm run test:product-data && npm run test:roadmap-v3-manifest && npm run test:roadmap-v3-product-data && npm run test:roadmap-v3-publication && npm run test:roadmap-v3-presentation && npm run test:roadmap-v3-projections && npm run test:roadmap-v3-rollout && npm run test:roadmap && npm run test:container && npm run test:container-runtime-ownership && npm run test:container-runtime-signals",
     "preview": "astro preview",
     "astro": "astro"
   },

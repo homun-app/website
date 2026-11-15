@@ -1,7 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="646 -2 280 280">
-  <!-- Homun favicon: rounded white tile + brandmark (dark bowl, teal dot). -->
-  <rect x="646" y="-2" width="280" height="280" rx="62" fill="#ffffff"/>
-  <circle cx="786" cy="60" r="34" fill="#157a6e"/>
-  <path d="M721 117V187C721 220.333 742.667 237 786 237C829.333 237 851 220.333 851 187V117"
-    fill="none" stroke="#241a12" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 6 86 88" role="img"><title>homun</title><path d="M50 12C74 10 90 28 88 52C86 76 70 90 48 88C26 86 10 72 12 50C14 28 28 14 50 12Z" fill="#157A6E"/><rect x="33" y="34" width="13" height="28" rx="6.5" fill="#F4F1EE"/><rect x="54" y="34" width="13" height="28" rx="6.5" fill="#F4F1EE"/></svg>
