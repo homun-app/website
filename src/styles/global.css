@@ -1,13 +1,12 @@
 @import "tailwindcss";
 
-/* Homun — bot team. Light is the default theme; the dark palette keeps the
-   previous "espresso" look and activates via prefers-color-scheme. */
-@theme {
-	--font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system,
-		"Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-	--font-mono: ui-monospace, "SF Mono", SFMono-Regular, "JetBrains Mono", Menlo,
-		Consolas, monospace;
+/* Existing marketing components still use the Tailwind palette. */
+@theme inline {
+	--font-sans: var(--body);
+	--font-mono: var(--mono);
+}
 
+@theme {
 	/* Light palette (default) */
 	--color-bg: #f7f9f8;
 	--color-bg-raised: #fcfefd;
@@ -29,9 +28,44 @@
 	--shadow-lift: 0 28px 80px -32px rgba(16, 44, 37, 0.18);
 }
 
-/* Theme knobs that do not belong to the Tailwind token set. */
+/* Homepage and reconstructed app tokens from the design mockup. */
 :root {
 	color-scheme: light;
+
+	--bg: #FBFAF8;
+	--surface: #F0EEEA;
+	--line: #E2DED8;
+	--fg: #101917;
+	--muted: #5D6663;
+	--teal: #157A6E;
+	--teal-text: #126A5F;
+	--blue: #3A5BD9;
+	--cream: #F4F1EE;
+
+	--band: #0E1413;
+	--band-fg: #F4F1EE;
+	--band-muted: #9AA5A1;
+	--band-card: #18201E;
+
+	--a-bg: #F7F5F0;
+	--a-side: #FBFAF7;
+	--a-card: #FDFCFA;
+	--a-muted: #ECE9E3;
+	--a-mfg: #74716A;
+	--a-fg: #1E1C18;
+	--a-line: #E4E0D8;
+	--a-bubble: #EAE7E1;
+	--a-user: #141A2B;
+
+	--ink: #1E1C18;
+	--screen: #2A2824;
+	--blush: #F07F86;
+	--ok: #1F8F72;
+
+	--display: "M PLUS Rounded 1c", ui-rounded, "SF Pro Rounded", ui-sans-serif, system-ui, sans-serif;
+	--body: "Figtree Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+	--mono: "Geist Mono", ui-monospace, Menlo, monospace;
+
 	--btn-primary-ink: #ffffff;
 	--glow-strength: 0.3;
 	--atmosphere-strength: 0.45;
@@ -45,8 +79,28 @@
 }
 
 @media (prefers-color-scheme: dark) {
-	:root {
+	:root:not([data-theme="light"]) {
 		color-scheme: dark;
+
+		--bg: #0B100F;
+		--surface: #151C1A;
+		--line: #25302D;
+		--fg: #F4F1EE;
+		--muted: #9AA5A1;
+		--teal-text: #5CC2B3;
+		--blue: #5574E8;
+		--band: #060909;
+		--band-card: #121918;
+
+		--a-bg: #181816;
+		--a-side: #141413;
+		--a-card: #201F1C;
+		--a-muted: #2A2926;
+		--a-mfg: #A19D95;
+		--a-fg: #EEEBE5;
+		--a-line: #2E2D29;
+		--a-bubble: #2A2926;
+		--a-user: #E9E6E0;
 
 		/* Dark palette — the previous Homun espresso theme */
 		--color-bg: #050807;
@@ -79,6 +133,30 @@
 	}
 }
 
+:root[data-theme="dark"] {
+	color-scheme: dark;
+
+	--bg: #0B100F;
+	--surface: #151C1A;
+	--line: #25302D;
+	--fg: #F4F1EE;
+	--muted: #9AA5A1;
+	--teal-text: #5CC2B3;
+	--blue: #5574E8;
+	--band: #060909;
+	--band-card: #121918;
+
+	--a-bg: #181816;
+	--a-side: #141413;
+	--a-card: #201F1C;
+	--a-muted: #2A2926;
+	--a-mfg: #A19D95;
+	--a-fg: #EEEBE5;
+	--a-line: #2E2D29;
+	--a-bubble: #2A2926;
+	--a-user: #E9E6E0;
+}
+
 @layer base {
 	* {
 		box-sizing: border-box;
@@ -90,9 +168,9 @@
 	}
 	body {
 		margin: 0;
-		background: var(--color-bg);
-		color: var(--color-cream);
-		font-family: var(--font-sans);
+		background: var(--bg);
+		color: var(--fg);
+		font-family: var(--body);
 		font-synthesis-weight: none;
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
@@ -106,9 +184,10 @@
 	h1,
 	h2,
 	h3 {
-		font-weight: 570;
-		letter-spacing: -0.035em;
-		line-height: 1.03;
+		font-family: var(--display);
+		font-weight: 800;
+		letter-spacing: -0.03em;
+		line-height: 1.04;
 		text-wrap: balance;
 	}
 	p {
@@ -143,7 +222,7 @@
 
 .eyebrow,
 .metric-label {
-	font-family: var(--font-mono);
+	font-family: var(--mono);
 	font-size: 0.68rem;
 	font-weight: 600;
 	letter-spacing: 0.16em;

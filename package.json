@@ -31,15 +31,19 @@
     "test:container-runtime-signals": "node scripts/check-container-runtime-signals.mjs",
     "sync:product-data": "node scripts/sync-product-data.mjs",
     "roadmap:v3-rollout": "node scripts/roadmap-v3-rollout.mjs",
-    "check": "npm run build && npm run test:brand && npm run test:analytics-events && npm run test:analytics-build && npm run test:privacy && npm run test:license && npm run test:homepage && npm run test:primitives && npm run test:marketing-backgrounds && npm run test:downloads && npm run test:hero-picker && npm run test:product-data && npm run test:roadmap-v3-manifest && npm run test:roadmap-v3-product-data && npm run test:roadmap-v3-publication && npm run test:roadmap-v3-presentation && npm run test:roadmap-v3-projections && npm run test:roadmap-v3-rollout && npm run test:roadmap && npm run test:container && npm run test:container-runtime-ownership && npm run test:container-runtime-signals",
+    "check": "npm run build && npm run test:foundation && npm run test:brand && npm run test:analytics-events && npm run test:analytics-build && npm run test:privacy && npm run test:license && npm run test:homepage && npm run test:primitives && npm run test:marketing-backgrounds && npm run test:downloads && npm run test:hero-picker && npm run test:product-data && npm run test:roadmap-v3-manifest && npm run test:roadmap-v3-product-data && npm run test:roadmap-v3-publication && npm run test:roadmap-v3-presentation && npm run test:roadmap-v3-projections && npm run test:roadmap-v3-rollout && npm run test:roadmap && npm run test:container && npm run test:container-runtime-ownership && npm run test:container-runtime-signals",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test:foundation": "node scripts/check-foundation.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.2.1",
     "@astrojs/starlight": "^0.40.0",
+    "@fontsource-variable/figtree": "^5.3.0",
     "@fontsource-variable/inter": "^5.1.1",
+    "@fontsource/geist-mono": "^5.3.0",
+    "@fontsource/m-plus-rounded-1c": "^5.3.0",
     "@tailwindcss/vite": "^4.1.4",
     "astro": "^6.4.5",
     "sharp": "^0.34.5",

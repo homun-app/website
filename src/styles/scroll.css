@@ -1,0 +1,110 @@
+/* The static layout is the final state. Only capable browsers animate it. */
+@supports (animation-timeline: view()) {
+	.timeline-f {
+		view-timeline-name: --f;
+	}
+
+	.timeline-show {
+		view-timeline-name: --show;
+		--tl: --show;
+	}
+
+	.reveal-window {
+		animation: homun-window-enter linear both;
+		animation-timeline: --show;
+		animation-range: entry 0% cover 45%;
+	}
+
+	.section-text {
+		animation: homun-rise linear both;
+		animation-timeline: --f;
+		animation-range: entry 10% cover 35%;
+	}
+
+	.section-visual {
+		animation: homun-lift linear both;
+		animation-timeline: --f;
+		animation-range: entry 0% cover 40%;
+	}
+
+	.play {
+		animation: homun-pop linear both;
+		animation-timeline: var(--tl, --f);
+		animation-range: cover calc(18% + var(--i, 0) * 5%) cover calc(26% + var(--i, 0) * 5%);
+	}
+
+	.timeline-show .play {
+		animation-range: cover calc(26% + var(--i, 0) * 4%) cover calc(32% + var(--i, 0) * 4%);
+	}
+
+	.press {
+		animation: homun-press linear both;
+		animation-timeline: --f;
+		animation-range: cover 50% cover 58%;
+	}
+
+	.cursor-move {
+		animation: homun-cursor linear both;
+		animation-timeline: --f;
+		animation-range: cover 20% cover 55%;
+	}
+
+	.rise-self {
+		animation: homun-rise linear both;
+		animation-timeline: view();
+		animation-range: entry 10% cover 30%;
+	}
+
+	@keyframes homun-window-enter {
+		from {
+			transform: perspective(1400px) rotateX(18deg) scale(0.86) translateY(40px);
+			opacity: 0.3;
+		}
+	}
+
+	@keyframes homun-rise {
+		from {
+			opacity: 0;
+			translate: 0 30px;
+		}
+	}
+
+	@keyframes homun-lift {
+		from {
+			opacity: 0;
+			translate: 0 80px;
+			scale: 0.92;
+		}
+	}
+
+	@keyframes homun-pop {
+		from {
+			opacity: 0;
+			translate: 0 14px;
+			scale: 0.97;
+		}
+	}
+
+	@keyframes homun-press {
+		50% { scale: 0.92; }
+		to { box-shadow: 0 0 0 4px color-mix(in srgb, var(--teal) 35%, transparent); }
+	}
+
+	@keyframes homun-cursor {
+		from { left: 78%; top: 30%; }
+		60% { left: 60%; top: 46%; }
+		to { left: 84%; top: 46%; }
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.reveal-window,
+	.section-text,
+	.section-visual,
+	.play,
+	.press,
+	.cursor-move,
+	.rise-self {
+		animation: none !important;
+	}
+}
