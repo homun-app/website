@@ -1,68 +1,40 @@
 ---
 title: Memory
-description: A hybrid, inspectable memory — SQLite plus a graph of entities and decisions, a generated Markdown wiki, and curated contacts.
+description: What a bot remembers between conversations, where each memory comes from, and how to correct or forget it.
 ---
 
-Most assistants forget you between sessions, or remember you in an opaque cloud. Homun
-builds a **private, verifiable memory** that lives on your machine and that you can
-read and correct.
+Bots remember facts and rules between conversations: that a client signs only annual
+contracts, how you like your reports, who to copy on invoices. Memory runs on
+[Engramma](/docs/engramma/), Homun's memory engine, and stays on your computer.
 
-![Homun's Memory view showing a graph of 28 entity nodes linked around a central project node](../../../assets/screenshots/memory-graph.png)
-*The memory graph — entities and relationships, filterable by type (facts, decisions, preferences, conversations).*
+## What a memory looks like
 
-## How it's stored
+Every memory is a short note with its **source** and its **date**. When a bot uses a
+memory, you can see where it comes from. When something changes, the old version is kept
+in the history instead of being overwritten.
 
-Memory is **hybrid**, not a single embedding blob:
+Memories belong to one bot, or are **shared** by every bot.
 
-| Layer | Role |
-| --- | --- |
-| **SQLite** | the durable backing store for everything below |
-| **Graph** | entities, relationships, and decisions, linked over time |
-| **Markdown wiki** | a human-readable wiki generated from the graph |
-| **Contacts** | a curated set of people, kept separate from raw chat history |
+## Opening a bot's memory
 
-## From conversation to knowledge
+In the bot panel, open **Memory**. You can search, filter by bot or shared memories, and
+see which memories are active, waiting for confirmation or deleted.
 
-As you talk, Homun **extracts** what matters and links it into the graph:
+## Waiting for confirmation
 
-- **Entities** — people, projects, places, organizations, events.
-- **Relationships** — how those entities connect.
-- **Decisions** — choices worth remembering, with their context.
+What a bot learns from the web or from other external data does not enter its memory
+directly: it waits in **waiting for confirmation** until you confirm it. A page cannot
+plant a memory by itself.
 
-Over time it **consolidates**: fragments about the same entity are merged and noise is
-removed, so the picture sharpens instead of duplicating. An **event log** records what
-was learned and when, so memory has history, not just a current state.
+## Correcting and forgetting
 
-## Transparent and correctable
+Delete a memory and it moves to the deleted list. From there you can forget it for good.
 
-Because memory is an inspectable graph plus a wiki — not a black box — you can see
-exactly what was learned and fix anything wrong. This is a core
-[principle](/concepts/): the assistant's knowledge is yours to audit, edit, and trust.
+## Better search
 
-![The Memory view's Info tab listing extracted facts, with Consolidate and Export actions](../../../assets/screenshots/memory-list.png)
-*The same memory as a readable list — consolidate fragments or export it all.*
+Out of the box, memory search works on text and on the links between notes. For search
+that also finds notes written with different words, download the memory model
+(about 400 MB) from the Memory panel. You can remove it from **Settings › General › Disk
+space**.
 
-## Forget
-
-You can **forget** by **topic or entity**. Removing an entity removes what hangs off
-it, so "forget everything about project X" is a real, scoped operation — backed by
-cascade purge in the database, not a hope that the model drops it.
-
-## Contacts
-
-People you interact with — including through [channels](/guides/channels/) — can be
-curated as **contacts**: a clean address book the assistant draws on, distinct from the
-firehose of message history.
-
-## Stays local, and exportable
-
-Nothing in memory leaves the machine by default — plain SQLite + files under
-`~/.homun` (desktop) or your mounted volume (server). You can **export** your data at
-any time, and retention is enforced (cascade purge + VACUUM) so deletions are real.
-See [Privacy & security](/guides/security/).
-
-## Related: Graphify
-
-For code and project work, **Graphify** builds a graph of a codebase or project on the
-host — the same idea applied to a repository: a navigable structure instead of a flat
-pile of files.
+Read more in the [Engramma docs](/docs/engramma/how-it-works/).

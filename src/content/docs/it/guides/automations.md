@@ -1,43 +1,32 @@
 ---
-title: Automazioni
-description: Regole Quando → Allora che eseguono task agentici su pianificazione o in risposta a un evento.
+title: Routine
+description: Lavoro ricorrente a orario, proposto dai bot o creato da te.
 ---
 
-Un'automazione è una semplice regola con due metà:
+Una **routine** esegue una richiesta a orario: ogni giorno feriale alle 8:00, ogni lunedì
+mattina, il primo del mese. Il bot fa il lavoro come se gliel'avessi appena chiesto, e la
+chat mostra una piccola riga come *⏱ Routine «Posta del mattino»*.
 
-```text
-Quando <trigger>  →  Allora <azione>
-```
+## Creare una routine
 
-Il trigger scatta; l'azione gira come un [task](/it/reference/architecture/) agentico
-completo con tutto il toolset.
+- **Chiedila**: *«Ogni giorno feriale alle 8 smista la posta.»* Il bot ti mostra una sola
+  card con nome, orario e richiesta. Approvala e la routine nasce attiva.
+- **Dal pannello del bot**: premi **Nuova routine**.
+- **Da una proposta**: i bot notano ciò che chiedi più volte. Dopo qualche lunedì con la
+  stessa richiesta, il bot ti propone una routine: premi **Attiva**.
 
-![L'editor delle automazioni di Homun: una sezione QUANDO con Pianificazione/Evento e opzioni orarie, un campo azione ALLORA e una checkbox di approvazione](../../../../assets/screenshots/automations.png)
-*Costruire una regola: scegli una pianificazione o un evento, descrivi l'azione e richiedi conferma prima che venga inviato qualcosa.*
+## Gestire le routine
 
-## Trigger
+Il pannello del bot elenca le sue routine con la prossima esecuzione, e ti permette di
+metterle in pausa e riprenderle. **Impostazioni › Routine** elenca le routine di tutti i
+bot.
 
-- **A tempo** — una pianificazione (es. ogni mattina, ogni ora).
-- **A evento** — succede qualcosa: un messaggio da un [canale](/it/guides/channels/),
-  un segnale da un servizio connesso.
+## Quando arrivano i risultati
 
-## Azioni
+I messaggi non urgenti delle routine aspettano la tua **finestra di consegna**, che
+imposti in **Impostazioni › Generali › Consegna** insieme al fuso orario.
 
-L'azione è un **task agentico**, non uno script fisso. Ha accesso alle stesse capacità
-dell'assistente: [skill](/it/guides/skills/), [connettori](/it/guides/connectors/), il
-[computer contenuto](/it/guides/local-computer/) e la [memoria](/it/guides/memory/).
-Così "riassumi i miei messaggi non letti e archivia quelli importanti" è un'unica regola,
-non una pipeline da cablare a mano.
+## Al tuo rientro
 
-## Durevole per design
-
-Le automazioni girano sul durable task runtime: i task sopravvivono ai riavvii grazie a
-un heartbeat watchdog (rinnovo del lease + guardia contro la doppia esecuzione).
-Un'azione pianificata non gira due volte in silenzio né svanisce se l'app si riavvia a
-metà.
-
-## Da un suggerimento
-
-Raramente parti da una regola vuota. Il motore di [proattività](/it/guides/proactivity/)
-di Homun individua il lavoro ricorrente e offre una card di suggerimento; accettarla crea
-l'automazione.
+Dopo qualche ora di assenza, il bot dà un'occhiata a cosa è cambiato e te lo dice, in una
+riga segnata *Al tuo rientro*. Dopo quante ore lo scegli in **Impostazioni › Generali**.

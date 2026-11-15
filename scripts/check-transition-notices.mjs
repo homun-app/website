@@ -6,11 +6,11 @@ import releases from "../src/data/releases.json" with { type: "json" };
 const en = "Being updated for the new Homun — some pages describe the previous version.";
 const it = "In aggiornamento per il nuovo Homun: alcune pagine descrivono la versione precedente.";
 const page = (route) => readFileSync("dist/" + route + "index.html", "utf8");
-for (const route of ["docs/", "roadmap/", "roadmap/team-spaces-roles/"]) {
+for (const route of ["roadmap/", "roadmap/team-spaces-roles/"]) {
 	assert.ok(page(route).includes(en), "English notice missing on " + route);
 }
-assert.ok(page("it/docs/").includes(it));
-for (const route of ["", "docs/engramma/", "it/docs/engramma/"]) {
+// The Homun docs describe 0.3, so they carry no transition notice.
+for (const route of ["", "docs/", "it/docs/", "guides/getting-started/", "it/guides/getting-started/", "docs/engramma/", "it/docs/engramma/"]) {
 	assert.ok(!page(route).includes(en) && !page(route).includes(it), "Unexpected notice on " + route);
 }
 const changelog = page("changelog/");

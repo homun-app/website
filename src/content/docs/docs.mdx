@@ -1,45 +1,43 @@
 ---
 title: Welcome to Homun
-description: A personal AI that does the work — on your terms. Memory, channels, automations and real deliverables, with local and cloud models side by side.
+description: Homun is a team of AI bots that works on your computer. Each bot has one job, a computer of its own and a memory, and asks before anything goes out.
 ---
 
-Homun is a **personal AI that does the work — on your terms**. It runs on your machine
-(a signed desktop app or a single container you self-host): it remembers what matters in
-a memory graph you own, drafts across your channels, automates recurring work, and can
-drive a real contained computer to get things done — with local and cloud models side by
-side, under permissions you grant.
+Homun is **your bot team**. You give each bot one job — sort the morning mail, prepare
+tomorrow's meetings, watch for mentions of your project — and it does that job on your
+computer. Each bot has:
 
-It's not a passive chat box. Today it assists you; the direction is an **apprentice** that
-observes your work, learns your routines, proposes, and takes a task end-to-end. That
-autonomous loop is [on the roadmap](/roadmap/).
+- **a computer of its own**, a contained box with a browser, a terminal and files, so it
+  can do real work without touching your system;
+- **access to the apps you connect**, such as Gmail, Trello, Slack or your own MCP
+  servers;
+- **a memory** that keeps what it learns with the source and the date;
+- **approvals**: it asks you before it sends, pays, deletes or publishes.
 
-![The Homun desktop app — a Q3 report summarized into a table and a drafted update email](../../assets/screenshots/chat.png)
-*Homun turning a report into a deliverable — a summary, a table, and a ready-to-send draft.*
+You choose the model behind every bot: a cloud provider, a model on your network, or the
+model built into Homun, which runs entirely on your machine.
 
 ## Start here
 
-- **[Getting started](/guides/getting-started/)** — install the desktop app and run it.
-- **[Core concepts](/concepts/)** — how it works, on your terms, contracts & permissions.
-- **[Download](/guides/download/)** — macOS, Windows, Linux.
-- **[Self-hosting](/guides/self-hosting/)** — run Homun as your own container.
+- **[Getting started](/guides/getting-started/)**: install Homun and meet your first bot.
+- **[Core concepts](/concepts/)**: bots, teams, the bot's computer, apps, approvals.
+- **[Download](/guides/download/)**: macOS, with Windows and Linux in beta.
 
-## What makes it different
+## Using Homun
 
-- **On your terms.** Memory, contacts and history live in plain SQLite + files under
-  `~/.homun` — on your machine, or a server you run. You decide what's delegated to a
-  cloud model, and when.
-- **Local and cloud, side by side.** Point it at local [Ollama](https://ollama.com) or
-  any cloud provider; a router picks the right model per task.
-- **A real computer.** The agent can open a contained browser/shell and actually do
-  things — and you can watch it live.
-- **Transparent.** Memory is an inspectable graph + a Markdown wiki you can read and
-  correct, not an opaque blob.
+- [Bots & chat](/guides/chat/): talking to a bot, drafts, the Library.
+- [Teams](/guides/teams/): bots that work together under a coordinator.
+- [Apps](/guides/connectors/): Gmail, Composio, MCP servers, more than one account.
+- [Skills](/guides/skills/): recipes a bot keeps and reuses.
+- [The bot's computer](/guides/local-computer/): the box, its screen, taking over.
+- [Approvals & safety](/guides/security/): when a bot asks, the Vault, your data.
+- [Routines](/guides/automations/): recurring work on a schedule.
+- [Memory](/guides/memory/): what a bot remembers, powered by [Engramma](/docs/engramma/).
+- [Models](/guides/models/): cloud, local network, or built in.
 
-## Explore the features
-
-Each capability has its own page under **Features** in the sidebar —
-[Chat](/guides/chat/), [Memory](/guides/memory/),
-[Models & providers](/guides/models/), [Channels](/guides/channels/),
-[Automations](/guides/automations/), [Skills](/guides/skills/),
-[Connectors](/guides/connectors/), [The local computer](/guides/local-computer/),
-[Proactivity](/guides/proactivity/), and [Privacy & security](/guides/security/).
+:::note[Coming from Homun 2?]
+Homun 0.3 is a complete renewal. Conversations and bots from Homun 2 are **not
+imported**: they stay where they were, and you can keep or delete them whenever you
+want. Channels (WhatsApp, Telegram) and the self-hosted server of Homun 2 are not part
+of 0.3.
+:::

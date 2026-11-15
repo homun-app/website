@@ -1,47 +1,34 @@
 ---
 title: Architecture
-description: How Homun's pieces fit together.
+description: The parts of Homun 0.3 and how they fit together.
 ---
 
-Homun is one **gateway** plus a web UI, packaged two ways from the same code: a
-desktop app (Electron shell around the gateway) and a self-hosted container. The
-desktop and server builds run the *same* gateway — only how assets and env are wired
-differs.
+Homun 0.3 is a desktop app. Everything that keeps your bots running lives on your
+computer; the only parts that reach the network are the models and apps you choose.
 
-## The gateway
+## The parts
 
-A small native service (Rust + axum) that owns everything: chat, the memory store,
-tasks and automations, providers/model routing, channels, and the contained
-computer. It serves the web UI and the API on one port, and keeps all state under
-`HOMUN_DATA_DIR` (`~/.homun` on desktop, a mounted volume on a server).
+| Part | What it does |
+| --- | --- |
+| **The app** | The window you use: chats, teams, apps, skills, settings. |
+| **The background process** | Keeps bots, routines and teams running when the window is closed. It is the app itself, signed like the app. Homun stays in the menu bar. |
+| **The agent loop** | For each request: the model answers, asks for tools, each tool call goes through approvals, results go back to the model, until the work is done. |
+| **The transcript** | Every chat is a sequence of events (messages, tool calls, results, approvals) saved in a local SQLite database. |
+| **The bot's computer** | One contained box per bot, run by Apple container or Docker, with a browser, a terminal and files. |
+| **Apps** | Direct connections, Composio, and MCP servers, exposed to bots as tools. |
+| **Memory** | [Engramma](/docs/engramma/), a local engine written in Rust, with notes, sources, history and quarantine. |
+| **The Vault** | Encrypted secrets and logins; the key is held by the system keychain. |
+| **Models** | Cloud providers, local servers, and the built-in model, behind one interface. |
+| **Updates** | Signed releases from GitHub, with release notes shown before you install. |
 
-## Memory
+## Where things run
 
-A private graph in plain SQLite + files. Facts are extracted from conversations,
-linked to entities (people, projects, places…), and consolidated over time. It's
-local by default; nothing leaves the machine.
+- **On your computer**: the app, the background process, the transcripts, the memory,
+  the Vault, the Library, the bots' boxes, and the built-in model if you install it.
+- **On services you choose**: cloud models, apps you connect Through Composio, and the
+  services your apps talk to.
 
-## Providers & model routing
+## Source code
 
-You configure one or more inference providers (local Ollama or cloud APIs). Each has
-an independent **enable/disable** switch. The router resolves a model **per role**
-(a manual binding, or an automatic capability match) across the *enabled* providers —
-there's no single hard-coded model.
-
-## Automations
-
-A rule = **trigger → action**. The trigger is time-based (a schedule) or an event
-(an incoming message, a connected service). The action is an agentic task with the
-full toolset — skills, connectors, the browser, memory.
-
-## The contained computer
-
-For real-world tasks the agent drives a sandboxed Docker container (a headed browser
-over CDP + a shell). On the server build, its live view (noVNC) is reverse-proxied
-through the gateway so a remote browser can watch it over the same TLS domain.
-
-## Distribution
-
-The desktop app auto-updates from a public release feed (signed + notarized builds);
-the source stays private. The server image rebuilds on every change and updates via a
-PaaS redeploy webhook. See [Self-hosting](/guides/self-hosting/).
+Homun is open source under the [Apache-2.0 license](/license/). The code is on
+[GitHub](https://github.com/homun-app).

@@ -1,75 +1,52 @@
 ---
-title: Chat
-description: The base loop — rich Markdown, attachments and vision, message branching, streaming, and inline activity.
+title: Bots & chat
+description: Creating bots, talking to them, drafts, the bot panel, and the Library.
 ---
 
-Chat is the foundation of Homun. Everything else — tasks, memory, the browser — is
-layered *beneath* it, surfacing as inline activity rather than cluttering the
-conversation. The goal is a simple, stable chat that never stalls.
+## Creating a bot
 
-![A Homun chat: the assistant replies with prose, inline code and a fenced code block showing passing tests](../../../assets/screenshots/chat.png)
-*A reply rendered with Markdown, inline code, and a code block — streamed live.*
+Press **+** in the sidebar and give the bot a name and a look. As soon as it exists, the
+bot introduces itself: it asks what it is for, writes its own description and starts.
+If you prefer, **Start from a template**:
 
-## Rich responses
+| Template | What it does |
+| --- | --- |
+| Inbox manager | Sorts the morning mail, highlights what can't wait, drafts replies to approve. |
+| Daily briefing editor | Prepares a short morning briefing: agenda, open items, news that matters to you. |
+| Meeting preparation assistant | Looks at tomorrow's calendar and prepares a short brief per meeting. |
+| Chief of staff | Closes the day by reducing mail and calendar to what needs your decision. |
+| Executive assistant | Opens the day with the priorities and keeps a list of what you must not forget. |
+| Mention monitor | Watches for public mentions of your name, projects or brand. |
 
-Replies render full **Markdown**: headings, lists, tables, blockquotes, and **code
-blocks with syntax highlighting**. Diagrams and structured content render inline, so a
-plan or a comparison reads as a document, not a wall of text.
+## Talking to a bot
 
-Responses **stream** token-by-token, and you can **cancel** a generation mid-flight.
-Switch to another thread while a reply keeps generating in the background — the
-gateway runs several independent workers, so one slow answer never blocks the rest
-(see [Models & providers](/guides/models/) for the concurrency model).
+Write as you would to a colleague. You can attach files and images. While the bot works,
+the chat shows what it is doing; if you write while it is busy, your message joins the
+work in progress instead of waiting in a queue.
 
-## Attachments & vision
+Messages that Homun sends on its own, such as a routine starting or the look-around when
+you come back, appear as small system lines, never as if you had written them.
 
-Drop in files and images. With a vision-capable model, Homun reads screenshots,
-photos, and documents directly in the conversation — useful for "what's wrong in this
-error screenshot?" or "summarize this PDF."
+## Drafts
 
-## Artifacts
+When a bot prepares a message for someone, it shows a **draft card**: recipient, subject,
+text, and the account it will leave from. The draft is sent only if you press **Send**.
+You can **Edit** it first or **Discard** it.
 
-Files the assistant creates or edits land in a **workspace** as **artifacts** you can
-open, **version**, and re-use across the conversation — not buried in a code block you
-have to copy out by hand.
+## The bot panel
 
-## Message actions
+Click the bot's name at the top of the chat to open its panel. There you find:
 
-You're not stuck with the transcript as-is:
+- the bot's **model**, which you can change right there;
+- its **memory** notes and its **skills**;
+- its latest jobs and its **routines**, which you can pause, resume or add;
+- its notifications, its instructions, and **Change look**.
 
-- **Edit** a message and re-run from that point.
-- **Branch** — editing forks the conversation, so you can explore an alternative
-  without losing the original. Each branch keeps its own history.
-- **Save a reply to memory**, or turn it into a task or automation, from the actions
-  under each message.
-- Organize threads into **folders** and **projects/workspaces**.
+The **Computer** card shows what the bot's computer is doing: On while the bot works,
+Waiting when it is ready, Starting while it boots, Off when it is stopped.
 
-## Per-message model
+## The Library
 
-Each message can override the model. Leave it on automatic and the router picks per
-task, or pin a specific model for one reply — handy to send a hard question to a
-stronger cloud model while everyday chat stays local. See
-[Models & providers](/guides/models/).
-
-## Inline activity
-
-When a reply triggers real work — a [task](/reference/architecture/), a browser
-session, an approval — it shows up as an **activity card** inside the chat: a timeline
-with progress, previews/thumbnails, and approve/takeover controls.
-
-This is *progressive disclosure*: the base chat stays clean, and the operative detail
-is one glance away when you want it. The
-[contained computer](/guides/local-computer/) appears the same way, with a live view
-you can watch and take over.
-
-:::note
-Heavy capabilities — task runtime, browser, approvals, memory, subagents — never
-appear as default chat behavior. They show up as a card only when a turn actually uses
-them. The base loop stays *write → respond → understand*.
-:::
-
-## Languages
-
-Homun is multilingual. The interface ships in English and Italian, and replies follow
-**your** language automatically — you write in yours, the assistant answers in yours.
-System prompts run in English under the hood; only the output is localized.
+Pages, charts and files that bots prepare are saved in the **Library**. You can filter by
+bot and type, search by title, pin, rename, delete, and export to `~/Downloads/Homun`.
+Items made from external data, such as a web page, carry a mark that says so.

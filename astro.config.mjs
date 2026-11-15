@@ -13,6 +13,19 @@ export default defineConfig({
 		'/roadmap/mobile-companion': '/roadmap/homun-mobile',
 		'/roadmap/shared-spaces': '/roadmap/team-spaces-roles',
 		'/roadmap/voice-capture': '/roadmap/voice-meeting-capture',
+		// Homun 2 docs pages with no counterpart in Homun 0.3.
+		'/guides/channels': '/guides/connectors/',
+		'/guides/proactivity': '/guides/automations/',
+		'/guides/self-hosting': '/guides/download/',
+		'/reference/components': '/reference/architecture/',
+		'/reference/decisions': '/reference/architecture/',
+		'/reference/memory-model': '/docs/engramma/how-it-works/',
+		'/it/guides/channels': '/it/guides/connectors/',
+		'/it/guides/proactivity': '/it/guides/automations/',
+		'/it/guides/self-hosting': '/it/guides/download/',
+		'/it/reference/components': '/it/reference/architecture/',
+		'/it/reference/decisions': '/it/reference/architecture/',
+		'/it/reference/memory-model': '/it/docs/engramma/how-it-works/',
 	},
 	integrations: [
 		// Documentation lives under /docs (and /it/docs), served by Starlight and
@@ -20,7 +33,7 @@ export default defineConfig({
 		// /changelog) are plain Astro pages using their own Tailwind layer.
 		starlight({
 			title: 'Homun',
-			description: 'Local-first personal assistant — documentation.',
+			description: 'A team of AI bots that works on your computer — documentation.',
 			favicon: '/favicon.svg',
 			logo: {
 				light: './src/assets/brand/homun-wordmark-light.svg',
@@ -37,7 +50,6 @@ export default defineConfig({
 			// Default the docs to dark (matching the marketing site); toggle still works.
 			components: {
 				Head: './src/components/docs/AnalyticsHead.astro',
-				Banner: './src/components/docs/Banner.astro',
 				Footer: './src/components/docs/Footer.astro',
 				ThemeProvider: './src/components/docs/ThemeProvider.astro',
 			},
@@ -69,19 +81,18 @@ export default defineConfig({
 							],
 						},
 						{
-							label: 'Features',
-							translations: { it: 'Funzionalità' },
+							label: 'Using Homun',
+							translations: { it: 'Usare Homun' },
 							items: [
-								{ label: 'Chat', slug: 'guides/chat' },
-								{ label: 'Memory', translations: { it: 'Memoria' }, slug: 'guides/memory' },
-								{ label: 'Models & providers', translations: { it: 'Modelli e provider' }, slug: 'guides/models' },
-								{ label: 'Channels', translations: { it: 'Canali' }, slug: 'guides/channels' },
-								{ label: 'Automations', translations: { it: 'Automazioni' }, slug: 'guides/automations' },
+								{ label: 'Bots & chat', translations: { it: 'Bot e chat' }, slug: 'guides/chat' },
+								{ label: 'Teams', translations: { it: 'Squadre' }, slug: 'guides/teams' },
+								{ label: 'Apps', translations: { it: 'App' }, slug: 'guides/connectors' },
 								{ label: 'Skills', translations: { it: 'Skill' }, slug: 'guides/skills' },
-								{ label: 'Connectors', translations: { it: 'Connettori' }, slug: 'guides/connectors' },
-								{ label: 'The local computer', translations: { it: 'Il computer locale' }, slug: 'guides/local-computer' },
-								{ label: 'Proactivity', translations: { it: 'Proattività' }, slug: 'guides/proactivity' },
-								{ label: 'Privacy & security', translations: { it: 'Privacy e sicurezza' }, slug: 'guides/security' },
+								{ label: "The bot's computer", translations: { it: 'Il computer del bot' }, slug: 'guides/local-computer' },
+								{ label: 'Approvals & safety', translations: { it: 'Approvazioni e sicurezza' }, slug: 'guides/security' },
+								{ label: 'Routines', translations: { it: 'Routine' }, slug: 'guides/automations' },
+								{ label: 'Memory', translations: { it: 'Memoria' }, slug: 'guides/memory' },
+								{ label: 'Models', translations: { it: 'Modelli' }, slug: 'guides/models' },
 							],
 						},
 						{
@@ -89,7 +100,6 @@ export default defineConfig({
 							translations: { it: 'Ottieni Homun' },
 							items: [
 								{ label: 'Download', slug: 'guides/download' },
-								{ label: 'Self-hosting', slug: 'guides/self-hosting' },
 							],
 						},
 						{
@@ -97,9 +107,6 @@ export default defineConfig({
 							translations: { it: 'Riferimento' },
 							items: [
 								{ label: 'Architecture', translations: { it: 'Architettura' }, slug: 'reference/architecture' },
-								{ label: 'Components', translations: { it: 'Componenti' }, slug: 'reference/components' },
-								{ label: 'Memory model', translations: { it: 'Modello di memoria' }, slug: 'reference/memory-model' },
-								{ label: 'Design decisions', translations: { it: 'Decisioni di design' }, slug: 'reference/decisions' },
 							],
 						},
 						{ slug: 'privacy' },

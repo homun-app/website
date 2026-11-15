@@ -1,78 +1,54 @@
 ---
-title: Chat
-description: Il loop di base — Markdown ricco, allegati e vision, branching dei messaggi, streaming e attività inline.
+title: Bot e chat
+description: Creare i bot, parlarci, le bozze, il pannello del bot e la Libreria.
 ---
 
-La chat è la fondazione di Homun. Tutto il resto — task, memoria, browser — è uno
-strato *sotto* di essa, che emerge come attività inline invece di ingombrare la
-conversazione. L'obiettivo è una chat semplice e stabile, che non si blocca mai.
+## Creare un bot
 
-![Una chat di Homun: l'assistente risponde con prosa, codice inline e un blocco di codice che mostra i test passati](../../../../assets/screenshots/chat.png)
-*Una risposta resa con Markdown, codice inline e un blocco di codice — in streaming dal vivo.*
+Premi **+** nella barra laterale e dai al bot un nome e un aspetto. Appena creato, il bot
+si presenta: ti chiede a cosa serve, si scrive la descrizione e parte. Se preferisci,
+**Parti da un modello**:
 
-## Risposte ricche
+| Modello | Cosa fa |
+| --- | --- |
+| Gestore della posta in arrivo | Smista la posta del mattino, mette in luce ciò che non può aspettare, prepara le bozze da approvare. |
+| Redattore di briefing quotidiani | Prepara ogni mattina un briefing essenziale: agenda, sospesi, notizie che ti riguardano. |
+| Assistente per la preparazione delle riunioni | Guarda il calendario di domani e prepara un breve dossier per ogni riunione. |
+| Capo dello staff | Chiude la giornata riducendo posta e calendario a ciò che richiede una tua decisione. |
+| Assistente di direzione | Apre la giornata con le priorità e tiene l'elenco di ciò che non devi dimenticare. |
+| Monitor delle menzioni | Tiene d'occhio se il tuo nome, i tuoi progetti o il tuo brand vengono citati in pubblico. |
 
-Le risposte rendono tutto il **Markdown**: titoli, elenchi, tabelle, citazioni e
-**blocchi di codice con evidenziazione della sintassi**. Diagrammi e contenuti
-strutturati si renderizzano inline, così un piano o un confronto si legge come un
-documento, non come un muro di testo.
+## Parlare con un bot
 
-Le risposte arrivano in **streaming** token per token, e puoi **annullare** una
-generazione a metà. Passa a un'altra conversazione mentre una risposta continua a
-generarsi in background — il gateway esegue più worker indipendenti, così una risposta
-lenta non blocca mai le altre (vedi [Modelli e provider](/it/guides/models/) per il
-modello di concorrenza).
+Scrivi come a un collega. Puoi allegare file e immagini. Mentre il bot lavora, la chat
+mostra cosa sta facendo; se scrivi mentre è occupato, il messaggio entra nel lavoro in
+corso invece di aspettare in coda.
 
-## Allegati e vision
+I messaggi che Homun manda da solo, come l'avvio di una routine o il giro al tuo rientro,
+compaiono come piccole righe di sistema, mai come se li avessi scritti tu.
 
-Trascina dentro file e immagini. Con un modello capace di vision, Homun legge
-screenshot, foto e documenti direttamente nella conversazione — utile per "cosa c'è di
-sbagliato in questo screenshot d'errore?" o "riassumi questo PDF".
+## Le bozze
 
-## Artefatti
+Quando un bot prepara un messaggio per qualcuno, ti mostra una **card di bozza**:
+destinatario, oggetto, testo e l'account da cui partirà. La bozza si invia solo se premi
+**Invia**. Prima puoi **Modificarla** o **Scartarla**.
 
-I file che l'assistente crea o modifica finiscono in un **workspace** come
-**artefatti** che puoi aprire, **versionare** e riutilizzare nella conversazione — non
-sepolti in un blocco di codice da copiare a mano.
+## Il pannello del bot
 
-## Azioni sui messaggi
+Fai clic sul nome del bot in cima alla chat per aprire il suo pannello. Lì trovi:
 
-Non sei vincolato alla trascrizione così com'è:
+- il **modello** del bot, che puoi cambiare lì stesso;
+- le note della sua **memoria** e le sue **skill**;
+- gli ultimi lavori e le sue **routine**, che puoi mettere in pausa, riprendere o
+  aggiungere;
+- le notifiche, le istruzioni e **Cambia aspetto**.
 
-- **Modifica** un messaggio e ri-esegui da quel punto.
-- **Branch** — modificare biforca la conversazione, così esplori un'alternativa senza
-  perdere l'originale. Ogni branch conserva la propria cronologia.
-- **Salva una risposta in memoria**, o trasformala in un task o un'automazione, dalle
-  azioni sotto ogni messaggio.
-- Organizza le conversazioni in **cartelle** e **progetti/workspace**.
+La card **Computer** dice cosa sta facendo il computer del bot: Acceso mentre il bot
+lavora, In attesa quando è pronto, In avvio mentre parte, Spento quando è fermo.
 
-## Modello per messaggio
+## La Libreria
 
-Ogni messaggio può sovrascrivere il modello. Lascialo in automatico e il router sceglie
-per compito, oppure fissa un modello specifico per una risposta — comodo per mandare una
-domanda difficile a un modello cloud più forte mentre la chat quotidiana resta locale.
-Vedi [Modelli e provider](/it/guides/models/).
-
-## Attività inline
-
-Quando una risposta avvia lavoro vero — un [task](/it/reference/architecture/), una
-sessione browser, un'approvazione — compare come **card di attività** dentro la chat:
-una timeline con progresso, anteprime/thumbnail e controlli di approvazione/takeover.
-
-Questa è *progressive disclosure*: la chat di base resta pulita, e il dettaglio
-operativo è a un colpo d'occhio quando lo vuoi. Il
-[computer contenuto](/it/guides/local-computer/) appare allo stesso modo, con una vista
-dal vivo che puoi guardare e di cui puoi prendere il controllo.
-
-:::note
-Le capacità pesanti — task runtime, browser, approvazioni, memoria, subagenti — non
-appaiono mai come comportamento di base della chat. Compaiono come card solo quando un
-turno le usa davvero. Il loop di base resta *scrivi → rispondi → capisci*.
-:::
-
-## Lingue
-
-Homun è multilingua. L'interfaccia è disponibile in inglese e italiano, e le risposte
-seguono **la tua** lingua automaticamente — scrivi nella tua, l'assistente risponde
-nella tua. I system prompt girano in inglese sotto il cofano; solo l'output è
-localizzato.
+Pagine, grafici e file che i bot preparano finiscono nella **Libreria**. Puoi filtrarli
+per bot e per tipo, cercarli per titolo, fissarli, rinominarli, cancellarli ed esportarli
+in `~/Downloads/Homun`. Le voci nate da dati esterni, come una pagina web, portano un
+segno che lo dice.

@@ -1,35 +1,51 @@
 ---
 title: Impostazioni
-description: Un giro tra le impostazioni di Homun — dove si configura ogni capacità.
+description: Cosa trovi in ogni sezione delle impostazioni di Homun.
 ---
 
-Tutto ciò che Homun fa si configura dalle **Impostazioni**, raggruppate in Account e
-Capacità. Ogni sezione corrisponde a una funzionalità documentata altrove — questa
-pagina è la mappa.
+Apri **Impostazioni** dalla barra laterale. Ogni sezione riguarda un'area.
 
-## Account
+## Generali
 
-| Sezione | Cosa imposti | Approfondisci |
-| --- | --- | --- |
-| **Account** | il tuo profilo / workspace | — |
-| **General** | preferenze generali | — |
-| **Appearance** | tono della superficie (Cold/Ivory/Neutral/Sand) + accento del brand | [Per iniziare](/it/guides/getting-started/) |
-| **Model & runtime** | provider, routing per compito, concorrenza | [Modelli e provider](/it/guides/models/) |
-| **Privacy** | local-first, cloud gestito, gate di approvazione, approvazione remota | [Privacy e sicurezza](/it/guides/security/) |
-| **Memory** | il grafo della memoria, la wiki, consolida/esporta | [Memoria](/it/guides/memory/) |
-| **Contacts** | la tua rubrica curata | [Memoria](/it/guides/memory/) |
+- **Aspetto**: tema (Sistema, Chiaro, Scuro) e lingua (Sistema, Italiano, English).
+- **All'avvio**: **Avvia all'accesso** tiene attivi i bot anche a finestra chiusa. macOS
+  ti chiede di confermarlo negli Elementi login.
+- **Versione e aggiornamenti**: **Controlla aggiornamenti**, e **Ricevi le versioni di
+  prova** se vuoi provare le versioni nuove prima del rilascio. Possono avere difetti.
+- **Guida iniziale**: riprendi i passi saltati o rifai la guida da capo. Rifarla non
+  tocca né i bot né i dati.
+- **Consegna**: il fuso orario e una finestra di consegna. I messaggi non urgenti delle
+  routine aspettano quella finestra.
+- **Motore**: quale motore fa girare il computer dei bot. **Automatico** sceglie per te;
+  puoi indicare Apple container o Docker. Vedi [Il computer del bot](/it/guides/local-computer/).
+- **Spazio su disco**: quanto occupano il computer dei bot, il modello locale e il modello
+  della memoria, e come liberare spazio.
 
-## Capacità
+## Modelli
 
-| Sezione | Cosa imposti | Approfondisci |
-| --- | --- | --- |
-| **Channels** | WhatsApp, Telegram | [Canali](/it/guides/channels/) |
-| **Connectors** | nativi, Composio, catalogo MCP | [Connettori](/it/guides/connectors/) |
-| **Skills** | skill attive + catalogo | [Skill](/it/guides/skills/) |
-| **Addons** | abilita/disabilita i motori degli addon | [Proattività](/it/guides/proactivity/) |
-| **Local computer** | il computer Docker contenuto | [Il computer locale](/it/guides/local-computer/) |
+Il modello dei bot, le sue riserve, il modello che controlla le approvazioni in
+Automatico, i provider collegati e il modello integrato. Vedi [Modelli](/it/guides/models/).
 
-:::note
-Su un server self-hosted, le stesse impostazioni sono guidate da **variabili d'ambiente**
-invece che dalla UI — vedi [Self-hosting](/it/guides/self-hosting/).
-:::
+## App e skill
+
+Le app collegate e le skill che i bot possono usare. Vedi [App](/it/guides/connectors/) e
+[Skill](/it/guides/skills/).
+
+## Approvazioni
+
+Quando un bot deve chiederti: **Chiedi**, **Automatico** o **Non chiedere**, le tue regole
+e i consensi salvati con **Sempre**. Vedi [Approvazioni e sicurezza](/it/guides/security/).
+
+## Cassaforte
+
+I segreti che i bot possono usare, come password e chiavi API. I bot vedono solo i nomi,
+mai i valori. Vedi [Approvazioni e sicurezza](/it/guides/security/#la-cassaforte).
+
+## Routine
+
+Tutte le routine di tutti i bot: orario, ultima esecuzione, accesa o spenta. Vedi
+[Routine](/it/guides/automations/).
+
+## Uso e costi
+
+Quanto costano i modelli cloud questo mese, bot per bot.

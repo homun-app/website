@@ -1,42 +1,31 @@
 ---
-title: Automations
-description: When → Then rules that run agentic tasks on a schedule or in response to an event.
+title: Routines
+description: Recurring work on a schedule, proposed by your bots or created by you.
 ---
 
-An automation is a simple rule with two halves:
+A **routine** runs a request on a schedule: every weekday at 8:00, every Monday morning,
+the first day of the month. The bot does the work as if you had just asked, and the chat
+shows a small line such as *⏱ Routine "Morning inbox"*.
 
-```text
-When <trigger>  →  Then <action>
-```
+## Creating a routine
 
-The trigger fires; the action runs as a full agentic [task](/reference/architecture/)
-with the complete toolset.
+- **Ask for it**: *"Every weekday at 8, sort my inbox."* The bot shows one card with the
+  name, the schedule and the request. Approve it and the routine starts active.
+- **From the bot panel**: press **New routine**.
+- **From a proposal**: bots notice what you ask again and again. After a few Mondays of the
+  same request, the bot proposes a routine; press **Activate**.
 
-![Homun's automation editor: a WHEN section with Schedule/Event and time options, a THEN action field, and an approval checkbox](../../../assets/screenshots/automations.png)
-*Building a rule: choose a schedule or event, describe the action, and require confirmation before anything is sent.*
+## Managing routines
 
-## Triggers
+The bot panel lists that bot's routines with the next run, and lets you pause and resume
+them. **Settings › Routines** lists the routines of every bot.
 
-- **Time-based** — a schedule (e.g. every morning, every hour).
-- **Event-based** — something happens: an incoming [channel](/guides/channels/)
-  message, a connected service signal.
+## When results arrive
 
-## Actions
+Non-urgent messages from routines wait for your **delivery window**, which you set in
+**Settings › General › Delivery** together with your time zone.
 
-The action is an **agentic task**, not a fixed script. It has access to the same
-capabilities as the assistant: [skills](/guides/skills/),
-[connectors](/guides/connectors/), the [contained computer](/guides/local-computer/),
-and [memory](/guides/memory/). So "summarize my unread messages and file the
-important ones" is a single rule, not a pipeline you wire by hand.
+## When you come back
 
-## Durable by design
-
-Automations run on the durable task runtime: tasks survive restarts via a heartbeat
-watchdog (lease renewal + a guard against double execution). A scheduled action won't
-silently run twice or vanish if the app restarts mid-run.
-
-## From a suggestion
-
-You rarely start from a blank rule. Homun's [proactivity](/guides/proactivity/) engine
-spots recurring work and offers a suggestion card; accepting it creates the
-automation.
+After some hours away, a bot takes a look at what changed and tells you, in a line marked
+*When you came back*. You choose after how many hours in **Settings › General**.
