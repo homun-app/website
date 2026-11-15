@@ -1,0 +1,46 @@
+---
+import { COLORS, HEAD_TRANSFORM, HOMUN_LETTERS, JELLY, PRODUCTS } from "../../data/brand.mjs";
+
+interface Props {
+	animated?: boolean;
+	class?: string;
+}
+
+const { animated = true, class: cls = "h-6 w-auto" } = Astro.props;
+const { color, period } = PRODUCTS.homun;
+---
+
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	viewBox="-4 20 1088 246"
+	class={cls}
+	style={{ "--mark-ink": COLORS.ink, "--mark-cream": COLORS.cream }}
+	fill="none"
+	role="img"
+	aria-label="Homun"
+	data-mascot
+	data-mascot-animated={animated ? "" : undefined}
+	data-product="homun"
+>
+	<g stroke="currentColor" stroke-width="50" stroke-linecap="round" stroke-linejoin="round">
+		{HOMUN_LETTERS.map((path) => <path d={path} />)}
+	</g>
+	<g transform={HEAD_TRANSFORM}>
+		<g data-mascot-body>
+			<path d={JELLY[0]} fill={COLORS[color]}>
+				{animated && (
+					<animate data-mascot-morph attributeName="d" begin="indefinite"
+						dur={`${period}s`} repeatCount="indefinite" values={[...JELLY, JELLY[0]].join(";")} />
+				)}
+			</path>
+			<g data-mascot-eyes data-max="5">
+				<path data-eyes-closed d="M33 50Q39.5 58 46 50M54 50Q60.5 58 67 50" fill="none"
+					stroke={COLORS.cream} stroke-width="5" stroke-linecap="round" visibility="hidden" />
+				<g data-eyes-open fill={COLORS.cream}>
+					<rect x="35" y="38" width="9" height="20" rx="4.5" />
+					<rect x="56" y="38" width="9" height="20" rx="4.5" />
+				</g>
+			</g>
+		</g>
+	</g>
+</svg>

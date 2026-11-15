@@ -1,64 +1,47 @@
 ---
-title: Il computer locale
-description: Un computer Docker in sandbox — un vero browser e una shell che l'agente guida, e tu guardi dal vivo.
+title: Il computer del bot
+description: Il box separato dove ogni bot naviga, esegue comandi e tiene i suoi file, e come prendere il controllo del suo schermo.
 ---
 
-Per i task che devono *fare* cose — aprire un sito, compilare un form, eseguire un
-comando — Homun guida un **computer contenuto**: un container Docker in sandbox con un
-vero browser headed e una shell. È isolato dal tuo host, e puoi guardarlo lavorare.
+Ogni bot lavora su **un computer suo**: un box separato dal tuo sistema, con browser,
+terminale e una cartella di file. Lì il bot può fare lavoro vero, come compilare un modulo
+su un sito che non ha un'app, senza toccare i tuoi file.
 
-![Il pannello Computer locale: una vista browser noVNC dal vivo, lo stato del container Docker, l'uso della memoria e una sezione artefatti](../../../../assets/screenshots/local-computer.png)
-*Il computer contenuto: un vero browser trasmesso dal vivo via noVNC, in esecuzione in un container Docker che puoi fermare quando vuoi.*
+## Cosa puoi vedere
 
-## Cosa c'è dentro
+Dalla chat apri il computer del bot e trovi quattro viste:
 
-- Un **vero browser**, guidato via CDP (Chrome DevTools Protocol).
-- Una **shell + toolchain**, usata per eseguire [skill](/it/guides/skills/) e comandi.
-- Una **vista dal vivo** (noVNC) trasmessa nella chat.
+- **Schermo**: il browser, dal vivo;
+- **Terminale**: i comandi che il bot esegue;
+- **File**: ciò che il bot ha salvato nel suo box;
+- **Attività**: cosa ha fatto, passo per passo.
 
-## Guarda e prendi il controllo
+La card **Computer** in chat ti dice il suo stato: **Acceso** mentre il bot lavora, con
+cosa sta facendo (mai il testo dei comandi), **In attesa** quando è pronto, **In avvio**
+mentre parte, **Spento** quando è fermo.
 
-La sessione compare come una [card di attività](/it/guides/chat/) inline: una timeline
-con progresso, anteprime e controlli. Puoi **guardarla dal vivo** e **prendere il
-controllo** quando vuoi guidare a mano — l'agente opera sotto approvazioni, non
-incustodito.
+## Prendere il controllo
 
-## Sfide e captcha
+Alcuni passi spettano a te, come accedere a un sito. Il bot ti mostra una card di **Presa
+di controllo dello schermo**: apri lo schermo, accedi, poi premi **Ho finito**. La password
+non passa dal bot.
 
-L'agente gestisce da solo le verifiche umane semplici — un pulsante **tieni premuto**
-("press and hold"), una checkbox, uno slider — guidando il puntatore reale come farebbe
-una persona.
+## Il motore
 
-Per quelle più difficili (griglie di immagini, muri di login) non tira a indovinare:
-**passa la mano a te**. Il task si mette in pausa, tu risolvi la sfida nella vista dal
-vivo e riprende. E poiché un task lanciato mentre sei via non deve mai restare appeso,
-il passaggio di mano ha un **timeout** (default 180s, modificabile con
-`HOMUN_BROWSER_HANDOFF_TIMEOUT_SECS`): oltre la scadenza il task molla con grazia, con
-un motivo chiaro, invece di aspettare all'infinito.
+Il box ha bisogno di un motore. **Impostazioni › Generali › Motore** mostra quale lo fa
+girare:
 
-## Più difficile da rilevare
+- **Apple container**: su macOS 26 o successivo con chip Apple. Homun installa il
+  pacchetto firmato di Apple (macOS chiede la password) e non serve altro.
+- **Docker**: sugli altri sistemi, o se lo preferisci. Docker Desktop deve essere
+  installato e aperto.
 
-Il browser è un **Chrome reale, con interfaccia** — non il vecchio headless — con un
-**profilo persistente**, così cookie e login sopravvivono tra una sessione e l'altra. I
-siti vedono una persona che ritorna anziché un bot appena nato, quindi i captcha
-compaiono molto meno spesso. Homun lo guida inoltre tramite uno strato di automazione
-irrobustito che evita le tipiche impronte da "controllato da software automatico". Non
-esiste invisibilità perfetta (conta anche la reputazione del tuo IP), ma nell'uso
-quotidiano incontrerai molti meno muri.
+**Automatico** sceglie per te. Dalla stessa sezione puoi disinstallare lo strumento di
+Apple.
 
-## Requisiti
+## Spazio su disco
 
-- **Desktop:** un motore Docker locale (Docker Desktop, OrbStack o Colima). Abilitalo
-  dalla campanella nel menù laterale o da **Impostazioni → Computer locale**.
-- **Server:** monta il socket Docker dell'host; il gateway costruisce ed esegue il
-  container fratello, e fa il reverse-proxy della vista dal vivo attraverso la propria
-  origine TLS — nessuna porta VNC esposta. Senza il socket la funzione resta spenta e il
-  resto dell'app funziona.
-
-Vedi [Self-hosting](/it/guides/self-hosting/) per la configurazione lato server.
-
-## Contenuto per design
-
-Girare in una sandbox è una scelta di [sicurezza](/it/guides/security/): le azioni reali
-dell'agente avvengono in un container con permessi deny-by-default, non direttamente
-sulla tua macchina.
+**Impostazioni › Generali › Spazio su disco** mostra quanto occupano l'immagine del box e i
+file dei bot, e ti permette di liberare spazio. Togliere l'immagine è sicuro: si
+ricostruisce quando serve. Cancellare i file dei bot non si può annullare, e Homun ti
+chiede conferma.

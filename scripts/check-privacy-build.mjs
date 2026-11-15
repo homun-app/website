@@ -8,6 +8,18 @@ const knownRedirects = new Map([
 	["/roadmap/mobile-companion/", "/roadmap/homun-mobile"],
 	["/roadmap/shared-spaces/", "/roadmap/team-spaces-roles"],
 	["/roadmap/voice-capture/", "/roadmap/voice-meeting-capture"],
+	// Homun 2 docs pages without a 0.3 counterpart.
+	...[
+		["guides/channels", "guides/connectors/"],
+		["guides/proactivity", "guides/automations/"],
+		["guides/self-hosting", "guides/download/"],
+		["reference/components", "reference/architecture/"],
+		["reference/decisions", "reference/architecture/"],
+		["reference/memory-model", "docs/engramma/how-it-works/"],
+	].flatMap(([from, to]) => [
+		[`/${from}/`, `/${to}`],
+		[`/it/${from}/`, `/it/${to}`],
+	]),
 ]);
 const trackerAttributes = new Map([
 	["data-website-id", websiteId],

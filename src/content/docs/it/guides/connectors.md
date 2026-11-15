@@ -1,71 +1,45 @@
 ---
-title: Connettori
-description: Uno strato di capacità — connettori nativi, server MCP e integrazioni gestite opt-in, instradate su richiesta.
+title: App
+description: Collega Gmail, Trello, Slack e più di mille altre app, o qualsiasi server MCP, una volta per tutti i bot.
 ---
 
-I connettori sono il modo in cui Homun raggiunge il mondo esterno. Stanno dietro uno
-**strato di capacità neutrale rispetto al provider**, così l'assistente lavora allo
-stesso modo che una capacità sia nativa, venga da un server MCP o da un aggregatore
-gestito.
+Apri **App** dalla barra laterale. Colleghi un'app una volta e **tutti i bot possono
+usarla**: i bot sanno quali app hai collegato e le usano subito.
 
-## Tre tipi
+## Collegare un'app
 
-| Tipo | Cos'è |
-| --- | --- |
-| **Nativi** | connettori integrati in Homun |
-| **MCP** | qualsiasi server [Model Context Protocol](https://modelcontextprotocol.io) che aggiungi |
-| **Gestiti** | aggregatori opt-in (stile Composio) — adattatori espliciti, mai una dipendenza implicita del core |
+Cerca l'app e collegala. Homun ti dice da dove passano i suoi dati:
 
-### Gestiti: il toolkit Composio
+- **Diretta**: il permesso resta sul tuo computer, e Homun parla direttamente con il
+  servizio.
+- **Tramite Composio**: login e azioni passano dai server di Composio. Con una tua chiave
+  Composio (basta il piano gratuito) colleghi più di mille app, come Gmail, Slack e
+  HubSpot.
 
-Il toolkit gestito collega centinaia di servizi — Gmail, GitHub, Slack, Notion, Google
-Calendar, Google Drive, Linear, HubSpot, Airtable e altri — organizzati per categoria
-(developer tools, CRM, documenti, analytics, marketing…). Colleghi solo quelli che
-concedi, e ogni connessione è esplicita.
+## Più account
 
-![Connettori → Composio: una griglia di servizi con Gmail, GitHub, Slack, Notion e Google Calendar, alcuni marcati Connected](../../../../assets/screenshots/connectors.png)
-*Il toolkit Composio — collega un servizio, associa il tuo account e i suoi tool diventano disponibili sotto approvazione.*
+Puoi collegare più account della stessa app, per esempio la Gmail del lavoro e quella
+personale. Ogni account ha un nome, che puoi cambiare, e i bot sanno quale stanno usando.
+Le card di bozza mostrano l'account da cui partirà il messaggio.
 
-#### Ottenere una chiave API Composio
+## Cosa possono fare i bot con un'app
 
-Il toolkit gestito è opt-in: resta spento finché non dai a Homun una chiave API Composio.
-Un account gratuito è sufficiente per iniziare.
+Le app seguono le stesse regole di tutto il resto:
 
-1. Accedi alla **dashboard Composio** su [composio.dev](https://composio.dev) (la console
-   al momento è su `dashboard.composio.dev`).
-2. Apri **Settings → API Keys**.
-3. Clicca **Generate new API key** e **copiala subito** — Composio mostra la chiave una
-   sola volta.
-4. In Homun: **Impostazioni → Connettori → Composio**, incolla la chiave (ha la forma
-   `comp_…`) e premi **Connect**.
+- **leggere** è libero;
+- **inviare** diventa una [bozza](/it/guides/chat/#le-bozze) che parte solo se confermi;
+- **scrivere** (creare, modificare, cancellare) mostra una card di approvazione.
 
-La chiave è cifrata nel [secret store](/it/guides/security/) locale di Homun — mai in
-chiaro. Una volta connesso, collega i singoli servizi che vuoi (Gmail, GitHub, Slack…);
-ogni connessione è esplicita e i suoi tool girano sotto approvazione.
+Vedi [Approvazioni e sicurezza](/it/guides/security/) per cambiare quanto spesso chiedono
+i bot.
 
-### Server MCP
+## Server MCP
 
-Aggiungi qualsiasi server [Model Context Protocol](https://modelcontextprotocol.io), o
-sfoglia il **catalogo MCP** integrato, preso dal registry ufficiale.
+In **Per sviluppatori** puoi aggiungere i tuoi server MCP, come comando locale (stdio) o
+come indirizzo (HTTP). Header e token bearer vengono salvati cifrati. Con **test** vedi gli
+strumenti che il server offre.
 
-![Il catalogo MCP: un elenco ricercabile di server MCP dal registry ufficiale, ognuno con un'azione Details](../../../../assets/screenshots/connectors-mcp.png)
-*Il catalogo MCP — cerca nel registry ufficiale e aggiungi un server con un clic.*
+## Nessun collegamento? Il browser
 
-## Routing delle capacità
-
-Il modello non vede centinaia di tool grezzi. Vede **card di capacità** compatte e carica
-il dettaglio dei tool **su richiesta** via `find_capability` / Tool Search. Il core Rust
-resta il proprietario di policy, esecuzione, coda, approvazioni e audit — il modello
-propone, il core decide.
-
-## Auth e concessioni, memorizzate in locale
-
-Configurazione dei provider, concessioni per utente/workspace, connessioni, cache dei
-tool e contesto delle policy sono persistiti in **SQLite locale**. Connettere un servizio
-è una concessione esplicita, e vive sulla tua macchina come tutto il resto.
-
-## Abbinali al resto
-
-Un connettore è solo un'altra capacità che un'[automazione](/it/guides/automations/) o
-una [skill](/it/guides/skills/) possono usare, sotto gli stessi permessi deny-by-default
-([sicurezza](/it/guides/security/)).
+Quando un sito non ha un'app, il bot apre il browser sul [suo computer](/it/guides/local-computer/)
+e fa il lavoro lì.

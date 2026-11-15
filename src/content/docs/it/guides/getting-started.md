@@ -1,54 +1,64 @@
 ---
 title: Per iniziare
-description: Installa l'app desktop Homun e avviala per la prima volta.
+description: Installa Homun, segui la guida iniziale e conosci il tuo primo bot.
 ---
 
-Il modo più rapido per provare Homun è l'**app desktop**. Per eseguirla su un server,
-vedi [Self-hosting](/it/guides/self-hosting/).
+## Installazione
 
-## Installazione (macOS)
+1. Scarica Homun dalla [homepage](/#download), che sceglie l'installer per il tuo
+   sistema. La pagina [Download](/it/guides/download/) elenca tutti i formati.
+2. Su macOS apri il `.dmg` e trascina **Homun** in `Applicazioni`. L'app è firmata e
+   notarizzata.
+3. Apri Homun da `Applicazioni`.
 
-1. Usa il [download automatico nella homepage](/#download), oppure scegli manualmente un installer [dall'ultima release](https://github.com/homun-app/homun-releases/releases/latest).
-2. Aprilo e trascina **Homun** in `Applicazioni`.
-3. Avvialo. La build è firmata e notarizzata, quindi si apre senza l'avviso di
-   Gatekeeper.
+Se apri Homun da un'altra posizione, come l'immagine disco o `Download`, ti propone di
+spostarsi in `Applicazioni`. Accetta: da lì fuori l'aggiornamento automatico non può
+sostituire l'app.
 
-L'app include il proprio backend (un piccolo gateway nativo) — non c'è altro da
-installare.
+## La guida iniziale
 
-## Primo avvio
+La prima volta che apri Homun, una breve guida ti porta da zero a un bot pronto.
 
-1. **Scegli un provider di modelli.** Punta Homun su un [Ollama](https://ollama.com)
-   locale o sull'API di un provider cloud. Puoi abilitarne diversi insieme; ogni
-   provider ha un interruttore on/off e il router sceglie il modello giusto per ogni
-   compito.
-2. **Saluta.** Avvia una chat. Homun costruisce una memoria privata mentre parli —
-   ciò che impara resta in `~/.homun` sulla tua macchina.
+1. **Tu.** Dai al primo bot un nome e un aspetto: una famiglia di mascotte e un colore.
+   Questo bot è il tuo punto di contatto: ti risponde, lavora per te e coordina gli
+   altri. Puoi cambiarlo quando vuoi.
+2. **Modello.** Scegli il cervello dei bot. Collega un provider cloud con una chiave API,
+   scegli un modello che gira già sulla tua rete (Ollama, LM Studio) oppure installa il
+   modello integrato in Homun. La guida lo prova subito. Vedi [Modelli](/it/guides/models/).
+3. **Computer.** Homun prepara il computer del bot, il box dove i bot navigano ed
+   eseguono comandi. Su macOS 26 o successivo usa Apple container e non serve altro; sui
+   sistemi precedenti usa Docker Desktop. Vedi [Il computer del bot](/it/guides/local-computer/).
+4. **Permessi.** Scegli quanto il bot può fare da solo:
+   - **Chiedimi prima**: legge e cerca da solo, e chiede prima di cambiare qualcosa;
+   - **Fai quello che ti chiedo**: fa da solo ciò che serve alla tua richiesta, e chiede
+     comunque per soldi, messaggi a persone nuove, cancellazioni e tutto ciò che va oltre
+     la richiesta.
 
-## Rendilo tuo
+   Puoi cambiarlo quando vuoi in **Impostazioni › Approvazioni**. Vedi
+   [Approvazioni e sicurezza](/it/guides/security/).
 
-In **Impostazioni → Aspetto** puoi scegliere una superficie dell'interfaccia (Cold,
-Ivory, Neutral, Sand) e un accento del brand. L'accento predefinito è il **teal**, ma
-puoi cambiarlo — si applica subito a tutta l'app.
+## La prima conversazione
 
-![Impostazioni → Aspetto: opzioni di superficie e selettore dell'accento con il teal selezionato](../../../../assets/screenshots/appearance.png)
-*Toni della superficie più un accento a un clic — teal di default, tuo da cambiare.*
+Scrivi al bot come a una persona. Un bot nuovo si presenta: ti chiede a cosa serve, si
+scrive la descrizione e parte. Qualche idea:
 
-## Il computer locale (opzionale)
+- *«Ogni mattina smista la posta e prepara le bozze per ciò che non può aspettare.»*
+- *«Confronta le tre sale di questo elenco e dimmi quale va bene per 40 persone.»*
+- *«Prepara un breve dossier per ogni riunione di domani.»*
 
-Per i task che richiedono un vero browser o una shell, Homun esegue un **computer
-contenuto** — un container Docker in sandbox che controlla. Serve Docker in esecuzione
-in locale (Docker Desktop, OrbStack o Colima). Abilitalo dalla campanella nel menù
-laterale o dalla sezione **Computer locale** nelle Impostazioni; puoi guardare la
-sessione dal vivo nella chat.
+Per creare altri bot premi **+** nella barra laterale, oppure **Parti da un modello**:
+Gestore della posta in arrivo, Redattore di briefing quotidiani, Assistente per la
+preparazione delle riunioni, Capo dello staff, Assistente di direzione, Monitor delle
+menzioni.
 
 ## Aggiornamenti
 
-L'app desktop si aggiorna da sola: quando esce una versione più recente, il pannello
-**Notifiche** (la campanella nel menù laterale) mostra un **scarica + riavvia** a un
-clic.
+Installato in `Applicazioni`, Homun controlla da solo se ci sono versioni nuove. Quando ce
+n'è una te lo dice, mostra cosa cambia e ti lascia riavviare subito o installare alla
+chiusura. In **Impostazioni › Generali** trovi **Controlla aggiornamenti** e l'opzione
+**Ricevi le versioni di prova**.
 
-## Avanti
+## Poi
 
-- [Self-hosting](/it/guides/self-hosting/) — esegui la stessa app come container tuo.
-- [Architettura](/it/reference/architecture/) — cosa c'è sotto il cofano.
+- [Concetti base](/it/concepts/): come stanno insieme bot, squadre, app e approvazioni.
+- [App](/it/guides/connectors/): collega le app che useranno i tuoi bot.

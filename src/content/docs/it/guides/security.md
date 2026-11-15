@@ -1,70 +1,72 @@
 ---
-title: Privacy e sicurezza
-description: Local-first di default, permessi deny-by-default, contratti, un audit trail e dati a riposo solo per il proprietario.
+title: Approvazioni e sicurezza
+description: Quando un bot chiede prima di agire, come ti proteggono le bozze e la Cassaforte, e dove stanno i tuoi dati.
 ---
 
-Homun è costruito perché fare cose potenti resti sicuro e privato. I default propendono
-per *meno* esposizione, non più.
+Homun fa fare ai bot lavoro vero, quindi le impostazioni di partenza tendono a chiedere. Sei
+tu a decidere quanto un bot può fare da solo.
 
-![Le impostazioni Privacy di Homun: interruttori per "Local-first by default", "Managed cloud" e "Approval gate", più le opzioni di approvazione remota](../../../../assets/screenshots/privacy.png)
-*Le impostazioni Privacy — local-first attivo, cloud gestito spento e un gate di approvazione, tutto di default.*
+## Le card di approvazione
 
-## Local-first
+Prima di un'azione che cambia qualcosa, il bot ti mostra una **card di approvazione** con
+cosa vuole fare e perché. Puoi:
 
-I tuoi dati e la tua memoria vivono sul dispositivo per impostazione predefinita —
-semplice SQLite + file sotto `~/.homun` (desktop) o un volume che monti (server). I
-[modelli](/it/guides/models/) cloud sono una delega opt-in; puoi tenere tutto sulla
-macchina.
+- **Consentire** una volta;
+- consentire **Per questo turno**, per lo stesso strumento finché il bot non finisce la
+  richiesta in corso;
+- consentire **Sempre**, che salva un consenso revocabile;
+- **Rifiutare**.
 
-## Permessi deny-by-default
+I messaggi ad altre persone non partono mai da una card di approvazione: diventano
+[bozze](/it/guides/chat/#le-bozze) che partono solo quando premi **Invia**.
 
-Le capacità sono spente finché non concesse. [Connettori](/it/guides/connectors/), il
-[computer contenuto](/it/guides/local-computer/) e le risposte automatiche dei canali
-girano tutti dietro **concessioni esplicite** — non c'è accesso implicito. I connettori
-cloud gestiti (stile Composio/Zapier) restano disabilitati finché non scegli un provider.
+## Quando chiedere
 
-## Approvazioni e autorizzazione remota
+**Impostazioni › Approvazioni** ha tre modalità:
 
-Un **gate di approvazione** richiede conferma esplicita prima che girino azioni di
-scrittura e automazioni approvate. Quando l'agente guida il
-[computer contenuto](/it/guides/local-computer/), il **browser si ferma prima di login,
-dati personali, pagamenti o acquisti** — quelli tornano sempre a te.
+- **Chiedi**: il bot chiede prima di ogni azione che cambia qualcosa: inviare, scrivere,
+  eseguire comandi. Leggere non chiede.
+- **Automatico**: un modello controlla ogni azione rispetto alla tua richiesta. Fa
+  passare quello che serve, anche i passi che non hai detto, e ti chiede quando il bot va
+  chiaramente oltre e l'azione non si annulla facilmente: scrivere a qualcuno che non hai
+  nominato, pagare, cancellare, pubblicare.
+- **Non chiedere**: ogni azione parte senza aspettare.
 
-Le approvazioni possono raggiungerti **da remoto**: instrada le richieste di
-autorizzazione su Telegram così puoi approvare un invio o una pubblicazione dal telefono.
-Solo il tuo chat id può autorizzare.
+Le tue regole vengono prima in ogni modalità. **Continua da solo quando…** allarga ciò che
+passa da solo; **Fermati e chiedimi sempre quando…** vince sempre e trasforma l'azione in
+una card. I bot possono proporti una regola: la aggiungi o la ignori.
 
-## Contratti e audit
+**Consensi salvati** elenca tutto ciò che hai consentito con **Sempre**, ognuno con
+**Revoca**.
 
-Le azioni operative passano da **contratti**: il modello produce output strutturato (un
-piano, una scrittura in memoria, una valutazione del rischio) che il core Rust **valida
-prima di agire**. Le azioni sono registrate in un **audit trail**, così ciò che
-l'assistente ha fatto è ispezionabile a posteriori.
+## La Cassaforte
 
-## Dati a riposo
+La **Cassaforte** conserva i login dei siti, i segreti come le chiavi API e i contatti. I
+valori sono cifrati sul tuo computer con una chiave custodita dal portachiavi di sistema.
 
-Il gateway gira con una umask stretta così tutto ciò che scrive è **solo del proprietario
-(0600)** — inclusi i file SQLite WAL/SHM creati a runtime. Gli store personali (memoria,
-contatti, sessioni dei messaggi) sono SQLite in chiaro protetti dai permessi dei file,
-quindi non sono esposti ad altri utenti locali.
+I bot vedono solo i **nomi** dei segreti, mai i valori. Quando un bot usa un segreto, Homun
+inserisce il valore all'ultimo momento e lo toglie da ogni risultato, quindi non finisce
+mai in chat né in ciò che legge il modello. La card di approvazione ti dice quali
+credenziali usa un'azione.
 
-## Segreti
+## I tuoi dati
 
-Chiavi API e token sono memorizzati in locale (solo del proprietario) e tenuti fuori dai
-read model e dai log. Su un server, il gateway richiede un bearer token e serve un gate
-di login — il token non è mai incorporato nel bundle web. Vedi
-[Self-hosting](/it/guides/self-hosting/).
+Bot, chat, memoria, routine e Libreria stanno sul tuo computer. Cosa arriva a un servizio
+cloud dipende dalle tue scelte:
 
-## Contenimento
+- il [modello](/it/guides/models/) che scegli: con il modello integrato o con uno sulla tua
+  rete, le conversazioni restano sulla tua macchina;
+- le [app](/it/guides/connectors/) che colleghi: le app Dirette parlano con il servizio dal
+  tuo computer, quelle Tramite Composio passano dai server di Composio.
 
-L'esecuzione reale avviene dentro il [computer contenuto](/it/guides/local-computer/),
-isolato dal tuo host. Insieme ai permessi deny-by-default, un'azione dell'agente non può
-raggiungere in silenzio oltre la sua sandbox.
+Homun 0.3 è open source con [licenza Apache-2.0](/it/license/), quindi puoi leggere come
+funziona tutto questo.
 
-## I tuoi dati, esportabili
+## Il computer del bot
 
-Puoi **esportare** i tuoi dati in qualsiasi momento, e la retention è applicata (cascade
-purge + VACUUM) così le cancellazioni sono reali, non soft.
+I bot eseguono comandi e navigano dentro un [box separato](/it/guides/local-computer/),
+lontano dal tuo sistema. Quando un passo richiede te, come un accesso, il bot ti passa lo
+schermo e la password non passa da lui.
 
 ## Analisi del sito
 

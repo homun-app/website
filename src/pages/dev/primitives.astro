@@ -1,0 +1,169 @@
+---
+import Base from "../../layouts/Base.astro";
+import AppWindow from "../../components/app/AppWindow.astro";
+import AppTile from "../../components/app/AppTile.astro";
+import BotAvatar from "../../components/app/BotAvatar.astro";
+import Card from "../../components/app/Card.astro";
+import ComputerScreen from "../../components/app/ComputerScreen.astro";
+import Done from "../../components/app/Done.astro";
+import Msg from "../../components/app/Msg.astro";
+import Pill from "../../components/app/Pill.astro";
+import Surface from "../../components/app/Surface.astro";
+
+const inbox = { name: "Inbox manager", family: "creature", color: "#F26A2E", state: "waiting" } as const;
+const scout = { name: "Scout", family: "robo", color: "#3F7BEA", state: "thinking" } as const;
+const briefing = { name: "Daily briefing", family: "device", color: "#E7B93A", state: "happy" } as const;
+const account = { name: "Account manager", family: "jelly", color: "#E9418A", state: "listening" } as const;
+const bots = [
+  { ...inbox, preview: "Draft for Nora is ready" },
+  { ...scout, preview: "Venue options for Dec 12" },
+  { ...briefing, preview: "Your Monday in five lines" },
+  { ...account, preview: "Acme renewal" },
+];
+---
+
+<Base title="App kit — Homun" description="Internal preview of the rebuilt Homun app kit." noindex>
+  <main class="preview">
+    <h1>Homun app kit</h1>
+
+    <section aria-labelledby="window-title">
+      <h2 id="window-title">App window</h2>
+      <AppWindow>
+        <Fragment slot="sidebar">
+          <div class="tools" aria-hidden="true"><span>⌕</span><span>+</span></div>
+          {bots.map(({ name, family, color, state, preview }) => (
+            <div class:list={["bot-row", { active: name === inbox.name }]}>
+              <BotAvatar family={family} color={color} state={state} />
+              <div><b>{name}</b><small>{preview}</small></div>
+            </div>
+          ))}
+          <small class="sidebar-label">Teams</small>
+          <div class="bot-row">
+            <span class="group">
+              <BotAvatar family="creature" color="#2FA39A" size={22} mini />
+              <BotAvatar family={scout.family} color={scout.color} size={22} mini />
+              <BotAvatar family={inbox.family} color={inbox.color} size={22} mini />
+            </span>
+            <div><b>Offsite Dec 12</b><small>Chief of staff · 3 bots</small></div>
+          </div>
+          <div class="sidebar-nav"><span>〜 Activity</span><span>▤ Library</span></div>
+          <div class="bot-row profile"><span class="initials">AK</span><div>Avery Kim<small>Claude Sonnet · cloud</small></div></div>
+        </Fragment>
+        <Fragment slot="chat">
+          <div class="chat-head"><BotAvatar family={inbox.family} color={inbox.color} size={24} />Inbox manager</div>
+          <div class="thread">
+            <Msg from="me">Sweep my inbox since Friday. Archive the noise, draft replies, don't send anything.</Msg>
+            <Done time="9:02">Read 41 threads in Gmail</Done>
+            <Done time="9:03">Archived 26 newsletters and receipts</Done>
+            <Msg from="bot">Done. 9 routine threads have draft replies. One needs you: Nora asks if the renewal covers the 5 new seats.</Msg>
+            <Card kind="draft" class="thread-card">
+              <Fragment slot="title"><span class="gmail" aria-hidden="true">M</span>Draft for Nora Fields <small>· from work Gmail</small></Fragment>
+              <Fragment slot="sub">draft — sent only if you confirm</Fragment>
+              <Fragment slot="body">Hi Nora, yes: the renewal covers the new seats from March 1st (section 4.2). Happy to send the updated order form.</Fragment>
+              <Fragment slot="buttons"><Pill primary>Send</Pill><Pill>Edit</Pill></Fragment>
+            </Card>
+          </div>
+          <div class="composer">⌁ Message Inbox manager<span aria-hidden="true">↑</span></div>
+        </Fragment>
+        <Fragment slot="panel">
+          <BotAvatar family={inbox.family} color={inbox.color} state={inbox.state} size={104} />
+          <h3>Inbox manager</h3>
+          <small>Model: <b>Claude Sonnet</b> ›</small>
+          <div class="tabs"><span>Activity</span><span>Library</span><span>Memory</span></div>
+          <ComputerScreen state="Off" />
+          <div class="panel-list"><small>Routines</small><p>Morning sweep · weekdays 7:00</p></div>
+          <div class="panel-list"><small>Recent work</small><p>Archived 26 · drafted 9</p></div>
+        </Fragment>
+      </AppWindow>
+    </section>
+
+    <section class="timeline-f" aria-labelledby="surfaces-title">
+      <h2 id="surfaces-title">Close-ups</h2>
+      <div class="specimens">
+        <Surface bot={{ ...scout, state: "waiting" }} status="waiting for you">
+          <Msg from="member" who="Scout" botFamily={scout.family} botColor={scout.color}>
+            Sala Navigli fits: 24 seats, €1,800, free on the 12th.
+          </Msg>
+          <Card kind="approval" i={0}>
+            <Fragment slot="title">Send the booking request on salanavigli.it?</Fragment>
+            <Fragment slot="sub">Your name, email and the date go in the form.</Fragment>
+            <Fragment slot="buttons"><Pill primary class="press">Allow</Pill><Pill>For this turn</Pill><Pill>Always allow</Pill><Pill>Deny</Pill></Fragment>
+          </Card>
+        </Surface>
+
+        <Surface bot={briefing} status="runs on a local model">
+          <Card kind="routine" i={1}>
+            <Fragment slot="title">New routine · Morning briefing</Fragment>
+            <Fragment slot="sub">Weekdays at 8:00 · Europe/Rome · writes to you here</Fragment>
+            <Fragment slot="buttons"><Pill primary>Activate</Pill><Pill>Change time</Pill></Fragment>
+          </Card>
+        </Surface>
+
+        <Surface bot={{ ...inbox, state: "speaking" }}>
+          <Card kind="skill">
+            <Fragment slot="title">Save skill · Weekly expense report</Fragment>
+            <Fragment slot="sub">Match receipts in Gmail to card payments and flag anything over €200.</Fragment>
+            <Fragment slot="buttons"><Pill primary>Save skill</Pill><Pill>Edit</Pill><Pill>Not now</Pill></Fragment>
+          </Card>
+        </Surface>
+
+        <Surface title="Apps" status="2 connected">
+          <div class="tiles">
+            <AppTile name="Gmail" logo="M" color="#EA4335" status="work · personal" ok />
+            <AppTile name="Google Calendar" logo="31" color="#1A73E8" status="Connected" ok />
+            <AppTile name="Trello" logo="T" color="#0079BF" status="via Composio" />
+          </div>
+        </Surface>
+
+        <ComputerScreen url="salanavigli.it/eventi" bot={scout} state="On">
+          <h3 class="venue-title">Private events · Milano</h3>
+          <div class="venue"><i aria-hidden="true"></i><div><b>Sala Navigli</b><small>24 seats · from €1,800</small></div><em>Dec 12 free</em></div>
+          <div class="venue"><i aria-hidden="true"></i><div><b>Loft Isola</b><small>30 seats · from €2,600</small></div><em>Over budget</em></div>
+          <div class="venue"><i aria-hidden="true"></i><div><b>Corte Brera</b><small>18 seats · from €1,500</small></div><em>Too small</em></div>
+        </ComputerScreen>
+      </div>
+    </section>
+  </main>
+  <footer class="section-shell py-10 text-sm text-faint">
+    <a href="/privacy/" class="link-accent">Privacy</a>
+  </footer>
+</Base>
+
+<style>
+  .preview { max-width: 1232px; margin-inline: auto; padding: clamp(32px, 7vw, 80px) 16px; display: grid; gap: 48px; }
+  h1 { font-size: clamp(2rem, 7vw, 4rem); }
+  h2 { margin-bottom: 20px; font-size: clamp(1.4rem, 4vw, 2.25rem); }
+  .specimens { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 410px), 1fr)); align-items: start; gap: 24px; }
+  .tools { display: flex; justify-content: end; gap: 8px; margin-bottom: 6px; }
+  .tools span, .initials { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--a-muted); }
+  .bot-row { display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 12px; font-size: 13.5px; }
+  .active { background: var(--a-muted); }
+  .bot-row small { display: block; font-size: 12px; }
+  small { color: var(--a-mfg); }
+  .sidebar-label { padding: 10px 8px 4px; font-size: 11.5px; }
+  .group { display: flex; padding-right: 8px; }
+  .group > :global(*) { margin-right: -7px; }
+  .sidebar-nav { display: grid; gap: 2px; margin-top: 6px; }
+  .sidebar-nav > span { padding: 7px 10px; }
+  .profile { margin-top: auto; }
+  .initials { font-size: 11px; font-weight: 600; }
+  .chat-head { justify-self: center; display: flex; align-items: center; gap: 8px; margin-top: 10px; background: var(--a-card); border-radius: 999px; padding: 5px 14px 5px 8px; font-weight: 600; box-shadow: 0 1px var(--a-line); }
+  .thread { display: flex; flex-direction: column; justify-content: end; gap: 10px; min-height: 0; overflow: hidden; padding: 14px 26px; }
+  .thread :global(.thread-card) { max-width: 86%; }
+  .gmail { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 5px; color: white; background: #b6271b; font-size: 10px; }
+  .composer { display: flex; align-items: center; gap: 12px; margin: 0 24px 14px; padding: 8px 8px 8px 16px; border-radius: 22px; background: var(--a-card); color: var(--a-mfg); box-shadow: 0 0 0 1px var(--a-line); }
+  .composer span { margin-left: auto; width: 34px; height: 34px; border-radius: 50%; background: var(--a-mfg); color: var(--a-bg); display: grid; place-items: center; }
+  .tabs { display: flex; gap: 4px; font-size: 13px; }
+  .tabs span { padding: 5px 12px; border-radius: 999px; }
+  .tabs span:first-child { background: var(--a-muted); font-weight: 600; }
+  .panel-list { width: 100%; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 8px; }
+  .venue-title { margin: 12px 14px 6px; font-size: 1.25em; }
+  .venue { display: grid; grid-template-columns: clamp(30px, 7vw, 84px) 1fr auto; align-items: center; gap: 8px; border-top: 1px solid #eee; padding: 8px 12px; }
+  .venue i { aspect-ratio: 16 / 10; border-radius: 6px; background: linear-gradient(135deg, #c9b79a, #8e7a5e); }
+  .venue:nth-of-type(2) i { background: linear-gradient(135deg, #9fb2c4, #5e7186); }
+  .venue:nth-of-type(3) i { background: linear-gradient(135deg, #b9c7a5, #6f8257); }
+  .venue b, .venue small { display: block; }
+  .venue small { color: #666; }
+  .venue em { font-size: .8em; font-style: normal; border: 1px solid #ddd; border-radius: 999px; padding: .2em .7em; }
+</style>

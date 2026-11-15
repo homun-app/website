@@ -1,3 +1,5 @@
+import { detectPlatform } from "./downloads.mjs";
+
 const DOWNLOAD_FORMATS = [
 	[".appimage", "appimage", "linux"],
 	[".dmg", "dmg", "macos"],
@@ -7,6 +9,15 @@ const DOWNLOAD_FORMATS = [
 
 const ROADMAP_ACTIONS = new Set(["vote", "discuss", "suggest"]);
 const PLATFORMS = new Set(["macos", "windows", "linux", "unknown"]);
+// The bot template chosen in the hero rides download clicks, allowlisted.
+export const TEMPLATE_ALLOWLIST = new Set([
+	"inbox-manager",
+	"meeting-prep",
+	"daily-briefing",
+	"chief-of-staff",
+	"mention-monitor",
+	"executive-assistant",
+]);
 const DOWNLOAD_SOURCES = new Set([
 	"hero",
 	"navigation",
@@ -52,13 +63,6 @@ function installerDetails(pathname) {
 	return { format: "release_page", platform: "unknown" };
 }
 
-function detectPlatform(navigatorLike = {}) {
-	const value = `${navigatorLike.userAgentData?.platform ?? ""} ${navigatorLike.platform ?? ""} ${navigatorLike.userAgent ?? ""}`.toLowerCase();
-	if (value.includes("mac")) return "macos";
-	if (value.includes("win")) return "windows";
-	if (value.includes("linux") || value.includes("x11")) return "linux";
-	return "unknown";
-}
 
 function sourceFromPath(pathname) {
 	if (pathname === "/") return "homepage";
@@ -108,14 +112,15 @@ export function classifyAnalyticsClick({
 				: details.platform !== "unknown"
 					? details.platform
 					: normalizedPlatform(detectedPlatform);
-		return {
-			name: "download_click",
-			data: {
-				platform,
-				format: details.format,
-				source: downloadSource || sourceFromPath(currentPath),
-			},
+		const data = {
+			platform,
+			format: details.format,
+			source: downloadSource || sourceFromPath(currentPath),
 		};
+		if (TEMPLATE_ALLOWLIST.has(dataset.analyticsTemplate)) {
+			data.template = dataset.analyticsTemplate;
+		}
+		return { name: "download_click", data };
 	}
 
 	const action = dataset.analyticsRoadmapAction;

@@ -1,35 +1,51 @@
 ---
 title: Settings
-description: A tour of Homun's settings — where each capability is configured.
+description: What you find in each section of Homun's settings.
 ---
 
-Everything Homun does is configured from **Settings**, grouped into Account and
-Capabilities. Each section maps to a feature documented elsewhere — this page is the
-map.
+Open **Settings** from the sidebar. Each section covers one area.
 
-## Account
+## General
 
-| Section | What you set | More |
-| --- | --- | --- |
-| **Account** | your profile / workspace | — |
-| **General** | general preferences | — |
-| **Appearance** | surface tone (Cold/Ivory/Neutral/Sand) + brand accent | [Getting started](/guides/getting-started/) |
-| **Model & runtime** | providers, per-task routing, concurrency | [Models & providers](/guides/models/) |
-| **Privacy** | local-first, managed-cloud, approval gate, remote approval | [Privacy & security](/guides/security/) |
-| **Memory** | the memory graph, wiki, consolidate/export | [Memory](/guides/memory/) |
-| **Contacts** | your curated address book | [Memory](/guides/memory/) |
+- **Appearance**: theme (System, Light, Dark) and language (System, Italiano, English).
+- **At startup**: **Start at login** keeps your bots active even when the window is
+  closed. macOS asks you to confirm it in Login Items.
+- **Version and updates**: **Check for updates**, and **Get pre-release versions** if you
+  want to try new versions before the release. Pre-releases can have defects.
+- **Setup guide**: resume the steps you skipped, or start the guide over. Starting over
+  does not touch your bots or your data.
+- **Delivery**: your time zone and a delivery window. Non-urgent messages from routines
+  wait for that window.
+- **Engine**: which engine runs the bot's computer. **Automatic** chooses for you; you can
+  pick Apple container or Docker. See [The bot's computer](/guides/local-computer/).
+- **Disk space**: how much the bot's computer, the local model and the memory model take,
+  and how to free space.
 
-## Capabilities
+## Models
 
-| Section | What you set | More |
-| --- | --- | --- |
-| **Channels** | WhatsApp, Telegram | [Channels](/guides/channels/) |
-| **Connectors** | native, Composio, MCP catalog | [Connectors](/guides/connectors/) |
-| **Skills** | active skills + catalog | [Skills](/guides/skills/) |
-| **Addons** | enable/disable add-on engines | [Proactivity](/guides/proactivity/) |
-| **Local computer** | the contained Docker computer | [The local computer](/guides/local-computer/) |
+The model your bots use, its fallbacks, the model that reviews approvals in Automatic
+mode, the providers you connected and the built-in model. See [Models](/guides/models/).
 
-:::note
-On a self-hosted server, the same settings are driven by **environment variables**
-instead of the UI — see [Self-hosting](/guides/self-hosting/).
-:::
+## Apps and skills
+
+The apps you connected and the skills your bots can use. See [Apps](/guides/connectors/)
+and [Skills](/guides/skills/).
+
+## Approvals
+
+When a bot should ask you: **Ask**, **Automatic** or **Never ask**, your own rules, and
+the consents you saved with **Always**. See [Approvals & safety](/guides/security/).
+
+## Vault
+
+The secrets your bots can use, such as passwords and API keys. Bots see only the names,
+never the values. See [Approvals & safety](/guides/security/#the-vault).
+
+## Routines
+
+Every routine of every bot: schedule, last run, on and off. See
+[Routines](/guides/automations/).
+
+## Usage & costs
+
+What the cloud models cost this month, bot by bot.

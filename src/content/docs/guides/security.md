@@ -1,67 +1,71 @@
 ---
-title: Privacy & security
-description: Local-first by default, deny-by-default permissions, contracts, an audit trail, and owner-only data at rest.
+title: Approvals & safety
+description: When a bot asks before acting, how drafts and the Vault protect you, and where your data lives.
 ---
 
-Homun is built so that doing powerful things stays safe and private. The defaults lean
-toward *less* exposure, not more.
+Homun lets bots do real work, so the defaults lean toward asking. You decide how much a
+bot may do on its own.
 
-![Homun's Privacy settings: toggles for "Local-first by default", "Managed cloud" and "Approval gate", plus remote-approval options](../../../assets/screenshots/privacy.png)
-*The Privacy settings — local-first on, managed cloud off, and an approval gate, all by default.*
+## Approval cards
 
-## Local-first
+Before an action that changes something, a bot shows an **approval card** with what it
+wants to do and why. You can:
 
-Your data and memory live on your device by default — plain SQLite + files under
-`~/.homun` (desktop) or a volume you mount (server). Cloud [models](/guides/models/)
-are an opt-in delegation; you can keep everything on the machine.
+- **Allow** it once;
+- allow it **For this turn**, for the same tool until the bot finishes the current
+  request;
+- allow it **Always**, which saves a consent you can revoke later;
+- **Deny** it.
 
-## Deny-by-default permissions
+Messages to other people are never sent from an approval card: they become
+[drafts](/guides/chat/#drafts) that leave only when you press **Send**.
 
-Capabilities are off until granted. [Connectors](/guides/connectors/), the
-[contained computer](/guides/local-computer/), and channel auto-replies all run behind
-**explicit grants** — there is no implicit access. Managed cloud connectors
-(Composio/Zapier-style) stay disabled until you pick a provider.
+## When to ask
 
-## Approvals & remote authorization
+**Settings › Approvals** has three modes:
 
-An **approval gate** requires explicit confirmation before write actions and approved
-automations run. When the agent drives the
-[contained computer](/guides/local-computer/), the **browser stops before logins,
-personal data, payments, or purchases** — those always come back to you.
+- **Ask**: the bot asks before every action that changes something: sending, writing,
+  running commands. Reading never asks.
+- **Automatic**: a model reviews every action against your request. It lets through what
+  your request needs, including steps you did not spell out, and asks you when the bot
+  goes clearly beyond it and the action is not easy to undo: writing to someone you did
+  not name, paying, deleting, publishing.
+- **Never ask**: every action runs without waiting.
 
-Approvals can reach you **remotely**: route authorization requests to Telegram so you
-can approve a send or a publish from your phone. Only your own chat id can authorize.
+Your own rules come first in every mode. **Continue on its own when…** widens what passes
+by itself; **Always stop and ask me when…** always wins and turns an action into a card.
+Bots can propose a rule; you add it or ignore it.
 
-## Contracts & audit
+**Saved consents** lists everything you allowed with **Always**, each with **Revoke**.
 
-Operative actions go through **contracts**: the model produces structured output (a
-plan, a memory write, a risk assessment) that the Rust core **validates before
-acting**. Actions are recorded in an **audit trail**, so what the assistant did is
-inspectable after the fact.
+## The Vault
 
-## Data at rest
+The **Vault** keeps logins for sites, secrets such as API keys, and contacts. Values are
+encrypted on your computer with a key held by the system keychain.
 
-The gateway runs with a strict umask so everything it writes is **owner-only (0600)** —
-including the SQLite WAL/SHM files created at runtime. The personal stores (memory,
-contacts, message sessions) are plaintext SQLite protected by file permissions, so
-they aren't exposed to other local users.
+Bots see only the **names** of secrets, never the values. When a bot uses a secret, Homun
+fills in the value at the last moment and removes it from any output, so it never ends
+up in the chat or in what the model reads. The approval card tells you which credentials
+an action uses.
 
-## Secrets
+## Your data
 
-API keys and tokens are stored locally (owner-only) and kept out of read models and
-logs. On a server, the gateway requires a bearer token and serves a login gate — the
-token is never baked into the web bundle. See [Self-hosting](/guides/self-hosting/).
+Bots, chats, memory, routines and the Library live on your computer. What reaches a
+cloud service depends on your choices:
 
-## Containment
+- the [model](/guides/models/) you pick: with the built-in model or one on your network,
+  conversations stay on your machine;
+- the [apps](/guides/connectors/) you connect: Direct apps talk to the service from your
+  computer, apps Through Composio pass through Composio's servers.
 
-Real-world execution happens inside the [contained computer](/guides/local-computer/),
-isolated from your host. Combined with deny-by-default permissions, an agent action
-can't quietly reach beyond its sandbox.
+Homun 0.3 is open source under the [Apache-2.0 license](/license/), so you can read how
+all of this works.
 
-## Your data, exportable
+## The bot's computer
 
-You can **export** your data at any time, and retention is enforced with cascade purge
-(and VACUUM) so deletions are real, not soft.
+Bots run commands and browse inside a [contained box](/guides/local-computer/), separate
+from your system. When a step needs you, such as signing in, the bot hands you the screen
+and your password does not pass through it.
 
 ## Website analytics
 

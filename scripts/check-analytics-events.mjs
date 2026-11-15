@@ -314,4 +314,36 @@ assert.deepEqual(
 	},
 );
 
+// Task 4: the chosen hero template rides the download event, allowlisted.
+assert.deepEqual(
+	classifyAnalyticsClick({
+		href: "https://github.com/homun-app/homun-releases/releases/latest",
+		currentPath: "/",
+		dataset: { analyticsDownloadSource: "hero", analyticsTemplate: "meeting-prep" },
+		detectedPlatform: "macos",
+	}),
+	{
+		name: "download_click",
+		data: {
+			platform: "macos",
+			format: "release_page",
+			source: "hero",
+			template: "meeting-prep",
+		},
+	},
+);
+
+const offListTemplate = classifyAnalyticsClick({
+	href: "https://github.com/homun-app/homun-releases/releases/latest",
+	currentPath: "/",
+	dataset: { analyticsDownloadSource: "hero", analyticsTemplate: "not-a-template" },
+	detectedPlatform: "macos",
+});
+assert.equal(offListTemplate?.name, "download_click");
+assert.equal(
+	"template" in offListTemplate.data,
+	false,
+	"off-list template values must not reach analytics",
+);
+
 console.log("Analytics event contract passed");

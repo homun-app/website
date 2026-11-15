@@ -1,0 +1,23 @@
+---
+interface Props {
+	locale?: "en" | "it";
+}
+
+const { locale = "en" } = Astro.props;
+---
+
+<aside class="update-notice">
+	{locale === "it"
+		? "In aggiornamento per il nuovo Homun: alcune pagine descrivono la versione precedente."
+		: "Being updated for the new Homun — some pages describe the previous version."}
+</aside>
+
+<style>
+	.update-notice {
+		padding: .75rem 1rem;
+		background: var(--sl-color-accent-low, var(--surface));
+		color: var(--sl-color-white, var(--fg));
+		text-align: center;
+		text-wrap: balance;
+	}
+</style>

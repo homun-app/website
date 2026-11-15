@@ -1,29 +1,160 @@
 @import "tailwindcss";
 
-/* Homun — Precision Operator */
-@theme {
-	--font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system,
-		"Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-	--font-mono: ui-monospace, "SF Mono", SFMono-Regular, "JetBrains Mono", Menlo,
-		Consolas, monospace;
+/* Existing marketing components still use the Tailwind palette. */
+@theme inline {
+	--font-sans: var(--body);
+	--font-mono: var(--mono);
+}
 
-	--color-bg: #050807;
-	--color-bg-raised: #08100e;
-	--color-surface: #0b1512;
-	--color-surface-2: #10201c;
-	--color-cream: #f3fbf8;
-	--color-muted: #9aafa9;
-	--color-faint: #698079;
-	--color-line: rgba(191, 235, 224, 0.09);
-	--color-line-strong: rgba(191, 235, 224, 0.18);
-	--color-accent: #20a991;
-	--color-accent-bright: #50dfc5;
-	--color-accent-glow: #67efd5;
-	--color-accent-soft: #b6f6e9;
-	--color-accent-deep: #0c6657;
+@theme {
+	/* Light palette (default) */
+	--color-bg: #f7f9f8;
+	--color-bg-raised: #fcfefd;
+	--color-surface: #ffffff;
+	--color-surface-2: #e9f1ee;
+	--color-highlight: #ecf4f0;
+	--color-cream: #0d1512;
+	--color-muted: #53655f;
+	--color-faint: #61736d;
+	--color-line: rgba(13, 21, 18, 0.1);
+	--color-line-strong: rgba(13, 21, 18, 0.22);
+	--color-accent: #0e7a67;
+	--color-accent-bright: #0b6a5a;
+	--color-accent-glow: #0e7a67;
+	--color-accent-soft: #d3ede6;
+	--color-accent-deep: #0a4f43;
 
 	--ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
-	--shadow-lift: 0 28px 80px -32px rgba(0, 0, 0, 0.9);
+	--shadow-lift: 0 28px 80px -32px rgba(16, 44, 37, 0.18);
+}
+
+/* Homepage and reconstructed app tokens from the design mockup. */
+:root {
+	color-scheme: light;
+
+	--bg: #FBFAF8;
+	--surface: #F0EEEA;
+	--line: #E2DED8;
+	--fg: #101917;
+	--muted: #5D6663;
+	--teal: #157A6E;
+	--teal-text: #126A5F;
+	--blue: #3A5BD9;
+	--cream: #F4F1EE;
+
+	--band: #0E1413;
+	--band-fg: #F4F1EE;
+	--band-muted: #9AA5A1;
+	--band-card: #18201E;
+
+	--a-bg: #F7F5F0;
+	--a-side: #FBFAF7;
+	--a-card: #FDFCFA;
+	--a-muted: #ECE9E3;
+	--a-mfg: #74716A;
+	--a-fg: #1E1C18;
+	--a-line: #E4E0D8;
+	--a-bubble: #EAE7E1;
+	--a-user: #141A2B;
+
+	--ink: #1E1C18;
+	--screen: #2A2824;
+	--blush: #F07F86;
+	--ok: #1F8F72;
+
+	--display: "M PLUS Rounded 1c", ui-rounded, "SF Pro Rounded", ui-sans-serif, system-ui, sans-serif;
+	--body: "Figtree Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+	--mono: "Geist Mono", ui-monospace, Menlo, monospace;
+
+	--btn-primary-ink: #ffffff;
+	--glow-strength: 0.3;
+	--atmosphere-strength: 0.45;
+	--shadow-panel:
+		0 42px 100px -44px rgba(16, 44, 37, 0.3),
+		0 0 0 1px rgba(16, 44, 37, 0.06),
+		0 0 80px -50px rgba(14, 122, 103, 0.35);
+	--shadow-device:
+		0 34px 74px -28px rgba(16, 44, 37, 0.24),
+		0 0 0 1px rgba(16, 44, 37, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme="light"]) {
+		color-scheme: dark;
+
+		--bg: #0B100F;
+		--surface: #151C1A;
+		--line: #25302D;
+		--fg: #F4F1EE;
+		--muted: #9AA5A1;
+		--teal-text: #5CC2B3;
+		--blue: #5574E8;
+		--band: #060909;
+		--band-card: #121918;
+
+		--a-bg: #181816;
+		--a-side: #141413;
+		--a-card: #201F1C;
+		--a-muted: #2A2926;
+		--a-mfg: #A19D95;
+		--a-fg: #EEEBE5;
+		--a-line: #2E2D29;
+		--a-bubble: #2A2926;
+		--a-user: #E9E6E0;
+
+		/* Dark palette — the previous Homun espresso theme */
+		--color-bg: #050807;
+		--color-bg-raised: #08100e;
+		--color-surface: #0b1512;
+		--color-surface-2: #10201c;
+		--color-highlight: #081310;
+		--color-cream: #f3fbf8;
+		--color-muted: #9aafa9;
+		--color-faint: #698079;
+		--color-line: rgba(191, 235, 224, 0.09);
+		--color-line-strong: rgba(191, 235, 224, 0.18);
+		--color-accent: #20a991;
+		--color-accent-bright: #50dfc5;
+		--color-accent-glow: #67efd5;
+		--color-accent-soft: #b6f6e9;
+		--color-accent-deep: #0c6657;
+
+		--shadow-lift: 0 28px 80px -32px rgba(0, 0, 0, 0.9);
+		--btn-primary-ink: #03110e;
+		--glow-strength: 1;
+		--atmosphere-strength: 1;
+		--shadow-panel:
+			0 42px 100px -44px rgba(0, 0, 0, 0.95),
+			0 0 0 1px rgba(80, 223, 197, 0.035),
+			0 0 80px -50px rgba(80, 223, 197, 0.45);
+		--shadow-device:
+			0 34px 74px -28px rgba(0, 0, 0, 0.88),
+			0 0 0 1px rgba(0, 0, 0, 0.45);
+	}
+}
+
+:root[data-theme="dark"] {
+	color-scheme: dark;
+
+	--bg: #0B100F;
+	--surface: #151C1A;
+	--line: #25302D;
+	--fg: #F4F1EE;
+	--muted: #9AA5A1;
+	--teal-text: #5CC2B3;
+	--blue: #5574E8;
+	--band: #060909;
+	--band-card: #121918;
+
+	--a-bg: #181816;
+	--a-side: #141413;
+	--a-card: #201F1C;
+	--a-muted: #2A2926;
+	--a-mfg: #A19D95;
+	--a-fg: #EEEBE5;
+	--a-line: #2E2D29;
+	--a-bubble: #2A2926;
+	--a-user: #E9E6E0;
 }
 
 @layer base {
@@ -37,9 +168,9 @@
 	}
 	body {
 		margin: 0;
-		background: var(--color-bg);
-		color: var(--color-cream);
-		font-family: var(--font-sans);
+		background: var(--bg);
+		color: var(--fg);
+		font-family: var(--body);
 		font-synthesis-weight: none;
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
@@ -47,15 +178,16 @@
 		overflow-x: clip;
 	}
 	::selection {
-		background: color-mix(in srgb, var(--color-accent-glow) 32%, transparent);
-		color: #fff;
+		background: color-mix(in srgb, var(--color-accent) 26%, transparent);
+		color: var(--color-cream);
 	}
 	h1,
 	h2,
 	h3 {
-		font-weight: 570;
-		letter-spacing: -0.035em;
-		line-height: 1.03;
+		font-family: var(--display);
+		font-weight: 800;
+		letter-spacing: -0.03em;
+		line-height: 1.04;
 		text-wrap: balance;
 	}
 	p {
@@ -77,7 +209,12 @@
 }
 
 .text-gradient {
-	background: linear-gradient(178deg, #fff 3%, #e8f3ef 52%, #85aaa2 135%);
+	background: linear-gradient(
+		178deg,
+		var(--color-cream) 3%,
+		color-mix(in srgb, var(--color-cream) 88%, var(--color-accent-bright)) 52%,
+		var(--color-muted) 135%
+	);
 	-webkit-background-clip: text;
 	background-clip: text;
 	color: transparent;
@@ -85,7 +222,7 @@
 
 .eyebrow,
 .metric-label {
-	font-family: var(--font-mono);
+	font-family: var(--mono);
 	font-size: 0.68rem;
 	font-weight: 600;
 	letter-spacing: 0.16em;
@@ -107,7 +244,11 @@
 .operator-panel {
 	position: relative;
 	border: 1px solid var(--color-line);
-	background: linear-gradient(155deg, rgba(16, 32, 28, 0.86), rgba(7, 13, 11, 0.94));
+	background: linear-gradient(
+		155deg,
+		var(--color-surface),
+		color-mix(in srgb, var(--color-surface) 76%, var(--color-surface-2))
+	);
 	box-shadow: var(--shadow-lift);
 }
 
@@ -127,10 +268,7 @@
 .operator-panel {
 	border-radius: 1.25rem;
 	overflow: hidden;
-	box-shadow:
-		0 42px 100px -44px rgba(0, 0, 0, 0.95),
-		0 0 0 1px rgba(80, 223, 197, 0.035),
-		0 0 80px -50px rgba(80, 223, 197, 0.45);
+	box-shadow: var(--shadow-panel);
 }
 
 .operator-panel::before {
@@ -176,9 +314,7 @@
 	border: 1px solid var(--color-line-strong);
 	border-radius: 0.9rem;
 	background: var(--color-surface);
-	box-shadow:
-		0 34px 74px -28px rgba(0, 0, 0, 0.88),
-		0 0 0 1px rgba(0, 0, 0, 0.45);
+	box-shadow: var(--shadow-device);
 }
 
 .device img {
@@ -191,7 +327,10 @@
 	position: absolute;
 	z-index: 0;
 	border-radius: 9999px;
-	filter: blur(95px);
+	/* opacity() in filter multiplies with the element's opacity-* utility
+	   instead of overriding it (this rule is unlayered, so a plain
+	   `opacity` here would beat Tailwind's utilities layer). */
+	filter: blur(95px) opacity(var(--glow-strength));
 	background: radial-gradient(
 		circle,
 		color-mix(in srgb, var(--color-accent-glow) 58%, transparent),
@@ -210,15 +349,16 @@
 }
 
 .atmosphere {
+	filter: opacity(var(--atmosphere-strength));
 	background:
 		radial-gradient(
 			circle 34rem at var(--pointer-x, 50%) var(--pointer-y, 18%),
-			rgba(80, 223, 197, 0.13),
+			color-mix(in srgb, var(--color-accent-bright) 13%, transparent),
 			transparent 72%
 		),
 		radial-gradient(
 			ellipse 38% 46% at 86% 62%,
-			rgba(12, 102, 87, 0.08),
+			color-mix(in srgb, var(--color-accent-deep) 8%, transparent),
 			transparent 76%
 		);
 	pointer-events: none;
@@ -272,7 +412,7 @@
 
 .btn-primary {
 	background: linear-gradient(180deg, var(--color-accent-bright), var(--color-accent));
-	color: #03110e;
+	color: var(--btn-primary-ink);
 	box-shadow:
 		0 0 0 1px color-mix(in srgb, var(--color-accent-glow) 45%, transparent),
 		0 14px 34px -14px color-mix(in srgb, var(--color-accent) 85%, transparent);

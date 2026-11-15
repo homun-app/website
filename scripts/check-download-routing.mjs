@@ -1,13 +1,23 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { compareVersions, parseVersion } from "../src/lib/versions.mjs";
 import {
 	detectPlatform,
 	groupInstallers,
 	initDownloadControls,
 	loadLatestInstallers,
+	pickCurrentRelease,
+	platformBadge,
+	platformRequirement,
 	preferredInstaller,
 	RELEASES_PAGE_URL,
 } from "../src/scripts/downloads.mjs";
+
+assert.equal(platformBadge("windows"), "beta");
+assert.equal(platformBadge("linux"), "beta");
+assert.equal(platformBadge("macos"), null);
+assert.equal(platformBadge("unknown"), null);
+assert.equal(platformRequirement("unknown"), null);
 
 const assets = [
 	{ name: "Homun-1.2.3-arm64.dmg", browser_download_url: "https://example.test/mac.dmg" },
@@ -23,6 +33,39 @@ assert.equal(detectPlatform({ userAgentData: { platform: "macOS" } }), "macos");
 assert.equal(detectPlatform({ userAgentData: { platform: "Windows" } }), "windows");
 assert.equal(detectPlatform({ platform: "Linux x86_64" }), "linux");
 assert.equal(detectPlatform({ platform: "PlayStation" }), "unknown");
+// Phones and tablets never get a desktop installer.
+assert.equal(
+	detectPlatform({
+		platform: "iPhone",
+		userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1",
+	}),
+	"unknown",
+);
+assert.equal(
+	detectPlatform({
+		platform: "Linux armv81",
+		userAgent: "Mozilla/5.0 (Linux; Android 15; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Mobile Safari/537.36",
+		userAgentData: { platform: "Android", mobile: true },
+	}),
+	"unknown",
+);
+assert.equal(
+	detectPlatform({
+		platform: "MacIntel",
+		maxTouchPoints: 5,
+		userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15",
+	}),
+	"unknown",
+	"iPadOS Safari poses as a Mac with a touch screen",
+);
+assert.equal(
+	detectPlatform({
+		platform: "MacIntel",
+		maxTouchPoints: 0,
+		userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15",
+	}),
+	"macos",
+);
 
 const grouped = groupInstallers(assets);
 assert.deepEqual(grouped.macos.map((asset) => asset.name), ["Homun-1.2.3-arm64.dmg"]);
@@ -35,7 +78,19 @@ assert.equal(preferredInstaller("macos", grouped)?.name, "Homun-1.2.3-arm64.dmg"
 assert.equal(preferredInstaller("windows", grouped)?.name, "Homun-1.2.3-x64.exe");
 assert.equal(preferredInstaller("linux", grouped)?.name, "Homun-1.2.3-x86_64.AppImage");
 assert.equal(preferredInstaller("unknown", grouped), null);
-assert.equal(RELEASES_PAGE_URL, "https://github.com/homun-app/homun-releases/releases/latest");
+assert.equal(RELEASES_PAGE_URL, "https://github.com/homun-app/homun-releases/releases");
+
+assert.deepEqual(parseVersion("v0.3.1001"), [0, 3, 1001]);
+assert.deepEqual(parseVersion("0.3.1001"), [0, 3, 1001]);
+assert.equal(parseVersion("v0.3.0-beta.1"), null);
+assert.equal(parseVersion("nightly"), null);
+assert.ok(compareVersions("v0.3.2", "v0.3.10") < 0);
+
+const rel = (tag, extra = {}) => ({ tag_name: tag, draft: false, prerelease: false, published_at: "2026-11-01T00:00:00Z", assets: [], ...extra });
+assert.equal(pickCurrentRelease([rel("v0.2.1004"), rel("v0.1.1078")]), null);
+assert.equal(pickCurrentRelease([rel("v0.2.1004"), rel("v0.3.1000"), rel("v0.3.1001")]).tag_name, "v0.3.1001");
+assert.equal(pickCurrentRelease([rel("v0.3.1002", { draft: true }), rel("v0.3.1001")]).tag_name, "v0.3.1001");
+assert.equal(pickCurrentRelease([rel("v0.3.1002", { prerelease: true }), rel("v0.3.1001")]).tag_name, "v0.3.1001");
 
 function deferred() {
 	let resolve;
@@ -137,14 +192,57 @@ assert.equal(failedControl.fullLabel.textContent, "Download for macOS");
 assert.equal(failedControl.control.getAttribute("aria-busy"), null);
 assert.equal(failedControl.textContentWasSet(), false);
 
-const successFetch = async () => ({
+const homun2Assets = [
+	{ name: "Homun-0.2.1004-arm64.dmg", browser_download_url: "https://example.test/homun2.dmg" },
+	{ name: "Homun-0.2.1004-x64.exe", browser_download_url: "https://example.test/homun2.exe" },
+	{ name: "Homun-0.2.1004-x86_64.AppImage", browser_download_url: "https://example.test/homun2.AppImage" },
+];
+
+const releasesFetch = async () => ({
 	ok: true,
-	json: async () => ({ assets }),
+	json: async () => [
+		rel("v0.3.1002", { draft: true, assets: homun2Assets }),
+		rel("v0.3.1001", { assets }),
+		rel("v0.2.1004", { assets: homun2Assets }),
+	],
 });
-assert.equal(
-	(await loadLatestInstallers(successFetch, { useCache: false })).linux[0].name,
-	"Homun-1.2.3-x86_64.AppImage",
-);
+const currentInstallers = await loadLatestInstallers(releasesFetch, { useCache: false });
+assert.equal(currentInstallers.macos[0]?.browser_download_url, "https://example.test/mac.dmg");
+assert.equal(currentInstallers.windows[0]?.browser_download_url, "https://example.test/win.exe");
+assert.equal(currentInstallers.linux[0]?.browser_download_url, "https://example.test/linux.AppImage");
+
+const homun2OnlyFetch = async () => ({
+	ok: true,
+	json: async () => [rel("v0.2.1004", { assets }), rel("v0.1.1078", { assets })],
+});
+assert.deepEqual(await loadLatestInstallers(homun2OnlyFetch, { useCache: false }), {
+	macos: [],
+	windows: [],
+	linux: [],
+});
+
+const homun2OnlyControl = responsiveControlFixture();
+const homun2Destinations = [];
+initDownloadControls(homun2OnlyControl.root, { platform: "MacIntel" }, {
+	loadInstallers: () => loadLatestInstallers(homun2OnlyFetch, { useCache: false }),
+	navigate: (url) => homun2Destinations.push(url),
+});
+await homun2OnlyControl.click();
+assert.deepEqual(homun2Destinations, [RELEASES_PAGE_URL]);
+assert.equal(homun2OnlyControl.control.getAttribute("aria-busy"), null);
+
+const rateLimitedFetch = async () => ({ ok: false, status: 403 });
+const rateLimitedControl = responsiveControlFixture();
+const rateLimitedDestinations = [];
+initDownloadControls(rateLimitedControl.root, { platform: "MacIntel" }, {
+	loadInstallers: () => loadLatestInstallers(rateLimitedFetch, { useCache: false }),
+	navigate: (url) => rateLimitedDestinations.push(url),
+});
+await rateLimitedControl.click();
+assert.deepEqual(rateLimitedDestinations, [RELEASES_PAGE_URL]);
+assert.equal(rateLimitedControl.control.getAttribute("aria-busy"), null);
+assert.equal(rateLimitedControl.compactLabel.textContent, "Download");
+assert.equal(rateLimitedControl.fullLabel.textContent, "Download for macOS");
 
 const failedFetch = async () => ({ ok: false, status: 403 });
 await assert.rejects(
@@ -152,15 +250,114 @@ await assert.rejects(
 	/GitHub release request failed: 403/,
 );
 
+// Unknown platform (phone or unrecognized system): the button becomes a
+// "Get Homun for your computer" action — it opens the platform list with a
+// share control instead of navigating, without any network request.
+function unknownPlatformFixture(navigatorLike, dependencies = {}) {
+	const shareLabel = { textContent: "Share or copy the link" };
+	let shareClick;
+	const shareButton = {
+		querySelector(selector) {
+			return selector === "[data-share-label]" ? shareLabel : null;
+		},
+		addEventListener(type, handler) {
+			if (type === "click") shareClick = handler;
+		},
+	};
+	const options = { hidden: true };
+	const block = {
+		querySelector(selector) {
+			return selector === "[data-download-options]" ? options : null;
+		},
+	};
+	let controlClick;
+	const control = {
+		textContent: "",
+		closest(selector) {
+			return selector === "[data-download-block]" ? block : null;
+		},
+		matches() {
+			return true;
+		},
+		querySelector() {
+			return null;
+		},
+		addEventListener(type, handler) {
+			if (type === "click") controlClick = handler;
+		},
+		setAttribute() {},
+		getAttribute() {
+			return null;
+		},
+		removeAttribute() {},
+	};
+	const root = {
+		querySelectorAll(selector) {
+			if (selector === "[data-homun-download]") return [control];
+			if (selector === "[data-download-options] [data-share-link]") return [shareButton];
+			return [];
+		},
+		querySelector() {
+			return null;
+		},
+	};
+	initDownloadControls(root, navigatorLike, dependencies);
+	return {
+		control,
+		options,
+		shareLabel,
+		click: () => controlClick({ preventDefault() {} }),
+		share: () => shareClick({ preventDefault() {} }),
+	};
+}
+
+const shareCalls = [];
+const networkLoads = [];
+const shareFixture = unknownPlatformFixture(
+	{ platform: "PlayStation", share: async (data) => shareCalls.push(data) },
+	{
+		loadInstallers: async () => {
+			networkLoads.push("share fixture");
+			return grouped;
+		},
+		navigate: () => {
+			throw new Error("unknown platform must not navigate away");
+		},
+	},
+);
+assert.equal(
+	shareFixture.control.textContent,
+	"Get Homun for your computer",
+	"the unknown-platform button must invite the visitor back to a computer",
+);
+await shareFixture.click();
+assert.deepEqual(networkLoads, [], "opening the platform list must not hit the network");
+assert.equal(shareFixture.options.hidden, false, "the click must open the platform list");
+await shareFixture.share();
+assert.deepEqual(shareCalls, [{ url: "https://homun.app/" }], "Web Share must receive the site link");
+assert.equal(shareFixture.shareLabel.textContent, "Link copied");
+
+const copyCalls = [];
+const copyFixture = unknownPlatformFixture({
+	platform: "PlayStation",
+	clipboard: { writeText: async (text) => copyCalls.push(text) },
+});
+await copyFixture.click();
+assert.equal(copyFixture.options.hidden, false);
+await copyFixture.share();
+assert.deepEqual(copyCalls, ["https://homun.app/"], "without Web Share the link is copied");
+assert.equal(copyFixture.shareLabel.textContent, "Link copied");
+
 const homepage = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
+// "data-download-action" and "Download for another platform" belonged to the
+// retired Homun 2 download section; the bot-team homepage routes downloads
+// through the hero button and the platform chooser instead.
 for (const marker of [
 	"data-homun-download",
 	"data-download-chooser",
 	"data-download-options",
-	"data-download-action",
-	"Download for another platform",
 	"https://github.com/homun-app/homun-core",
-	"https://github.com/homun-app/homun-releases/releases/latest",
+	RELEASES_PAGE_URL,
 ]) {
 	assert.ok(homepage.includes(marker), `Homepage is missing download integration: ${marker}`);
 }

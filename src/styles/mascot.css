@@ -1,0 +1,100 @@
+[data-mascot] {
+	overflow: visible;
+	color: var(--mark-ink);
+}
+
+@media (prefers-color-scheme: dark) {
+	[data-mascot] {
+		color: var(--mark-cream);
+	}
+
+	[data-mascot][data-product="engramma"] [data-mascot-shape] {
+		fill: var(--mascot-blue-dark);
+	}
+}
+
+[data-mascot-body] {
+	transform-box: fill-box;
+	transform-origin: bottom center;
+}
+
+[data-mascot-active] [data-mascot-body] {
+	transition: scale 180ms ease-out;
+}
+
+.is-squish [data-mascot-body] {
+	scale: 1.1 .88;
+}
+
+.is-hop [data-mascot-body] {
+	animation: mascot-hop 700ms ease-in-out;
+}
+
+@keyframes mascot-hop {
+	0%, 100% { translate: 0 0; }
+	38% { translate: 0 -22%; }
+	65% { translate: 0 -6%; }
+}
+
+.is-awake [data-eyes-closed] {
+	visibility: hidden;
+}
+
+.is-awake [data-eyes-open] {
+	visibility: visible;
+}
+
+[data-mascot-active] [data-eyes-open] rect {
+	transform-box: fill-box;
+	transform-origin: center;
+	animation: mascot-blink 5s infinite;
+}
+
+@keyframes mascot-blink {
+	0%, 91%, 97%, 100% { scale: 1 1; }
+	94% { scale: 1 .15; }
+}
+
+[data-mascot-active].is-waking [data-eyes-closed] {
+	animation: mascot-wake-closed 600ms step-end both;
+}
+
+[data-mascot-active].is-waking [data-eyes-open] {
+	animation: mascot-wake-open 600ms step-end both;
+}
+
+@keyframes mascot-wake-closed {
+	from { visibility: visible; }
+	to { visibility: hidden; }
+}
+
+@keyframes mascot-wake-open {
+	from { visibility: hidden; }
+	to { visibility: visible; }
+}
+
+[data-mascot][data-mascot-active].is-paused * {
+	animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	[data-mascot] [data-mascot-body],
+	[data-mascot] [data-eyes-open] rect,
+	[data-mascot].is-waking :is([data-eyes-open], [data-eyes-closed]) {
+		animation: none;
+		transition: none;
+		scale: none;
+	}
+
+	[data-mascot-eyes] {
+		transform: none;
+	}
+
+	[data-mascot].is-waking [data-eyes-closed] {
+		visibility: hidden;
+	}
+
+	[data-mascot].is-waking [data-eyes-open] {
+		visibility: visible;
+	}
+}

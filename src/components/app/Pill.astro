@@ -1,0 +1,18 @@
+---
+interface Props {
+  primary?: boolean;
+  i?: number;
+  class?: string;
+}
+
+const { primary, i, class: className } = Astro.props;
+---
+
+<span class:list={["pill", className, { primary, play: i !== undefined }]} style={{ "--i": i }} data-pill>
+  <slot />
+</span>
+
+<style>
+  .pill { display: inline-block; border-radius: 999px; padding: 6px 13px; font-size: 13px; font-weight: 600; background: var(--a-card); color: var(--a-fg); }
+  .primary { background: var(--a-fg); color: var(--a-bg); }
+</style>

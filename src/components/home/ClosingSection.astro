@@ -1,0 +1,46 @@
+---
+import ProductSymbol from "../brand/ProductSymbol.astro";
+import DownloadButton from "./DownloadButton.astro";
+---
+
+<section id="download" aria-labelledby="download-title">
+	<ProductSymbol product="homun" size={120} />
+	<h2 id="download-title">Meet your first bot.</h2>
+	<DownloadButton source="closing" closing />
+</section>
+
+<script>
+	const mascot = document.querySelector("#download svg[data-mascot]");
+	if (mascot && "IntersectionObserver" in window) {
+		const motion = matchMedia("(prefers-reduced-motion: reduce)");
+		const observer = new IntersectionObserver(([entry]) => {
+			if (motion.matches || !entry.isIntersecting) {
+				mascot.classList.remove("is-hop");
+			} else if (entry.intersectionRatio >= .8) {
+				mascot.classList.add("is-hop");
+			}
+		}, { threshold: [0, .8] });
+		observer.observe(mascot);
+		mascot.addEventListener("animationend", (event) => {
+			if (event.animationName.startsWith("closing-hop")) mascot.classList.remove("is-hop");
+		});
+		motion.addEventListener("change", () => mascot.classList.remove("is-hop"));
+	}
+</script>
+
+<style>
+	#download { max-width: 1180px; margin-inline: auto; padding: 140px 16px 110px; text-align: center; display: grid; justify-items: center; gap: 22px; }
+	h2 { font-size: clamp(2.1rem, 5.6vw, 4.2rem); }
+	@media (prefers-reduced-motion: no-preference) {
+		:global(#download .is-hop [data-mascot-body]) {
+			transform-box: view-box;
+			transform-origin: center bottom;
+			animation: closing-hop .7s cubic-bezier(.3, 1.6, .5, 1);
+		}
+	}
+	@keyframes closing-hop {
+		20% { scale: 1.12 .84; }
+		50% { translate: 0 -16%; scale: .94 1.08; }
+		75% { scale: 1.04 .96; }
+	}
+</style>

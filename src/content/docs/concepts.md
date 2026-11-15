@@ -1,68 +1,65 @@
 ---
 title: Core concepts
-description: The mental model behind Homun — how it works on your terms today, and the apprentice it's growing into.
+description: The pieces of Homun — bots, teams, the bot's computer, apps, skills, approvals, routines, memory and models — and how they fit together.
 ---
 
-Homun is not a passive chat box. Today it assists you on your terms — chat, memory,
-channels, automations, deliverables. The mental model it's **growing into** is an
-**apprentice**: one that observes your work, understands your routines, proposes, and
-operates your computer end-to-end under progressive permissions. That autonomous loop is
-[on the roadmap](/roadmap/).
+## Bots
 
-A few principles shape every feature.
+A **bot** is an assistant with one job. It has a name, a mascot, a description it wrote
+itself, a model, and its own chat. Bots keep working when you close the window: Homun stays
+in the menu bar and finishes what it started.
 
-## On your terms
+One job per bot works better than one bot for everything: each bot keeps a focused
+memory, its own skills and a computer of its own.
 
-Your data and memory live on your device by default — plain SQLite and files under
-`~/.homun` (desktop) or a volume you mount (server). Cloud models are an **opt-in**
-delegation, never a requirement: local [Ollama](https://ollama.com) is the default,
-and you choose if and when anything leaves the machine.
+## Teams
 
-## Transparent
+A **team** groups several bots under a **coordinator**. You write to the team, the
+coordinator splits the work, and you receive a short summary. See [Teams](/guides/teams/).
 
-You can see and correct what the assistant knows. Memory is not an opaque embedding
-blob — it's an inspectable graph of entities, relationships and decisions, plus a
-human-readable Markdown wiki. If something is wrong, you fix it; if you want it gone,
-you [forget](/guides/memory/) it by topic or entity.
+## The bot's computer
 
-## Operative, with contracts
+Every bot works inside a **box**: a contained computer with a browser, a terminal and its
+own files. When a site has no app connection, the bot opens the browser and does the job
+there. You can watch the screen and take over, for example to sign in. See
+[The bot's computer](/guides/local-computer/).
 
-Every action passes through **contracts, permissions, and an audit trail**. The model
-produces structured output (a plan, a memory write, a risk assessment) that the Rust
-core validates *before* acting. Permissions are deny-by-default; the contained
-computer and connectors run behind explicit grants.
+## Apps
 
-## Proactive
+**Apps** are connections to the services you use: Gmail, Calendar, Trello, Slack and
+more than a thousand others through Composio, plus any MCP server. You connect an app
+once and every bot can use it. See [Apps](/guides/connectors/).
 
-Homun detects patterns and offers help before you ask. A supervisor engine watches
-for recurring work and surfaces **suggestion cards** — you stay in control of whether
-a suggestion becomes an automation.
+## Skills
 
-## The product loop
+A **skill** is a recipe: how to do a piece of work the way you like it. You can write
+one, import one from GitHub, or ask a bot to save what it just did as a skill. See
+[Skills](/guides/skills/).
 
-Everything rests on one base loop:
+## Approvals
 
-```text
-you write  →  the active model responds  →  you understand the response
-```
+Before a bot does something that cannot easily be undone (sending, paying, deleting,
+publishing) it shows you an **approval card**. Messages are prepared as **drafts** and
+leave only when you press **Send**. See [Approvals & safety](/guides/security/).
 
-Tasks, the browser, approvals, memory, and subagents are real capabilities, but they
-live *beneath* the chat — they appear as inline activity, not as noise in the base
-conversation. A simple, stable chat is the foundation; operative power is layered on
-top.
+## Routines
 
-## The pieces
+A **routine** runs a request on a schedule, such as every weekday at 8:00. Bots notice
+what you ask again and again and propose a routine; you activate it with one click. See
+[Routines](/guides/automations/).
 
-| Piece | What it does |
-| --- | --- |
-| [Chat](/guides/chat/) | The base loop: Markdown, code, diagrams, attachments, message actions, streaming. |
-| [Memory](/guides/memory/) | Hybrid store — SQLite + graph + Markdown wiki + curated contacts. |
-| [Models & providers](/guides/models/) | Bring your own model: local Ollama or cloud, routed per task. |
-| [Channels](/guides/channels/) | WhatsApp and Telegram, into memory and drafts with approval. |
-| [Automations](/guides/automations/) | When → Then rules that run agentic tasks. |
-| [Skills](/guides/skills/) | Installable, sandboxed capabilities from a catalog. |
-| [Connectors](/guides/connectors/) | Native, MCP, and opt-in managed integrations. |
-| [The local computer](/guides/local-computer/) | A contained Docker browser/shell you can watch live. |
+## Memory
 
-All of it is owned by a single local **gateway** — see
-[Architecture](/reference/architecture/) for how the parts connect.
+Bots remember facts and rules between conversations, with the source and the date of
+each one. Memory runs on [Engramma](/docs/engramma/), Homun's memory engine. See
+[Memory](/guides/memory/).
+
+## Models
+
+Each bot uses a model you choose: a cloud provider, a model on your network, or the model
+built into Homun that runs entirely on your machine. See [Models](/guides/models/).
+
+## The Library
+
+Documents, charts and files that bots prepare are saved in the **Library**, where you can
+search, pin, rename and export them.

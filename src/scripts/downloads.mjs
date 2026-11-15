@@ -1,15 +1,25 @@
+import { compareVersions, MIN_PUBLIC_VERSION } from "../lib/versions.mjs";
+
 export const RELEASES_REPOSITORY_URL = "https://github.com/homun-app/homun-releases";
-export const RELEASES_PAGE_URL = `${RELEASES_REPOSITORY_URL}/releases/latest`;
-export const RELEASES_API_URL = "https://api.github.com/repos/homun-app/homun-releases/releases/latest";
+export const RELEASES_PAGE_URL = `${RELEASES_REPOSITORY_URL}/releases`;
+export const RELEASES_API_URL = "https://api.github.com/repos/homun-app/homun-releases/releases?per_page=30";
 export const CORE_REPOSITORY_URL = "https://github.com/homun-app/homun-core";
 
 export function detectPlatform(navigatorLike = {}) {
 	const value = `${navigatorLike.userAgentData?.platform ?? ""} ${navigatorLike.platform ?? ""} ${navigatorLike.userAgent ?? ""}`.toLowerCase();
+	// Phones and tablets first: iOS user agents say "like Mac OS X", Android
+	// ones say "Linux", and iPadOS Safari poses as a Mac with a touch screen.
+	// None of them can run a desktop installer.
+	if (navigatorLike.userAgentData?.mobile === true) return "unknown";
+	if (/android|iphone|ipad|ipod|mobile/.test(value)) return "unknown";
+	if (value.includes("mac") && (navigatorLike.maxTouchPoints ?? 0) > 1) return "unknown";
 	if (value.includes("mac")) return "macos";
 	if (value.includes("win")) return "windows";
 	if (value.includes("linux") || value.includes("x11")) return "linux";
 	return "unknown";
 }
+
+export const SITE_URL = "https://homun.app/";
 
 export function groupInstallers(assets = []) {
 	const grouped = { macos: [], windows: [], linux: [] };
@@ -37,7 +47,7 @@ const platformLabels = {
 	macos: "Download for macOS",
 	windows: "Download for Windows",
 	linux: "Download for Linux",
-	unknown: "Download Homun",
+	unknown: "Get Homun for your computer",
 };
 
 const platformNames = {
@@ -46,7 +56,36 @@ const platformNames = {
 	linux: "Linux",
 };
 
+export function platformBadge(platform) {
+	return platform === "windows" || platform === "linux" ? "beta" : null;
+}
+
+/** @returns {string | null} */
+export function platformRequirement(_platform) {
+	// No public stable release meets MIN_PUBLIC_VERSION yet. Add requirements
+	// when the changelog documents them for a release the resolver can offer.
+	return null;
+}
+
 let installersPromise;
+
+export function pickCurrentRelease(releases = [], min = MIN_PUBLIC_VERSION) {
+	if (!Array.isArray(releases)) return null;
+	let current = null;
+	for (const release of releases) {
+		if (!release || release.draft || release.prerelease) continue;
+		if (typeof release.tag_name !== "string") continue;
+		if (compareVersions(release.tag_name, min) < 0) continue;
+		if (!current) {
+			current = release;
+			continue;
+		}
+		const comparison = compareVersions(release.tag_name, current.tag_name);
+		if (comparison > 0) current = release;
+		else if (comparison === 0 && Date.parse(release.published_at ?? "") > Date.parse(current.published_at ?? "")) current = release;
+	}
+	return current;
+}
 
 export async function loadLatestInstallers(fetchImpl = fetch, { useCache = true } = {}) {
 	if (useCache && installersPromise) return installersPromise;
@@ -55,8 +94,9 @@ export async function loadLatestInstallers(fetchImpl = fetch, { useCache = true 
 			headers: { Accept: "application/vnd.github+json" },
 		});
 		if (!response.ok) throw new Error(`GitHub release request failed: ${response.status}`);
-		const release = await response.json();
-		return groupInstallers(release.assets);
+		const releases = await response.json();
+		const current = pickCurrentRelease(releases);
+		return groupInstallers(current?.assets ?? []);
 	})();
 	if (useCache) installersPromise = request;
 	try {
@@ -86,10 +126,26 @@ function responsiveDownloadLabels(control) {
 	return compact && full ? { compact, full } : null;
 }
 
-function wireDownloadControl(control, platform, dependencies = {}) {
+// The options panel that belongs to a control: the enclosing download block
+// when there is one, otherwise the control's own container.
+function scopedDownloadOptions(element, root = document) {
+	const scope = element.closest?.("[data-download-block]") ?? element.parentElement ?? root;
+	return scope?.querySelector?.("[data-download-options]") ?? null;
+}
+
+function wireDownloadControl(control, platform, root = document, dependencies = {}) {
 	const { loadInstallers = loadLatestInstallers, navigate = navigateTo } = dependencies;
 	control.addEventListener("click", async (event) => {
 		event.preventDefault();
+		if (platform === "unknown") {
+			const options = scopedDownloadOptions(control, root);
+			if (options) {
+				const opening = options.hidden;
+				options.hidden = !opening;
+				control.setAttribute("aria-expanded", String(opening));
+				return;
+			}
+		}
 		if (control.getAttribute("aria-busy") === "true") return;
 		control.setAttribute("aria-busy", "true");
 		const isPrimary = control.matches("[data-homun-download]");
@@ -126,6 +182,31 @@ function wireDownloadControl(control, platform, dependencies = {}) {
 	});
 }
 
+// Phone or unknown system: no installer to offer, so the visitor shares or
+// copies the site link instead. Web Share when the browser has it, clipboard
+// otherwise; no network request either way.
+function wireShareControls(root = document, navigatorLike = navigator) {
+	for (const shareButton of root.querySelectorAll("[data-download-options] [data-share-link]")) {
+		shareButton.addEventListener("click", async () => {
+			const label = shareButton.querySelector("[data-share-label]") ?? shareButton;
+			const share = navigatorLike?.share;
+			const writeText = navigatorLike?.clipboard?.writeText;
+			try {
+				if (typeof share === "function") {
+					await share.call(navigatorLike, { url: SITE_URL });
+				} else if (typeof writeText === "function") {
+					await writeText.call(navigatorLike.clipboard, SITE_URL);
+				} else {
+					return;
+				}
+			} catch {
+				return;
+			}
+			label.textContent = "Link copied";
+		});
+	}
+}
+
 function appendFallbackLink(list) {
 	const link = document.createElement("a");
 	link.href = RELEASES_PAGE_URL;
@@ -144,7 +225,8 @@ function renderInstallerLinks(list, grouped) {
 			link.href = asset.browser_download_url;
 			link.className = "flex items-center justify-between rounded-xl border border-line bg-bg/45 px-4 py-3 text-sm text-muted transition-colors hover:border-line-strong hover:text-cream";
 			const label = document.createElement("span");
-			label.textContent = `${platformNames[platform]} · ${installerKind(asset.name)}`;
+			const badge = platformBadge(platform);
+			label.textContent = `${platformNames[platform]}${badge ? ` (${badge})` : ""} · ${installerKind(asset.name)}`;
 			const arrow = document.createElement("span");
 			arrow.className = "text-accent-bright";
 			arrow.textContent = "↓";
@@ -157,45 +239,51 @@ function renderInstallerLinks(list, grouped) {
 
 export function initDownloadControls(root = document, navigatorLike = navigator, dependencies = {}) {
 	const platform = detectPlatform(navigatorLike);
+	const badge = platformBadge(platform);
+	const label = badge ? `${platformLabels[platform]} (${badge})` : platformLabels[platform];
 	for (const control of root.querySelectorAll("[data-homun-download]")) {
 		const responsiveLabels = responsiveDownloadLabels(control);
 		if (responsiveLabels) {
 			responsiveLabels.compact.textContent = "Download";
-			responsiveLabels.full.textContent = platformLabels[platform];
+			responsiveLabels.full.textContent = label;
 		} else {
-			control.textContent = platformLabels[platform];
+			control.textContent = label;
 		}
-		wireDownloadControl(control, platform, dependencies);
+		wireDownloadControl(control, platform, root, dependencies);
 	}
 	for (const control of root.querySelectorAll("[data-download-platform]")) {
-		wireDownloadControl(control, control.dataset.downloadPlatform, dependencies);
+		wireDownloadControl(control, control.dataset.downloadPlatform, root, dependencies);
 	}
+	wireShareControls(root, navigatorLike);
 
-	const chooser = root.querySelector("[data-download-chooser]");
-	const options = root.querySelector("[data-download-options]");
-	const list = root.querySelector("[data-download-list]");
-	const status = root.querySelector("[data-download-status]");
-	if (!chooser || !options || !list || !status) return;
+	for (const chooser of root.querySelectorAll("[data-download-chooser]")) {
+		const options = scopedDownloadOptions(chooser, root);
+		if (!options) continue;
+		const list = options.querySelector?.("[data-download-list]");
+		const status = options.querySelector?.("[data-download-status]");
 
-	chooser.addEventListener("click", async () => {
-		const opening = options.hidden;
-		options.hidden = !opening;
-		chooser.setAttribute("aria-expanded", String(opening));
-		if (!opening || list.dataset.loaded === "true") return;
+		chooser.addEventListener("click", async (event) => {
+			// A link-shaped chooser keeps its href as the no-JS fallback.
+			event?.preventDefault?.();
+			const opening = options.hidden;
+			options.hidden = !opening;
+			chooser.setAttribute("aria-expanded", String(opening));
+			if (!opening || !list || !status || list.dataset.loaded === "true") return;
 
-		chooser.setAttribute("aria-busy", "true");
-		status.textContent = "Finding the latest installers…";
-		try {
-			const grouped = await loadLatestInstallers();
-			renderInstallerLinks(list, grouped);
-			list.dataset.loaded = "true";
-			status.textContent = "Choose the installer that matches your system.";
-		} catch {
-			list.replaceChildren();
-			appendFallbackLink(list);
-			status.textContent = "The installer list could not be loaded. Open all releases on GitHub.";
-		} finally {
-			chooser.removeAttribute("aria-busy");
-		}
-	});
+			chooser.setAttribute("aria-busy", "true");
+			status.textContent = "Finding the latest installers…";
+			try {
+				const grouped = await loadLatestInstallers();
+				renderInstallerLinks(list, grouped);
+				list.dataset.loaded = "true";
+				status.textContent = "Choose the installer that matches your system.";
+			} catch {
+				list.replaceChildren();
+				appendFallbackLink(list);
+				status.textContent = "The installer list could not be loaded. Open all releases on GitHub.";
+			} finally {
+				chooser.removeAttribute("aria-busy");
+			}
+		});
 	}
+}

@@ -1,15 +1,23 @@
 ---
-import "@fontsource-variable/inter";
+import "@fontsource/m-plus-rounded-1c/latin-800.css";
+import "@fontsource-variable/figtree";
+import "@fontsource/geist-mono/latin-400.css";
+import "@fontsource/geist-mono/latin-500.css";
+import "@fontsource/geist-mono/latin-600.css";
 import "../styles/global.css";
+import "../styles/scroll.css";
+import "../styles/mascot.css";
 
 interface Props {
 	title?: string;
 	description?: string;
+	noindex?: boolean;
 }
 
 const {
-	title = "Homun — Your work. Your models. Your system.",
-	description = "Homun is a model-independent AI work environment for software, research, documents and presentations, powered by compatible cloud, open-source or local models.",
+	title = "Homun — Your bot team, on your computer",
+	description = "Every Homun bot has a job, a computer of its own and a memory that stays on your machine. Open source.",
+	noindex = false,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -25,8 +33,10 @@ const ogImage = new URL("/og.png", Astro.site);
 		<link rel="canonical" href={canonical} />
 		<title>{title}</title>
 		<meta name="description" content={description} />
-		<meta name="theme-color" content="#050807" />
-		<meta name="color-scheme" content="dark" />
+		{noindex && <meta name="robots" content="noindex" />}
+		<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f9f8" />
+		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#050807" />
+		<meta name="color-scheme" content="light dark" />
 		<meta property="og:type" content="website" />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
@@ -69,11 +79,12 @@ const ogImage = new URL("/og.png", Astro.site);
 				els.forEach((el) => io.observe(el));
 			})();
 		</script>
-		<script is:inline>
+		<script>
+			import { initMascots } from "../scripts/mascot.mjs";
+
 			(() => {
 				const finePointer = window.matchMedia("(pointer: fine)");
 				const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-				if (!finePointer.matches || reducedMotion.matches) return;
 
 				const root = document.documentElement;
 				let currentX = 50;
@@ -101,17 +112,21 @@ const ogImage = new URL("/og.png", Astro.site);
 					if (!frame) frame = window.requestAnimationFrame(render);
 				};
 
-				window.addEventListener("pointermove", (event) => {
+				const trackBackground = finePointer.matches && !reducedMotion.matches;
+				initMascots(document, trackBackground ? (event: PointerEvent) => {
 					targetX = (event.clientX / window.innerWidth) * 100;
 					targetY = (event.clientY / window.innerHeight) * 100;
 					schedule();
-				}, { passive: true });
+				} : undefined);
 
-				document.documentElement.addEventListener("mouseleave", () => {
-					targetX = 50;
-					targetY = 18;
-					schedule();
-				});
+				if (trackBackground) {
+					root.addEventListener("mouseleave", () => {
+						if (reducedMotion.matches) return;
+						targetX = 50;
+						targetY = 18;
+						schedule();
+					});
+				}
 			})();
 		</script>
 		<script>

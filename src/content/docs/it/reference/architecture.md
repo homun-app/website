@@ -1,49 +1,34 @@
 ---
 title: Architettura
-description: Come i pezzi di Homun si incastrano.
+description: I pezzi di Homun 0.3 e come stanno insieme.
 ---
 
-Homun è un **gateway** più una UI web, impacchettato in due modi dallo stesso codice:
-un'app desktop (shell Electron attorno al gateway) e un container self-hosted. Le build
-desktop e server eseguono lo *stesso* gateway — cambia solo come asset ed env sono
-cablati.
+Homun 0.3 è un'app desktop. Tutto ciò che tiene in vita i tuoi bot sta sul tuo computer;
+le sole parti che vanno in rete sono i modelli e le app che scegli tu.
 
-## Il gateway
+## I pezzi
 
-Un piccolo servizio nativo (Rust + axum) che possiede tutto: chat, lo store di memoria,
-task e automazioni, provider/routing dei modelli, canali e il computer contenuto. Serve
-la UI web e l'API su una sola porta, e tiene tutto lo stato sotto `HOMUN_DATA_DIR`
-(`~/.homun` su desktop, un volume montato su un server).
+| Pezzo | Cosa fa |
+| --- | --- |
+| **L'app** | La finestra che usi: chat, squadre, app, skill, impostazioni. |
+| **Il processo in background** | Tiene in vita bot, routine e squadre quando la finestra è chiusa. È l'app stessa, firmata come l'app. Homun resta nella barra dei menu. |
+| **Il ciclo dell'agente** | Per ogni richiesta: il modello risponde, chiede strumenti, ogni chiamata passa dalle approvazioni, i risultati tornano al modello, fino a lavoro finito. |
+| **La trascrizione** | Ogni chat è una sequenza di eventi (messaggi, chiamate agli strumenti, risultati, approvazioni) salvata in un database SQLite locale. |
+| **Il computer del bot** | Un box separato per ogni bot, fatto girare da Apple container o Docker, con browser, terminale e file. |
+| **App** | Collegamenti diretti, Composio e server MCP, offerti ai bot come strumenti. |
+| **Memoria** | [Engramma](/it/docs/engramma/), un motore locale scritto in Rust, con note, fonti, storia e quarantena. |
+| **La Cassaforte** | Segreti e login cifrati; la chiave è custodita dal portachiavi di sistema. |
+| **Modelli** | Provider cloud, server locali e modello integrato, dietro un'unica interfaccia. |
+| **Aggiornamenti** | Release firmate da GitHub, con le note mostrate prima dell'installazione. |
 
-## Memoria
+## Dove gira cosa
 
-Un grafo privato in semplice SQLite + file. I fatti sono estratti dalle conversazioni,
-collegati a entità (persone, progetti, luoghi…) e consolidati nel tempo. È locale per
-impostazione predefinita; nulla lascia la macchina.
+- **Sul tuo computer**: l'app, il processo in background, le trascrizioni, la memoria, la
+  Cassaforte, la Libreria, i box dei bot, e il modello integrato se lo installi.
+- **Sui servizi che scegli**: i modelli cloud, le app collegate Tramite Composio e i
+  servizi con cui parlano le tue app.
 
-## Provider e routing dei modelli
+## Codice sorgente
 
-Configuri uno o più provider di inferenza (Ollama locale o API cloud). Ognuno ha un
-interruttore **abilita/disabilita** indipendente. Il router risolve un modello **per
-ruolo** (un binding manuale, o un match automatico per capacità) tra i provider
-*abilitati* — non c'è un singolo modello cablato.
-
-## Automazioni
-
-Una regola = **trigger → azione**. Il trigger è a tempo (una pianificazione) o a evento
-(un messaggio in arrivo, un servizio connesso). L'azione è un task agentico con tutto il
-toolset — skill, connettori, browser, memoria.
-
-## Il computer contenuto
-
-Per i task del mondo reale l'agente guida un container Docker in sandbox (un browser
-headed via CDP + una shell). Sulla build server, la sua vista dal vivo (noVNC) è
-reverse-proxata attraverso il gateway così un browser remoto può guardarla sullo stesso
-dominio TLS.
-
-## Distribuzione
-
-L'app desktop si auto-aggiorna da un feed di release pubblico (build firmate +
-notarizzate); il sorgente resta privato. L'immagine server si ri-builda a ogni modifica e
-si aggiorna via un webhook di redeploy del PaaS. Vedi
-[Self-hosting](/it/guides/self-hosting/).
+Homun è open source con [licenza Apache-2.0](/it/license/). Il codice è su
+[GitHub](https://github.com/homun-app).

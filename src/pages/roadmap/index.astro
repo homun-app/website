@@ -1,4 +1,5 @@
 ---
+import UpdateNotice from "../../components/UpdateNotice.astro";
 import Page from "../../layouts/Page.astro";
 import RoadmapDirections from "../../components/roadmap/RoadmapDirections.astro";
 import RoadmapEvidence from "../../components/roadmap/RoadmapEvidence.astro";
@@ -31,6 +32,7 @@ if (!voice || !developerPlatform || !latestRelease) throw new Error("Roadmap evi
 ---
 
 <Page title="Roadmap — Homun" description="How Homun is becoming an operational process system for small companies and teams.">
+	<UpdateNotice />
 	<RoadmapVisionHero synced={synced} />
 	<section class="pb-20 pt-4">
 		<div class="mx-auto max-w-6xl px-5"><RoadmapNow operational={operational} flow={flow} /></div>

@@ -2,127 +2,176 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const html = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
-const text = html.replace(/<[^>]+>/g, " ").replace(/&#39;/g, "'").replace(/\s+/g, " ");
-const roadmap = JSON.parse(
-	await readFile(new URL("../src/data/roadmap.json", import.meta.url), "utf8"),
-);
+const text = html
+	.replace(/<[^>]+>/g, " ")
+	.replace(/&#39;/g, "'")
+	.replace(/&quot;/g, '"')
+	.replace(/\s+/g, " ");
 
-for (const required of [
+function section(id) {
+	const match = html.match(new RegExp(`<section\\b(?=[^>]*\\bid="${id}")[^>]*>`));
+	assert.ok(match, `homepage is missing section#${id}`);
+	const tags = /<\/?section\b[^>]*>/g;
+	tags.lastIndex = match.index + match[0].length;
+	let depth = 1;
+	for (let tag; (tag = tags.exec(html));) {
+		depth += tag[0].startsWith("</") ? -1 : 1;
+		if (depth === 0) return html.slice(match.index, tags.lastIndex);
+	}
+	assert.fail(`section#${id} is not closed`);
+}
+
+const hero = section("hero");
+const mascot = hero.match(/<svg\b[^>]*\bdata-mascot(?=[\s>])[^>]*>/)?.[0];
+assert.match(mascot ?? "", /class="[^"]*\bis-waking\b/, "hero must show the waking mascot");
+
+const heading = hero.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1]
+	?.replace(/<[^>]+>/g, " ")
+	.replace(/\s+/g, " ").trim();
+assert.equal(heading, "Your bot team. On your computer.");
+assert.match(hero, /<a\b[^>]*\bdata-homun-download(?=[\s>])/, "hero needs a download link");
+
+const platforms = hero.match(/<div\b[^>]*\bdata-hero-platforms(?=[\s>])[^>]*>([\s\S]*?)<\/div>/)?.[1];
+assert.ok(platforms, "hero needs a platform row");
+assert.equal((platforms.replace(/<[^>]+>/g, " ").match(/\bbeta\b/gi) ?? []).length, 2);
+
+const showcase = section("showcase");
+const windowStart = showcase.search(/<div\b[^>]*\bdata-app-window(?=[\s>])/);
+assert.ok(windowStart >= 0, "showcase needs the full app window");
+const tags = /<\/?div\b[^>]*>/g;
+tags.lastIndex = windowStart;
+let depth = 0;
+for (let tag; (tag = tags.exec(showcase));) {
+	depth += tag[0].startsWith("</") ? -1 : 1;
+	if (depth === 0) break;
+}
+assert.ok(tags.lastIndex > windowStart, "app window must be closed");
+const app = showcase.slice(windowStart, tags.lastIndex);
+assert.ok((app.match(/<div\b[^>]*\bdata-bot-row(?=[\s>])/g) ?? []).length >= 4, "app needs at least four bot rows");
+assert.match(app, /<div\b[^>]*\bdata-team-row(?=[\s>])/, "app needs a team row");
+assert.match(app, /<div\b[^>]*\bdata-card="draft"/, "app needs a draft card");
+
+const [drafts, apps, skills, computer, approvals] = [
+	"drafts", "apps", "skills", "computer", "approvals",
+].map(section);
+let previous = showcase;
+for (const current of [drafts, apps, skills, computer, approvals]) {
+	assert.ok(html.indexOf(current) >= html.indexOf(previous) + previous.length,
+		"feature sections must follow the showcase in plan order");
+	previous = current;
+}
+
+assert.equal((drafts.match(/data-card="draft"/g) ?? []).length, 2);
+assert.match(drafts, /draft — sent only if you confirm/);
+
+const tiles = apps.split(/<div\b[^>]*\bdata-app-tile(?=[\s>])/).slice(1)
+	.map((tile) => tile.split("</div>", 1)[0]);
+assert.ok(tiles.length >= 8, "apps needs at least eight app tiles");
+assert.match(apps, /Composio/);
+assert.match(apps, /MCP/);
+assert.ok(tiles.some((tile) => tile.includes("work · personal")), "one tile must show both Gmail accounts");
+
+assert.match(skills, /data-card="skill"[^>]*>[\s\S]*?Save skill/);
+assert.match(computer, /data-computer-screen(?=[\s>])[^>]*>[\s\S]*?Take over/);
+const approvalActions = [...approvals.matchAll(/data-pill(?=[\s>])[^>]*>\s*([^<]+?)\s*<\/span>/g)]
+	.map((match) => match[1]);
+assert.deepEqual(approvalActions, ["Allow", "For this turn", "Always allow", "Deny"]);
+
+const [teams, routines, models, memory] = ["teams", "routines", "models", "memory"].map(section);
+for (const current of [teams, routines, models, memory]) {
+	assert.ok(html.indexOf(current) >= html.indexOf(previous) + previous.length,
+		"teams, routines, models and memory must follow approvals in plan order");
+	previous = current;
+}
+
+const members = [...teams.matchAll(/<li\b[^>]*\bdata-team-member="(bot|user)"[^>]*>([\s\S]*?)<\/li>/g)];
+assert.deepEqual(members.map((member) => member[1]), ["bot", "bot", "bot", "user"]);
+for (const [, kind, member] of members) {
+	if (kind === "bot") assert.match(member, /data-bot-avatar="/);
+	else assert.match(member, />\s*You\s*</);
+}
+assert.equal((teams.match(/data-from="member"/g) ?? []).length, 3);
+
+assert.match(routines, /data-card="routine"[^>]*>[\s\S]*?data-pill(?=[\s>])[^>]*>\s*Activate\s*<\/span>/);
+
+for (const provider of ["Ollama", "LM Studio", "Anthropic", "OpenRouter", "OpenAI-compatible"]) {
+	assert.ok(models.includes(provider), `models must show ${provider}`);
+}
+assert.ok((models.match(/data-model-location="local"[^>]*>\s*local\s*<\/span>/g) ?? []).length >= 3);
+assert.match(models, /Homun local[\s\S]*?built into Homun/);
+const botModels = [...models.matchAll(/<li\b[^>]*\bdata-bot-model(?=[\s>])[^>]*>([\s\S]*?)<\/li>/g)];
+assert.equal(botModels.length, 3);
+const modelNames = botModels.map(([, row]) => {
+	assert.match(row, /data-bot-avatar="/);
+	const model = row.match(/<em\b[^>]*>\s*([^<]+?)\s*<\/em>/)?.[1];
+	assert.ok(model, "each bot must show its model");
+	return model;
+});
+assert.equal(new Set(modelNames).size, 3);
+
+assert.match(memory, /^<section\b[^>]*\bdata-tone="band"/);
+assert.match(memory, /<svg\b[^>]*\bdata-product="engramma"/);
+assert.match(memory, /<a\b[^>]*\bhref="\/engramma"/);
+assert.match(memory, /data-memory-note(?=[\s>])[^>]*>[\s\S]*?waiting for your OK/);
+
+assert.doesNotMatch(html, /\bdata-hero-templates\b|<section\b[^>]*\bid="meet"/);
+
+// The Homun 2 homepage is retired: none of its slogans may come back, not
+// even through the default page title.
+for (const slogan of [
 	"Your work. Your models. Your system.",
 	"Independent AI workspace",
-	"An AI workspace for people who build, research and create—not just chat.",
-	"Use persistent memory, tools and automations with compatible cloud, open-source or local models, while keeping your work under your control.",
-	"No account required · Installers for macOS, Windows and Linux",
-	"Start without creating an account.",
-	"A new chat. The same understanding.",
-	"Not a transcript. Not an opaque embedding blob.",
-	"SQL · fast recall",
-	"Graph · context + why",
-	"Wiki · read + correct",
-	"Security and control",
-	"Useful memory requires ownership.",
-	"Homun makes the storage, access boundary and activity visible—so persistent context remains something you direct.",
-	"Keep knowledge local and in scope",
-	"Memory is stored locally by default and separated by user and project, so one workspace does not silently become another's context.",
-	"Grant access explicitly",
-	"Tools and connectors begin denied and operate through permissions you approve.",
-	"Inspect what happened",
-	"Homun surfaces plans, tool use and connector activity while work is in progress.",
-	"Protect secrets by design",
-	"Sensitive credentials belong behind the Vault boundary, not inside readable memory.",
-	"Retain the final say",
-	"Correct, export or remove knowledge from active recall when it no longer belongs in the system.",
-	"Cloud, open source, or local",
-	"Real work, not isolated prompts",
+	"An AI workspace for people who build",
 	"Official Homun workflow packs.",
-	"Developed and maintained by Homun",
-	"The developer platform follows after official packs prove the product contract.",
-	"Browse Projects",
-	"Submit workflow ideas through GitHub now.",
-	"Voting stays advisory and never creates a delivery commitment.",
-	"Browsing the roadmap does not require a Homun account.",
-	"Proposing ideas and voting require a GitHub account.",
 ]) {
-	assert.ok(
-		text.includes(required),
-		`Homepage is missing required message: ${required}`,
-	);
+	assert.ok(!text.includes(slogan), `homepage still contains the retired slogan: ${slogan}`);
 }
 
-assert.ok(
-	html.includes("GitHub workflow proposals · Available now"),
-	"Homepage does not identify GitHub workflow proposals as available",
-);
-
-for (const obsolete of [
-	"Exploring",
-	"Official Homun plugins. Free at launch.",
-	"Community voting and suggestions will use an optional Homun account when enabled.",
-	"Propose ideas and vote through public GitHub discussions.",
-	"GitHub voting &amp; suggestions · Available now",
-	"No Homun account is required.",
-	"Voting &amp; suggestions · Coming later",
-]) {
-	assert.ok(!html.includes(obsolete), `Homepage contains obsolete roadmap message: ${obsolete}`);
+const [uses, news, download] = ["uses", "news", "download"].map(section);
+for (const current of [uses, news, download]) {
+	assert.ok(html.indexOf(current) >= html.indexOf(previous) + previous.length,
+		"use cases, news and download must follow memory in plan order");
+	previous = current;
 }
 
-for (const status of ["available", "building", "next"]) {
-	const expectedCount = roadmap.items.filter(
-		(item) => item.itemType === "strategic_program" && item.stage === status,
-	).length;
-	const metric = html.match(
-		new RegExp(
-			`<div[^>]*data-status="${status}"[^>]*data-count="${expectedCount}"[^>]*>([\\s\\S]*?)<\\/div>`,
-		),
-	);
-	assert.ok(metric, `Homepage ${status} count is not derived from the roadmap snapshot`);
-	assert.ok(
-		metric[1].includes(String(expectedCount).padStart(2, "0")),
-		`Homepage ${status} card does not display the roadmap snapshot count`,
-	);
+const articles = [...uses.matchAll(/<article\b[^>]*>([\s\S]*?)<\/article>/g)];
+assert.equal(articles.length, 6);
+// English display names from sandbot/src/main/templates.
+const templates = [
+	"Chief of staff", "Daily briefing editor", "Executive assistant",
+	"Inbox manager", "Meeting preparation assistant", "Mention monitor",
+];
+let templateCount = 0;
+for (const [, article] of articles) {
+	const template = article.match(/Template:\s*([^<]+)/)?.[1].trim();
+	if (template) {
+		assert.ok(templates.includes(template), `Unknown template: ${template}`);
+		templateCount++;
+	} else {
+		assert.match(article, /Ask in your own words/);
+	}
 }
+assert.equal(templateCount, 3);
 
-for (const forbidden of ["Codex", "Claude Code", "any model", "every platform"]) {
-	assert.ok(
-		!text.toLowerCase().includes(forbidden.toLowerCase()),
-		`Homepage contains forbidden claim or comparison: ${forbidden}`,
-	);
+const releases = [...news.matchAll(/<article\b[^>]*data-news-version="[^"]+"[^>]*>([\s\S]*?)<\/article>/g)];
+assert.equal(releases.length, 4);
+for (const [, release] of releases) assert.match(release, /data-release-badge[^>]*>beta</);
+assert.deepEqual([...news.matchAll(/data-roadmap-lane="([^"]+)"/g)].map(([, lane]) => lane), ["Now", "Next", "Later"]);
+assert.match(download, /<svg\b[^>]*data-mascot(?=[\s>])/);
+assert.match(download, /<a\b[^>]*data-homun-download(?=[\s>])/);
+
+await import("./check-news.mjs");
+
+console.log("Homepage bot-team contract passed");
+
+const nav = html.match(/<nav\b[^>]*>[\s\S]*?<\/nav>/)?.[0] ?? "";
+assert.ok(nav.includes('href="/engramma/"') && nav.includes(">Soon<"), "Nav must link Engramma with a Soon label");
+for (const link of ["/marketplace", "#computer", "#memory"]) assert.ok(!nav.includes(link), "Unexpected nav link " + link);
+assert.match(nav, /href="\/docs\/?"/);
+assert.match(nav, /data-homun-download/);
+const footer = html.match(/<footer\b[^>]*>[\s\S]*?<\/footer>/)?.[0] ?? "";
+for (const value of ["Apache-2.0", "https://github.com/homun-app/homun-core", "Changelog", "Roadmap", 'data-product="engramma"', 'data-product="homun"']) {
+	assert.ok(footer.includes(value), "Footer needs " + value);
 }
-
-for (const href of ["/docs", "/marketplace", "/roadmap", "/guides/download/", "/#memory"]) {
-	assert.ok(html.includes(`href="${href}"`), `Homepage is missing route: ${href}`);
-}
-
-assert.ok(
-	!html.includes("bg-grid"),
-	"Homepage still renders the graph-paper background",
-);
-
-const modelsPosition = html.indexOf('id="models"');
-const memoryPosition = html.indexOf('id="memory"');
-const productPosition = html.indexOf('id="product"');
-const controlPosition = html.indexOf('id="control"');
-
-assert.ok(modelsPosition >= 0, "Homepage is missing the Models section");
-assert.ok(memoryPosition >= 0, "Homepage is missing the Memory section");
-assert.ok(productPosition >= 0, "Homepage is missing the Product section");
-assert.ok(controlPosition >= 0, "Homepage is missing the Security section");
-assert.ok(
-	modelsPosition < memoryPosition && memoryPosition < productPosition && productPosition < controlPosition,
-	"Memory must render after Models and before Product, with Security later in the story",
-);
-
-const navSource = await readFile(
-	new URL("../src/components/Nav.astro", import.meta.url),
-	"utf8",
-);
-assert.ok(
-	navSource.includes('<span class="sm:hidden" data-download-label="compact">Download</span>'),
-	"Compact navigation must use the short Download label",
-);
-assert.ok(
-	navSource.includes('<span class="hidden sm:inline" data-download-label="full">Download Homun</span>'),
-	"Navigation must restore the full Download Homun label from sm upward",
-);
-
-console.log("Homepage positioning contract passed");
+assert.doesNotMatch(footer, /Sign in|source-available|Your work · your models · your system/i);
+assert.match(html, /<title>[^<]*bot team/i);

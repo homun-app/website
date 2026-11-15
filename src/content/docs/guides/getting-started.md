@@ -1,51 +1,64 @@
 ---
 title: Getting started
-description: Install the Homun desktop app and run it for the first time.
+description: Install Homun, follow the guided setup, and meet your first bot.
 ---
 
-The fastest way to try Homun is the **desktop app**. To run it on a server instead,
-see [Self-hosting](/guides/self-hosting/).
+## Install
 
-## Install (macOS)
+1. Download Homun from the [homepage](/#download). It picks the installer for your
+   system. The [Download](/guides/download/) page lists every format.
+2. On macOS, open the `.dmg` and drag **Homun** into `Applications`. The app is signed
+   and notarized.
+3. Open Homun from `Applications`.
 
-1. Use the [adaptive homepage download](/#download), or choose an installer manually from the [latest release](https://github.com/homun-app/homun-releases/releases/latest).
-2. Open it and drag **Homun** into `Applications`.
-3. Launch it. The build is signed and notarized, so it opens without a Gatekeeper
-   warning.
+If you open Homun from somewhere else, such as the disk image or `Downloads`, it offers to
+move itself into `Applications`. Do it: from anywhere else, automatic updates cannot
+replace the app.
 
-The app bundles its own backend (a small native gateway) — there's nothing else to
-install.
+## The guided setup
 
-## First run
+The first time you open Homun, a short guide takes you from nothing to a working bot.
 
-1. **Pick a model provider.** Point Homun at a local [Ollama](https://ollama.com) or
-   a cloud provider's API. You can enable several at once; each provider has an
-   on/off switch and the router picks the right model per task.
-2. **Say hello.** Start a chat. Homun builds a private memory as you talk — what it
-   learns stays in `~/.homun` on your machine.
+1. **You.** Give your first bot a name and a look: a mascot family and a colour. This bot
+   is your point of contact: it answers you, works for you and coordinates the others.
+   You can change it later.
+2. **Model.** Choose the brain of your bots. Connect a cloud provider with an API key,
+   pick a model already running on your network (Ollama, LM Studio), or install the
+   model built into Homun. The guide tests the model right there. See
+   [Models](/guides/models/).
+3. **Computer.** Homun prepares the bot's computer, the box where bots browse and run
+   commands. On macOS 26 or later this uses Apple container and needs nothing else; on
+   older systems it uses Docker Desktop. See [The bot's computer](/guides/local-computer/).
+4. **Permissions.** Choose how much your bot may do on its own:
+   - **Ask me first**: it reads and searches by itself, and asks before it changes
+     anything;
+   - **Do what I ask**: it does on its own whatever your request needs, and still asks
+     for money, messages to new people, deletions and anything outside the request.
 
-## Make it yours
+   You can change this at any time in **Settings › Approvals**. See
+   [Approvals & safety](/guides/security/).
 
-In **Settings → Appearance** you can pick an interface surface (Cold, Ivory, Neutral,
-Sand) and a brand accent. The default accent is **teal**, but you can change it — it
-applies to the whole app instantly.
+## Your first conversation
 
-![Settings → Appearance: surface options and an accent picker with teal selected](../../../assets/screenshots/appearance.png)
-*Surface tones plus a one-click accent — teal by default, yours to change.*
+Write to your bot as you would to a person. A new bot introduces itself: it asks what it
+is for, writes its own description and starts working. A few ideas:
 
-## The local computer (optional)
+- *"Every morning, sort my inbox and draft replies to what can't wait."*
+- *"Compare the three venues on this list and tell me which one fits 40 people."*
+- *"Prepare a short brief for each of tomorrow's meetings."*
 
-For tasks that need a real browser or shell, Homun runs a **contained computer** — a
-sandboxed Docker container it controls. It needs Docker running locally
-(Docker Desktop, OrbStack, or Colima). Enable it from the sidebar bell or the
-**Computer** section in Settings; you can watch the session live in the chat.
+To make more bots, press **+** in the sidebar, or **Start from a template**: Inbox
+manager, Daily briefing editor, Meeting preparation assistant, Chief of staff, Executive
+assistant, Mention monitor.
 
 ## Updates
 
-The desktop app updates itself: when a newer version is published, the
-**Notifications** panel (the sidebar bell) shows a one-click **download + restart**.
+Installed from `Applications`, Homun checks for new versions by itself. When one is
+available it tells you, shows what changes and lets you restart now or install when you
+quit. **Settings › General** has **Check for updates** and the option to receive
+pre-release versions.
 
 ## Next
 
-- [Self-hosting](/guides/self-hosting/) — run the same app as a container you own.
-- [Architecture](/reference/architecture/) — what's under the hood.
+- [Core concepts](/concepts/): how bots, teams, apps and approvals fit together.
+- [Apps](/guides/connectors/): connect the apps your bots will use.

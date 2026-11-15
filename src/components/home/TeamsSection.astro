@@ -1,0 +1,63 @@
+---
+import FeatureSection from "./FeatureSection.astro";
+import BotAvatar from "../app/BotAvatar.astro";
+import Surface from "../app/Surface.astro";
+import Msg from "../app/Msg.astro";
+import Done from "../app/Done.astro";
+
+const members = [
+  {
+    name: "Chief of staff", family: "creature", color: "#2FA39A", state: "speaking",
+    message: "@Scout venue status? @Inbox manager the guest list is in the Library.",
+  },
+  {
+    name: "Scout", family: "robo", color: "#3F7BEA", state: "idle",
+    message: "Sala Navigli is held until Friday. Request sent, waiting for their reply.",
+  },
+  {
+    name: "Inbox manager", family: "creature", color: "#F26A2E", state: "idle",
+    message: "20 invites drafted. They're waiting for Avery's OK.",
+  },
+] as const;
+---
+
+<FeatureSection id="teams" eyebrow="Teams" layout="center" title="Bots work as a team."
+  lead="A coordinator hands out the work in a group chat. Only the summary comes to you.">
+  <div slot="visual" class="team">
+    <Surface>
+      <ul class="members" role="list">
+        {members.map(({ name, family, color, state }, i) => (
+          <li data-team-member="bot" class="play" style={{ "--i": i }}>
+            <BotAvatar family={family} color={color} state={state} size={70} />
+            <span>{name}</span>
+          </li>
+        ))}
+        <li data-team-member="user" class="play" style={{ "--i": 3 }}>
+          <span class="initials" aria-hidden="true">AK</span>
+          <span>You</span>
+        </li>
+      </ul>
+      {members.map(({ name, family, color, message }, i) => (
+        <Msg from="member" who={name} botFamily={family} botColor={color} i={i + 4}>{message}</Msg>
+      ))}
+      <Done time="11:40" i={7}>Chief of staff sent the summary to your chat</Done>
+    </Surface>
+  </div>
+</FeatureSection>
+
+<style>
+  .team { max-width: 640px; margin-inline: auto; }
+  .members {
+    --member-size: clamp(48px, 7vw, 70px);
+    display: flex;
+    justify-content: center;
+    gap: clamp(10px, 3vw, 28px);
+    margin: 0 0 6px;
+    padding: 0;
+    list-style: none;
+    text-align: center;
+  }
+  .members li { display: grid; align-content: start; justify-items: center; gap: 6px; font-size: 12.5px; color: var(--a-mfg); }
+  .members :global([data-bot-avatar]), .initials { width: var(--member-size); height: var(--member-size); }
+  .initials { display: grid; place-items: center; border-radius: 50%; background: var(--a-muted); color: var(--a-fg); font-size: 15px; font-weight: 600; }
+</style>

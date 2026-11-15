@@ -1,0 +1,26 @@
+---
+interface Props {
+  name: string;
+  logo: string;
+  color: string;
+  status: string;
+  ok?: boolean;
+  i?: number;
+}
+
+const { name, logo, color, status, ok, i } = Astro.props;
+---
+
+<div class:list={["app-tile", { play: i !== undefined }]} style={{ "--logo-color": color, "--i": i }} data-app-tile>
+  <span class="logo" aria-hidden="true">{logo}</span>
+  <b>{name}</b>
+  <small class:list={{ ok }}>{status}</small>
+</div>
+
+<style>
+  .app-tile { background: var(--a-card); border-radius: 12px; padding: 10px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 10px; align-items: center; min-width: 0; }
+  .logo { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; grid-row: span 2; color: #fff; background: var(--logo-color); font-size: 13px; font-weight: 700; }
+  b { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  small { font-size: 11px; color: var(--a-mfg); }
+  small.ok { color: color-mix(in srgb, var(--ok) 72%, var(--a-fg)); font-weight: 600; }
+</style>

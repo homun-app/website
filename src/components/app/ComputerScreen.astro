@@ -1,0 +1,50 @@
+---
+import BotAvatar from "./BotAvatar.astro";
+import type { ComponentProps } from "astro/types";
+
+interface Props {
+  url?: string;
+  bot?: Pick<ComponentProps<typeof BotAvatar>, "family" | "color" | "state"> & { name: string };
+  state?: "On" | "Off";
+  i?: number;
+  class?: string;
+}
+
+const { url, bot, state = "Off", i, class: className } = Astro.props;
+---
+
+<div class:list={["pc", className, { play: i !== undefined }]} style={{ "--i": i }} data-computer-screen data-power={state}>
+  <div class="screen">
+    {state === "On" && (
+      <div class="browser">
+        {url && <div class="url"><span aria-hidden="true">● ● ●</span>{url}</div>}
+        <div class="content"><slot /></div>
+        <span class="cursor cursor-move" aria-hidden="true"></span>
+        <span class="takeover">Take over</span>
+      </div>
+    )}
+  </div>
+  <div class="meta">
+    {bot && <BotAvatar family={bot.family} color={bot.color} state={bot.state} size={26} />}
+    <span>{bot ? `${bot.name}'s computer` : "Computer"}</span>
+    <em>{state}</em>
+  </div>
+</div>
+
+<style>
+  .pc { width: 100%; min-width: 0; border-radius: 22px; overflow: hidden; background: var(--a-muted); color: var(--a-fg); font: 14px/1.45 var(--body); box-shadow: 0 30px 80px -34px rgb(10 20 18 / .45), 0 0 0 1px var(--a-line); }
+  .screen { aspect-ratio: 16 / 10; background: #222; position: relative; overflow: hidden; }
+  [data-power="Off"] .screen { aspect-ratio: 16 / 9; background: var(--screen); }
+  [data-power="Off"] { border-radius: 14px; box-shadow: none; }
+  .browser { position: absolute; inset: clamp(8px, 1.6vw, 16px); border-radius: 8px; background: #fff; color: #222; overflow: hidden; font-size: clamp(11px, 1.3vw, 14px); display: flex; flex-direction: column; }
+  .content { min-height: 0; overflow: auto; }
+  .url { background: #eee; padding: 6px 12px; font: .8em/1.45 var(--mono); color: #555; display: flex; gap: 8px; overflow-wrap: anywhere; }
+  .url span { color: #896e61; letter-spacing: -1px; white-space: nowrap; }
+  .cursor { position: absolute; width: 16px; height: 16px; border-radius: 50%; background: rgb(242 106 46 / .9); box-shadow: 0 0 0 7px rgb(242 106 46 / .22); left: 78%; top: 30%; pointer-events: none; }
+  .takeover { position: absolute; right: 14px; bottom: 12px; background: rgb(20 20 20 / .75); color: #fff; font-size: 12px; padding: 6px 12px; border-radius: 999px; pointer-events: none; }
+  .meta { display: flex; align-items: center; gap: 8px; padding: 12px 16px; font-size: 15px; font-weight: 500; }
+  [data-power="Off"] .meta { padding: 9px 12px; font-size: 13.5px; }
+  .meta em { margin-left: auto; font-style: normal; font-size: 12px; color: var(--a-mfg); display: flex; align-items: center; gap: 5px; }
+  .meta em::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #9a968e; }
+  [data-power="On"] em::before { background: var(--ok); }
+</style>

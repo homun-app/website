@@ -1,50 +1,46 @@
 ---
 title: Download
-description: Ottieni l'app desktop Homun per macOS, Windows o Linux — oppure ospitala tu.
+description: Scarica Homun per macOS, o prova la beta per Windows e Linux.
 ---
 
-Homun è distribuito come app desktop per macOS, Windows e Linux. La homepage riconosce
-il sistema operativo e seleziona automaticamente l'installer più recente. Puoi anche
-scegliere un'altra piattaforma o consultare manualmente
-[l'ultima release](https://github.com/homun-app/homun-releases/releases/latest).
-Preferisci un server? [Ospitalo tu](/it/guides/self-hosting/).
+La [homepage](/#download) riconosce il tuo sistema e ti offre l'installer giusto. Puoi
+anche scegliere un file dall'[ultima release](https://github.com/homun-app/homun-releases/releases/latest).
 
 ## macOS
 
-Il feed pubblico contiene attualmente un `.dmg` firmato e notarizzato per Apple Silicon.
+Scarica il `.dmg`, aprilo e trascina **Homun** in `Applicazioni`. L'app è firmata e
+notarizzata, quindi si apre senza avvisi.
 
-1. Usa il [download automatico nella homepage](/#download), oppure scarica l'ultimo
-   `.dmg` dalla [pagina della release](https://github.com/homun-app/homun-releases/releases/latest).
-2. Aprilo e trascina **Homun** in `Applicazioni`.
-3. Avvialo — la build è **firmata e notarizzata**, quindi si apre senza l'avviso di
-   Gatekeeper.
+Per il [computer del bot](/it/guides/local-computer/):
 
-L'app include il proprio backend e **si aggiorna da sola**: quando esce una nuova
-versione, il pannello Notifiche (la campanella nel menù laterale) offre uno scarica +
-riavvia a un clic.
+- su **macOS 26 o successivo con chip Apple**, Homun usa Apple container e non serve
+  altro;
+- sulle versioni precedenti, installa [Docker Desktop](https://www.docker.com/products/docker-desktop/).
 
-## Windows
+## Windows (beta)
 
-Scarica il `.exe` pubblico dalla [homepage](/#download) o
-[dall'ultima release](https://github.com/homun-app/homun-releases/releases/latest).
-Windows potrebbe mostrare un avviso SmartScreen finché la firma del codice non è
-confermata per la build selezionata.
+Scarica l'installer `.exe`. Le versioni per Windows e Linux sono in **beta**: alcune parti
+possono funzionare in modo diverso da macOS. La prima volta Windows può mostrare un avviso
+di SmartScreen.
 
-## Linux
+## Linux (beta)
 
-Il feed pubblico offre due formati:
+Due formati:
 
-- `.AppImage` — portabile tra le distribuzioni; rendilo eseguibile con
-  `chmod +x Homun-*.AppImage` prima di avviarlo.
-- `.deb` — si installa su Debian, Ubuntu e distribuzioni compatibili.
+- `.AppImage`: funziona sulla maggior parte delle distribuzioni. Rendilo eseguibile con
+  `chmod +x Homun-*.AppImage`, poi aprilo.
+- `.deb`: si installa su Debian, Ubuntu e distribuzioni compatibili.
 
-Scegli il formato dal [selettore di download nella homepage](/#download) o
-[dall'ultima release](https://github.com/homun-app/homun-releases/releases/latest).
+## Requisiti
 
-## Requisiti di sistema
+- Un [modello](/it/guides/models/): una chiave API di un provider cloud, un modello sulla
+  tua rete, o spazio per il modello integrato (circa 2,7 GB su disco, consigliati 16 GB di
+  memoria).
+- Spazio su disco per il computer del bot. **Impostazioni › Generali › Spazio su disco**
+  mostra quanto occupa.
 
-- **Disco/RAM** per un modello locale dipendono dalla scelta del
-  [provider](/it/guides/models/) — [Ollama](https://ollama.com) locale ha bisogno di
-  spazio per il modello; i provider cloud quasi nessuno.
-- **Docker** (Docker Desktop, OrbStack o Colima) è opzionale, solo per il
-  [computer contenuto](/it/guides/local-computer/).
+## Aggiornamenti
+
+Homun si aggiorna da solo quando è installato in `Applicazioni`: ti dice quando c'è una
+versione nuova, mostra cosa cambia e ti lascia riavviare subito o installare alla
+chiusura.

@@ -1,0 +1,55 @@
+---
+import FeatureSection from "./FeatureSection.astro";
+import ProductSymbol from "../brand/ProductSymbol.astro";
+import Surface from "../app/Surface.astro";
+import Msg from "../app/Msg.astro";
+
+const notes = [
+  { text: "Acme only signs annual contracts.", source: "from you · Tue 11 Nov · stated", state: "matched" },
+  { text: "The office moved to Milano.", source: "valid since Sep 2026 · replaces “Torino”", state: "saved" },
+  { text: "Acme's CFO is leaving in March.", source: "from a website · waiting for your OK", state: "pending" },
+];
+---
+
+<FeatureSection id="memory" eyebrow="Memory by Engramma" tone="band" title="It remembers. And says where from."
+  lead="What one bot learns, the team knows. Every memory is a note on your computer, with its source and the date it was true.">
+  <span slot="eyebrow-icon" class="symbol" aria-hidden="true"><ProductSymbol product="engramma" size={26} /></span>
+  <p slot="after-lead" class="more"><a href="/engramma">Meet Engramma →</a></p>
+  <div slot="visual" class="memory">
+    <Surface bot={{ name: "Account manager", family: "jelly", color: "#E9418A", state: "speaking" }}>
+      <Msg from="me" i={0}>Draft the Acme renewal. 24 months, 8% off.</Msg>
+      <Msg from="bot" i={1}>Careful: Acme only signs annual contracts. You told me on Tuesday, after the call with their CFO. I drafted 12 months with 8% off.</Msg>
+      <ul class="notes" role="list">
+        {notes.map(({ text, source, state }, i) => (
+          <li class:list={["play", state]} style={{ "--i": i + 2 }} data-memory-note>
+            {text}
+            <small>{source}</small>
+          </li>
+        ))}
+      </ul>
+    </Surface>
+  </div>
+</FeatureSection>
+
+<style>
+  .symbol { display: inline-flex; }
+  .more { margin: 0; }
+  .more a { color: #8EA3F2; font-weight: 600; }
+  .memory :global([data-surface]) { background: #141B19; color: var(--band-fg); box-shadow: 0 0 0 1px #24302D; }
+  .memory :global(.bar b) { color: var(--band-muted); }
+  .memory :global([data-from="bot"]) { background: #222B29; color: var(--band-fg); }
+  .memory :global([data-from="me"]) { background: var(--band-fg); color: var(--band); }
+  .notes { display: grid; gap: 8px; list-style: none; margin: 0; padding: 0; }
+  .notes li {
+    display: grid;
+    gap: 4px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: var(--band-card);
+    color: var(--band-fg);
+    font-size: 15px;
+  }
+  .notes small { font: 11px/1.45 var(--mono); color: var(--band-muted); }
+  .notes .matched { box-shadow: 0 0 0 2px #8EA3F2; }
+  .notes .pending small { color: #F2C46B; }
+</style>

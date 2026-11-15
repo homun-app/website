@@ -1,0 +1,65 @@
+---
+import Page from "../layouts/Page.astro";
+import ProductSymbol from "../components/brand/ProductSymbol.astro";
+import EngrammaMark from "../components/brand/EngrammaMark.astro";
+import FeatureSection from "../components/home/FeatureSection.astro";
+import DownloadButton from "../components/home/DownloadButton.astro";
+import Surface from "../components/app/Surface.astro";
+import Msg from "../components/app/Msg.astro";
+import MemoryNote from "../components/engramma/MemoryNote.astro";
+---
+
+<Page title="Engramma · Memory for assistants" description="Readable notes with sources and dates. Inside Homun today.">
+	<section id="hero" aria-labelledby="engramma-title">
+		<ProductSymbol product="engramma" size={190} />
+		<h1 id="engramma-title"><EngrammaMark /></h1>
+		<p class="signature">a homun product</p>
+		<p class="status">Inside Homun today · coming to other AI apps</p>
+		<p class="hero-lead">Memory your assistant can search and you can read.</p>
+		<DownloadButton source="engramma" closing />
+	</section>
+
+	<FeatureSection id="remembers" eyebrow="Remembers" title="Find the detail you told it." lead="Engramma keeps what an assistant learns in readable notes. Search can find a note even when you ask in different words.">
+		<Surface slot="visual" title="Memory search">
+			<Msg from="me" i={0}>What length of contract does Acme accept?</Msg>
+			<MemoryNote detail="Source: you · Stated" i={1}>Acme only signs annual contracts.</MemoryNote>
+		</Surface>
+	</FeatureSection>
+	<FeatureSection id="time" layout="flip" eyebrow="Time" title="Ask what was true then." lead="When a fact changes, the earlier version stays in the history. You can search for what was true on a particular date.">
+		<Surface slot="visual" title="Office location">
+			<MemoryNote detail="Valid from September 2026" i={0}>The office is in Milano.</MemoryNote>
+			<MemoryNote detail="Valid until September 2026 · Superseded" i={1}>The office was in Torino.</MemoryNote>
+		</Surface>
+	</FeatureSection>
+	<FeatureSection id="sources" eyebrow="Sources" title="See where an answer came from." lead="Notes record their source and confidence. Search results explain why each note matched.">
+		<Surface slot="visual" title="Why this note matched">
+			<MemoryNote detail="Source: you · Confidence: stated" i={0}>Acme only signs annual contracts.</MemoryNote>
+			<Msg from="bot" i={1}>Matched the note about Acme’s contract terms.</Msg>
+		</Surface>
+	</FeatureSection>
+	<FeatureSection id="quarantine" layout="flip" tone="band" eyebrow="Quarantine" title="Unconfirmed claims wait for you." lead="Information taken or inferred from third parties stays out of search results until a person confirms it.">
+		<Surface slot="visual" title="Quarantined note">
+			<MemoryNote detail="Source: website · Waiting for your confirmation" i={0} pending>Acme’s CFO is leaving in March.</MemoryNote>
+		</Surface>
+	</FeatureSection>
+	<FeatureSection id="local" eyebrow="Local" title="The notes live on your computer." lead="Each memory space is stored in a local file. The memory engine works without a server.">
+		<Surface slot="visual" title="Memory spaces">
+			<MemoryNote detail="Local memory space" i={0}>Work</MemoryNote>
+			<MemoryNote detail="Local memory space" i={1}>Personal</MemoryNote>
+		</Surface>
+	</FeatureSection>
+	<FeatureSection id="developers" layout="flip" eyebrow="For developers" title="An embedded memory engine." lead="Engramma is an open-source Rust engine. It stores one SQLite file per cell and exposes read-only MCP access to the cells you choose.">
+		<Surface slot="visual" title="Read-only MCP">
+			<MemoryNote detail="Returns source and a match explanation" i={0}><code>memory_search</code></MemoryNote>
+			<MemoryNote detail="Retrieves a note from an exposed cell" i={1}><code>memory_get</code></MemoryNote>
+		</Surface>
+	</FeatureSection>
+</Page>
+
+<style>
+	#hero { display: grid; justify-items: center; gap: 16px; padding: clamp(48px, 9vh, 100px) 16px 32px; text-align: center; }
+	h1 { display: grid; justify-items: center; width: 100%; }
+	.signature, .status { font: .78rem/1.6 var(--mono); color: var(--muted); }
+	.status { background: var(--surface); border-radius: 16px; padding: 5px 12px; }
+	.hero-lead { font-size: clamp(1.05rem, 2vw, 1.25rem); max-width: 36ch; }
+</style>

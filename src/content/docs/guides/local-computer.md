@@ -1,60 +1,44 @@
 ---
-title: The local computer
-description: A sandboxed Docker computer — a real browser and shell the agent drives, and you watch live.
+title: The bot's computer
+description: The contained box where each bot browses, runs commands and keeps its files, and how to take over its screen.
 ---
 
-For tasks that need to *do* things — open a site, fill a form, run a command — Homun
-drives a **contained computer**: a sandboxed Docker container with a real headed
-browser and a shell. It's isolated from your host, and you can watch it work.
+Every bot works on **a computer of its own**: a contained box, separate from your system,
+with a browser, a terminal and a folder of files. The bot can do real work there, such as
+filling in a form on a site that has no app, without touching your files.
 
-![The Local computer panel: a live noVNC browser view, Docker container status, memory usage and an artifacts section](../../../assets/screenshots/local-computer.png)
-*The contained computer: a real browser streamed live over noVNC, running in a Docker container you can stop anytime.*
+## What you can see
 
-## What's inside
+Open the bot's computer from the chat to see four views:
 
-- A **real browser**, driven over CDP (Chrome DevTools Protocol).
-- A **shell + toolchain**, used to run [skills](/guides/skills/) and commands.
-- A **live view** (noVNC) streamed into the chat.
+- **Screen**: the browser, live;
+- **Terminal**: the commands the bot runs;
+- **Files**: what the bot saved in its box;
+- **Activity**: what it did, step by step.
 
-## Watch and take over
+The **Computer** card in the chat tells you its state: **On** while the bot works, with
+what it is doing (never the text of the commands), **Waiting** when it is ready,
+**Starting** while it boots, **Off** when it is stopped.
 
-The session appears as an inline [activity card](/guides/chat/): a timeline with
-progress, previews, and controls. You can **watch it live** and **take over** when you
-want to steer manually — the agent operates under approvals, not unattended.
+## Taking over
 
-## Challenges and captchas
+Some steps are yours, such as signing in to a site. The bot shows a **Screen takeover**
+card: open the screen, sign in, then press **I'm done**. Your password does not pass
+through the bot.
 
-The agent handles simple human-verification challenges itself — a **press-and-hold**
-("tieni premuto") button, a checkbox, a slider — by driving the real pointer the way a
-person would.
+## The engine
 
-For anything harder (image grids, login walls) it doesn't guess: it **hands off to
-you**. The task pauses, you solve the challenge in the live view, and it resumes. And
-because a task you launched while away must never hang, the handoff **times out**
-(default 180s, override with `HOMUN_BROWSER_HANDOFF_TIMEOUT_SECS`): past the deadline
-the task gives up gracefully with a clear reason instead of waiting forever.
+The box needs an engine. **Settings › General › Engine** shows which one runs it:
 
-## Harder to detect
+- **Apple container**: on macOS 26 or later with an Apple chip. Homun installs Apple's
+  signed package (macOS asks for your password) and nothing else is needed.
+- **Docker**: on other systems, or if you prefer it. Docker Desktop must be installed
+  and open.
 
-The browser is a **real, headed Chrome** — not old-style headless — with a
-**persistent profile**, so its cookies and logins survive between runs. Sites see a
-returning person rather than a fresh bot, which means captchas show up far less often.
-Homun also drives it through a hardened automation layer that avoids the usual
-"controlled by automated software" fingerprints. There's no perfect invisibility
-(your IP reputation still matters), but day to day you'll hit far fewer walls.
+**Automatic** chooses for you. You can uninstall Apple's tool from the same section.
 
-## Requirements
+## Disk space
 
-- **Desktop:** a local Docker engine (Docker Desktop, OrbStack, or Colima). Enable it
-  from the sidebar bell or **Settings → Computer**.
-- **Server:** mount the host Docker socket; the gateway builds and runs the sibling
-  container, and reverse-proxies the live view through its own TLS origin — no exposed
-  VNC port. Without the socket the feature stays off and the rest of the app works.
-
-See [Self-hosting](/guides/self-hosting/) for the server-side setup.
-
-## Contained by design
-
-Running in a sandbox is a [security](/guides/security/) choice: the agent's
-real-world actions happen in a container with deny-by-default permissions, not on your
-machine directly.
+**Settings › General › Disk space** shows how much the box image and the bots' files
+take, and lets you free space. Removing the image is safe: it is rebuilt when needed.
+Deleting the bots' files cannot be undone, and Homun asks you to confirm.
