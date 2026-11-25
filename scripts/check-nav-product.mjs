@@ -33,6 +33,24 @@ for (const { path, product, kind } of cases) {
 	assert.ok(nav.includes(`data-product="${product}"`), `${path}: the jelly must be ${product}'s`);
 	assert.ok(nav.includes(`>${product}<`) || nav.includes(`>${product}</span>`), `${path}: the wordmark must say “${product}”`);
 
+	// The mark leads to its own product's home: Engramma's jelly to /engramma/,
+	// Homun's to /. Same rule in the docs header.
+	const markHref = product === "engramma" ? "/engramma/" : "/";
+	const markClass = kind === "marketing" ? "nav-mark" : "site-title";
+	const mark = nav.match(new RegExp(`<a href="(${markHref === "/" ? "\\/" : markHref.replaceAll("/", "\\/")})" class="${markClass}`));
+	assert.ok(mark, `${path}: the ${markClass} must lead to ${markHref}`);
+
+	// The docs carry their product's name in the tab: «| Engramma» on Engramma's
+	// pages, «| Homun» on the others. The index page is «Engramma» alone.
+	if (kind === "docs") {
+		const title = html.match(/<title>([^<]*)<\/title>/)?.[1] ?? "";
+		const suffix = product === "engramma" ? "| Engramma" : "| Homun";
+		assert.ok(
+			title === (product === "engramma" ? "Engramma" : title) && (title.endsWith(suffix) || title === "Engramma"),
+			`${path}: the tab title must carry “${suffix}” (found “${title}”)`,
+		);
+	}
+
 	if (product === "engramma") {
 		assert.ok(nav.includes('href="/engramma/#install"'), `${path}: the button must install Engramma`);
 		assert.ok(/Install Engramma/.test(nav), `${path}: the button must say “Install Engramma”`);

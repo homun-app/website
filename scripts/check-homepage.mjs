@@ -46,7 +46,10 @@ assert.equal(heading, "Your bot team. On your computer.");
 assert.match(hero, /<a\b[^>]*\bdata-homun-download(?=[\s>])/, "hero needs a download link");
 const platforms = hero.match(/<div\b[^>]*\bdata-hero-platforms(?=[\s>])[^>]*>([\s\S]*?)<\/div>/)?.[1];
 assert.ok(platforms, "hero needs a platform row");
-assert.equal((platforms.replace(/<[^>]+>/g, " ").match(/\bbeta\b/gi) ?? []).length, 2);
+const platformText = platforms.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+assert.equal((platformText.match(/\bbeta\b/gi) ?? []).length, 1, "only the platform the offer ships is the beta");
+assert.equal((platformText.match(/\bsoon\b/gi) ?? []).length, 2, "the platforms the offer does not cover say «soon»");
+assert.match(platformText, /Apple Silicon/, "the chip says which Macs the installer fits");
 for (const chip of ["Gmail", "Calendar", "Slack", "Notion", "GitHub", "Anthropic", "OpenAI", "Ollama"]) {
 	assert.ok(hero.includes(`>${chip}<`), `hero must list ${chip} in the works-with row`);
 }

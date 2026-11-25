@@ -10,16 +10,17 @@ tuo computer.
 
 ## Com'è fatto un ricordo
 
-Ogni ricordo è una breve nota con la sua **fonte** e la sua **data**. Quando un bot usa un
-ricordo, puoi vedere da dove viene. Quando qualcosa cambia, la versione vecchia resta
-nella storia invece di essere sovrascritta.
+Ogni ricordo è una breve nota con la sua **fonte** e la sua **data**; apri una nota per
+vedere da dove viene. Quando qualcosa cambia, la versione vecchia resta nella storia
+invece di essere sovrascritta.
 
 I ricordi appartengono a un bot, oppure sono **condivisi** da tutti i bot.
 
 ## Aprire la memoria di un bot
 
-Nel pannello del bot apri **Memoria**. Puoi cercare, filtrare tra i ricordi del bot e
-quelli condivisi, e vedere quali sono attivi, in attesa di conferma o eliminati.
+Nelle impostazioni del bot apri **Memoria**: si apre sulla chat. Puoi cercare, scegliere
+tra le note di **questo bot** e quelle **condivise**, e vedere quali ricordi sono attivi,
+in attesa di conferma o eliminati.
 
 ## In attesa di conferma
 
@@ -29,7 +30,8 @@ piantare un ricordo da sola.
 
 ## Correggere e dimenticare
 
-Se elimini un ricordo, passa tra gli eliminati. Da lì puoi dimenticarlo per sempre.
+Se elimini un ricordo, passa tra gli eliminati, da dove puoi ripristinarlo o dimenticarlo
+per sempre.
 
 ## Ricerca migliore
 

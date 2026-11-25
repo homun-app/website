@@ -345,8 +345,7 @@ assertNotice(
 		"anonymous session hash",
 		"IP address itself is not stored",
 		"Query parameters and URL fragments are excluded",
-		"account data",
-		"workspace content",
+		"conversations",
 		"prompts",
 		"files",
 		"personal names",
@@ -378,7 +377,7 @@ assertSectionIncludes(
 	"English",
 	englishPrivacy,
 	"what-is-excluded",
-	"Website analytics do not collect Homun account data, workspace content, prompts, files, personal names, email addresses, advertising identifiers, custom distinct IDs, or session replay data.",
+	"Website analytics do not collect data from the Homun desktop app — conversations, prompts, or files — nor personal names, email addresses, advertising identifiers, custom distinct IDs, or session replay data.",
 );
 
 const italianPrivacy = await read("it/privacy/index.html");
@@ -416,8 +415,8 @@ assertNotice(
 		"indirizzo IP",
 		"non viene conservato",
 		"Parametri di query e frammenti URL sono esclusi",
-		"dati dell’account Homun",
-		"contenuti degli spazi di lavoro",
+		"dati dall’app desktop Homun",
+		"conversazioni",
 		"prompt",
 		"file",
 		"nomi personali",
@@ -449,7 +448,7 @@ assertSectionIncludes(
 	"Italian",
 	italianPrivacy,
 	"cosa-è-escluso",
-	"Le analisi del sito non raccolgono dati dell’account Homun, contenuti degli spazi di lavoro, prompt, file, nomi personali, indirizzi email, identificatori pubblicitari, ID distinti personalizzati o dati di session replay.",
+	"Le analisi del sito non raccolgono dati dall’app desktop Homun — conversazioni, prompt o file — né nomi personali, indirizzi email, identificatori pubblicitari, ID distinti personalizzati o dati di session replay.",
 );
 
 const expectedWebsiteIdLocations = [

@@ -3,7 +3,8 @@
 // nothing is written by hand here, and the snapshots are never edited.
 //
 //   releases.json  → the releases, stable and pre-release (the sync keeps both;
-//                    the download buttons still resolve to stable only)
+//                    the download offers the newest it can: a stable first,
+//                    the beta while no stable exists)
 //   roadmap.json   → strategic programs by stage: building → Now, next → Next,
 //                    exploring → Later; the workflow ideas are counted, not listed
 

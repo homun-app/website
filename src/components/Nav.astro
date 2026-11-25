@@ -1,17 +1,24 @@
 ---
 import ProductSymbol from "./brand/ProductSymbol.astro";
-import { RELEASES_PAGE_URL } from "../scripts/downloads.mjs";
+import { RELEASES_PAGE_URL, downloadLabel } from "../scripts/downloads.mjs";
+import { buildTimeOffer } from "../lib/download-offer.mjs";
 
 const isHome = Astro.url.pathname === "/";
 // The mark follows the product of the page: the blue jelly and "Install
-// Engramma" on Engramma's page and its docs, Homun everywhere else.
+// Engramma" on Engramma's page and its docs, Homun everywhere else. Each mark
+// leads to its own product's home.
 const path = Astro.url.pathname;
 const isEngramma = path === "/engramma" || path.startsWith("/engramma/") || path === "/docs/engramma" || path.startsWith("/docs/engramma/");
+// The full label says what the build-time offer ships; the resolver rewrites
+// it for the visitor's system once it runs.
+const offer = buildTimeOffer();
+const offeredPlatform = ["macos", "windows", "linux"].find((platform) => offer.available[platform]);
+const navDownloadLabel = offeredPlatform ? downloadLabel(offeredPlatform, offer) : "Download";
 ---
 
 <header id="site-nav" class:list={["inset-x-0 top-0 z-50", isHome ? "home-nav sticky" : "fixed"]} data-nav-product={isEngramma ? "engramma" : "homun"}>
 	<nav aria-label="Primary navigation">
-		<a href="/" class="nav-mark" data-product={isEngramma ? "engramma" : "homun"} aria-label={isEngramma ? "Engramma home" : "Homun home"}>
+		<a href={isEngramma ? "/engramma/" : "/"} class="nav-mark" data-product={isEngramma ? "engramma" : "homun"} aria-label={isEngramma ? "Engramma home" : "Homun home"}>
 			<ProductSymbol product={isEngramma ? "engramma" : "homun"} size={26} />
 			<span class="word">{isEngramma ? "engramma" : "homun"}</span>
 		</a>
@@ -25,7 +32,7 @@ const isEngramma = path === "/engramma" || path.startsWith("/engramma/") || path
 		) : (
 			<a href={RELEASES_PAGE_URL} data-homun-download data-analytics-download-source="navigation" class="download">
 				<span class="compact" data-download-label="compact">Download</span>
-				<span class="full" data-download-label="full">Download Homun</span>
+				<span class="full" data-download-label="full">{navDownloadLabel}</span>
 			</a>
 		)}
 	</nav>

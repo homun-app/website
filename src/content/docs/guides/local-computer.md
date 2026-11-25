@@ -1,44 +1,47 @@
 ---
-title: The bot's computer
-description: The contained box where each bot browses, runs commands and keeps its files, and how to take over its screen.
+title: The bots' computer
+description: The contained box where the bots browse, run commands and keep their files — one box shared by all of them — and how to take over its screen.
 ---
 
-Every bot works on **a computer of its own**: a contained box, separate from your system,
-with a browser, a terminal and a folder of files. The bot can do real work there, such as
-filling in a form on a site that has no app, without touching your files.
+The bots share **one contained computer**: a box separate from your system, with a
+browser, a terminal and files. Each bot has its own home folder inside, and a common
+workspace belongs to them all. Real work happens there — filling in a form on a site that
+has no app, for example — without touching your files.
 
 ## What you can see
 
-Open the bot's computer from the chat to see four views:
+Open the computer from the bot's panel to see four views:
 
 - **Screen**: the browser, live;
 - **Terminal**: the commands the bot runs;
-- **Files**: what the bot saved in its box;
-- **Activity**: what it did, step by step.
+- **Files**: what the bots saved in their box;
+- **Activity**: what they did, step by step.
 
-The **Computer** card in the chat tells you its state: **On** while the bot works, with
-what it is doing (never the text of the commands), **Waiting** when it is ready,
-**Starting** while it boots, **Off** when it is stopped.
+The **Computer** card in the panel tells you its state: **On** while a bot works, with
+what it is doing (never the text of the commands), **Idle** when it is ready, **Starting**
+while it boots, **Off** when it is stopped, **Preparing** while it is being set up.
 
 ## Taking over
 
-Some steps are yours, such as signing in to a site. The bot shows a **Screen takeover**
-card: open the screen, sign in, then press **I'm done**. Your password does not pass
-through the bot.
+Some steps are yours, such as signing in to a site. The bot shows a card — «{Bot} needs
+you on their screen»: open the screen, sign in, then press **I'm done**. Your password
+does not pass through the bot.
 
 ## The engine
 
-The box needs an engine. **Settings › General › Engine** shows which one runs it:
+The box needs an engine. **Settings › General › Bot computer** has **Where commands
+run** — on the bots' computer, or directly on the Mac — and the **Engine** row:
 
-- **Apple container**: on macOS 26 or later with an Apple chip. Homun installs Apple's
-  signed package (macOS asks for your password) and nothing else is needed.
-- **Docker**: on other systems, or if you prefer it. Docker Desktop must be installed
-  and open.
+- **Apple container**: on macOS 26 or later with an Apple chip. Homun downloads Apple's
+  signed tool and the Linux kernel it recommends (about 1 GB); macOS asks for your
+  password once.
+- **Docker**: on other systems, or if you prefer it. Docker must be installed and open.
 
 **Automatic** chooses for you. You can uninstall Apple's tool from the same section.
 
 ## Disk space
 
-**Settings › General › Disk space** shows how much the box image and the bots' files
-take, and lets you free space. Removing the image is safe: it is rebuilt when needed.
-Deleting the bots' files cannot be undone, and Homun asks you to confirm.
+**Settings › General › Disk space** shows how much the box image, the bots' files, the
+local model and the memory model take, and lets you free space. Removing the image stops
+the computer and asks you to confirm: the image is rebuilt when needed. Deleting the
+bots' files cannot be undone, and Homun asks you to confirm.

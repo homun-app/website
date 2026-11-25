@@ -1,5 +1,6 @@
 ---
-import { CORE_REPOSITORY_URL, RELEASES_PAGE_URL, platformBadge, platformRequirement } from "../../scripts/downloads.mjs";
+import { CORE_REPOSITORY_URL, RELEASES_PAGE_URL, downloadLabel, platformBadge, platformRequirement } from "../../scripts/downloads.mjs";
+import { buildTimeOffer } from "../../lib/download-offer.mjs";
 
 interface Props {
 	source: string;
@@ -8,11 +9,24 @@ interface Props {
 }
 
 const { source, template, closing = false } = Astro.props;
+// The chips and the badges come from the release on offer, not from a
+// hand-written list: while the beta ships an arm64 macOS .dmg only, macOS
+// says «beta · Apple Silicon» and the others say «soon».
+const offer = buildTimeOffer();
 const platformTargets = [
 	{ platform: "macos", label: "macOS" },
 	{ platform: "windows", label: "Windows" },
 	{ platform: "linux", label: "Linux" },
-];
+].map(({ platform, label }) => ({
+	platform,
+	label,
+	badge: platformBadge(platform, offer),
+	requirement: platformRequirement(platform, offer),
+}));
+// The closing button states its platform outright: the first one the offered
+// release actually ships.
+const ctaPlatform = ["macos", "windows", "linux"].find((platform) => offer.available[platform]) ?? null;
+const ctaLabel = ctaPlatform ? downloadLabel(ctaPlatform, offer) : "Get Homun";
 ---
 
 <div data-download-block class="flex w-full flex-col items-center">
@@ -24,15 +38,15 @@ const platformTargets = [
 			href={RELEASES_PAGE_URL}
 			class:list={["btn btn-primary", closing ? "closing-cta" : "w-full sm:w-auto"]}
 		>
-			{closing ? "Download for macOS" : "Download"}
+			{closing ? ctaLabel : "Download"}
 		</a>
 		{!closing && <a href={CORE_REPOSITORY_URL} class="btn btn-ghost w-full sm:w-auto">Star on GitHub</a>}
 	</div>
 
 	{closing ? (
 		<a class="platforms" href={RELEASES_PAGE_URL} data-download-chooser aria-expanded="false">
-			{platformTargets.map(({ platform, label }) => (
-				<span class="chip">{label}{platformBadge(platform) && <span class="beta"> {platformBadge(platform)}</span>}</span>
+			{platformTargets.map(({ label, badge, requirement }) => (
+				<span class="chip">{label}{badge && <span class="beta"> {badge}</span>}{requirement && <span class="arch"> {requirement}</span>}</span>
 			))}
 		</a>
 	) : (
@@ -47,10 +61,7 @@ const platformTargets = [
 		class="mt-4 w-full max-w-md rounded-2xl border border-line bg-surface/70 p-4"
 	>
 		<div class="grid gap-2">
-			{platformTargets.map(({ platform, label }) => {
-				const badge = platformBadge(platform);
-				const requirement = platformRequirement(platform);
-				return (
+			{platformTargets.map(({ platform, label, badge, requirement }) => (
 				<a
 					data-download-platform={platform}
 					href={RELEASES_PAGE_URL}
@@ -62,8 +73,7 @@ const platformTargets = [
 					</span>
 					<span class="text-accent-bright" aria-hidden="true">↓</span>
 				</a>
-				);
-			})}
+			))}
 			<button
 				data-share-link
 				type="button"
@@ -82,4 +92,5 @@ const platformTargets = [
 	.chip { border: 1px solid var(--line); border-radius: 999px; padding: .2em .75em; }
 	.platforms:hover .chip { text-decoration: underline; }
 	.beta { margin-inline-start: .3em; color: var(--teal-text); font: .66rem var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+	.arch { margin-inline-start: .3em; color: var(--muted); }
 </style>

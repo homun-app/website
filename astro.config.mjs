@@ -87,9 +87,9 @@ export default defineConfig({
 							items: [
 								{ label: 'Bots & chat', translations: { it: 'Bot e chat' }, slug: 'guides/chat' },
 								{ label: 'Teams', translations: { it: 'Squadre' }, slug: 'guides/teams' },
-								{ label: 'Apps', translations: { it: 'App' }, slug: 'guides/connectors' },
+								{ label: 'Plugins', translations: { it: 'Plugin' }, slug: 'guides/connectors' },
 								{ label: 'Skills', translations: { it: 'Skill' }, slug: 'guides/skills' },
-								{ label: "The bot's computer", translations: { it: 'Il computer del bot' }, slug: 'guides/local-computer' },
+								{ label: "The bots' computer", translations: { it: 'Il computer dei bot' }, slug: 'guides/local-computer' },
 								{ label: 'Approvals & safety', translations: { it: 'Approvazioni e sicurezza' }, slug: 'guides/security' },
 								{ label: 'Routines', translations: { it: 'Routine' }, slug: 'guides/automations' },
 								{ label: 'Memory', translations: { it: 'Memoria' }, slug: 'guides/memory' },

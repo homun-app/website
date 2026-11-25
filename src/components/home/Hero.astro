@@ -8,9 +8,24 @@ import Msg from "../app/Msg.astro";
 import Pill from "../app/Pill.astro";
 import { fetchStarCount } from "../../lib/github-stars.mjs";
 import DownloadButton from "./DownloadButton.astro";
-import { RELEASES_PAGE_URL } from "../../scripts/downloads.mjs";
+import { RELEASES_PAGE_URL, platformBadge, platformRequirement } from "../../scripts/downloads.mjs";
+import { buildTimeOffer } from "../../lib/download-offer.mjs";
 
 const stars = await fetchStarCount();
+
+// The «Runs on» chips follow the release on offer: macOS with its badge and
+// its architecture, the platforms it does not cover as «soon».
+const offer = buildTimeOffer();
+const runChips = [
+	{ platform: "macos", label: "macOS" },
+	{ platform: "windows", label: "Windows" },
+	{ platform: "linux", label: "Linux" },
+].map(({ platform, label }) => ({
+	label,
+	badge: platformBadge(platform, offer),
+	requirement: platformRequirement(platform, offer),
+}));
+const runChipsLabel = runChips.map(({ label, badge, requirement }) => [label, badge, requirement].filter(Boolean).join(" ")).join(", ");
 
 // The bots of the window are the app kit's own, with the app's colors.
 const bots = [
@@ -39,10 +54,10 @@ const worksWith = ["Gmail", "Calendar", "Slack", "Notion", "GitHub", "Anthropic"
 			</div>
 			<div class="platforms" data-hero-platforms>
 				<span class="row-label">Runs on</span>
-				<a href={RELEASES_PAGE_URL} data-download-chooser aria-expanded="false" aria-label="Choose an installer for macOS, Windows beta or Linux beta">
-					<span class="chip">macOS</span>
-					<span class="chip">Windows <i>beta</i></span>
-					<span class="chip">Linux <i>beta</i></span>
+				<a href={RELEASES_PAGE_URL} data-download-chooser aria-expanded="false" aria-label={`Choose an installer: ${runChipsLabel}`}>
+					{runChips.map(({ label, badge, requirement }) => (
+						<span class="chip">{label}{badge && <i> {badge}</i>}{requirement && <i class="arch"> {requirement}</i>}</span>
+					))}
 				</a>
 			</div>
 			<p class="row works"><span class="row-label">Works with</span>
@@ -127,6 +142,7 @@ const worksWith = ["Gmail", "Calendar", "Slack", "Notion", "GitHub", "Anthropic"
 	.row-label { margin-right: 4px; font: .68rem var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 	.chip { border: 1px solid var(--line); border-radius: 999px; padding: .2em .75em; }
 	.chip i { font-style: normal; font: .6rem var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--teal-text); margin-left: .3em; }
+	.chip i.arch { color: var(--muted); text-transform: none; letter-spacing: 0; }
 
 	/* The app at work: a light window, the app kit's own pieces */
 	.app {

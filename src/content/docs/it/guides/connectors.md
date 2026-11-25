@@ -1,20 +1,22 @@
 ---
-title: App
-description: Collega Gmail, Trello, Slack e più di mille altre app, o qualsiasi server MCP, una volta per tutti i bot.
+title: Plugin
+description: Collega Gmail, Trello, Slack e altre mille app, o qualsiasi server MCP, una volta per tutti i bot.
 ---
 
-Apri **App** dalla barra laterale. Colleghi un'app una volta e **tutti i bot possono
-usarla**: i bot sanno quali app hai collegato e le usano subito.
+Apri **Plugin** dalla barra laterale: connettori, server MCP e skill stanno tutti lì.
+Colleghi un'app una volta e **tutti i bot possono usarla** (un'app può anche essere
+limitata ad alcuni bot).
 
 ## Collegare un'app
 
-Cerca l'app e collegala. Homun ti dice da dove passano i suoi dati:
+Trova l'app nell'elenco dei connettori e premi collega. La scheda di ogni app dice da
+dove passano i suoi dati:
 
-- **Diretta**: il permesso resta sul tuo computer, e Homun parla direttamente con il
-  servizio.
-- **Tramite Composio**: login e azioni passano dai server di Composio. Con una tua chiave
-  Composio (basta il piano gratuito) colleghi più di mille app, come Gmail, Slack e
-  HubSpot.
+- **MCP diretto**: Homun parla con il server del servizio dal tuo computer, senza
+  intermediari — Notion, Linear, Cloudflare, Sentry e Stripe oggi funzionano così;
+- **tramite Composio**: login e azioni passano dai server di Composio — Gmail, Trello,
+  Slack, HubSpot e altre mille. L'accesso avviene nel browser, senza chiavi da creare, e
+  la scheda dice che l'app passa da Composio.
 
 ## Più account
 
@@ -24,22 +26,20 @@ Le card di bozza mostrano l'account da cui partirà il messaggio.
 
 ## Cosa possono fare i bot con un'app
 
-Le app seguono le stesse regole di tutto il resto:
+Le app seguono le stesse regole di tutto il resto, quelle di **Quando chiedere** in
+[Approvazioni e sicurezza](/it/guides/security/):
 
 - **leggere** è libero;
 - **inviare** diventa una [bozza](/it/guides/chat/#le-bozze) che parte solo se confermi;
 - **scrivere** (creare, modificare, cancellare) mostra una card di approvazione.
 
-Vedi [Approvazioni e sicurezza](/it/guides/security/) per cambiare quanto spesso chiedono
-i bot.
-
 ## Server MCP
 
-In **Per sviluppatori** puoi aggiungere i tuoi server MCP, come comando locale (stdio) o
-come indirizzo (HTTP). Header e token bearer vengono salvati cifrati. Con **test** vedi gli
-strumenti che il server offre.
+Dal menu **Aggiungi** scegli **Server MCP personalizzato**: un comando locale (stdio) o
+un indirizzo (HTTP). I token bearer vengono salvati cifrati, e la connessione viene
+provata appena salvi — la riga dice quanti strumenti offre il server.
 
 ## Nessun collegamento? Il browser
 
-Quando un sito non ha un'app, il bot apre il browser sul [suo computer](/it/guides/local-computer/)
-e fa il lavoro lì.
+Quando un sito non ha un'app, il bot può aprire il browser sul [computer dei
+bot](/it/guides/local-computer/) e fare il lavoro lì.
