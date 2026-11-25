@@ -1,0 +1,63 @@
+---
+// The image of control: what waits in a cell. A claim read on the web is in
+// quarantine and outside the search results; a proposal from an assistant
+// becomes memory only when it is decided; then `verify` replays the log.
+import { ENGRAMMA_CONTROL } from "../../data/engramma.mjs";
+
+const { held, proposal, verify } = ENGRAMMA_CONTROL;
+---
+
+<div class="queue" data-motion data-product="engramma">
+	<div class="hit pending">
+		<div class="top"><b>{held.text}</b><span class="tag w">{held.tag}</span></div>
+		<div class="why">{held.why}</div>
+		<div class="actions" aria-hidden="true"><span>Accept</span><span>Reject</span></div>
+	</div>
+	<div class="hit pending prop">
+		<div class="top">
+			<b>{proposal.text}</b>
+			<span class="swap">
+				<span class="tag w st-wait">proposal</span>
+				<span class="tag st-ok">accepted</span>
+			</span>
+		</div>
+		<div class="why">{proposal.why} · {proposal.decided}</div>
+		<div class="actions" aria-hidden="true"><span class="acc">Accept</span><span>Reject</span></div>
+	</div>
+	<p class="verifyline"><span class="p">$ {verify.command}</span><br /><b>{verify.result}</b></p>
+</div>
+
+<style>
+	.queue { display: grid; gap: 10px; min-width: 0; }
+	.hit { display: grid; gap: 6px; padding: 12px 14px; border: 1px solid #2a3532; border-radius: 14px; background: #1E2725; }
+	.pending { border-style: dashed; }
+	.top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+	.hit b { font-size: .92rem; line-height: 1.35; }
+	.why { font: .72rem/1.5 var(--mono); color: var(--band-muted); overflow-wrap: anywhere; }
+	.tag { flex: none; padding: .15em .5em; border-radius: 6px; font: .66rem var(--mono); letter-spacing: .06em; text-transform: uppercase; background: var(--accent-soft); color: var(--accent-text); }
+	.tag.w { background: #3a2d12; color: #F2D38E; }
+	.actions { display: flex; gap: 8px; }
+	.actions span { padding: .2em .8em; border: 1px solid #2a3532; border-radius: 999px; font-size: .8rem; color: var(--band-fg); }
+	.swap { display: grid; justify-items: end; }
+	/* The final state is the tag the proposal ended with. */
+	.st-wait { display: none; }
+	.swap .st-ok { grid-area: 1 / 1; }
+	.st-ok { background: #123a30; color: #5CC2B3; }
+	.verifyline { margin: 4px 0 0; font: .78rem/1.6 var(--mono); color: var(--band-muted); overflow-wrap: anywhere; }
+	.verifyline b { font-weight: 500; color: #5CC2B3; }
+	.p { color: var(--accent-text); }
+
+	@media (prefers-reduced-motion: no-preference) {
+		:global(html.js) .queue:not(.in) .hit { opacity: 0; transform: translateX(24px); }
+		:global(html.js) .queue:not(.in) .st-wait,
+		.queue.in .st-wait { display: block; grid-area: 1 / 1; }
+		:global(html.js) .queue:not(.in) .st-ok { opacity: 0; }
+		:global(html.js) .queue:not(.in) .verifyline { opacity: 0; }
+		.queue.in .hit { animation: f-line .5s ease forwards; }
+		.queue.in .prop { animation-delay: .5s; border-style: solid; }
+		.queue.in .acc { animation: f-press .5s ease 1.8s; }
+		.queue.in .st-wait { animation: f-out .2s ease 2.3s forwards; }
+		.queue.in .st-ok { opacity: 0; animation: f-line .3s ease 2.4s forwards; }
+		.queue.in .verifyline { opacity: 0; animation: f-line .5s ease 3s forwards; }
+	}
+</style>

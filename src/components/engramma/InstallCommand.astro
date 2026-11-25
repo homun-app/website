@@ -1,0 +1,35 @@
+---
+// The install command, as a line to copy. The prompt is drawn by CSS, so the
+// copy button copies the command alone.
+interface Props {
+	command: string;
+	label?: string;
+	class?: string;
+}
+
+const { command, label = "Install Engramma", class: className } = Astro.props;
+---
+
+<div class:list={["cmd", className]} data-product="engramma" data-command>
+	<code>{command}</code>
+	<button type="button" data-copy aria-label={`Copy: ${label}`}>Copy</button>
+</div>
+
+<script>
+	import { initCopyButtons } from "../../scripts/copy.mjs";
+	initCopyButtons();
+</script>
+
+<style>
+	.cmd { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 10px 10px 10px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); font: .9rem/1.5 var(--mono); }
+	code { flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap; }
+	code::before { content: "$ "; color: var(--muted); }
+	button { flex: none; padding: .3em .9em; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--muted); font: inherit; font-size: .78rem; cursor: pointer; }
+	button:hover { color: var(--fg); border-color: var(--fg); }
+
+	@media (max-width: 640px) {
+		/* On a phone the command breaks at its spaces, never inside an address. */
+		.cmd { font-size: .8rem; padding-inline: 12px 8px; gap: 8px; }
+		code { overflow: visible; white-space: normal; overflow-wrap: normal; }
+	}
+</style>

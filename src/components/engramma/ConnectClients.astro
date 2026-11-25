@@ -1,20 +1,27 @@
 ---
-import CommandBlock from "./CommandBlock.astro";
+// How to connect an assistant: one tab for each client, the snippet in a dark
+// window with its copy button, and the three sentences that hold for all of
+// them. The "tested" mark goes only where the engine was exercised with that
+// client, end to end.
+import Terminal from "../family/Terminal.astro";
 import { ENGRAMMA_CLIENTS, ENGRAMMA_RELEASE } from "../../data/engramma.mjs";
+
+// A shell snippet shows its prompt on the first line; a configuration file
+// does not. Every line of the snippet stays a line of its own.
+const lines = ({ lang, code }) => {
+	const rows = code.split("\n");
+	return lang === "sh" ? [[["p", "$ "], rows[0]], ...rows.slice(1)] : rows;
+};
 ---
 
-<section id="connect" class="connect" aria-labelledby="connect-title">
-	<div class="inner">
-		<header>
-			<p class="eyebrow">Connect</p>
-			<h2 id="connect-title">Your memory in the assistant you use.</h2>
-			<p class="lead">
-				Engramma speaks MCP. Local apps start it on your computer; web and mobile apps reach it over HTTPS with OAuth.
-				Only the memory spaces you name are exposed, and an assistant can read them or propose new notes, nothing more.
-			</p>
-		</header>
+<section id="connect" class="connect" data-product="engramma" aria-labelledby="connect-title">
+	<div class="head">
+		<p class="f-eyebrow">Connect</p>
+		<h2 id="connect-title">Your memory in the assistant you use.</h2>
+	</div>
 
-		<div class="tabs" data-tabs>
+	<div class="tabs" data-tabs>
+		<div>
 			<div class="tablist" role="tablist" aria-label="MCP clients">
 				{ENGRAMMA_CLIENTS.map(({ id, name, tested }, index) => (
 					<button type="button" role="tab" id={`tab-${id}`} aria-controls={`panel-${id}`} aria-selected={index === 0 ? "true" : "false"} tabindex={index === 0 ? 0 : -1}>
@@ -22,22 +29,27 @@ import { ENGRAMMA_CLIENTS, ENGRAMMA_RELEASE } from "../../data/engramma.mjs";
 					</button>
 				))}
 			</div>
-			{ENGRAMMA_CLIENTS.map(({ id, name, kind, label, lang, code, note }) => (
+			{ENGRAMMA_CLIENTS.map(({ id, name, kind, file, lang, code, note }) => (
 				<div class="panel" role="tabpanel" id={`panel-${id}`} aria-labelledby={`tab-${id}`} data-panel>
-					<p class="kind">{name} · {kind === "local" ? "local, over stdio" : "remote, over HTTPS + OAuth 2.1"}</p>
-					<CommandBlock label={label} code={code} lang={lang} />
+					<p class="kind">{name} · {kind === "local" ? "local, over stdio" : "remote, over HTTPS with OAuth 2.1"} · <code>{file}</code></p>
+					<Terminal product="engramma" lines={lines({ lang, code })} label={`${name} configuration`} copy />
 					{note && <p class="note">{note}</p>}
 				</div>
 			))}
 		</div>
-
-		<p class="more">
-			Add <code>--write default --actor &lt;name&gt;</code> to let an assistant propose notes: they wait in a queue until you
-			accept them with <code>engramma review</code>. Clients without the “tested” mark use their standard MCP
-			configuration and have not been exercised with this release yet. Details: <a href={ENGRAMMA_RELEASE.mcpDocsUrl}>local clients</a>,
-			<a href={ENGRAMMA_RELEASE.httpDocsUrl}>remote clients and tunnels</a>.
-		</p>
+		<div class="side">
+			<p><b>Local apps</b> start Engramma on your computer over stdio.</p>
+			<p><b>Web and mobile apps</b> reach it over HTTPS with OAuth 2.1, through a tunnel you choose.</p>
+			<p><b>Only the spaces you name</b> are exposed. Assistants can search and propose — never confirm, delete or change a rule.</p>
+		</div>
 	</div>
+
+	<p class="more">
+		Add <code>--write default --actor &lt;name&gt;</code> to let an assistant propose notes: they wait in a queue until you
+		accept them with <code>engramma review</code>. Clients without the “tested” mark use their standard MCP
+		configuration and have not been exercised with this release yet. Details: <a href={ENGRAMMA_RELEASE.mcpDocsUrl}>local clients</a>,
+		<a href={ENGRAMMA_RELEASE.httpDocsUrl}>remote clients and tunnels</a>.
+	</p>
 </section>
 
 <script>
@@ -64,22 +76,30 @@ import { ENGRAMMA_CLIENTS, ENGRAMMA_RELEASE } from "../../data/engramma.mjs";
 </script>
 
 <style>
-	.connect { padding-block: clamp(90px, 14vh, 160px); }
-	.inner { display: grid; gap: clamp(28px, 5vw, 48px); max-width: 1180px; margin-inline: auto; padding-inline: 16px; }
-	header { display: grid; gap: 18px; max-width: 46rem; }
-	.eyebrow { font: .76rem/1.55 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--teal-text); }
-	h2 { font-size: clamp(2.1rem, 5.6vw, 4.2rem); }
-	.lead { font-size: clamp(1.05rem, 2vw, 1.25rem); line-height: 1.55; color: var(--muted); }
-	.tabs { display: grid; gap: 18px; max-width: 860px; min-width: 0; }
-	.tablist { display: flex; flex-wrap: wrap; gap: 8px; }
-	[role="tab"] { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 999px; padding: .45em 1em; background: transparent; color: var(--muted); font: 500 .9rem/1.2 var(--body); cursor: pointer; }
-	[role="tab"][aria-selected="true"] { background: var(--fg); border-color: var(--fg); color: var(--bg); }
-	.tested { font: .6rem var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--teal-text); }
+	.connect { max-width: 1180px; margin-inline: auto; padding: 0 16px clamp(80px, 12vh, 140px); }
+	.head { display: grid; gap: 14px; max-width: 52rem; margin-bottom: clamp(32px, 5vw, 56px); }
+	h2 { margin: 0; font-size: clamp(2rem, 5vw, 3.6rem); }
+	.tabs { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); align-items: start; gap: 28px; }
+	.tablist { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+	[role="tab"] { display: inline-flex; align-items: center; gap: 6px; padding: .45em 1em; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--muted); font: 500 .88rem/1.2 var(--body); cursor: pointer; }
+	[role="tab"]:hover { color: var(--fg); border-color: var(--fg); }
+	[role="tab"][aria-selected="true"] { border-color: var(--fg); background: var(--fg); color: var(--bg); }
+	.tested { font: .58rem var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--accent-text); }
 	[aria-selected="true"] .tested { color: inherit; opacity: .8; }
-	.panel { display: grid; gap: 12px; min-width: 0; }
-	.kind { font: .78rem/1.5 var(--mono); color: var(--muted); }
-	.note { font-size: .9rem; color: var(--muted); max-width: 60ch; }
-	.more { max-width: 46rem; color: var(--muted); line-height: 1.6; }
-	.more a { color: var(--teal-text); text-decoration: underline; }
+	/* A fixed minimum keeps the page from jumping from one tab to the next. */
+	.panel { display: grid; align-content: start; gap: 12px; min-width: 0; min-height: 300px; }
+	.panel[hidden] { display: none; }
+	.kind { margin: 0; font: .78rem/1.5 var(--mono); color: var(--muted); overflow-wrap: anywhere; }
+	.kind code { color: var(--fg); }
+	.note { margin: 0; font-size: .9rem; line-height: 1.55; color: var(--muted); max-width: 60ch; }
+	.side { display: grid; gap: 14px; font-size: .92rem; line-height: 1.55; color: var(--muted); }
+	.side p { margin: 0; }
+	.side b { color: var(--fg); }
+	.more { max-width: 46rem; margin: 28px 0 0; color: var(--muted); line-height: 1.6; font-size: .92rem; }
+	.more a { color: var(--accent-text); text-decoration: underline; text-underline-offset: .18em; }
 	code { font-family: var(--mono); font-size: .9em; }
+	@media (max-width: 980px) {
+		.tabs { grid-template-columns: minmax(0, 1fr); }
+		.panel { min-height: 0; }
+	}
 </style>

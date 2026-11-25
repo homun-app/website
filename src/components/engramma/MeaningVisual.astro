@@ -1,0 +1,50 @@
+---
+// The image of "meaning": a question in other words, and the notes the vector
+// branch returns, with the cosine the engine printed.
+import { ENGRAMMA_MEANING } from "../../data/engramma.mjs";
+
+const { question, hits } = ENGRAMMA_MEANING;
+---
+
+<div class="meaning" data-motion data-product="engramma">
+	<p class="q">{question}</p>
+	{hits.map(({ title, body, lists, cosine }, index) => (
+		<div class="hit" style={`--w:${Math.round(cosine * 100)}%;--i:${index}`}>
+			<b>{title}</b>
+			<p class="body">{body}</p>
+			<div class="why">liste: {lists} · coseno: {cosine.toFixed(4)}{index === 0 && " · no word in common"}</div>
+			<div class="bar" aria-hidden="true"><i /></div>
+		</div>
+	))}
+</div>
+
+<style>
+	.meaning { display: grid; gap: 12px; min-width: 0; }
+	.q { justify-self: end; max-width: 85%; margin: 0; padding: 10px 14px; border-radius: 16px 16px 4px 16px; background: var(--band-fg); color: var(--band); font: 600 .95rem/1.4 var(--body); }
+	.hit { display: grid; gap: 6px; padding: 12px 14px; border: 1px solid #2a3532; border-radius: 14px; background: #1E2725; }
+	.hit b { font-size: .95rem; }
+	.body { margin: 0; font-size: .84rem; line-height: 1.45; color: #C9D2CF; }
+	.why { font: .72rem/1.5 var(--mono); color: var(--band-muted); }
+	.bar { height: 6px; border-radius: 3px; background: #2a3532; overflow: hidden; }
+	.bar i { display: block; width: var(--w); height: 100%; background: var(--accent); }
+
+	@media (prefers-reduced-motion: no-preference) {
+		:global(html.js) .meaning:not(.in) > * {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+		:global(html.js) .meaning:not(.in) .bar i {
+			width: 0;
+		}
+		.bar i { transition: width 1.2s cubic-bezier(.2, .7, .2, 1) 1.4s; }
+		.meaning.in > * {
+			animation: f-line .5s ease forwards;
+		}
+		.meaning.in > .q {
+			animation-delay: .1s;
+		}
+		.meaning.in > .hit {
+			animation-delay: calc(.7s + var(--i) * .4s);
+		}
+	}
+</style>

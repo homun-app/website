@@ -3,7 +3,7 @@ title: What’s next
 slug: docs/engramma/whats-next
 ---
 
-Engramma is inside Homun today. For developers, **Engramma 0.6.17-beta.1** is a public preview: the `engramma` command line and an MCP server that gives your memory to Claude and other MCP clients. See [the developer preview](/engramma/#developers).
+Engramma is inside Homun today. For developers, **Engramma 0.6.17-beta.1** is a public preview: the `engramma` command line and an MCP server that gives your memory to Claude and other MCP clients. See [the developer preview](/engramma/#install).
 
 **Available**
 - Inside Homun: readable notes with sources, dates and quarantine, on your computer.

@@ -1,0 +1,53 @@
+---
+// A Markdown note as `engramma get` prints it: the header with its provenance,
+// then the body. The [[names]] are the entities the note links to.
+interface Props {
+	note: {
+		title: string;
+		fields: { name: string; value: string }[];
+		body: string;
+	};
+	/** `now`: appears while the terminal of the hero is still writing. */
+	motion?: "now";
+}
+
+const { note, motion } = Astro.props;
+// Two fields to a line, as a note header groups them.
+const lines = [];
+for (let index = 0; index < note.fields.length; index += 2) lines.push(note.fields.slice(index, index + 2));
+const parts = note.body.split(/(\[\[[^\]]+\]\])/g);
+---
+
+<article class="note" data-product="engramma" data-motion={motion} aria-label={`The note: ${note.title}`}>
+	<div class="fm">
+		<span>title: <b>{note.title}</b></span>
+		{lines.map((line) => (
+			<span>{line.map(({ name, value }, index) => (
+				<>{index > 0 && " · "}{name}: <b>{value}</b></>
+			))}</span>
+		))}
+	</div>
+	<p>{parts.map((part) => part.startsWith("[[") ? <span class="link">{part}</span> : part)}</p>
+</article>
+
+<style>
+	.note { position: relative; display: grid; gap: 8px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--card); font-size: .88rem; line-height: 1.5; box-shadow: 0 20px 50px -30px rgb(10 20 18 / .35); }
+	.fm { display: grid; gap: 1px; font: .76rem/1.6 var(--mono); color: var(--muted); }
+	.fm b { font-weight: 500; color: var(--accent-text); }
+	.link { color: var(--accent-text); font-weight: 600; }
+
+	@media (prefers-reduced-motion: no-preference) {
+		:global(html.js) .note[data-motion]:not(.in) {
+			opacity: 0;
+			transform: translateY(16px);
+		}
+		.note[data-motion].in {
+			animation: f-line .6s ease 3.8s forwards;
+			opacity: 0;
+			transform: translateY(16px);
+		}
+		.note[data-motion].in .link {
+			animation: f-glow 1.2s ease 4.5s 2;
+		}
+	}
+</style>

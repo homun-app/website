@@ -3,7 +3,7 @@ title: Prossimi passi
 slug: it/docs/engramma/whats-next
 ---
 
-Engramma è già dentro Homun. Per gli sviluppatori, **Engramma 0.6.17-beta.1** è un'anteprima pubblica: la riga di comando `engramma` e un server MCP che porta la tua memoria in Claude e negli altri client MCP. Vedi [l'anteprima per sviluppatori](/engramma/#developers).
+Engramma è già dentro Homun. Per gli sviluppatori, **Engramma 0.6.17-beta.1** è un'anteprima pubblica: la riga di comando `engramma` e un server MCP che porta la tua memoria in Claude e negli altri client MCP. Vedi [l'anteprima per sviluppatori](/engramma/#install).
 
 **Disponibile**
 - Dentro Homun: note leggibili con fonti, date e quarantena, sul tuo computer.

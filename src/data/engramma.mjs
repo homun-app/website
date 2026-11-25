@@ -1,10 +1,17 @@
 // Engramma's public release, clients and roadmap, in one place: the product
-// page, the docs and the contract test read them from here. A new Engramma
-// release changes VERSION only.
+// page and the contract test read them from here. A new Engramma release
+// changes VERSION only.
+//
+// Every terminal line and every log row below is a capture of the released
+// binary on the synthetic notes of the page (Gaia, Milano, Torino, Acme).
+// Nothing is typed by hand or translated: the CLI prints Italian labels today,
+// and the page shows them as they are.
 const REPOSITORY = "https://github.com/homun-app/engramma";
 const VERSION = "0.6.17-beta.1";
 const TAG = `v${VERSION}`;
 const DOCS = `${REPOSITORY}/blob/main/docs`;
+const DESIGN = `${DOCS}/DESIGN.md`;
+const CLI = `${DOCS}/cli.md`;
 
 export const ENGRAMMA_RELEASE = {
 	version: VERSION,
@@ -17,7 +24,7 @@ export const ENGRAMMA_RELEASE = {
 	compatibilityUrl: `${DOCS}/compatibilita.md`,
 	mcpDocsUrl: `${DOCS}/mcp.md`,
 	httpDocsUrl: `${DOCS}/http.md`,
-	designUrl: `${DOCS}/DESIGN.md`,
+	designUrl: DESIGN,
 	platforms: [
 		{ label: "macOS · Apple Silicon", shipped: true },
 		{ label: "Linux · x86_64", shipped: true },
@@ -27,93 +34,377 @@ export const ENGRAMMA_RELEASE = {
 	],
 };
 
+// The platforms line of the hero, from the table of the README: what shipped,
+// then what did not yet.
+export const ENGRAMMA_PLATFORMS_LINE = "macOS (Apple Silicon) and Linux (x86_64, arm64) · Intel Macs and Windows not yet";
+
+// Clients named in the hero's "works with" row; each has its card in #connect.
+export const ENGRAMMA_WORKS_WITH = ["Claude", "ChatGPT", "Cursor", "VS Code", "Codex", "Gemini CLI", "OpenCode", "Homun"];
+
+// The short install: homun.app/engramma/install.sh answers with a redirect to
+// the versioned installer above (nginx/default.conf; the test keeps the two
+// equal). The long form names the installer and works without the redirect.
+export const ENGRAMMA_SHORT_INSTALL = "curl -LsSf homun.app/engramma/install.sh | sh";
 export const ENGRAMMA_INSTALL_COMMAND = `curl --proto '=https' --tlsv1.2 -LsSf \\
   ${ENGRAMMA_RELEASE.installerUrl} | sh`;
 
-export const ENGRAMMA_FIRST_COMMANDS = `engramma init
-echo "Acme only signs annual contracts." > note.md
-engramma add note.md --source user --confidence stated --title "Acme contracts"
-engramma search "annual contracts"`;
+// ── The captures ────────────────────────────────────────────────────────────
+// A terminal line is a string, or a list where [tone, text] is coloured:
+// p the prompt, d dim, ok what the engine confirms, hl the value to read.
+const CAPTURED_WITH = "engramma 0.6.17-beta.1";
 
+// The hero: a search that explains its first result, then the check.
+// `engramma search "where does Gaia live now?"` and `engramma verify`.
+export const ENGRAMMA_HERO_TERMINAL = {
+	capturedWith: CAPTURED_WITH,
+	lines: [
+		[["p", "$"], " engramma search \"where does Gaia live now?\""],
+		["1. [active] Gaia abita a Milano ", ["d", "(QPEK4BVM)"]],
+		["   punteggio ", ["hl", "1.0000"], " (grezzo 0.6500)"],
+		["   liste: ", ["ok", "text, vector"]],
+		["   termini: ", ["hl", "gai"]],
+		"   coseno: 0.8857",
+		["   validità: ", ["ok", "2026-09-01 → ora"]],
+		"   fonte: user",
+		"",
+		[["p", "$"], " engramma verify"],
+		[["ok", "registro verificato:"], " 9 operazioni, catena hash, ricostruzione e indice FTS a posto"],
+	],
+};
+
+// The note the search found, as `engramma get` prints it.
+export const ENGRAMMA_HERO_NOTE = {
+	title: "Gaia abita a Milano",
+	fields: [
+		{ name: "source", value: "user" },
+		{ name: "confidence", value: "stated" },
+		{ name: "valid_from", value: "2026-09-01" },
+		{ name: "tags", value: "[casa/milano]" },
+	],
+	body: "Gaia ha traslocato a [[Milano]] con [[Giulia]] a settembre 2026.",
+};
+
+// The hub: three stories, each run on one cell ("work") of the released binary.
+// `actor` is what the tool's configuration signs with (`--actor` over stdio,
+// the grant's label over HTTP): it comes from the configuration, never from
+// what the client says it is. `decided` is what `engramma decisions` shows.
+export const ENGRAMMA_HUB = {
+	tools: [
+		{ name: "Claude Code", x: 300, y: 46 },
+		{ name: "Codex", x: 520, y: 130 },
+		{ name: "Cursor", x: 520, y: 312 },
+		{ name: "OpenCode", x: 300, y: 396 },
+		{ name: "ChatGPT", x: 80, y: 312 },
+		{ name: "Homun", x: 80, y: 130 },
+	],
+	scenes: [
+		{
+			from: "Claude Code", actor: "mcp:claude-code", policy: "write=propose",
+			fact: "Auth moved to JWT; the sessions table was dropped.", why: "Read in commit 4f1c",
+			proposedAt: "12:48:24Z",
+			decided: { actor: "user@cli", text: "accettata dalla CLI", at: "12:49:38Z" },
+			to: "Codex", asks: "How do we authenticate?",
+			answer: "Auth moved to JWT; the sessions table was dropped.",
+			found: true,
+		},
+		{
+			from: "Cursor", actor: "mcp:cursor", policy: "write=auto · reviewer local · min_confidence 0.8",
+			fact: "Use pnpm, never npm, in this repo.", why: "The user said so in this chat",
+			proposedAt: "12:49:41Z",
+			decided: { actor: "reviewer:local", text: "confidenza 0.9", at: "12:49:41Z" },
+			to: "OpenCode", asks: "Which package manager?",
+			answer: "Use pnpm, never npm, in this repo.",
+			found: true,
+		},
+		{
+			from: "ChatGPT", actor: "mcp:chatgpt", policy: "write=auto · the reviewer passes it to a person",
+			fact: "Acme’s CFO is leaving in March.", why: "Read on acme.example.com/news",
+			proposedAt: "12:49:42Z",
+			decided: { actor: null, text: "in coda · status: quarantined", at: "12:49:42Z" },
+			to: "Homun", asks: "Who is Acme’s CFO?",
+			answer: "Nothing confirmed yet.",
+			found: false,
+		},
+	],
+};
+
+// ── Inside the engine ───────────────────────────────────────────────────────
 // How the engine works, in the order a note travels through it.
-export const ENGRAMMA_HOW = [
-	{ title: "Every change is logged", body: "Each write is one operation in an append-only log, chained by hashes and ordered by a hybrid logical clock. Replaying the log rebuilds exactly the same memory; engramma verify proves it." },
-	{ title: "Notes you can read", body: "A memory is a Markdown note with its source, confidence, tags and validity dates. [[Names]] in the text become entities in a graph." },
-	{ title: "Search that explains", body: "Words (BM25) and meaning (local multilingual embeddings) are fused, then the graph and time weigh in. Every result says which branch found it and why." },
-	{ title: "Nothing enters unchecked", body: "Content from third parties is born in quarantine and stays out of search. An assistant only proposes notes: you accept, reject or roll back." },
+export const ENGRAMMA_PIPELINE = [
+	{ name: "Write", title: "Anyone can propose", body: "You, Homun, or an assistant over MCP. Third-party content and agent writes wait in quarantine.", items: ["CLI · Node · MCP", "proposals + review"] },
+	{ name: "Log", title: "Every change recorded", body: "One operation per write, ordered by a hybrid logical clock and chained by hashes.", items: ["HLC ordering", "hash chain", "replayable"] },
+	{ name: "Memory", title: "Notes, graph, vectors", body: "Markdown notes with source, confidence and validity; [[names]] become entities in a graph; text becomes vectors.", items: ["SQLite + FTS5", "entity graph", "int8 vectors"], core: true },
+	{ name: "Search", title: "Three lists, one answer", body: "Words and meaning are fused, then the graph and time weigh in.", items: ["BM25 · 6 languages", "embeddings", "personalized PageRank"] },
+	{ name: "Answer", title: "With its reasons", body: "Each result says which list found it, the graph path, its validity and its source.", items: ["explain", "MCP tools"] },
 ];
+
+// `engramma search "Where does she live now?"`: an English question, an Italian
+// note, no word in common. The cosine values are the ones the engine printed.
+export const ENGRAMMA_MEANING = {
+	question: "Where does she live now?",
+	hits: [
+		{ title: "Gaia abita a Milano", body: "Gaia ha traslocato a [[Milano]] con [[Giulia]] a settembre 2026.", lists: "vector", cosine: 0.7958 },
+		{ title: "Il lavoro di Giulia", body: "[[Giulia]] ha iniziato a novembre in [[Acme]]: si occupa di pricing.", lists: "vector", cosine: 0.7747 },
+	],
+};
+
+// The graph of the page's notes. `via` is the path the engine printed for the
+// question: Gaia's note (QPEK4BVM) mentions Milano, which the office note mentions.
+export const ENGRAMMA_GRAPH = {
+	query: "What about Gaia?",
+	via: "[[note:01M89BWH2TRHP85SQ0QPEK4BVM]] -mentions-> [[Milano]] -mentions-> (nota HJ5YSP3E)",
+	nodes: {
+		start: "Gaia",
+		middle: "Milano",
+		other: "Giulia",
+		target: "the office",
+		second: "Giulia’s job",
+	},
+};
+
+// `engramma search "office"`, today and on the first of August.
+export const ENGRAMMA_TIME = {
+	topic: "The office",
+	old: { title: "Ufficio a Torino", span: "Torino · until Sep 2026", valid: "2026-01-05 → 2026-09-01" },
+	now: { title: "Ufficio a Milano", span: "Milano", valid: "2026-09-01 → ora" },
+};
+
+// The queue of the cell, as `engramma proposals` prints it, and the check.
+// A claim read on a web page waits outside the search results; a proposal is
+// decided by the person; `verify` replays the log.
+export const ENGRAMMA_CONTROL = {
+	held: {
+		title: "CFO di Acme", text: "Acme’s CFO is leaving in March.", tag: "quarantine",
+		why: "source: mcp:chatgpt · confidence: inferred · read on acme.example.com/news · not in search results",
+	},
+	proposal: {
+		title: "Auth: JWT", text: "Auth moved to JWT; the sessions table was dropped.",
+		why: "da mcp:claude-code · in coda", decided: "decisa da user@cli",
+	},
+	verify: { command: "engramma verify", result: "registro verificato: 9 operazioni, catena hash, ricostruzione e indice FTS a posto" },
+};
+
+// ── How truth is kept ───────────────────────────────────────────────────────
+// Each rule names the document that makes the engine keep it. The bodies say
+// what the released binary does: where the two differ from an earlier draft,
+// the binary wins and the difference is in the site report.
+export const ENGRAMMA_RULES = [
+	{
+		title: "The log is the truth",
+		body: "Notes, graph and indexes are derived from one hash-chained log. engramma verify replays it and must find the same state.",
+		source: { label: "cli.md · verify", url: `${CLI}#verify` },
+	},
+	{
+		title: "Every fact is signed",
+		body: "Who proposed it (you, mcp:claude-code, an assistant over HTTP), from which source, with what confidence, valid from when, and who decided.",
+		source: { label: "DESIGN § 8.5", url: `${DESIGN}#85-proposte-revisori-storico-e-rollback-v05` },
+	},
+	{
+		title: "Your policy is the gate",
+		body: "Per memory space: proposals wait for you, or a reviewer you configured decides within your limits — a minimum confidence, note types, a cap per hour. Below the limit, the decision comes back to you.",
+		source: { label: "DESIGN § 8.5 · the policy", url: `${DESIGN}#la-politica-per-cella` },
+	},
+	{
+		title: "Disagreements stay visible",
+		body: "Two tools that correct the same fact both land in the queue, each signed: you keep one and the other stays in history. Two devices that write the same note make a conflict copy. Never last-write-wins.",
+		source: { label: "DESIGN § 4.3.1", url: `${DESIGN}#431-la-convergenza-del-registro-v06` },
+	},
+	{
+		title: "Change keeps history",
+		body: "A new fact supersedes the old one with dates; ask what was true on any day.",
+		source: { label: "cli.md · search --as-of", url: `${CLI}#search-text` },
+	},
+	{
+		title: "Mistakes undo in one move",
+		body: "Revert in bulk what a reviewer decided since Tuesday — or what you decided — with a preview first. Any single decision goes back the same way, and the proposal returns to the queue. Purge forgets for real.",
+		source: { label: "cli.md · revert", url: `${CLI}#engramma-revert-decision---by-actor---since-date` },
+	},
+];
+
+// The example of rule 4, as it ran: two corrections of one note, both proposed
+// before either was decided. The queue showed both as "rettifica di" the note.
+export const ENGRAMMA_CONFLICT = {
+	target: "Contratti Acme",
+	left: { tool: "Claude Code", actor: "mcp:claude-code", text: "Acme signs quarterly contracts." },
+	right: { tool: "Codex", actor: "mcp:codex", text: "Acme signs two-year contracts." },
+	verdict: { kept: "Acme signs quarterly contracts.", tag: "decided by you", other: "accepted; the other, rifiutata (lapide), stays in history" },
+};
 
 // What sets Engramma apart from the usual memory layer for assistants.
 export const ENGRAMMA_DIFFERENT = [
-	{ topic: "Where it runs", usual: "A cloud service, or a server with a vector database", engramma: "One SQLite file per memory space, on your computer; no server" },
-	{ topic: "What it stores", usual: "Embeddings and snippets only the system can read", engramma: "Markdown notes you can read, edit and export" },
-	{ topic: "When a fact changes", usual: "The old value is overwritten", engramma: "The old version stays, with its dates; ask what was true then" },
-	{ topic: "Where an answer came from", usual: "A similarity score", engramma: "The source, the confidence and why the note matched" },
-	{ topic: "What the assistant can add", usual: "Anything it reads goes into memory", engramma: "Proposals and third-party content wait for you" },
-	{ topic: "Proof", usual: "Trust the database", engramma: "A hash-chained log anyone can replay with engramma verify" },
-	{ topic: "Forgetting", usual: "Delete a row, copies may remain", engramma: "purge removes the content everywhere, sync included" },
+	{ topic: "Where it runs", usual: "A cloud service, or a server with a vector database", engramma: "One file per memory space, on your computer" },
+	{ topic: "What it stores", usual: "Embeddings only the system can read", engramma: "Markdown notes you can read, edit and export" },
+	{ topic: "When a fact changes", usual: "The old value is overwritten", engramma: "The old version stays, with its dates" },
+	{ topic: "Why this answer", usual: "A similarity score", engramma: "Source, confidence, graph path and validity" },
+	{ topic: "What the assistant adds", usual: "Anything it reads goes into memory", engramma: "Proposals and third-party content wait for you" },
+	{ topic: "Proof", usual: "Trust the database", engramma: "A hash-chained log anyone can replay" },
 ];
 
+// Mirrors Engramma's docs/DESIGN.md § 12, in plain language. The releases are
+// all tagged in the repository (`fase-v0.1` … `fase-v0.6.17`, `v0.6.17-beta.1`).
+export const ENGRAMMA_ROADMAP = {
+	shipped: [
+		{
+			label: "Foundations · shipped",
+			releases: [
+				{ version: "0.1", title: "Notes and the log", body: "Markdown notes, one SQLite file, a hash-chained log, text search, quarantine, read-only MCP.", href: `${REPOSITORY}/tree/fase-v0.1` },
+				{ version: "0.2", title: "Meaning", body: "The embedded model, int8 vectors, mixed search.", href: `${REPOSITORY}/tree/fase-v0.2` },
+				{ version: "0.3", title: "Graph and forgetting", body: "Personalized PageRank, purge, the Markdown vault view.", href: `${REPOSITORY}/tree/fase-v0.3` },
+			],
+		},
+		{
+			label: "Inside Homun · shipped",
+			releases: [
+				{ version: "0.4", title: "Node module", body: "Engramma becomes Homun’s memory; tuned on LongMemEval.", href: `${REPOSITORY}/tree/fase-v0.4` },
+				{ version: "0.5", title: "Other assistants", body: "Proposals, review and rollback; MCP over HTTPS, exercised with ChatGPT, claude.ai and Codex.", href: `${REPOSITORY}/tree/fase-v0.5` },
+				{ version: "0.6", title: "Encrypted sync", body: "Your devices share one memory, end to end encrypted.", href: `${REPOSITORY}/tree/fase-v0.6` },
+			],
+		},
+	],
+	now: {
+		label: "Now",
+		releases: [
+			{ version: `${VERSION.split("-")[0]} · beta`, title: "Developer preview", body: "Public binaries, installer, the compatibility promise.", href: ENGRAMMA_RELEASE.releaseUrl },
+			{ version: "planned", title: "More platforms", body: "Windows and Intel Macs, once their builds pass every test.", href: ENGRAMMA_RELEASE.readmeUrl },
+		],
+	},
+	next: {
+		label: "Next",
+		releases: [
+			{ version: "planned", title: "Your documents", body: "PDF, Office files and web pages become sourced notes. Today Engramma reads Markdown only." },
+			{ version: "0.7", title: "Organizations", body: "Shared memory with signed rules: who reads, proposes, writes.", href: DESIGN },
+			{ version: "0.7.1", title: "Protection at rest", body: "Encrypted company memory, device revocation.", href: DESIGN },
+			{ version: "0.8", title: "Engramma server", body: "Many spaces in one service, SSO, admin console, read audit.", href: DESIGN },
+			{ version: "0.9", title: "Cluster", body: "Replicas, placement, backups to object storage.", href: DESIGN },
+		],
+	},
+	vision: [
+		{ title: "You", body: "One person’s memory, on their own devices, shared with the assistants they choose." },
+		{ title: "Your team", body: "Spaces shared by role, with rules everyone can verify and no central server required." },
+		{ title: "Your company", body: "An optional server, single sign-on and audit, scaling to a cluster." },
+	],
+};
+
+export const ENGRAMMA_FAQ = [
+	{
+		question: "Does it replace a RAG stack?",
+		answer: "For your notes and conversations, yes: it embeds and searches them by words, meaning and graph in one file, with no vector database and no embedding API, and says why each result matched. Point it at a Markdown folder or an Obsidian vault with <code>engramma import</code>. PDF, Office files and web pages are not ingested yet: they are on the roadmap.",
+	},
+	{
+		question: "Can several tools use the same memory at once?",
+		answer: "Yes. Each connects with its own name; reads are shared, writes are proposals signed by that tool and handled by the memory space’s policy. Reads are not written to the log: only changes are signed.",
+	},
+	{
+		question: "Does it need an API key or a GPU?",
+		answer: "No. The embedding model runs on the CPU inside the engine. A remote embedding endpoint is optional.",
+	},
+	{
+		question: "Where is my data?",
+		answer: "In one file per memory space on your disk. Sync between your devices is end-to-end encrypted; a relay can forward it but never read it.",
+	},
+	{
+		question: "How does it relate to Homun?",
+		answer: "Engramma is Homun’s memory. The same engine ships as a command line and an MCP server for any assistant.",
+	},
+	{
+		question: "Will my memory survive updates?",
+		answer: "Yes: every later version opens memory written by this one. The promise and its tests are in the repository.",
+	},
+];
+
+// ── The numbers ─────────────────────────────────────────────────────────────
+// Only measured figures, each with the place in the repository it comes from.
+// The links that depend on a count are pinned to the released tag.
+export const ENGRAMMA_NUMBERS = [
+	{
+		value: "97.5%",
+		label: "LongMemEval: the right session in the top 5, on 320 questions held out until the end",
+		source: { label: "DESIGN § 6.3", url: `${DESIGN}#63-la-domanda` },
+	},
+	{
+		value: "6",
+		label: "languages with a stemmer: Italian, English, French, German, Spanish, Portuguese",
+		source: { label: "text.rs · ALL_STEM_LANGS", url: `${REPOSITORY}/blob/${TAG}/crates/engramma-core/src/text.rs#L22` },
+	},
+	{
+		value: "0",
+		label: "services to call: the model, the search and the index run inside the engine",
+		source: { label: "README · Embedded", url: ENGRAMMA_RELEASE.readmeUrl },
+	},
+	{
+		value: "700+",
+		label: "tests in the repository, 676 in Rust and 67 in JavaScript, run on every push: 29 property tests and the golden files with them",
+		source: { label: "ci.yml", url: `${REPOSITORY}/blob/${TAG}/.github/workflows/ci.yml` },
+	},
+	{
+		value: "1",
+		label: "file per memory space on your disk: plain SQLite",
+		source: { label: "compatibilita.md", url: `${DOCS}/compatibilita.md#i-file-delle-celle` },
+	},
+];
+
+// ── Connect ─────────────────────────────────────────────────────────────────
+// How each client starts the server. Local ones use the `default` cell, the
+// one `engramma init` creates: a cell that does not yet exist is an error.
+// `tested` means exercised end to end with the engine (docs/http.md): the mark
+// is on the two web clients that searched and proposed on 12 November 2026.
 const BIN = "~/.cargo/bin/engramma";
 const ABS_BIN = "/Users/you/.cargo/bin/engramma";
 const ARGS = '["mcp", "--cells", "default"]';
+const STDIO = (fields) => `{\n  "mcpServers": {\n    "engramma": {\n${fields}    }\n  }\n}`;
+const REMOTE = `engramma mcp --cells default --http 127.0.0.1:8787 \\
+  --public-url https://memory.example.net
 
-// Local clients start the server over stdio; only the named cells are
-// exposed. Remote clients reach it over HTTPS with OAuth, through a tunnel.
-// `tested` means exercised end to end with this engine (docs/http.md).
+# then add https://memory.example.net/mcp as a connector,
+# and approve the code your browser shows:
+engramma oauth pending
+engramma oauth approve XXXX-XXXX --label chatgpt --yes`;
+const TESTED_ON = "Exercised on 12 November 2026 through a tunnel: claude.ai searched, showed the proposal form and was revoked; ChatGPT searched, queued a proposal and was revoked. Not re-run on this beta yet.";
+
 export const ENGRAMMA_CLIENTS = [
-	{ id: "claude-code", name: "Claude Code", kind: "local", tested: false, label: "Terminal", lang: "sh",
-		code: `claude mcp add engramma -- ${BIN} mcp --cells default` },
-	{ id: "claude-desktop", name: "Claude Desktop", kind: "local", tested: false, label: "claude_desktop_config.json", lang: "json",
-		code: `{\n  "mcpServers": {\n    "engramma": {\n      "command": "${ABS_BIN}",\n      "args": ${ARGS}\n    }\n  }\n}`,
-		note: "Claude Desktop does not read your shell PATH: use the absolute path of the binary." },
-	{ id: "cursor", name: "Cursor", kind: "local", tested: false, label: "~/.cursor/mcp.json", lang: "json",
-		code: `{\n  "mcpServers": {\n    "engramma": {\n      "command": "${ABS_BIN}",\n      "args": ${ARGS}\n    }\n  }\n}` },
-	{ id: "vscode", name: "VS Code", kind: "local", tested: false, label: ".vscode/mcp.json", lang: "json",
-		code: `{\n  "servers": {\n    "engramma": {\n      "type": "stdio",\n      "command": "${ABS_BIN}",\n      "args": ${ARGS}\n    }\n  }\n}` },
-	{ id: "codex", name: "Codex CLI", kind: "local", tested: false, label: "Terminal", lang: "sh",
-		code: `codex mcp add engramma -- ${BIN} mcp --cells default` },
-	{ id: "gemini", name: "Gemini CLI", kind: "local", tested: false, label: "~/.gemini/settings.json", lang: "json",
-		code: `{\n  "mcpServers": {\n    "engramma": {\n      "command": "${ABS_BIN}",\n      "args": ${ARGS}\n    }\n  }\n}` },
-	{ id: "remote", name: "ChatGPT · claude.ai", kind: "remote", tested: true, label: "Terminal", lang: "sh",
-		code: `engramma mcp --cells default --http 127.0.0.1:8787 \\\n  --public-url https://memory.example.net --compat chatgpt\n\n# then add https://memory.example.net/mcp as a custom connector,\n# and approve the code your browser shows:\nengramma oauth pending\nengramma oauth approve XXXX-XXXX --label chatgpt --yes`,
-		note: "Web and mobile apps reach Engramma over HTTPS with OAuth 2.1. Engramma listens only on your machine; a tunnel you choose (Tailscale Funnel, Cloudflare Tunnel) publishes it. Exercised end to end with ChatGPT, claude.ai and Codex." },
-];
-
-// Why it can be trusted: each line is checkable in the source.
-export const ENGRAMMA_TRUST = [
-	{ title: "On your computer", body: "Each memory space is one SQLite file on your disk. Search, embeddings and the MCP server run locally." },
-	{ title: "No telemetry", body: "No usage pings, no crash reports. Engramma goes online only for what you turn on: downloading a model, syncing your devices, a reviewer model you configure." },
-	{ title: "Apache 2.0", body: "The whole engine is open source on GitHub. You need not trust this page: read what the code does." },
-	{ title: "Verify it yourself", body: "engramma verify replays the log and checks the hash chain, the rebuilt notes and the search index." },
-];
-
-// Clients named in the hero's "works with" row; all are set up in #connect.
-export const ENGRAMMA_WORKS_WITH = ["Claude", "ChatGPT", "Cursor", "VS Code", "Codex", "Gemini CLI", "any MCP client"];
-
-// Mirrors Engramma's docs/DESIGN.md § 12, in plain language.
-export const ENGRAMMA_ROADMAP = [
 	{
-		stage: "Available",
-		items: [
-			{ version: "in Homun", title: "Memory inside Homun", body: "Readable notes with sources, dates and quarantine, on your computer." },
-			{ version: VERSION, title: "Developer preview", body: "The engramma CLI and an MCP server for Claude, ChatGPT, Cursor and other MCP clients." },
-			{ version: "0.6", title: "Encrypted sync", body: "The same memory on your own devices, end-to-end encrypted: a relay can forward it but never read it, and you can run your own or none." },
-		],
+		id: "claude-code", name: "Claude Code", kind: "local", tested: false, file: "Terminal", lang: "sh",
+		code: `claude mcp add engramma -- ${BIN} mcp --cells default`,
+		note: "The default scope is the current project. --scope user makes the server available in every project.",
 	},
 	{
-		stage: "Next",
-		items: [
-			{ version: "0.6.x", title: "More platforms", body: "Windows and Intel Macs, once their builds pass every test." },
-			{ version: "0.7", title: "Organizations", body: "Shared memory for a team, with signed rules for who can read, propose and write." },
-			{ version: "0.7.1", title: "Protection at rest", body: "Encrypted company memory and device revocation." },
-		],
+		id: "claude-desktop", name: "Claude Desktop", kind: "local", tested: false,
+		file: "~/Library/Application Support/Claude/claude_desktop_config.json", lang: "json",
+		code: STDIO(`      "command": "${ABS_BIN}",\n      "args": ${ARGS}\n`),
+		note: "The configuration takes absolute paths only. Quit and restart the app after saving the file.",
 	},
 	{
-		stage: "Later",
-		items: [
-			{ version: "0.8", title: "Engramma server", body: "Many memory spaces in one service, single sign-on, an optional admin console and read audit." },
-			{ version: "0.9", title: "Cluster", body: "Memory spread over many machines, with replicas and backups." },
-		],
+		id: "cursor", name: "Cursor", kind: "local", tested: false, file: "~/.cursor/mcp.json", lang: "json",
+		code: STDIO(`      "type": "stdio",\n      "command": "${ABS_BIN}",\n      "args": ${ARGS}\n`),
+		note: "~/.cursor/mcp.json holds the servers of every project; .cursor/mcp.json inside a project holds its own.",
+	},
+	{
+		id: "vscode", name: "VS Code", kind: "local", tested: false, file: ".mcp.json (workspace root)", lang: "json",
+		code: STDIO(`      "type": "stdio",\n      "command": "${ABS_BIN}",\n      "args": ${ARGS}\n`),
+		note: "The file Claude Code reads for a project too. The older .vscode/mcp.json uses a format that retires in February 2027.",
+	},
+	{
+		id: "codex", name: "Codex", kind: "local", tested: false, file: "Terminal", lang: "sh",
+		code: `codex mcp add engramma -- ${BIN} mcp --cells default`,
+		note: "It writes ~/.codex/config.toml. For the remote server: codex mcp add engramma --url https://memory.example.net/mcp, then codex mcp login engramma.",
+	},
+	{
+		id: "gemini", name: "Gemini CLI", kind: "local", tested: false, file: "~/.gemini/settings.json", lang: "json",
+		code: STDIO(`      "command": "${ABS_BIN}",\n      "args": ${ARGS}\n`),
+	},
+	{
+		id: "opencode", name: "OpenCode", kind: "local", tested: false, file: "opencode.json", lang: "json",
+		code: `{\n  "$schema": "https://opencode.ai/config.json",\n  "mcp": {\n    "servers": {\n      "engramma": {\n        "type": "local",\n        "command": ["${ABS_BIN}", "mcp", "--cells", "default"]\n      }\n    }\n  }\n}`,
+		note: "Or from the terminal: opencode mcp add engramma -- ~/.cargo/bin/engramma mcp --cells default.",
+	},
+	{
+		id: "chatgpt", name: "ChatGPT", kind: "remote", tested: true, file: "Plugins → Add custom MCP server", lang: "sh",
+		code: REMOTE,
+		note: `ChatGPT reaches remote servers only: publish yours behind an HTTPS tunnel you choose, then add it under Plugins (the plus button, Add custom MCP server). Full MCP, proposals included, is for Business, Enterprise and Edu plans; Pro connects custom servers with read and fetch permissions. For deep research or “knowledges”, start the server with --compat chatgpt. ${TESTED_ON}`,
+	},
+	{
+		id: "claude-ai", name: "claude.ai", kind: "remote", tested: true, file: "Customize → Connectors → Add custom connector", lang: "sh",
+		code: REMOTE,
+		note: `Remote only, on the standard HTTPS port. Add it under Customize → Connectors (+ Add, then Add custom connector) with the address including its path. Free plans can hold one custom connector. ${TESTED_ON}`,
 	},
 ];

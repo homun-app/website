@@ -1,0 +1,57 @@
+---
+// The image of time: a fact that changed, and the same question asked twice.
+// The cursor slides back to August and the answer becomes the old one.
+import { ENGRAMMA_TIME } from "../../data/engramma.mjs";
+
+const { topic, old, now } = ENGRAMMA_TIME;
+---
+
+<div class="time" data-motion data-product="engramma">
+	<div class="row">
+		<span class="label">{topic}</span>
+		<div class="span old" title={old.valid}>{old.span}</div>
+	</div>
+	<div class="row">
+		<span class="label" aria-hidden="true"></span>
+		<div class="span new" title={now.valid}>{now.span}</div>
+	</div>
+	<div class="scrub" aria-hidden="true"><i /></div>
+	<p class="asof">
+		<span class="q1">engramma search "office" → <b>{now.title}</b></span>
+		<span class="q2">engramma search "office" --as-of 2026-08-01 → <b>{old.title}</b> [superseded]</span>
+	</p>
+</div>
+
+<style>
+	.time { display: grid; gap: 10px; min-width: 0; }
+	.row { display: grid; grid-template-columns: 110px minmax(0, 1fr); align-items: center; gap: 12px; font-size: .9rem; }
+	.label { color: var(--muted); }
+	.span { display: flex; align-items: center; height: 28px; padding-inline: 10px; border-radius: 8px; font: .76rem var(--mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+	.old { width: 62%; background: var(--line); color: var(--muted); }
+	.new { width: 38%; margin-left: 62%; background: var(--accent); color: #fff; }
+	.scrub { position: relative; height: 4px; margin-top: 6px; border-radius: 2px; background: var(--line); }
+	.scrub i { position: absolute; top: -6px; left: 40%; width: 3px; height: 16px; border-radius: 2px; background: var(--accent-text); }
+	.asof { display: grid; gap: 2px; margin: 4px 0 0; font: .74rem/1.5 var(--mono); color: var(--accent-text); overflow-wrap: anywhere; }
+	/* The final state is the answer for August. */
+	.asof .q2 { grid-area: 1 / 1; color: var(--muted); }
+	.asof b { font-weight: 500; }
+
+	@media (max-width: 640px) {
+		/* On a phone the label takes less room and a period may wrap. */
+		.row { grid-template-columns: 76px minmax(0, 1fr); gap: 8px; }
+		.span { height: auto; min-height: 28px; white-space: normal; line-height: 1.35; padding-block: 4px; }
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		:global(html.js) .time:not(.in) .old { width: 100%; }
+		:global(html.js) .time:not(.in) .new { width: 0; padding-inline: 0; }
+		:global(html.js) .time:not(.in) .scrub i { left: 96%; }
+		:global(html.js) .time:not(.in) .q1,
+		.time.in .q1 { display: block; }
+		.old { transition: width 1s ease .4s; }
+		.new { transition: width .9s ease 1.3s; }
+		.scrub i { transition: left 1.2s ease 2.8s; }
+		.time.in .q1 { animation: f-out .4s ease 3.6s forwards; }
+		.time.in .q2 { opacity: 0; animation: f-line .4s ease 3.8s forwards; }
+	}
+</style>
