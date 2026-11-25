@@ -1,36 +1,74 @@
 ---
 import Page from "../layouts/Page.astro";
 import Hero from "../components/home/Hero.astro";
-import Showcase from "../components/home/Showcase.astro";
+import TeamHub from "../components/home/TeamHub.astro";
+import Pipeline from "../components/family/Pipeline.astro";
 import DraftsSection from "../components/home/DraftsSection.astro";
 import AppsSection from "../components/home/AppsSection.astro";
 import SkillsSection from "../components/home/SkillsSection.astro";
 import ComputerSection from "../components/home/ComputerSection.astro";
 import ApprovalsSection from "../components/home/ApprovalsSection.astro";
-import TeamsSection from "../components/home/TeamsSection.astro";
 import RoutinesSection from "../components/home/RoutinesSection.astro";
 import ModelsSection from "../components/home/ModelsSection.astro";
 import MemorySection from "../components/home/MemorySection.astro";
+import PrivacySection from "../components/home/PrivacySection.astro";
 import UseCasesSection from "../components/home/UseCasesSection.astro";
 import NewsSection from "../components/home/NewsSection.astro";
 import FaqSection from "../components/home/FaqSection.astro";
 import ClosingSection from "../components/home/ClosingSection.astro";
+
+// How a bot works: the family's Pipeline, with the last step in Engramma's
+// blue, because the memory is Engramma.
+const stages = [
+	{ name: "The job", title: "You ask, or it wakes up", body: "A message in the chat, a routine on a schedule, or something that changed.", items: ["chat", "routines", "triggers"] },
+	{ name: "The model", title: "Thinks with the model you chose", body: "A different model per bot. In the cloud with your key, or on this computer.", items: ["Anthropic · OpenAI · Mistral", "Built-in · Ollama · LM Studio"] },
+	{ name: "The tools", title: "Works with your apps and the bots’ computer", body: "The apps you connected, the skills it learned, a browser and files in a box apart from yours.", items: ["Composio · MCP", "skills", "its own computer"] },
+	{ name: "Your OK", title: "Asks before it goes too far", body: "Writing to someone new, paying or deleting shows an approval card first.", items: ["Allow · Deny", "For this turn", "Always allow for a bot"], core: true },
+	{ name: "The memory", title: "Remembers, and says where from", body: "What it learned becomes a note with its source and the date it was true.", items: ["by Engramma", "shared with every bot"], mem: true },
+];
 ---
 
 <Page title="Your bot team. On your computer.">
 	<Hero />
-	<Showcase />
+
+	<section id="team" class="f-band section" data-product="homun" aria-labelledby="team-title">
+		<div class="f-wrap">
+			<div class="f-head">
+				<p class="f-eyebrow">A team, not a chatbot</p>
+				<h2 id="team-title">Your bots work together. You approve what matters.</h2>
+				<p class="f-lead">A coordinator hands out the work. Each bot does its part with your apps, its own computer and one shared memory. What changes the world waits for your OK, and every step is in Activity.</p>
+			</div>
+			<TeamHub />
+		</div>
+	</section>
+
+	<section id="how" class="section" data-product="homun" aria-labelledby="how-title">
+		<div class="f-wrap">
+			<div class="f-head">
+				<p class="f-eyebrow">How a bot works</p>
+				<h2 id="how-title">One job, five steps, nothing hidden.</h2>
+				<p class="f-lead">Every bot follows the same method, whether it sweeps an inbox or plans an offsite.</p>
+			</div>
+			<Pipeline product="homun" stages={stages} label="The five steps of a bot" />
+		</div>
+	</section>
+
 	<DraftsSection />
 	<AppsSection />
 	<SkillsSection />
 	<ComputerSection />
 	<ApprovalsSection />
-	<TeamsSection />
 	<RoutinesSection />
 	<ModelsSection />
 	<MemorySection />
+	<PrivacySection />
 	<UseCasesSection />
 	<NewsSection />
 	<FaqSection />
 	<ClosingSection />
 </Page>
+
+<style>
+	.section { padding-block: clamp(80px, 12vh, 140px); }
+	:global(main [id]) { scroll-margin-top: 70px; }
+</style>

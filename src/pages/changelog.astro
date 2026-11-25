@@ -1,7 +1,13 @@
 ---
-import { compareVersions, MIN_PUBLIC_VERSION } from "../lib/versions.mjs";
+import { baseVersion, compareVersions, MIN_PUBLIC_VERSION } from "../lib/versions.mjs";
 import Page from "../layouts/Page.astro";
-import { projectBySlug, releases } from "../lib/product-data";
+import { allReleases, prereleases, projectBySlug, releases as stableReleases } from "../lib/product-data";
+
+// Stable releases and pre-releases share one timeline, newest first. "Latest"
+// belongs to the newest stable one: a pre-release is a channel you opt into,
+// never what the download buttons give.
+const latestStable = stableReleases[0];
+const latestPrerelease = prereleases[0];
 
 const id = (version: string) => version.replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase();
 const fmt = (value: string) => new Date(value).toLocaleDateString("en-US", {
@@ -24,26 +30,33 @@ const fmt = (value: string) => new Date(value).toLocaleDateString("en-US", {
 				</a>
 			</div>
 			<h1 class="reveal text-gradient mt-5 text-5xl font-semibold sm:text-6xl">Every release.<br />Connected to the work.</h1>
-			<p class="reveal mt-6 max-w-2xl text-lg leading-relaxed text-muted">Published desktop versions from GitHub, with the projects they bring to life.</p>
+			<p class="reveal mt-6 max-w-2xl text-lg leading-relaxed text-muted">Desktop versions from GitHub, newest first: the stable ones, with the projects they bring to life, and the pre-releases of the version to come.</p>
 		</div>
 	</section>
 
 	<section class="pb-28">
 		<div class="mx-auto max-w-3xl px-5">
-			{releases.length > 0 ? (
+			{allReleases.length > 0 ? (
 				<div class="relative border-l border-line pl-7 sm:pl-9">
-					{releases.map((release, index) => {
+					{allReleases.map((release) => {
 						const projects = release.projectSlugs.map(projectBySlug).filter(Boolean);
 						return (
 							<article id={id(release.version)} class="reveal relative scroll-mt-28 pb-16">
-								<span class={`absolute -left-[34px] top-1.5 h-3.5 w-3.5 rounded-full border-2 border-bg sm:-left-[42px] ${index === 0 ? "bg-accent-bright shadow-[0_0_18px_rgba(80,223,197,.45)]" : "bg-accent-deep"}`}></span>
+								<span class={`absolute -left-[34px] top-1.5 h-3.5 w-3.5 rounded-full border-2 border-bg sm:-left-[42px] ${release === latestStable ? "bg-accent-bright shadow-[0_0_18px_rgba(80,223,197,.45)]" : "bg-accent-deep"}`}></span>
 								<div class="flex flex-wrap items-center gap-2.5">
 									<time class="font-mono text-xs text-faint">{fmt(release.publishedAt)}</time>
 									<span class="rounded border border-line-strong px-2 py-1 font-mono text-[11px] text-accent-bright">{release.version}</span>
-									{compareVersions(release.version, MIN_PUBLIC_VERSION) < 0 && <span class="pill text-xs">Homun 2</span>}
-									{index === 0 && <span class="pill py-1 text-[10px]">Latest</span>}
+									{release.prerelease
+										? <span class="pill py-1 text-[10px]">Pre-release</span>
+										: compareVersions(baseVersion(release.version), MIN_PUBLIC_VERSION) < 0 && <span class="pill text-xs">Homun 2</span>}
+									{release === latestStable && <span class="pill py-1 text-[10px]">Latest</span>}
+									{release === latestPrerelease && <span class="pill py-1 text-[10px]">Latest pre-release</span>}
 								</div>
 								<h2 class="mt-4 text-2xl font-semibold tracking-tight text-cream">Homun {release.name}</h2>
+
+								{release.prerelease && release.highlights.length + release.improvements.length + release.fixes.length === 0 && (
+									<p class="mt-4 text-sm leading-relaxed text-muted">A pre-release of the version to come. Its notes are on the GitHub release.</p>
+								)}
 
 								{release.highlights.length > 0 && (
 									<div class="mt-5"><h3 class="metric-label">Highlights</h3><ul class="mt-3 space-y-2">{release.highlights.map((item) => <li class="flex gap-3 text-[15px] leading-relaxed text-muted"><span class="text-accent-bright">+</span><span>{item}</span></li>)}</ul></div>

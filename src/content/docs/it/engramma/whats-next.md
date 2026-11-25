@@ -18,3 +18,5 @@ Engramma è già dentro Homun. Per gli sviluppatori, **Engramma 0.6.17-beta.1** 
 **Più avanti**
 - Server Engramma: molti spazi di memoria in un servizio, accesso unico (SSO) e una console di amministrazione facoltativa.
 - Cluster: la memoria distribuita su più macchine, con repliche e backup.
+
+La Roadmap è in inglese: [What's next](/docs/engramma/whats-next/).

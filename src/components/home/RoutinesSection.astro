@@ -1,49 +1,49 @@
 ---
-import FeatureSection from "./FeatureSection.astro";
-import Surface from "../app/Surface.astro";
-import Msg from "../app/Msg.astro";
+import DeepDive from "../family/DeepDive.astro";
 import Card from "../app/Card.astro";
+import Msg from "../app/Msg.astro";
 import Pill from "../app/Pill.astro";
 
 const mondays = ["Mon 27", "Mon 3", "Mon 10"];
 const restOfWeek = ["Tue", "Wed", "Thu", "Fri"];
 ---
 
-<FeatureSection id="routines" eyebrow="Routines" title="It notices what you repeat."
-  lead="Three Mondays in a row? It offers a routine. Nothing runs until you press Activate. It can also wake up on a schedule or when something changes.">
-  <div slot="visual" class="routine">
-    <Surface bot={{ name: "Daily briefing", family: "device", color: "#E7B93A", state: "happy" }} status="runs on a local model">
+<DeepDive id="routines" product="homun" flip tight eyebrow="Routines" title="It notices what you repeat."
+  lead="Three Mondays in a row? It offers a routine. Nothing runs until you press Activate. It can also wake up on a schedule, on an incoming email, on a calendar event or on a webhook."
+  chips={["schedules", "email · calendar · webhook", "the model you pick"]}>
+  <div slot="visual" class="routine" data-motion="routines">
+    <div class="cal" aria-label="Three Mondays marked">
       {mondays.map((monday, i) => (
-        <div class="week play" style={{ "--i": i }}>
-          <div class="asked"><b>{monday}</b>asked</div>
+        <div class:list={["week", { play: i === 0 }]} style={{ "--i": i }}>
+          <div class="ask"><b>{monday}</b>asked</div>
           {restOfWeek.map((day) => <div><b>{day}</b>—</div>)}
         </div>
       ))}
-      <Msg from="bot" i={3}>You've asked me for this three Mondays in a row. Want it every weekday?</Msg>
-      <Card kind="routine" i={4}>
-        <Fragment slot="title">New routine · Morning briefing</Fragment>
-        <Fragment slot="sub">Weekdays at 8:00 · Europe/Rome · writes to you here</Fragment>
-        <Fragment slot="buttons">
-          <Pill primary class="press">Activate</Pill>
-          <Pill>Change time</Pill>
-        </Fragment>
-      </Card>
-    </Surface>
+    </div>
+    <Msg from="bot" i={3}>You've asked me for this three Mondays in a row. Want it every weekday?</Msg>
+    <Card kind="routine" i={4}>
+      <Fragment slot="title">New routine · Daily briefing</Fragment>
+      <Fragment slot="sub">Weekdays at 8:00 · Europe/Rome · writes to you here</Fragment>
+      <Fragment slot="buttons"><Pill primary>Activate</Pill><Pill>Edit</Pill></Fragment>
+    </Card>
   </div>
-</FeatureSection>
+</DeepDive>
 
 <style>
-  .routine :global([data-surface]) { gap: 14px; }
+  .routine { display: grid; gap: 12px; }
+  .cal { display: grid; gap: 6px; }
   .week { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
-  .week > div {
-    display: grid;
-    gap: 4px;
-    background: var(--a-card);
-    border-radius: 10px;
-    padding: 8px clamp(4px, 1.2vw, 8px);
-    font-size: 12px;
-    color: var(--a-mfg);
+  .week > div { display: grid; gap: 4px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 8px clamp(4px, 1.2vw, 8px); font-size: 12px; color: var(--muted); }
+  .week b { color: var(--fg); font-size: 13px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .cal .ask { background: var(--card); color: var(--muted); border-color: var(--line); }
+    .routine.in .cal .ask { animation: f-mark .4s ease forwards; }
+    .routine.in .week:nth-of-type(1) .ask { animation-delay: .7s; }
+    .routine.in .week:nth-of-type(2) .ask { animation-delay: 1.4s; }
+    .offer { opacity: 0; transform: translateY(10px); }
+    .routine.in :global([data-card="routine"]) { opacity: 0; transform: translateY(10px); }
+    .routine.in :global([data-card="routine"]) { animation: f-line .5s ease 2.2s forwards; }
+    .routine.in :global([data-from="bot"]) { opacity: 0; transform: translateY(8px); animation: f-line .5s ease 1.7s forwards; }
   }
-  .week b { color: var(--a-fg); font-size: 13px; }
-  .asked { box-shadow: 0 0 0 2px var(--teal); }
+  @keyframes f-mark { to { background: var(--accent-soft); color: var(--accent-text); border-color: var(--accent); } }
 </style>

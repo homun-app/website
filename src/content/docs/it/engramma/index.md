@@ -8,3 +8,5 @@ Engramma è il motore di memoria di Homun. Conserva ciò che un assistente impar
 Gli sviluppatori possono provarlo oggi con Claude e gli altri client MCP: [l'anteprima per sviluppatori](/engramma/#install).
 
 [Scopri Engramma](/engramma/)
+
+La documentazione completa di Engramma è in inglese: [Engramma docs](/docs/engramma/).

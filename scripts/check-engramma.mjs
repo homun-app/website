@@ -28,6 +28,12 @@ assert.ok(plain(hero).includes(ENGRAMMA_SHORT_INSTALL), "The hero must carry the
 assert.ok(hero.includes(`href="${ENGRAMMA_RELEASE.installerUrl}"`), "The hero must link the installer of this version");
 assert.ok(hero.includes(`href="${ENGRAMMA_RELEASE.releaseUrl}"`), "The hero must link the release");
 assert.doesNotMatch(hero, /\bdata-homun-download\b/, "The hero must not download Homun");
+// The hero keeps the command and one line with the platforms and the links:
+// the beta notice and the Gatekeeper note live at the bottom of the page.
+assert.doesNotMatch(hero, /Gatekeeper|A beta:/, "The hero carries no beta notice and no Gatekeeper note");
+const start = html.slice(html.indexOf('id="start"'));
+assert.match(start, /A beta:/, "The beta notice is at the bottom of the page");
+assert.match(start, /Gatekeeper/, "The Gatekeeper note is at the bottom of the page");
 
 // Every line of the hero terminal is a line of the capture: the released
 // binary wrote it (scripts/fixtures/engramma-session.txt), on the notes of the page.
@@ -97,11 +103,31 @@ for (const { id, name, lang, code } of ENGRAMMA_CLIENTS) {
 	assert.equal(decode(window), lang === "sh" ? `$ ${code}` : code, `${name}: the window must show its snippet line by line`);
 }
 
+// "tested" goes to a client that was exercised end to end on this beta, and
+// to the two that were on the 12th of November: each note says which.
 const tested = ENGRAMMA_CLIENTS.filter(({ tested }) => tested).map(({ name }) => name);
-assert.deepEqual(tested, ["ChatGPT", "claude.ai"]);
+assert.deepEqual(tested, ["Claude Code", "Codex", "ChatGPT", "claude.ai"]);
 assert.equal((connect.match(/class="tested(?:\s|")/g) ?? []).length, tested.length, "The tested mark belongs to the tested clients only");
 assert.ok(plain(connect).includes("12 November 2026"), "The tested mark must say when, and that it was not re-run on this beta");
 assert.ok(plain(connect).includes("Not re-run on this beta yet"));
+// Claude Code is "tested" because story 1 of the capture is real on both
+// sides: the note says where the story is.
+const claudeCode = ENGRAMMA_CLIENTS.find(({ id }) => id === "claude-code");
+assert.equal(claudeCode.tested, true);
+assert.ok(claudeCode.note.includes("story 1 of the capture"), "Claude Code's note must point to story 1 of the capture");
+assert.ok(claudeCode.note.includes("scripts/fixtures/engramma-session.txt"), "Claude Code's note must name the capture");
+assert.ok(plain(connect).includes("story 1 of the capture"), "The page must say where Claude Code was exercised");
+// Codex is "tested" because story 1 was run again with it as the reader: the
+// capture holds its own call, and the note it found.
+const codex = ENGRAMMA_CLIENTS.find(({ id }) => id === "codex");
+assert.equal(codex.tested, true);
+assert.ok(codex.note.includes("run again with Codex as the reader"), "Codex's note must say how it was exercised");
+assert.ok(capture.some((row) => row.includes('mcp_tool_call: {"server":"engramma","tool":"memory_search"')), "The capture must hold the call Codex made");
+assert.ok(capture.some((row) => row.includes("Auth: JWT | source: mcp:claude-code")), "The capture must hold what Codex found");
+assert.ok(plain(hero).includes("what Claude Code learned, Codex knows"), "With Codex exercised, the hero says what it proves");
+// Under the hub, the line that says how much of it is real.
+assert.ok(plain(hub).includes("Replayed from a real session on 0.6.17-beta.1"), "The hub must say it replays a real session");
+assert.ok(plain(hub).includes("the clients were a driver carrying their configuration"), "The hub must say which stories had a driver for a client");
 
 // The roadmap: the phases of DESIGN § 12, "Your documents" in Next.
 const roadmap = html.slice(html.indexOf('id="roadmap"'), html.indexOf('id="faq"'));

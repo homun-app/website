@@ -6,7 +6,7 @@ import Faq from "../family/Faq.astro";
 const items = [
 	{
 		question: "Can a bot act without asking?",
-		answer: "Not by default. Before an action that changes something, a bot shows an approval card with what it wants to do and why: allow it once, for this turn, always, or deny it. Messages to other people become drafts that leave only when you press Send. <a href=\"/guides/security/\">Approvals and safety</a>",
+		answer: "Not by default. Before an action that changes something, a bot shows an approval card with what it wants to do and why: allow it once, for this turn, always for that bot, or deny it. Messages to other people become drafts that leave only when you press Send. You can switch to Automatic, where a model reviews each action and asks only when it clearly goes beyond your request, or to Never ask. <a href=\"/guides/security/\">Approvals and safety</a>",
 	},
 	{
 		question: "Does it need an API key?",
@@ -14,11 +14,15 @@ const items = [
 	},
 	{
 		question: "Where does my data stay?",
-		answer: "Bots, chats, memory, routines and the Library live on your computer. What reaches a cloud service depends on your choices: with the built-in model or one on your network, conversations stay on your machine. <a href=\"/guides/security/#your-data\">Your data</a>",
+		answer: "Bots, chats, memory, routines and the Library live on your computer, and the app has no servers of its own. With the built-in model or one on your network, conversations stay on your machine. Web searches, the pages a bot opens and the apps it uses do go out to their services. <a href=\"/guides/security/#your-data\">Your data</a> · <a href=\"/reference/architecture/\">Architecture</a>",
 	},
 	{
 		question: "Which systems does it run on?",
 		answer: "macOS, with the app signed and notarized. Windows and Linux are in beta: some parts may work differently from macOS. <a href=\"/guides/download/\">Download</a>",
+	},
+	{
+		question: "Does it need Docker?",
+		answer: "Only where Apple container is not available: on macOS 26 or later with an Apple chip, the bots’ computer runs without Docker. Otherwise it needs Docker Desktop, installed and open. <a href=\"/guides/local-computer/\">The bot’s computer</a>",
 	},
 ];
 ---

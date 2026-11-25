@@ -36,7 +36,10 @@ for (const entry of readdirSync("dist", { recursive: true, withFileTypes: true }
 }
 
 const docs = readFileSync("dist/docs/index.html", "utf8");
-assert.match(docs, /<img\b[^>]*\bsrc="[^"]*homun-wordmark[^"]*"/);
+// The docs header carries the family's mark, on the same rule as the
+// marketing nav: the jelly of the page's product and its name.
+assert.match(docs, /data-nav-product="homun"/);
+assert.match(docs, /class="site-title[^"]*"[\s\S]{0,400}?data-product="homun"/);
 
 const css = readFileSync("src/styles/mascot.css", "utf8");
 assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{/);

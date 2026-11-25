@@ -1,37 +1,37 @@
 ---
-import FeatureSection from "./FeatureSection.astro";
-import Surface from "../app/Surface.astro";
-import Msg from "../app/Msg.astro";
+import DeepDive from "../family/DeepDive.astro";
 import Card from "../app/Card.astro";
+import Msg from "../app/Msg.astro";
 import Pill from "../app/Pill.astro";
-
-const skills = [
-  ["Brand voice", "yours · 4 bots use it"],
-  ["PDF tools", "from the catalog"],
-  ["Sales call notes", "from a GitHub repo"],
-];
 ---
 
-<FeatureSection id="skills" eyebrow="Skills" title="Teach it once. It keeps the recipe."
-  lead="When a bot works out how you like something done, it offers to save it as a skill, and asks first. Or add skills from a catalog, a GitHub repo or a plugin in the Claude Code format.">
-  <Surface slot="visual" bot={{ name: "Inbox manager", family: "creature", color: "#F26A2E", state: "speaking" }} status="after three weekly reports">
-    <Msg from="bot" i={0}>You fixed my expense report the same way three Fridays in a row. Want me to remember how?</Msg>
-    <Card kind="skill" i={1}>
-      <Fragment slot="title">Save skill · Weekly expense report</Fragment>
-      <Fragment slot="sub">When to use: on Fridays, or when you ask for expenses. Match receipts in Gmail to card payments, flag anything over €200, one table per project.</Fragment>
-      <Fragment slot="buttons"><Pill primary class="press">Save skill</Pill><Pill>Edit</Pill><Pill>Not now</Pill></Fragment>
+<DeepDive id="skills" product="homun" eyebrow="Skills" title="Teach it once. It keeps the recipe."
+  lead="When a bot works out how you like something done, it offers to save it as a skill, and asks first. Or add skills from the catalog, as plugins in the Claude Code format, or import them from Cursor, Codex or Claude Code on your Mac."
+  chips={["catalog", "Claude Code plugins", "import from other apps"]}>
+  <div slot="visual" class="skill" data-motion="skill">
+    <Msg from="bot">You fixed my expense report the same way three Fridays in a row. Want me to remember how?</Msg>
+    <Card kind="skill">
+      <Fragment slot="title">Inbox manager wants to change skills</Fragment>
+      <Fragment slot="sub">Weekly expense report. When to use: on Fridays, or when you ask for expenses. Match receipts in Gmail to card payments, flag anything over €200, one table per project.</Fragment>
+      <div class="swap">
+        <div class="act before"><Pill primary class="pressed">Allow</Pill><Pill>Deny</Pill></div>
+        <p class="tag after">✓ Weekly expense report · added to Skills</p>
+      </div>
     </Card>
-    <ul class="skill-list">
-      {skills.map(([name, source], i) => (
-        <li class="play" style={{ "--i": i + 2 }}><span aria-hidden="true">✦</span><b>{name}</b><small>{source}</small></li>
-      ))}
-    </ul>
-  </Surface>
-</FeatureSection>
+  </div>
+</DeepDive>
 
 <style>
-  .skill-list { display: grid; gap: 6px; list-style: none; padding: 0; margin: 0; }
-  li { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; background: var(--a-card); border-radius: 12px; padding: 9px 12px; font-size: 13px; }
-  b { font-weight: 600; }
-  small { margin-left: auto; color: var(--a-mfg); font-size: 11.5px; }
+  .skill { display: grid; gap: 10px; }
+  .tag { margin: 0; align-self: center; padding: .15em .5em; border-radius: 6px; background: var(--accent-soft); font: .66rem var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--accent-text); }
+  .swap { display: grid; justify-items: start; }
+  .swap > * { grid-area: 1 / 1; }
+  .act { display: flex; gap: 8px; flex-wrap: wrap; }
+  @media (prefers-reduced-motion: no-preference) {
+    .skill.in .before { animation: f-out .2s ease 2.2s forwards; }
+    .after { opacity: 0; }
+    .skill.in .after { animation: f-line .3s ease 2.3s forwards; }
+    .skill.in .pressed { animation: f-press-skill .5s ease 1.8s; }
+  }
+  @keyframes f-press-skill { 50% { background: var(--accent); color: #fff; } }
 </style>

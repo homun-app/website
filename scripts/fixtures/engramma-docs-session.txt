@@ -1,0 +1,915 @@
+Engramma 0.6.17-beta.1 — the capture behind the Engramma docs
+=================================================================
+
+Every command and output quoted by the pages under /docs/engramma/ comes from
+this session: the released binary (commit 1bfc611), installed by the release
+installer into a temporary folder, on a fresh data root (ENGRAMMA_ROOT and
+ENGRAMMA_MODEL_DIR inside <tmp>), with the synthetic notes of the site (Gaia,
+Milano, Torino, Acme). Output is verbatim, in Italian, as the CLI prints it;
+what was changed: paths are shortened (<tmp> is the temporary folder of the
+session) and the capture script's own bookkeeping lines are left out.
+
+The proposing client of S5 and S12 is a stdio MCP driver carrying the
+configuration Claude Code would carry (`--actor claude-code`, so the engine
+signs `mcp:claude-code`): the engine side is real, the client side is the
+driver (`client dichiarato: site-capture-driver 0`). The model was pulled once,
+before S3, from its pinned revision.
+
+One engine defect found while capturing, to declare to Engramma: with a single
+decision id, `engramma revert <id> --dry-run` REVERTS for real (the dry-run
+check sits after the call in run_revert); --dry-run is honored on the bulk path
+only (S12). The docs say what the binary does.
+Engramma docs capture — 0.6.17-beta.1 (commit 1bfc611), fresh root, synthetic notes
+
+### S0 · the first minute
+
+$ engramma --version
+engramma 0.6.17-beta.1 (commit 1bfc611, schema 24)
+[exit 0]
+
+$ engramma init
+inizializzato: <tmp>/root
+[exit 0]
+
+### S1 · the notes of the examples
+
+$ engramma add <tmp>/notes/ufficio-torino.md --no-embed --source user --confidence stated --title "Ufficio a Torino" --tag ufficio --valid-from 2026-01-05
+aggiunta: 01M89P12NVFXR7QTRNJA218AMJ
+[exit 0]
+
+$ engramma add <tmp>/notes/gaia-milano.md --no-embed --source user --confidence stated --title "Gaia abita a Milano" --tag casa/milano --valid-from 2026-09-01
+aggiunta: 01M89P12PCVPJTGADABSS51SG1
+[exit 0]
+
+$ engramma add <tmp>/notes/lavoro-giulia.md --no-embed --source user --confidence stated --title "Il lavoro di Giulia" --tag amici
+aggiunta: 01M89P12QP55CHBE5S94D2PMK9
+[exit 0]
+
+$ engramma add <tmp>/notes/acme-contratti.md --no-embed --source user --confidence stated --title "Contratti Acme" --tag lavoro/acme
+aggiunta: 01M89P12RFGAJ9PX1MM9BK2PQ5
+[exit 0]
+
+$ engramma add <tmp>/notes/acme-cfo.md --no-embed --source website --confidence external --title "CFO di Acme" --tag lavoro/acme
+aggiunta: 01M89P12S6XMJJY75ZX5RSME6N
+[exit 0]
+
+$ engramma supersede 01M89P12NVFXR7QTRNJA218AMJ <tmp>/notes/ufficio-milano.md --source user --confidence stated --title "Ufficio a Milano" --tag ufficio --valid-from 2026-09-01
+sostituita: 01M89P12NVFXR7QTRNJA218AMJ → 01M89P12SQZGGGGEET4SQJ4ZER
+[exit 0]
+
+### S2 · search before any model: words and graph
+
+$ engramma search "trasloco di Gaia"
+1. [active] Gaia abita a Milano (BSS51SG1)
+   punteggio 1.0000 (grezzo 0.6500)
+   liste: text
+   termini: trasloc, gai
+   rango BM25: 1
+   supporto: strong
+   peso grafo: 0.35 (stacco 0.00)
+   validità: sempre → ora
+   fonte: 
+
+2. [active] Il lavoro di Giulia (94D2PMK9)
+   punteggio 0.2692 (grezzo 0.1750)
+   liste: graph
+   rango grafo: 1
+   supporto: strong
+   via: [[note:01M89P12PCVPJTGADABSS51SG1]] -mentions-> [[Giulia]] -mentions-> (nota 94D2PMK9)
+   peso grafo: 0.35 (stacco 0.00)
+   validità: sempre → ora
+   fonte: user
+
+3. [active] Ufficio a Milano (4SQJ4ZER)
+   punteggio 0.2591 (grezzo 0.1684)
+   liste: graph
+   rango grafo: 2
+   supporto: strong
+   via: [[note:01M89P12PCVPJTGADABSS51SG1]] -mentions-> [[Milano]] -mentions-> (nota 4SQJ4ZER)
+   peso grafo: 0.35 (stacco 0.00)
+   validità: 2026-09-01 → ora
+   fonte: user
+
+4. [active] Contratti Acme (M9BK2PQ5)
+   punteggio 0.0097 (grezzo 0.0063)
+   liste: graph
+   rango grafo: 3
+   supporto: strong
+   via: [[note:01M89P12PCVPJTGADABSS51SG1]] -mentions-> [[Giulia]] -mentions-> (nota 94D2PMK9) -mentions-> [[Acme]] -mentions-> (nota M9BK2PQ5)
+   peso grafo: 0.35 (stacco 0.00)
+   validità: sempre → ora
+   fonte: user
+[exit 0]
+
+$ engramma search "CFO di Acme"
+1. [active] Contratti Acme (M9BK2PQ5)
+   punteggio 1.0000 (grezzo 0.4875)
+   liste: text
+   termini: acme
+   rango BM25: 1
+   supporto: strong
+   peso grafo: 0.35 (stacco 0.22)
+   validità: sempre → ora
+   fonte: 
+
+2. [active] Il lavoro di Giulia (94D2PMK9)
+   punteggio 0.7807 (grezzo 0.3806)
+   liste: text
+   termini: acme
+   rango BM25: 2
+   supporto: strong
+   peso grafo: 0.35 (stacco 0.22)
+   validità: sempre → ora
+   fonte: 
+
+3. [active] Gaia abita a Milano (BSS51SG1)
+   punteggio 0.3590 (grezzo 0.1750)
+   liste: graph
+   rango grafo: 1
+   supporto: strong
+   via: [[note:01M89P12QP55CHBE5S94D2PMK9]] -mentions-> [[Giulia]] -mentions-> (nota BSS51SG1)
+   peso grafo: 0.35 (stacco 0.22)
+   validità: 2026-09-01 → ora
+   fonte: user
+
+4. [active] Ufficio a Milano (4SQJ4ZER)
+   punteggio 0.0116 (grezzo 0.0057)
+   liste: graph
+   rango grafo: 2
+   supporto: strong
+   via: [[note:01M89P12QP55CHBE5S94D2PMK9]] -mentions-> [[Giulia]] -mentions-> (nota BSS51SG1) -mentions-> [[Milano]] -mentions-> (nota 4SQJ4ZER)
+   peso grafo: 0.35 (stacco 0.22)
+   validità: 2026-09-01 → ora
+   fonte: user
+[exit 0]
+
+$ engramma search "CFO di Acme" --include-quarantined
+1. [active] Contratti Acme (M9BK2PQ5)
+   punteggio 1.0000 (grezzo 0.4875)
+   liste: text
+   termini: acme
+   rango BM25: 1
+   supporto: strong
+   peso grafo: 0.35 (stacco 0.00)
+   validità: sempre → ora
+   fonte: 
+
+2. [active] Il lavoro di Giulia (94D2PMK9)
+   punteggio 0.9839 (grezzo 0.4796)
+   liste: text
+   termini: acme
+   rango BM25: 3
+   supporto: strong
+   peso grafo: 0.35 (stacco 0.00)
+   validità: sempre → ora
+   fonte: 
+
+3. [quarantined] CFO di Acme (X5RSME6N)
+   punteggio 0.6667 (grezzo 0.3250)
+   liste: text
+   termini: cfo, acme
+   rango BM25: 2
+   supporto: strong
+   peso grafo: 0.35 (stacco 0.00)
+   validità: sempre → ora
+   fonte: 
+
+4. [active] Gaia abita a Milano (BSS51SG1)
+   punteggio 0.3590 (grezzo 0.1750)
+   liste: graph
+   rango grafo: 1
+   supporto: strong
+   via: [[note:01M89P12QP55CHBE5S94D2PMK9]] -mentions-> [[Giulia]] -mentions-> (nota BSS51SG1)
+   peso grafo: 0.35 (stacco 0.00)
+   validità: 2026-09-01 → ora
+   fonte: user
+
+5. [active] Ufficio a Milano (4SQJ4ZER)
+   punteggio 0.0113 (grezzo 0.0055)
+   liste: graph
+   rango grafo: 2
+   supporto: strong
+   via: [[note:01M89P12QP55CHBE5S94D2PMK9]] -mentions-> [[Giulia]] -mentions-> (nota BSS51SG1) -mentions-> [[Milano]] -mentions-> (nota 4SQJ4ZER)
+   peso grafo: 0.35 (stacco 0.00)
+   validità: 2026-09-01 → ora
+   fonte: user
+[exit 0]
+
+### S3 · the model, once
+
+$ engramma model list
+modelli in <tmp>/models
+granite-embedding-97m-multilingual-r2  384 dim, 420 MB, scaricato, stato: —
+granite-embedding-311m-multilingual-r2  768 dim, 1277 MB, da scaricare, stato: —
+[exit 0]
+
+$ engramma model pull granite-embedding-97m-multilingual-r2
+scaricato: granite-embedding-97m-multilingual-r2@835ad140 in <tmp>/models
+[exit 0]
+
+$ engramma model use granite-embedding-97m-multilingual-r2
+modello granite-embedding-97m-multilingual-r2@835ad140 in costruzione (config in <tmp>/root/config.json): `engramma embed` lo riempie, la ricerca continua con il modello attuale
+[exit 0]
+
+$ engramma embed
+incorporate: 6 note
+modello pronto: granite-embedding-97m-multilingual-r2@835ad140
+[exit 0]
+
+$ engramma search "where does Gaia live now?"
+1. [active] Gaia abita a Milano (BSS51SG1)
+   punteggio 1.0000 (grezzo 0.6500)
+   liste: text, vector
+   termini: gai
+   rango BM25: 1
+   rango semantico: 1
+   coseno: 0.8857
+   supporto: strong
+   blocco vincente: 0
+   peso grafo: 0.35 (stacco 0.71, liste concordi)
+   validità: 2026-09-01 → ora
+   fonte: user
+
+2. [active] Contratti Acme (M9BK2PQ5)
+   punteggio 0.5385 (grezzo 0.3500)
+   liste: vector, graph
+   rango semantico: 4
+   rango grafo: 1
+   coseno: 0.6743
+   supporto: weak
+   blocco vincente: 0
+   via: [[note:01M89P12QP55CHBE5S94D2PMK9]] -mentions-> [[Acme]] -mentions-> (nota M9BK2PQ5)
+   peso grafo: 0.35 (stacco 0.71, liste concordi)
+   validità: sempre → ora
+   fonte: user
+
+3. [active] Il lavoro di Giulia (94D2PMK9)
+   punteggio 0.2949 (grezzo 0.1917)
+   liste: vector
+   rango semantico: 2
+   coseno: 0.7990
+   supporto: strong
+   blocco vincente: 0
+   peso grafo: 0.35 (stacco 0.71, liste concordi)
+   validità: sempre → ora
+   fonte: user
+
+4. [active] Ufficio a Milano (4SQJ4ZER)
+   punteggio 0.1659 (grezzo 0.1078)
+   liste: vector
+   rango semantico: 3
+   coseno: 0.7445
+   supporto: strong
+   blocco vincente: 0
+   peso grafo: 0.35 (stacco 0.71, liste concordi)
+   validità: 2026-09-01 → ora
+   fonte: user
+[exit 0]
+
+$ engramma search "Where does she live now?"
+1. [active] Gaia abita a Milano (BSS51SG1)
+   punteggio 1.0000 (grezzo 0.6500)
+   liste: vector
+   rango semantico: 1
+   coseno: 0.7958
+   supporto: weak
+   blocco vincente: 0
+   peso grafo: 0.35 (stacco 0.12)
+   validità: 2026-09-01 → ora
+   fonte: user
+
+2. [active] Ufficio a Milano (4SQJ4ZER)
+   punteggio 0.8835 (grezzo 0.5743)
+   liste: vector
+   rango semantico: 2
+   coseno: 0.7819
+   supporto: weak
+   blocco vincente: 0
+   peso grafo: 0.35 (stacco 0.12)
+   validità: 2026-09-01 → ora
+   fonte: user
+
+3. [active] Il lavoro di Giulia (94D2PMK9)
+   punteggio 0.8235 (grezzo 0.5353)
+   liste: vector
+   rango semantico: 3
+   coseno: 0.7747
+   supporto: strong
+   blocco vincente: 0
+   peso grafo: 0.35 (stacco 0.12)
+   validità: sempre → ora
+   fonte: user
+
+4. [active] Contratti Acme (M9BK2PQ5)
+   punteggio 0.5385 (grezzo 0.3500)
+   liste: vector, graph
+   rango semantico: 4
+   rango grafo: 1
+   coseno: 0.6763
+   supporto: weak
+   blocco vincente: 0
+   via: [[note:01M89P12QP55CHBE5S94D2PMK9]] -mentions-> [[Acme]] -mentions-> (nota M9BK2PQ5)
+   peso grafo: 0.35 (stacco 0.12)
+   validità: sempre → ora
+   fonte: user
+[exit 0]
+
+$ engramma search "ufficio" --as-of 2026-08-01
+1. [superseded] Ufficio a Torino (JA218AMJ)
+   punteggio 1.0000 (grezzo 0.6500)
+   liste: text, vector
+   termini: ufficio, uffici
+   rango BM25: 1
+   rango semantico: 1
+   coseno: 0.8297
+   supporto: strong
+   blocco vincente: 0
+   peso grafo: 0.35 (stacco 0.96, liste concordi)
+   validità: 2026-01-05 → 2026-09-01
+   fonte: user
+
+2. [active] Il lavoro di Giulia (94D2PMK9)
+   punteggio 0.0382 (grezzo 0.0248)
+   liste: vector
+   rango semantico: 2
+   coseno: 0.7817
+   supporto: weak
+   blocco vincente: 0
+   peso grafo: 0.35 (stacco 0.96, liste concordi)
+   validità: sempre → ora
+   fonte: user
+[exit 0]
+
+$ engramma neighbors Milano
+<- mentions note:01M89P12PCVPJTGADABSS51SG1 (nota BSS51SG1)
+<- mentions note:01M89P12SQZGGGGEET4SQJ4ZER (nota 4SQJ4ZER)
+[exit 0]
+
+$ engramma timeline Giulia
+2026-09-01 → ora  Gaia abita a Milano (BSS51SG1)
+sempre → ora  Il lavoro di Giulia (94D2PMK9)
+[exit 0]
+
+$ engramma tags
+1    amici
+1    casa
+1    casa/milano
+1    lavoro
+1    lavoro/acme
+2    ufficio
+[exit 0]
+
+$ engramma entities
+Acme
+Giulia
+Milano
+Torino
+[exit 0]
+
+$ engramma path Milano Acme
+[[Milano]] -mentions-> [[note:01M89P12PCVPJTGADABSS51SG1]] -mentions-> [[Giulia]] -mentions-> [[note:01M89P12QP55CHBE5S94D2PMK9]] -mentions-> [[Acme]]
+[exit 0]
+
+### S4 · a note, read and edited
+
+$ engramma search Gaia --k 1 --json
+{
+  "embed_ms": 8.033,
+  "graph_pushed_edges": 61,
+  "hits": [
+    {
+      "explain": {
+        "bm25_rank": 1,
+        "confidence": "stated",
+        "cosine": 0.8901200890541077,
+        "fused_score": 1.0,
+        "graph": {
+          "agreement": true,
+          "gap": 0.7773006468065132,
+          "off": null,
+          "weight": 0.35
+        },
+        "graph_rank": null,
+        "lists": [
+          "text",
+          "vector"
+        ],
+        "matched_terms": [
+          "gai"
+        ],
+        "semantic_rank": 1,
+        "source": "user",
+        "support": "strong",
+        "valid_from": "2026-09-01",
+        "valid_to": null,
+        "via": null,
+        "winning_chunk": 0
+      },
+      "note": {
+        "body": "Gaia ha traslocato a [[Milano]] con [[Giulia]] a settembre 2026.\n",
+        "confidence": "stated",
+        "created_at": "2026-11-25T15:43:43Z",
+        "id": "01M89P12PCVPJTGADABSS51SG1",
+        "source": "user",
+        "status": "active",
+        "supersedes": [],
+        "tags": [
+          "casa/milano"
+        ],
+        "title": "Gaia abita a Milano",
+        "type": "fact",
+        "updated_at": "2026-11-25T15:43:43Z",
+        "valid_from": "2026-09-01"
+      },
+      "raw_score": 0.65,
+      "score": 1.0
+    }
+  ],
+  "mode": "hybrid",
+  "query": "Gaia",
+  "search_ms": 0.9889169999999999
+}
+[exit 0]
+
+$ engramma get 01M89P12PCVPJTGADABSS51SG1
+---
+id: 01M89P12PCVPJTGADABSS51SG1
+type: fact
+title: Gaia abita a Milano
+tags: [casa/milano]
+source: user
+confidence: stated
+status: active
+valid_from: 2026-09-01
+created_at: 2026-11-25T15:43:43Z
+updated_at: 2026-11-25T15:43:43Z
+---
+Gaia ha traslocato a [[Milano]] con [[Giulia]] a settembre 2026.
+
+[exit 0]
+
+$ engramma edit 01M89P12PCVPJTGADABSS51SG1
+aggiornata: 01M89P12PCVPJTGADABSS51SG1
+[exit 0]
+
+$ engramma history 01M89P12PCVPJTGADABSS51SG1 --diff
+v1 → ora  (stato attuale)
+  + A settembre hanno anche imbiancato la casa.
+[exit 0]
+
+### S5 · the policy, the queue, the decisions
+
+$ engramma policy show
+write: off
+min_confidence: 0.8
+kinds: tutti
+allow_supersede: none
+max_auto_per_hour: 20
+[exit 0]
+
+$ engramma policy set write=propose
+politica aggiornata
+[exit 0]
+
+### S5b · an assistant proposes (a stdio MCP driver, actor from --actor)
+$ engramma mcp --cells default --write default --actor claude-code
+[the driver: initialize, then tools/call memory_propose]
+[tools/call memory_propose →]
+{
+  "decided_by": null,
+  "existing": null,
+  "id": "01M89P16DAY77XXPJY6W44X6B0",
+  "note": null,
+  "possible_duplicates": [
+    {
+      "cosine": 0.8288561105728149,
+      "id": "01M89P12PCVPJTGADABSS51SG1"
+    },
+    {
+      "cosine": 0.8028644323348999,
+      "id": "01M89P12QP55CHBE5S94D2PMK9"
+    },
+    {
+      "cosine": 0.7402105331420898,
+      "id": "01M89P12SQZGGGGEET4SQJ4ZER"
+    },
+    {
+      "cosine": 0.7224803566932678,
+      "id": "01M89P12RFGAJ9PX1MM9BK2PQ5"
+    }
+  ],
+  "reason": null,
+  "status": "pending"
+}
+[driver stopped]
+
+$ engramma proposals
+[in coda] 6W44X6B0 mcp:claude-code — Corso di ceramica
+[exit 0]
+
+$ engramma decisions
+nessuna decisione
+[exit 0]
+
+$ engramma proposals show 6W44X6B0
+---
+id: 01M89P16DAY77XXPJY6W44X6B0
+type: fact
+title: Corso di ceramica
+tags: [hobby]
+source: mcp:claude-code
+confidence: inferred
+status: quarantined
+created_at: 2026-11-25T15:43:47Z
+updated_at: 2026-11-25T15:43:47Z
+---
+Gaia è iscritta al corso di ceramica il giovedì.
+
+proposta da mcp:claude-code il 2026-11-25T15:43:47Z
+client dichiarato: site-capture-driver 0
+[exit 0]
+
+### S5c · accept, then change your mind
+
+$ engramma proposals accept 6W44X6B0
+accettata: 01M89P16DAY77XXPJY6W44X6B0
+[exit 0]
+
+$ engramma decisions
+D9BWHR4V  accetta  user@cli  2026-11-25T15:43:48Z
+      proposta 6W44X6B0
+      perché: accettata dalla CLI
+[exit 0]
+
+$ engramma decisions --json
+{
+  "cell": "default",
+  "decisions": [
+    {
+      "actor": "user@cli",
+      "decided_at": "2026-11-25T15:43:48Z",
+      "decision": "accept",
+      "op_id": "01M89P16ZVZ50NP7GXD9BWHR4V",
+      "proposal": "01M89P16DAY77XXPJY6W44X6B0",
+      "reason": "accettata dalla CLI",
+      "reverted_by": null,
+      "review": null,
+      "state": "active",
+      "target": null
+    }
+  ]
+}
+[exit 0]
+
+$ engramma revert 01M89P16ZVZ50NP7GXD9BWHR4V --dry-run
+annullata: proposta di nuovo in coda: 6W44X6B0
+[exit 0]
+
+$ engramma revert 01M89P16ZVZ50NP7GXD9BWHR4V --yes
+
+engramma: invalid operation: decision 01M89P16ZVZ50NP7GXD9BWHR4V was already reverted
+[exit 4]
+
+$ engramma proposals
+[in coda] 6W44X6B0 mcp:claude-code — Corso di ceramica
+[exit 0]
+
+$ engramma decisions
+D9BWHR4V  accetta  user@cli  2026-11-25T15:43:48Z
+      proposta 6W44X6B0
+      perché: accettata dalla CLI
+      annullata
+[exit 0]
+
+### S6 · quarantine and forgetting
+
+$ engramma search "CFO"
+1. [active] Ufficio a Milano (4SQJ4ZER)
+   punteggio 1.0000 (grezzo 0.6500)
+   liste: vector
+   rango semantico: 1
+   coseno: 0.7548
+   supporto: weak
+   blocco vincente: 0
+   peso grafo: 0.35 (stacco 0.23)
+   validità: 2026-09-01 → ora
+   fonte: user
+
+2. [active] Contratti Acme (M9BK2PQ5)
+   punteggio 0.7696 (grezzo 0.5002)
+   liste: vector
+   rango semantico: 2
+   coseno: 0.7434
+   supporto: strong
+   blocco vincente: 0
+   peso grafo: 0.35 (stacco 0.23)
+   validità: sempre → ora
+   fonte: user
+
+3. [active] Gaia abita a Milano (BSS51SG1)
+   punteggio 0.5385 (grezzo 0.3500)
+   liste: vector, graph
+   rango semantico: 4
+   rango grafo: 1
+   coseno: 0.7054
+   supporto: weak
+   blocco vincente: 0
+   via: [[note:01M89P12SQZGGGGEET4SQJ4ZER]] -mentions-> [[Milano]] -mentions-> (nota BSS51SG1)
+   peso grafo: 0.35 (stacco 0.23)
+   validità: 2026-09-01 → ora
+   fonte: user
+
+4. [active] Il lavoro di Giulia (94D2PMK9)
+   punteggio 0.0351 (grezzo 0.0228)
+   liste: vector
+   rango semantico: 3
+   coseno: 0.7072
+   supporto: weak
+   blocco vincente: 0
+   peso grafo: 0.35 (stacco 0.23)
+   validità: sempre → ora
+   fonte: user
+[exit 0]
+
+$ engramma confirm 01M89P12S6XMJJY75ZX5RSME6N
+confermata: 01M89P12S6XMJJY75ZX5RSME6N
+[exit 0]
+
+$ engramma search "CFO"
+1. [active] Il lavoro di Giulia (94D2PMK9)
+   punteggio 1.0000 (grezzo 0.3540)
+   liste: vector, graph
+   rango semantico: 4
+   rango grafo: 1
+   coseno: 0.7072
+   supporto: weak
+   blocco vincente: 0
+   via: [[note:01M89P12S6XMJJY75ZX5RSME6N]] -mentions-> [[Acme]] -mentions-> (nota 94D2PMK9)
+   peso grafo: 0.35 (stacco 0.82, liste concordi)
+   validità: sempre → ora
+   fonte: user
+
+2. [active] CFO di Acme (X5RSME6N)
+   punteggio 0.9180 (grezzo 0.3250)
+   liste: text, vector
+   termini: cfo
+   rango BM25: 1
+   rango semantico: 1
+   coseno: 0.8458
+   supporto: strong
+   blocco vincente: 0
+   peso grafo: 0.35 (stacco 0.82, liste concordi)
+   validità: sempre → ora
+   fonte: website
+
+3. [active] Ufficio a Milano (4SQJ4ZER)
+   punteggio 0.3231 (grezzo 0.1144)
+   liste: vector
+   rango semantico: 2
+   coseno: 0.7548
+   supporto: weak
+   blocco vincente: 0
+   peso grafo: 0.35 (stacco 0.82, liste concordi)
+   validità: 2026-09-01 → ora
+   fonte: user
+
+4. [active] Contratti Acme (M9BK2PQ5)
+   punteggio 0.2486 (grezzo 0.0880)
+   liste: vector
+   rango semantico: 3
+   coseno: 0.7434
+   supporto: strong
+   blocco vincente: 0
+   peso grafo: 0.35 (stacco 0.82, liste concordi)
+   validità: sempre → ora
+   fonte: user
+
+5. [active] Gaia abita a Milano (BSS51SG1)
+   punteggio 0.1839 (grezzo 0.0651)
+   liste: vector, graph
+   rango semantico: 5
+   rango grafo: 2
+   coseno: 0.7054
+   supporto: weak
+   blocco vincente: 0
+   via: [[note:01M89P12SQZGGGGEET4SQJ4ZER]] -mentions-> [[Milano]] -mentions-> (nota BSS51SG1)
+   peso grafo: 0.35 (stacco 0.82, liste concordi)
+   validità: 2026-09-01 → ora
+   fonte: user
+[exit 0]
+
+$ engramma purge 01M89P12S6XMJJY75ZX5RSME6N --reason "Gaia asked to forget it" --yes
+purgata: 01M89P12S6XMJJY75ZX5RSME6N (2 payload dimenticati)
+[exit 0]
+
+### S7 · export, vault, import
+
+$ engramma export <tmp>/export
+esportate: 6 note in <tmp>/export
+[exit 0]
+
+$ engramma vault init <tmp>/vault
+vault inizializzato: <tmp>/vault
+[exit 0]
+
+$ engramma vault sync <tmp>/vault
+note aggiornate da file: 1
+  - fact/gaia-abita-a-milano-BSS51SG1.md
+[exit 0]
+
+$ engramma import <tmp>/obsidian --obsidian
+incorporate: 4 (in attesa: 0)
+importate: 2
+saltate: 1
+  - .obsidian: hidden directory
+errori: 0
+[exit 0]
+
+### S8 · verify
+
+$ engramma verify
+registro verificato: 17 operazioni, catena hash, ricostruzione e indice FTS a posto
+copertura vettori: granite-embedding-97m-multilingual-r2@835ad140 [ready] 8/8 note
+[exit 0]
+
+### S9 · sync: pairing, without a second device
+
+$ engramma devices init
+dispositivo b5ee5a06 (elenco: 1 vivi)
+[exit 0]
+
+$ engramma devices invite --no-relay --name portatile
+biglietto (dieci minuti, un uso):
+engramma-invite-v1.xdkqzwbd3bx63x37cstx2d7rpr56fizjgosanvthcnbq66d4gonaaaabuijwtsryaaaagerrgayc4nrufyyc4mjzgq5dkmzyhazbgmjzgixdcnryfyyc4mjyhe5dkmzyhazbgmjzgixdcnryfyyteoboge5dkmzyhazl5dz7ihkneesqegqryjvyzhlaq
+in attesa del dispositivo che entra…
+[stopped with Ctrl-C]
+
+$ engramma devices code --no-relay
+engramma: NO_MAILBOX: nessuna casella postale configurata: `engramma mailbox add` prima
+[stopped with Ctrl-C]
+
+$ engramma devices list
+portatile  b5ee5a06  b8d50cd8
+[exit 0]
+
+$ engramma sync status
+nessuna cella condivisa da qui
+[exit 0]
+
+### S10 · the review page
+
+$ engramma review
+revisione: http://127.0.0.1:57542/entra?token=285c016bc409ce02a534c1b5f175ec0bad282ec7bf2249368ebb1e3f051ab284
+[stopped with Ctrl-C]
+
+### S11 · MCP over HTTP and the grants
+
+$ engramma mcp --cells default --http 127.0.0.1:8787 --public-url https://memory.example.net
+[the server keeps running in this terminal]
+mcp-http: in ascolto su http://127.0.0.1:8787 — pubblico: https://memory.example.net (approva i collegamenti con `engramma oauth pending`)
+
+$ engramma oauth pending
+nessuna richiesta in attesa
+[exit 0]
+
+$ engramma oauth grants
+nessun grant
+[exit 0]
+[stopped with Ctrl-C]
+
+Capture done.
+
+### S12 · a second proposal, the bulk revert with its preview
+
+$ [tools/call memory_propose over stdio MCP, actor mcp:claude-code]
+{
+  "decided_by": null,
+  "existing": null,
+  "id": "01M89P3E4A1GFZN3DNXT4207JZ",
+  "note": null,
+  "possible_duplicates": [
+    {
+      "cosine": 0.8800835609436035,
+      "id": "01M89P182FF884FFM8EPZWC7KQ"
+    },
+    {
+      "cosine": 0.8131727576255798,
+      "id": "01M89P12PCVPJTGADABSS51SG1"
+    },
+    {
+      "cosine": 0.7792295217514038,
+      "id": "01M89P182E01J6YKN2MCCHQ7NK"
+    },
+    {
+      "cosine": 0.7767063975334167,
+      "id": "01M89P12SQZGGGGEET4SQJ4ZER"
+    },
+    {
+      "cosine": 0.7727876901626587,
+      "id": "01M89P12QP55CHBE5S94D2PMK9"
+    },
+    {
+      "cosine": 0.7049479484558105,
+      "id": "01M89P12RFGAJ9PX1MM9BK2PQ5"
+    }
+  ],
+  "reason": null,
+  "status": "pending"
+}
+
+$ engramma proposals
+[in coda] 6W44X6B0 mcp:claude-code — Corso di ceramica
+[in coda] XT4207JZ mcp:claude-code — Corso di ceramica
+[exit 0]
+
+$ engramma proposals accept 6W44X6B0
+accettata: 01M89P16DAY77XXPJY6W44X6B0
+[exit 0]
+
+$ engramma decisions
+D9BWHR4V  accetta  user@cli  2026-11-25T15:43:48Z
+      proposta 6W44X6B0
+      perché: accettata dalla CLI
+      annullata
+JJP66SAD  accetta  user@cli  2026-11-25T15:45:01Z
+      proposta 6W44X6B0
+      perché: accettata dalla CLI
+[exit 0]
+
+$ engramma revert --by user --dry-run
+annullerò 1 decisioni:
+  conflitti: 0 (non toccati)
+  purgate: 0 (annullate nel registro, il contenuto non torna)
+[exit 0]
+
+$ engramma revert --by user --yes
+annullerò 1 decisioni:
+  conflitti: 0 (non toccati)
+  purgate: 0 (annullate nel registro, il contenuto non torna)
+annullate 1, conflitti 0, purgate 0
+[exit 0]
+
+$ engramma decisions
+D9BWHR4V  accetta  user@cli  2026-11-25T15:43:48Z
+      proposta 6W44X6B0
+      perché: accettata dalla CLI
+      annullata
+JJP66SAD  accetta  user@cli  2026-11-25T15:45:01Z
+      proposta 6W44X6B0
+      perché: accettata dalla CLI
+      annullata
+[exit 0]
+
+$ engramma proposals
+[in coda] 6W44X6B0 mcp:claude-code — Corso di ceramica
+[in coda] XT4207JZ mcp:claude-code — Corso di ceramica
+[exit 0]
+
+### S13 · the policy fields
+
+$ engramma policy set write=auto reviewer=local min_confidence=0.8 kinds=fact,preference max_auto_per_hour=10
+politica aggiornata
+[exit 0]
+
+$ engramma policy show
+write: auto
+reviewer: local
+min_confidence: 0.8
+kinds: fact,preference
+allow_supersede: none
+max_auto_per_hour: 10
+[exit 0]
+
+$ engramma policy set write=propose
+politica aggiornata
+[exit 0]
+
+$ engramma cell list
+default
+[exit 0]
+
+$ engramma verify
+registro verificato: 22 operazioni, catena hash, ricostruzione e indice FTS a posto
+copertura vettori: granite-embedding-97m-multilingual-r2@835ad140 [ready] 8/9 note
+[exit 0]
+
+Follow-up done.
+
+### S11b · the approve/deny surface, on a code nobody asked
+
+$ engramma oauth approve AAAA-BBBB --label chatgpt --yes
+engramma: nessuna richiesta con codice AAAA-BBBB
+[exit 3]
+
+$ engramma oauth deny AAAA-BBBB
+engramma: nessuna richiesta in attesa con codice AAAA-BBBB
+[exit 3]
+### S7b · vault sync on a folder that is not there (the flag is the point)
+
+$ engramma vault sync <tmp>/no-vault --allow-deletions
+engramma: vault sync: io: No such file or directory (os error 2)
+[exit 4]
+### S9b · the relay flag, accepted (no shared cells: the pass has nothing to say)
+
+$ engramma sync run --relay https://example.invalid
+[exit 0]

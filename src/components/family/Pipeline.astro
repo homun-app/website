@@ -10,6 +10,8 @@ interface Stage {
 	items?: readonly string[];
 	/** The stage the method is built around: drawn in the product's accent. */
 	core?: boolean;
+	/** The Engramma stage: drawn in Engramma's blue, on any product's page. */
+	mem?: boolean;
 }
 
 interface Props {
@@ -36,8 +38,8 @@ const travel = `@keyframes ${packet}{0%{opacity:0;left:0}4%{opacity:1}${stops}96
 <div class:list={["pipe", className]} data-product={product} data-motion="rise" role="list" aria-label={label}
 	style={`--n:${count};--cycle:${cycle};--packet:${packet}`}>
 	<span class="track" aria-hidden="true"><i /></span>
-	{stages.map(({ name, title, body, items, core }, index) => (
-		<div class:list={["stage", { core }]} role="listitem" style={`--i:${index}`}>
+	{stages.map(({ name, title, body, items, core, mem }, index) => (
+		<div class:list={["stage", { core, mem }]} role="listitem" style={`--i:${index}`}>
 			<p class="n">{index + 1} · {name}</p>
 			<h3>{title}</h3>
 			<p>{body}</p>
@@ -56,6 +58,8 @@ const travel = `@keyframes ${packet}{0%{opacity:0;left:0}4%{opacity:1}${stops}96
 	.stage li { padding: 5px 8px; border-radius: 8px; background: var(--surface); }
 	.stage:not(:last-child)::after { content: "→" / ""; position: absolute; top: 22px; right: -12px; z-index: 1; color: var(--accent-text); font-weight: 700; }
 	.stage.core { border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); background: var(--accent-soft); }
+	.stage.mem { border-color: color-mix(in srgb, var(--blue) 30%, var(--line)); background: var(--blue-soft); }
+	.stage.mem .n { color: var(--blue-text); }
 
 	/* The point of light rides on a track above the stages. The track starts
 	   7 px (half the light) before the pipeline and ends 7 px after its last

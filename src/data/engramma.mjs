@@ -360,12 +360,19 @@ const REMOTE = `engramma mcp --cells default --http 127.0.0.1:8787 \\
 engramma oauth pending
 engramma oauth approve XXXX-XXXX --label chatgpt --yes`;
 const TESTED_ON = "Exercised on 12 November 2026 through a tunnel: claude.ai searched, showed the proposal form and was revoked; ChatGPT searched, queued a proposal and was revoked. Not re-run on this beta yet.";
+// Story 1 of the capture is real end to end on THIS beta: Claude Code 2.1.332
+// proposed through its own MCP client and MCP Inspector 2.16.0 read the same
+// cell (scripts/fixtures/engramma-session.txt, in the website repository).
+const TESTED_ON_THIS_BETA = "Exercised on this beta: story 1 of the capture behind this page — Claude Code 2.1.332 proposed through its own MCP client, MCP Inspector 2.16.0 read the same cell (the session is scripts/fixtures/engramma-session.txt in the website repository).";
+// Story 1 was then run a second time with Codex as the reader: its own CLI
+// searched through its own MCP client and found what Claude Code had proposed.
+const TESTED_ON_THIS_BETA_CODEX = "Exercised on this beta: story 1 of the capture behind this page, run again with Codex as the reader — the Codex CLI 0.171.0-alpha.13.2 searched through its own MCP client and found the note Claude Code had proposed (the session is scripts/fixtures/engramma-session.txt in the website repository).";
 
 export const ENGRAMMA_CLIENTS = [
 	{
-		id: "claude-code", name: "Claude Code", kind: "local", tested: false, file: "Terminal", lang: "sh",
+		id: "claude-code", name: "Claude Code", kind: "local", tested: true, file: "Terminal", lang: "sh",
 		code: `claude mcp add engramma -- ${BIN} mcp --cells default`,
-		note: "The default scope is the current project. --scope user makes the server available in every project.",
+		note: `The default scope is the current project. --scope user makes the server available in every project. ${TESTED_ON_THIS_BETA}`,
 	},
 	{
 		id: "claude-desktop", name: "Claude Desktop", kind: "local", tested: false,
@@ -384,9 +391,9 @@ export const ENGRAMMA_CLIENTS = [
 		note: "The file Claude Code reads for a project too. The older .vscode/mcp.json uses a format that retires in February 2027.",
 	},
 	{
-		id: "codex", name: "Codex", kind: "local", tested: false, file: "Terminal", lang: "sh",
+		id: "codex", name: "Codex", kind: "local", tested: true, file: "Terminal", lang: "sh",
 		code: `codex mcp add engramma -- ${BIN} mcp --cells default`,
-		note: "It writes ~/.codex/config.toml. For the remote server: codex mcp add engramma --url https://memory.example.net/mcp, then codex mcp login engramma.",
+		note: `It writes ~/.codex/config.toml. For the remote server: codex mcp add engramma --url https://memory.example.net/mcp, then codex mcp login engramma. ${TESTED_ON_THIS_BETA_CODEX}`,
 	},
 	{
 		id: "gemini", name: "Gemini CLI", kind: "local", tested: false, file: "~/.gemini/settings.json", lang: "json",

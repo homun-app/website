@@ -2,7 +2,7 @@
 // The signed log of a memory space: who proposed, who decided, when. Only
 // changes are signed. A read leaves no trace in the log, so a `read` row is
 // drawn apart and says so: it never passes for a signature.
-type Kind = "propose" | "decide" | "read";
+type Kind = "propose" | "decide" | "read" | (string & {});
 
 interface Entry {
 	kind: Kind;
@@ -13,8 +13,8 @@ interface Entry {
 	text: string;
 	/** Why, as the engine keeps it. */
 	why?: string;
-	/** `wait`: the proposal is still in quarantine. `ok`: it became memory. */
-	state?: "wait" | "ok";
+	/** `wait`: the row waits for a person. `ok`: done. `mem`: remembered. */
+	state?: "wait" | "ok" | "mem" | (string & {});
 	/** The scene and the beat a row belongs to. A player may hold a row back
 	 * until its beat comes; without JavaScript every row is already there. */
 	scene?: number;

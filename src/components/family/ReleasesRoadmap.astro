@@ -12,7 +12,8 @@ interface Props {
 	next: Era;
 	later?: Era;
 	vision?: readonly { title: string; body: string }[];
-	/** The progress of "Now", when it is measured: milestones done and total. */
+	/** How far "Now" has come, when it is measured: milestones done and total.
+	 * While nothing is done it reads «in progress»: no bar, no number. */
 	progress?: { done: number; total: number };
 	class?: string;
 }
@@ -24,16 +25,18 @@ const eras = [
 	{ era: next, state: "next" },
 	...(later ? [{ era: later, state: "later" }] : []),
 ];
+const started = progress && progress.total > 0;
 ---
 
 <div class:list={["roadmap", className]}>
 	<div class="road" data-product={product} data-motion="rise" style={`--columns:${eras.length}`}>
-		{progress && (
+		{started && progress.done > 0 && (
 			<p class="progress" role="progressbar" aria-label={`Progress of ${now.label}`} aria-valuemin={0} aria-valuemax={progress.total} aria-valuenow={progress.done}>
-				<span><i style={`width:${progress.total ? (progress.done / progress.total) * 100 : 0}%`} /></span>
+				<span><i style={`width:${(progress.done / progress.total) * 100}%`} /></span>
 				{progress.done} of {progress.total} milestones
 			</p>
 		)}
+		{started && progress.done === 0 && <p class="progress state">In progress</p>}
 		{eras.map(({ era, state }) => (
 			<section class:list={["era", state]} data-era={state} aria-label={era.label}>
 				<h3>{era.label}</h3>
@@ -76,6 +79,8 @@ const eras = [
 	.progress { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 4px 10px; margin: 0 0 -4px; font: .7rem/1.4 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--band-muted); }
 	.progress span { grid-column: 1 / -1; display: block; height: 3px; border-radius: 2px; background: #2a3532; }
 	.progress i { display: block; height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--accent), var(--accent-text)); }
+	/* Nothing done yet: the work is announced, not measured. */
+	.progress.state { grid-template-columns: minmax(0, 1fr); }
 
 	.vision { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin: 0; padding: 0; list-style: none; }
 	.vision li { padding-top: 16px; border-top: 1px solid #2a3532; }

@@ -87,11 +87,13 @@ assert.deepEqual(parseSyncArgs(["--dry-run", "--allow-schema-upgrade"]), {
 	mode: "dry-run",
 	allowEmpty: false,
 	allowSchemaUpgrade: true,
+	releasesOnly: false,
 });
 assert.deepEqual(parseSyncArgs(["--write", "--allow-schema-upgrade"]), {
 	mode: "write",
 	allowEmpty: false,
 	allowSchemaUpgrade: true,
+	releasesOnly: false,
 });
 assert.throws(
 	() => parseSyncArgs(["--write", "--allow-empty", "--allow-schema-upgrade"]),

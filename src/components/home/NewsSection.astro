@@ -1,8 +1,8 @@
 ---
 // The releases and the roadmap of the homepage: the family's block, fed by the
-// two snapshots that sync from GitHub (src/lib/releases-roadmap.mjs). Nothing
-// in this section is written by hand, so the beta channel — which the sync
-// does not keep — is reached through "All releases" and not listed here.
+// two snapshots that sync from GitHub (src/lib/releases-roadmap.mjs). The beta
+// channel is public record here, as one line marked «beta» that leads to the
+// changelog; the download buttons still resolve to stable releases only.
 import ReleasesRoadmap from "../family/ReleasesRoadmap.astro";
 import roadmapSnapshot from "../../data/roadmap.json";
 import releaseSnapshot from "../../data/releases.json";
@@ -12,18 +12,18 @@ import { RELEASES_PAGE_URL } from "../../scripts/downloads.mjs";
 const { shipped, now, next, later, progress } = homeRoadmap(releaseSnapshot, roadmapSnapshot);
 ---
 
-<section id="news" class="news f-band" data-product="homun" data-tone="band" aria-labelledby="news-title">
+<section id="roadmap" class="news f-band" data-product="homun" data-tone="band" aria-labelledby="roadmap-title">
 	<div class="inner">
 		<div class="f-head loud">
 			<p class="f-eyebrow">Releases and roadmap</p>
-			<h2 id="news-title">Where Homun is going.</h2>
-			<p class="f-lead">The latest stable releases, and what we’re building next. Open source, so you can follow every change.</p>
+			<h2 id="roadmap-title">Where Homun is going.</h2>
+			<p class="f-lead">What shipped — the open beta marked as such, then the stable releases that have a title — and what we’re building next. Open source, so you can follow every change.</p>
 		</div>
 		<ReleasesRoadmap product="homun" shipped={shipped} now={now} next={next} later={later} progress={progress} />
 		<nav class="more" aria-label="Releases and roadmap">
 			<a href={RELEASES_PAGE_URL}>All releases →</a>
 			<a href="/changelog/">Full changelog →</a>
-			<a href="/roadmap/">Roadmap →</a>
+			<a href="/roadmap/">Roadmap and votes →</a>
 		</nav>
 	</div>
 </section>

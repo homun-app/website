@@ -40,8 +40,6 @@ const beta = ENGRAMMA_RELEASE.version.split("-")[0];
 			<div class="install">
 				<InstallCommand command={ENGRAMMA_SHORT_INSTALL} />
 				<p class="small">{ENGRAMMA_PLATFORMS_LINE} · <a href={ENGRAMMA_RELEASE.releaseUrl}>release notes</a> · <a href={ENGRAMMA_RELEASE.installerUrl}>installer of this version</a> · <a href={ENGRAMMA_RELEASE.repository}>GitHub</a></p>
-				<p class="small">A beta: the command line can still change, and memory written by this version opens in every later one (<a href={ENGRAMMA_RELEASE.compatibilityUrl}>the compatibility promise</a>).</p>
-				<p class="small">The macOS binary is not signed yet. The terminal installer is not blocked by Gatekeeper; a file downloaded from the browser is.</p>
 			</div>
 			<div class="works">
 				<span>Works with</span>
@@ -62,6 +60,7 @@ const beta = ENGRAMMA_RELEASE.version.split("-")[0];
 				<p class="f-lead">Claude Code, Codex, Cursor, OpenCode, ChatGPT and Homun connect to the same memory. Each signs what it proposes, your policy decides what becomes true, and the next tool picks up where the last one stopped.</p>
 			</div>
 			<Hub />
+			<p class="capture f-small">Replayed from a real session on 0.6.17-beta.1. Story 1 ran with real clients — Claude Code proposed, and MCP Inspector and Codex each read — while in stories 2 and 3 the engine side is real and the clients were a driver carrying their configuration. <a href="https://github.com/homun-app/website">The capture is in the website’s repository</a>, in <code>scripts/fixtures/engramma-session.txt</code>.</p>
 		</div>
 	</section>
 
@@ -155,6 +154,8 @@ const beta = ENGRAMMA_RELEASE.version.split("-")[0];
 	<section id="start" class="close f-wrap" data-product="engramma" aria-labelledby="start-title">
 		<h2 id="start-title">Start a memory in a minute.</h2>
 		<InstallCommand command={ENGRAMMA_SHORT_INSTALL} class="wide" />
+		<p class="small">A beta: the command line can still change, and memory written by this version opens in every later one (<a href={ENGRAMMA_RELEASE.compatibilityUrl}>the compatibility promise</a>).</p>
+		<p class="small">The macOS binary is not signed yet. The terminal installer above is not blocked by Gatekeeper; a file downloaded from the browser is.</p>
 		<p class="small">Open source · Apache 2.0 · <a href={ENGRAMMA_RELEASE.repository}>GitHub</a> · <a href="/docs/engramma/">Docs</a> · <a href="/">Homun, with Engramma inside</a></p>
 	</section>
 </Page>

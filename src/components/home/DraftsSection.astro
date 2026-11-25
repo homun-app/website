@@ -1,9 +1,8 @@
 ---
-import FeatureSection from "./FeatureSection.astro";
-import Surface from "../app/Surface.astro";
+import DeepDive from "../family/DeepDive.astro";
 import Card from "../app/Card.astro";
-import Pill from "../app/Pill.astro";
 import Done from "../app/Done.astro";
+import Pill from "../app/Pill.astro";
 
 const drafts = [
   { name: "Nora Fields", reply: "Hi Nora, yes: the renewal covers the new seats from March 1st (section 4.2). Happy to send the updated order form." },
@@ -11,21 +10,29 @@ const drafts = [
 ];
 ---
 
-<FeatureSection id="drafts" eyebrow="Inbox manager" title="It does the work. You press Send."
-  lead="It reads Gmail through the apps you connected. Replies wait in the chat as drafts: edit them, send them, or let them go.">
-  <Surface slot="visual" bot={{ name: "Inbox manager", family: "creature", color: "#F26A2E", state: "speaking" }} status="9:04">
+<DeepDive id="drafts" product="homun" tight eyebrow="Drafts" title="It does the work. You press Send."
+  lead="It reads Gmail through the apps you connected. Replies wait in the chat as drafts: edit them, send them, or let them go."
+  chips={["sent only if you confirm", "Send · Edit · Discard", "two accounts, named"]}>
+  <div slot="visual" class="stack" data-motion="">
     {drafts.map(({ name, reply }, i) => (
       <Card kind="draft" {i}>
         <Fragment slot="title"><span class="gmail" aria-hidden="true">M</span>Draft for {name} <small>· from work Gmail</small></Fragment>
         <Fragment slot="sub">draft — sent only if you confirm</Fragment>
         <Fragment slot="body">{reply}</Fragment>
-        {i === 0 && <Fragment slot="buttons"><Pill primary class="press">Send</Pill><Pill>Edit</Pill></Fragment>}
+        {i === 0 && <Fragment slot="buttons"><Pill primary>Send</Pill><Pill>Edit</Pill></Fragment>}
       </Card>
     ))}
-    <Done i={2}>7 more drafts in Gmail · nothing sent</Done>
-  </Surface>
-</FeatureSection>
+    <Done i={2}>7 more drafts awaiting your click</Done>
+  </div>
+</DeepDive>
 
 <style>
-  .gmail { width: 18px; height: 18px; border-radius: 5px; display: grid; place-items: center; background: #EA4335; color: #101917; font-size: 10px; font-weight: 700; }
+  .stack { display: grid; gap: 10px; }
+  .gmail { width: 18px; height: 18px; border-radius: 5px; display: inline-grid; place-items: center; background: #EA4335; color: #101917; font-size: 10px; font-weight: 700; }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .stack:not(.in) > * { opacity: 0; transform: translateY(10px); }
+    .stack.in > * { animation: f-line .5s ease forwards; }
+    .stack.in > :nth-child(2) { animation-delay: .35s; }
+    .stack.in > :nth-child(3) { animation-delay: .7s; }
+  }
 </style>

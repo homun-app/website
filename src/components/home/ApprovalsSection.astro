@@ -1,34 +1,41 @@
 ---
-import FeatureSection from "./FeatureSection.astro";
-import Surface from "../app/Surface.astro";
-import Msg from "../app/Msg.astro";
+import DeepDive from "../family/DeepDive.astro";
 import Card from "../app/Card.astro";
+import Msg from "../app/Msg.astro";
 import Pill from "../app/Pill.astro";
 ---
 
-<FeatureSection id="approvals" eyebrow="Approvals" layout="center" title="It asks before it goes too far."
-  lead="Reads that serve your request just happen. Writing to someone new, paying or deleting waits for you.">
-  <div slot="visual" class="approval">
-    <Surface bot={{ name: "Scout", family: "robo", color: "#3F7BEA", state: "waiting" }} status="waiting for you">
-      <Msg from="bot" i={0}>Sala Navigli fits: 24 seats, €1,800, free on the 12th. Their site only takes requests through a form.</Msg>
-      <Card kind="approval" i={1}>
-        <Fragment slot="title"><span class="question">Send the booking request on salanavigli.it?</span></Fragment>
-        <Fragment slot="sub"><span class="details">It writes to someone you haven't named. Your name, email and the date go in the form.</span></Fragment>
-        <Fragment slot="buttons">
-          <Pill primary class="press">Allow</Pill>
-          <Pill>For this turn</Pill>
-          <Pill>Always allow</Pill>
-          <Pill>Deny</Pill>
-        </Fragment>
-      </Card>
-    </Surface>
+<DeepDive id="approvals" product="homun" eyebrow="Approvals" title="It asks before it goes too far."
+  lead="By default a bot asks before every action that changes something: sending, writing, running a command. Reading doesn’t ask. In Automatic, a model lets what serves your request through and asks only when it goes beyond: writing to someone, paying, deleting, publishing."
+  chips={["Allow · Deny", "For this turn", "Always allow for a bot"]}>
+  <div slot="visual" class="approval" data-motion="approval">
+    <Msg from="bot">Sala Navigli fits: 24 seats, €1,800, free on the 12th. Their site only takes requests through a form.</Msg>
+    <Card kind="approval">
+      <Fragment slot="title">Scout wants to send the booking request on salanavigli.it</Fragment>
+      <Fragment slot="sub">It writes to someone you haven't named: your name, email and the date go in the form.</Fragment>
+      <div class="btns">
+        <Pill>Allow</Pill>
+        <Pill primary class="pick">For this turn</Pill>
+        <Pill>Always allow for Scout</Pill>
+        <Pill>Deny</Pill>
+      </div>
+    </Card>
+    <p class="step done">Allowed for this turn · request sent</p>
   </div>
-</FeatureSection>
+</DeepDive>
 
 <style>
-  .approval { max-width: 460px; margin-inline: auto; }
-  .approval :global([data-from]) { font-size: 15px; }
-  .question { font-size: 16px; }
-  .details { font-size: 13.5px; }
-  .approval :global([data-pill]) { font-size: 14px; padding: 8px 15px; }
+  .approval { display: grid; gap: 10px; justify-items: start; }
+  .approval :global([data-from]) { font-size: 15px; max-width: 100%; }
+  .btns { display: flex; flex-wrap: wrap; gap: 8px; }
+  .step { display: flex; gap: 8px; align-items: center; margin: 0; color: var(--muted); font-size: .8rem; }
+  .step::before { content: "✓"; color: var(--ok); font-weight: 700; }
+  .step time { margin-left: auto; font: .68rem var(--mono); }
+  @media (prefers-reduced-motion: no-preference) {
+    .pick { background: transparent; color: inherit; border-color: var(--line); }
+    .approval.in .pick { animation: f-choose .4s ease 1.6s forwards; }
+    .done { opacity: 0; }
+    .approval.in .done { animation: f-line .4s ease 2.2s forwards; }
+  }
+  @keyframes f-choose { to { background: var(--fg); color: var(--bg); border-color: var(--fg); } }
 </style>

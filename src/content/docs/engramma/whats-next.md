@@ -1,20 +1,20 @@
 ---
-title: What’s next
+title: What's next
 slug: docs/engramma/whats-next
 ---
 
-Engramma is inside Homun today. For developers, **Engramma 0.6.17-beta.1** is a public preview: the `engramma` command line and an MCP server that gives your memory to Claude and other MCP clients. See [the developer preview](/engramma/#install).
+Where Engramma goes from here. The full plan, phase by phase, is § 12 of the design document in the repository; the [product page's roadmap](/engramma/#roadmap) keeps the same list current.
 
-**Available**
-- Inside Homun: readable notes with sources, dates and quarantine, on your computer.
-- Developer preview: the CLI and the MCP server, on macOS (Apple Silicon) and Linux (x86_64, arm64).
-- Encrypted sync: the same memory on your own devices, end-to-end encrypted; a relay can forward it but never read it, and you can run your own or none.
+**Now.** The developer preview: public binaries, the installer, [the compatibility promise](/docs/engramma/compatibility/).
 
-**Next**
-- More platforms: Windows and Intel Macs, once their builds pass every test.
-- Organizations: shared memory for a team, with signed rules for who can read, propose and write.
-- Protection at rest: encrypted company memory and device revocation.
+**Next.**
 
-**Later**
-- Engramma server: many memory spaces in one service, single sign-on and an optional admin console.
-- Cluster: memory spread over many machines, with replicas and backups.
+- **Your documents** (planned): PDF, Office files and web pages become sourced notes. Today Engramma reads Markdown only — [import and the vault](/docs/engramma/import-and-the-vault/).
+- **0.7 — Organizations**: shared memory with signed rules — who reads, who proposes, who writes.
+- **0.7.1 — Protection at rest**: encrypted company memory, device revocation.
+- **0.8 — Engramma server**: many spaces in one service, single sign-on, an optional admin console, read audit.
+- **0.9 — Cluster**: replicas, placement, backups to object storage.
+
+**More platforms**: Windows and Intel Macs, when their builds pass every test.
+
+The vision, in three lines: one person's memory on their own devices; spaces shared by role, with rules everyone can verify and no central server required; an optional server, single sign-on and audit, scaling to a cluster.

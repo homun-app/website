@@ -31,7 +31,7 @@ Container runtime signal cleanup contract passed
 
 Il controllo news è passato anche da solo. La homepage sul dev server misurava `scrollWidth = innerWidth = 360`, in Chromium con movimento ridotto. Il mockup mostra la beta.5 mentre il piano richiede le quattro release beta.1–beta.4.
 
-Requisiti: [CHANGELOG di Sandbot](/Users/fabio/Projects/Bot/sandbot/CHANGELOG.md:223) documenta Docker per la 0.3.1000. Il commit ereditato non lo pubblicizza come requisito di una release stabile disponibile. La regola di selezione delle release resta invariata.
+Requisiti: [CHANGELOG di Sandbot](sandbot/CHANGELOG.md:223) documenta Docker per la 0.3.1000. Il commit ereditato non lo pubblicizza come requisito di una release stabile disponibile. La regola di selezione delle release resta invariata.
 
 ## Task 8 · Pagina Engramma
 
@@ -51,13 +51,13 @@ Chromium sul dev server a 360 px con movimento ridotto: `/engramma/` ha `scrollW
 
 Riferimenti al README di Engramma:
 
-- Hero, note leggibili e integrazione Homun: [righe 5 e seguenti](/Users/fabio/Projects/Bot/engramma/README.md:5), [binding per Homun e accesso MCP](/Users/fabio/Projects/Bot/engramma/README.md:25). Lo stato «coming to other AI apps» segue la spec del sito.
-- Ricerca con parole diverse: [riga 21](/Users/fabio/Projects/Bot/engramma/README.md:21).
-- Ricerca storica e mantenimento della vecchia versione: [riga 15](/Users/fabio/Projects/Bot/engramma/README.md:15).
-- Provenienza, confidenza e spiegazione: [riga 6](/Users/fabio/Projects/Bot/engramma/README.md:6), [riga 107](/Users/fabio/Projects/Bot/engramma/README.md:107).
-- Quarantena e conferma: [riga 19](/Users/fabio/Projects/Bot/engramma/README.md:19).
-- File locali e assenza di un server: [riga 10](/Users/fabio/Projects/Bot/engramma/README.md:10).
-- Rust, SQLite e strumenti MCP: [riga 3](/Users/fabio/Projects/Bot/engramma/README.md:3), [riga 10](/Users/fabio/Projects/Bot/engramma/README.md:10), [riga 100](/Users/fabio/Projects/Bot/engramma/README.md:100).
+- Hero, note leggibili e integrazione Homun: [righe 5 e seguenti](engramma/README.md:5), [binding per Homun e accesso MCP](engramma/README.md:25). Lo stato «coming to other AI apps» segue la spec del sito.
+- Ricerca con parole diverse: [riga 21](engramma/README.md:21).
+- Ricerca storica e mantenimento della vecchia versione: [riga 15](engramma/README.md:15).
+- Provenienza, confidenza e spiegazione: [riga 6](engramma/README.md:6), [riga 107](engramma/README.md:107).
+- Quarantena e conferma: [riga 19](engramma/README.md:19).
+- File locali e assenza di un server: [riga 10](engramma/README.md:10).
+- Rust, SQLite e strumenti MCP: [riga 3](engramma/README.md:3), [riga 10](engramma/README.md:10), [riga 100](engramma/README.md:100).
 
 ## Task 9 · Docs divise per prodotto, più banner di transizione
 
@@ -148,3 +148,31 @@ Ramo `site-engramma`, dalla base `66c78c1`. Il motore di Engramma non è stato t
 **Verifiche.** `npm run check` verde, con il test nuovo `check-scripts-build.mjs`: due annotazioni TypeScript rimaste in `copy.mjs` caricavano con stato 200 e lasciavano muto il bottone Copia. A 1280 e a 360 px `scrollWidth = clientWidth` sulle due pagine; nello stato finale senza movimento nessun testo nascosto; nessun errore a runtime in un percorso completo; ancore e link al repository rispondono 200; redirect provato con nginx in un contenitore (`302`, e seguendolo si scarica lo script). Copia verificata fino al testo che consegna: gli appunti sono negati all'automazione. Screenshot in `~/.zcode/v2/visualizations/57ac262ee12bd4a5fdc1b72bca76394c44aea759a4ec463a0f23f085fe4b126f/sito-engramma/`: un fotogramma per schermata, a 1280 e a 360, nei due temi (la pagina intera non si fotografa fedelmente in questo browser).
 
 Da dichiarare a Engramma: «Your documents» non è nel DESIGN § 12 (la cartella sorvegliata esiste già per il Markdown); «More platforms» è «planned», perché il README non promette una versione. Le docs linkavano `/engramma/#developers`, mai esistita: ora puntano a `#install`.
+
+## 2026-11-25 · Fase 2: la home di Homun, la nav per prodotto, le docs di Engramma
+
+Ramo `site-engramma`, dalla base `c8c3680`. Due sessioni hanno lavorato sulla stessa cartella: la prima ha lasciato nel working tree nav, docs, sync e gran parte della home, la seconda ha rilettuto tutto, corretto e finito. I motori sono stati soltanto letti: qui sotto `src/…` è il codice di Homun al tag `v0.3.1001-beta.20`, `engramma/…` il repo di Engramma.
+
+**Verifiche sul codice dell'app** (il file `sito-fase2-verifiche.md` non c'era: sono fatte qui).
+- *Privacy, cosa resta:* i dati stanno sulla macchina (`src/main/paths.ts:23`, `store/db.ts:46`, `store/library.ts:3-4`, `memory/engine.ts:367-369`).
+- *Privacy, cosa esce:* le app collegate, da `connect.composio.dev` e `login.composio.dev` o dall'indirizzo proprio del servizio (`connectors/catalog.json:6,22`, `connectors/composio.ts:155,201`; GitHub è un'app via Composio: `shared/app-catalog/composio-catalog.json:26`); i server MCP, stdio o HTTP (`mcp/index.ts:449,456`); i modelli cloud, dritti al fornitore (`agent/live-models.ts:27-34`, `agent/llm-pi.ts:8`); la ricerca web **senza chiave, accesa di default** (`agent/web-tools.ts:409`, `agent/web-search-providers.ts:8,52,143,276`); gli aggiornamenti, all'avvio e ogni sei ore (`main/updater.ts:55,580,585`); il modello integrato, 2,7 GB da Hugging Face (`agent/local-catalog.ts:35,50`), e quello della memoria (`memory/memory-rpc.ts:236-247`); skill e plugin da GitHub (`agent/skill-catalog.ts:64`, `connectors/marketplace-manager.ts:83`); Docker o Apple container e l'immagine del box (`sandbox/apple-container-release.ts:20-24`, `resources/box/Dockerfile:17,64-65`). Telemetria, analisi, crash report, account, licenze: non trovati (`renderer/index.html:8`; cercati sentry, posthog, telemetry, analytics, crashReporter, invite, license, activation). Guide: `guides/security.md:53-61`, `guides/connectors.md:13-17`.
+- **Frasi tolte perché false:** «Data goes out only to the apps you connected and to a cloud model», «direct GitHub», «each bot has a computer of its own» (un box solo, condiviso, usato quando lo prepari: `main/sandbox/index.ts:94`). In modalità Automatica il revisore vede richiesta e azione (`agent/auto-review.ts:586-603`). Il titolo della sezione è «This is everything that leaves».
+- *Registro di `team`:* «Asked {name}: {text}» e «Summary for you» (`renderer/src/components/AgentSendRow.tsx:54`, `TeamChat.tsx:116`), «Opened {host}» e «Took note» (`renderer/src/lib/activity.ts:85-101,140-142`), «waiting for you» (`ActivityPanel.tsx:75-83`), «{name} wants to…» (`lib/approval-app.ts:174`), «Allowed for this turn», «Deny» (`ApprovalCard.tsx:361-372,502-511`), «draft awaiting your click» (`shared/ui-messages.ts:159`), «source: {source}», «waiting for confirmation» (`MemoryPanel.tsx:289,426`). Approvazioni predefinite su «Ask» (`shared/types.ts:2141-2157`).
+- **Etichette corrette, l'app 0.3 non le ha:** «Take over» → «Take control» (`BotScreen.tsx:255`); «Change time» → «Edit» (`Settings.tsx:1061`); card «Save skill» → «{bot} wants to change skills» con Allow e Deny (`shared/tool-names.ts:38`); trigger e provider con i nomi dell'app (`Settings.tsx:963-979`, `lib/use-provider-setup.ts:17-29`).
+
+**Sync.** `normalizeReleases` tiene le pre-release e scrive `prerelease` su ogni release; il download e le pagine roadmap leggono solo le stabili; il changelog le elenca marcate «Pre-release». Modalità nuova, senza token né progetto: legge le release pubbliche e lascia la roadmap com'è. Comando usato: `npm run sync:product-data -- --write --releases-only` → `NO_CHANGE 13 roadmap items and 97 releases` (78 stabili, 19 pre-release). Il workflow non cambia.
+
+**Roadmap.** Le 19 beta sono una voce: «0.3 · beta — 19 pre-releases», con la data dell'ultima e il link al changelog; nessun titolo inventato. Delle stabili si mostrano quelle con un titolo di cinque parole al più: 0.2.1004, 0.2.1002, 0.2.1001. Homun Flow, a 0 su 6, mostra solo «In progress».
+
+**Codex.** Il CLI c'è, dentro l'app Codex (`codex-cli 0.171.0-alpha.13.2`, «Logged in using ChatGPT»), perciò la storia 1 è stata ripetuta con Codex lettore vero (fixture, S16): Claude Code 2.1.332 propone, tu accetti, `memory_search` di Codex trova «Auth: JWT · mcp:claude-code». Codex è «tested» e l'hero dice «what Claude Code learned, Codex knows». Codex ha girato in una casa isolata, poi cancellata; Claude Code ha fatto una richiesta (0,09 $).
+
+**Docs.** Le quattordici pagine, con l'aiuto del binario in `scripts/fixtures/engramma-help.txt` e una sessione in `engramma-docs-session.txt`. `check-engramma-docs.mjs` confronta i nomi di comandi e opzioni con l'aiuto.
+
+**Verifiche.** `npm run check` verde (build e 29 test). Browser headless su 38 casi: nessuno scorrimento orizzontale a 1280 e a 360 px, nessun errore in console, nessun testo nascosto con «riduci movimento». Screenshot (home, Engramma, due pagine delle docs, desktop e 360 px): `~/.zcode/v2/visualizations/cf370f1ad1035c0e438f7e7f7c095d73f077e6b68bd22571b57dbc49ae2c6f94/sito-fase2/`.
+
+**Da dichiarare e rimandato.**
+- Alle release di Homun servono titoli in inglese su GitHub: oggi il nome è il tag e le note delle beta sono in italiano.
+- A beta.20 la CI costruisce solo macOS (`.github/workflows/build.yml:2-4`): i chip «Windows beta» e «Linux beta» sono rimasti, vanno decisi.
+- Guide del sito non allineate all'app 0.3, non toccate: un box per bot, l'invio della bozza in Automatica, «Apps» contro «Plugin», skill da GitHub.
+- A Engramma: `engramma revert <id> --dry-run` annulla davvero (trovato nella sessione delle docs); `mcp --actor` senza `--write` fa uscire il server.
+- `TeamHub` e `Hub` hanno due motori di scena gemelli, non uno condiviso. `scroll.css` serve solo a `/dev/primitives`. Le pagine nuove sotto `/it/docs/engramma/` cadono sull'inglese.

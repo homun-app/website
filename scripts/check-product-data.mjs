@@ -747,11 +747,20 @@ const releasesWithPrereleaseLink = normalizeReleases(
 	roadmap.candidates,
 	projectFixture.syncedAt,
 );
-assert.equal(releasesWithPrereleaseLink.items.length, 1);
-assert.deepEqual(releasesWithPrereleaseLink.items[0].projectSlugs, []);
-assert.throws(
-	() => validateSnapshot(publicRoadmap, asPublicReleases(releasesWithPrereleaseLink)),
-	/Shipped roadmap item has no published release: connected-actions/,
+// Prereleases are public record now: kept, marked, and their roadmap links
+// count for the shipped items they announce.
+assert.equal(releasesWithPrereleaseLink.items.length, 2);
+assert.deepEqual(
+	releasesWithPrereleaseLink.items.map(({ version, prerelease }) => [version, prerelease]),
+	[
+		["v0.1.1054", true],
+		["v0.1.1055", false],
+	],
+);
+assert.deepEqual(releasesWithPrereleaseLink.items[0].projectSlugs, ["connected-actions"]);
+assert.deepEqual(releasesWithPrereleaseLink.items[1].projectSlugs, []);
+assert.doesNotThrow(() =>
+	validateSnapshot(publicRoadmap, asPublicReleases(releasesWithPrereleaseLink)),
 );
 const duplicateReleaseLinkFixture = structuredClone(releaseFixture);
 duplicateReleaseLinkFixture[0].body =
@@ -1535,14 +1544,29 @@ assert.throws(
 	() => readConfig({ HOMUN_GITHUB_TOKEN: "secret" }),
 	/Missing HOMUN_PROJECT_NUMBER/,
 );
-assert.deepEqual(parseSyncArgs([]), { mode: "dry-run", allowEmpty: false, allowSchemaUpgrade: false });
-assert.deepEqual(parseSyncArgs(["--dry-run"]), { mode: "dry-run", allowEmpty: false, allowSchemaUpgrade: false });
-assert.deepEqual(parseSyncArgs(["--write"]), { mode: "write", allowEmpty: false, allowSchemaUpgrade: false });
+assert.deepEqual(parseSyncArgs([]), { mode: "dry-run", allowEmpty: false, allowSchemaUpgrade: false, releasesOnly: false });
+assert.deepEqual(parseSyncArgs(["--dry-run"]), { mode: "dry-run", allowEmpty: false, allowSchemaUpgrade: false, releasesOnly: false });
+assert.deepEqual(parseSyncArgs(["--write"]), { mode: "write", allowEmpty: false, allowSchemaUpgrade: false, releasesOnly: false });
 assert.deepEqual(parseSyncArgs(["--write", "--allow-empty"]), {
 	mode: "write",
 	allowEmpty: true,
 	allowSchemaUpgrade: false,
+	releasesOnly: false,
 });
+assert.deepEqual(parseSyncArgs(["--write", "--releases-only"]), {
+	mode: "write",
+	allowEmpty: false,
+	allowSchemaUpgrade: false,
+	releasesOnly: true,
+});
+assert.throws(
+	() => parseSyncArgs(["--write", "--releases-only", "--allow-empty"]),
+	/Cannot combine --releases-only and --allow-empty/,
+);
+assert.throws(
+	() => parseSyncArgs(["--write", "--releases-only", "--allow-schema-upgrade"]),
+	/Cannot combine --releases-only and --allow-schema-upgrade/,
+);
 assert.throws(() => parseSyncArgs(["--wat"]), /Unknown option: --wat/);
 assert.throws(
 	() => parseSyncArgs(["--dry-run", "--write"]),
@@ -2355,6 +2379,99 @@ assert.match(
 	commitStep,
 	/^          git push origin HEAD:\$\{\{ github\.event\.repository\.default_branch \}\}$/m,
 	"Product-data changes must be pushed explicitly to the repository default branch",
+);
+
+// `--releases-only`: the public releases without a token, the roadmap as it is
+// on disk. No Project query, no Authorization header, and only the releases
+// snapshot can change.
+{
+	const root = await mkdtemp(join(tmpdir(), "homun-releases-only-"));
+	try {
+		const roadmapPath = join(root, "roadmap.json");
+		const releasesPath = join(root, "releases.json");
+		const roadmapBefore = await readFile(new URL("../src/data/roadmap.json", import.meta.url), "utf8");
+		const releasesBefore = await readFile(new URL("../src/data/releases.json", import.meta.url), "utf8");
+		await writeFile(roadmapPath, roadmapBefore);
+		await writeFile(releasesPath, releasesBefore);
+		const publishedBefore = JSON.parse(releasesBefore).items.filter(({ prerelease }) => !prerelease);
+		const beta = {
+			...structuredClone(releaseFixture[0]),
+			tag_name: "v9.9.9-beta.1",
+			name: "9.9.9-beta.1",
+			prerelease: true,
+			published_at: "2026-11-25T18:00:27Z",
+			html_url: "https://github.com/homun-app/homun-releases/releases/tag/v9.9.9-beta.1",
+			body: "La prima versione del canale di prova.",
+			assets: [],
+		};
+		// GitHub answers with what the snapshot already holds, as it answers a
+		// browser: no notes parsed here, the roadmap links of each release.
+		const asGitHubAnswers = ({ version, name, prerelease, publishedAt, githubUrl, projectSlugs, assets }) => ({
+			tag_name: version,
+			name,
+			draft: false,
+			prerelease,
+			published_at: publishedAt,
+			html_url: githubUrl,
+			body: projectSlugs.length ? `Roadmap: ${projectSlugs.join(", ")}` : "",
+			assets: assets.map(({ name: assetName, downloadUrl }) => ({ name: assetName, browser_download_url: downloadUrl })),
+		});
+		const page = [beta, ...JSON.parse(releasesBefore).items.map(asGitHubAnswers)];
+		const calls = [];
+		const fetchImpl = async (url, init = {}) => {
+			calls.push({ url, authorization: init.headers?.Authorization ?? null });
+			if (String(url).includes("/graphql")) throw new Error("The Project must not be queried in --releases-only");
+			return { ok: true, json: async () => page };
+		};
+		const syncedAt = "2026-11-25T16:00:00.000Z";
+		const result = await syncProductData({
+			env: {},
+			paths: { roadmapPath, releasesPath },
+			fetchImpl,
+			clock: () => syncedAt,
+			mode: "write",
+			releasesOnly: true,
+		});
+		assert.equal(result.status, "WROTE_CHANGE");
+		assert.deepEqual(calls, [
+			{
+				url: "https://api.github.com/repos/homun-app/homun-releases/releases?per_page=100&page=1",
+				authorization: null,
+			},
+		]);
+		assert.equal(await readFile(roadmapPath, "utf8"), roadmapBefore, "the roadmap is left as it is");
+		const written = JSON.parse(await readFile(releasesPath, "utf8"));
+		assert.equal(written.contentUpdatedAt, syncedAt);
+		assert.equal(written.items[0].version, "v9.9.9-beta.1");
+		assert.equal(written.items[0].prerelease, true, "a pre-release is kept and marked");
+		assert.deepEqual(written.items[0].highlights, [], "notes in other sections than the English ones are not invented");
+		// What GitHub answered with comes out as it went in. (The notes are not
+		// part of the answer built here, so they are left out of the comparison.)
+		const carried = ({ highlights, improvements, fixes, ...rest }) => rest;
+		assert.deepEqual(
+			written.items.slice(1).filter(({ prerelease }) => !prerelease).map(carried),
+			publishedBefore.map(carried),
+			"the stable releases come out as they went in",
+		);
+		// Nothing else to read: a second run changes nothing, and still writes no token.
+		const again = await syncProductData({
+			env: {},
+			paths: { roadmapPath, releasesPath },
+			fetchImpl,
+			clock: () => syncedAt,
+			mode: "write",
+			releasesOnly: true,
+		});
+		assert.equal(again.status, "NO_CHANGE");
+		assert.equal(calls.at(-1).authorization, null);
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+}
+assert.deepEqual(
+	"writeSnapshots" in productDataSync,
+	false,
+	"The sync module must not export a raw-candidate write bypass",
 );
 
 console.log("Product data contract passed");

@@ -30,9 +30,12 @@ The clients of the session
 --------------------------
 Story 1 is real end to end: Claude Code 2.1.332 proposed through its own MCP
 client (--mcp-config, headless) and the MCP Inspector 2.16.0 read the same
-cell. Codex is not installed on the machine, so the other actors — Cursor,
+cell. Codex was not installed on the machine, so the other actors — Cursor,
 OpenCode, ChatGPT, Homun, and Codex as the reader of story 1 — were a stdio
-MCP driver carrying the configuration each client would carry. The engine
+MCP driver carrying the configuration each client would carry.
+On the day of the docs (S16, at the end of this file) the story was run a
+second time with Codex as the reader: the Codex CLI of the Codex app searched
+through its own MCP client and found the note Claude Code had proposed. The engine
 signs the actor of the configuration, never what the client says it is, so
 the engine side of those scenes is the real one; the client side is not.
 The reviewer `local` is a fixture that answers with a fixed rule (accept what
@@ -1388,3 +1391,214 @@ $ engramma search What about Gaia? --cell work --k 3
    validità: sempre → ora
    fonte: user
 [exit 0]
+
+### S16 · story 1 again, with Codex as the reader (the day of the docs)
+
+A second session on the same binary: a fresh root, the default cell (the one
+`engramma init` creates), the same synthetic notes. This time both clients are
+real: Claude Code 2.1.332 proposes, the Codex CLI 0.171.0-alpha.13.2 reads.
+The notes are added before any model is configured, because `engramma embed`
+only takes what was added without an embedder; an accepted proposal gets its
+vector from a second `engramma embed`.
+
+$ engramma --version
+engramma 0.6.17-beta.1 (commit 1bfc611, schema 24)
+[exit 0]
+$ engramma init
+inizializzato: <tmp>/root
+[exit 0]
+$ engramma add <tmp>/notes/ufficio-torino.md --no-embed --source user --confidence stated --title Ufficio a Torino --tag ufficio --valid-from 2026-01-05
+aggiunta: 01M89SFDCVP47P1C403B2YBJTF
+[exit 0]
+$ engramma add <tmp>/notes/gaia-milano.md --no-embed --source user --confidence stated --title Gaia abita a Milano --tag casa/milano --valid-from 2026-09-01
+aggiunta: 01M89SFDDYNPRTZMRC1SQGGFY3
+[exit 0]
+$ engramma add <tmp>/notes/trasloco.md --no-embed --source user --confidence stated --title Trasloco: scatoloni da Torino --tag casa
+aggiunta: 01M89SFDF5X5SZVMFBVH30Q7TM
+[exit 0]
+$ engramma add <tmp>/notes/nuovo-ufficio.md --no-embed --source user --confidence stated --title Nuovo ufficio --tag ufficio --valid-from 2027-04-01
+aggiunta: 01M89SFDG0HNK40ZP4FD0QY8TH
+[exit 0]
+$ engramma add <tmp>/notes/lavoro-giulia.md --no-embed --source user --confidence stated --title Il lavoro di Giulia --tag amici
+aggiunta: 01M89SFDHF9DAKQFEX20GPF44E
+[exit 0]
+$ engramma add <tmp>/notes/acme-contratti.md --no-embed --source user --confidence stated --title Contratti Acme --tag lavoro/acme
+aggiunta: 01M89SFDJR7YP1X8HMFXZPHCJS
+[exit 0]
+$ engramma add <tmp>/notes/acme-cfo.md --no-embed --source website --confidence external --title CFO di Acme --tag lavoro/acme
+aggiunta: 01M89SFDKQBJV6K2VPACNMQ1GE
+[exit 0]
+$ engramma supersede 01M89SFDCVP47P1C403B2YBJTF <tmp>/notes/ufficio-milano.md --source user --confidence stated --title Ufficio a Milano --tag ufficio --valid-from 2026-09-01
+sostituita: 01M89SFDCVP47P1C403B2YBJTF → 01M89SFDNMHGMS46PGCE4FXE6P
+[exit 0]
+$ engramma model pull granite-embedding-97m-multilingual-r2
+scaricato: granite-embedding-97m-multilingual-r2@835ad140 in <tmp>/models
+[exit 0]
+$ engramma model use granite-embedding-97m-multilingual-r2
+modello granite-embedding-97m-multilingual-r2@835ad140 in costruzione (config in <tmp>/root/config.json): `engramma embed` lo riempie, la ricerca continua con il modello attuale
+[exit 0]
+$ engramma policy set write=propose
+politica aggiornata
+[exit 0]
+$ engramma policy show
+write: propose
+min_confidence: 0.8
+kinds: tutti
+allow_supersede: none
+max_auto_per_hour: 20
+[exit 0]
+$ engramma embed
+incorporate: 8 note
+modello pronto: granite-embedding-97m-multilingual-r2@835ad140
+[exit 0]
+$ engramma search How do we authenticate? --k 2
+1. [active] Gaia abita a Milano (1SQGGFY3)
+   punteggio 1.0000 (grezzo 0.8172)
+   liste: vector, graph
+   rango semantico: 4
+   rango grafo: 1
+   coseno: 0.7328
+   supporto: strong
+   blocco vincente: 0
+   via: [[note:01M89SFDNMHGMS46PGCE4FXE6P]] -mentions-> [[Milano]] -mentions-> (nota 1SQGGFY3)
+   peso grafo: 0.35 (stacco 0.09)
+   validità: 2026-09-01 → ora
+   fonte: user
+
+2. [active] Contratti Acme (FXZPHCJS)
+   punteggio 0.7954 (grezzo 0.6500)
+   liste: vector
+   rango semantico: 1
+   coseno: 0.7544
+   supporto: weak
+   blocco vincente: 0
+   peso grafo: 0.35 (stacco 0.09)
+   validità: sempre → ora
+   fonte: user
+[exit 0]
+
+$ cat > claude-mcp.json
+{"mcpServers":{"engramma":{"type":"stdio","command":"<tmp>/bin/bin/engramma","args":["mcp","--cells","default","--write","default","--actor","claude-code"],"env":{"ENGRAMMA_ROOT":"<tmp>/root","ENGRAMMA_MODEL_DIR":"<tmp>/models"}}}}
+
+$ claude -p "<remember one thing: …>" \
+    --mcp-config claude-mcp.json --strict-mcp-config --tools "" \
+    --allowedTools mcp__engramma__memory_propose --no-session-persistence \
+    --output-format stream-json --verbose --max-turns 4
+[exit 0]
+  mcp_servers: ["engramma:connected"]
+  tool_use: mcp__engramma__memory_propose {"text":"Auth moved to JWT; the sessions table was dropped.","title":"Auth: JWT","tags":["auth"],"confidence":"stated","reason":"Read in commit 4f1c"}
+  tool_result: {"status":"pending","id":"01M89SGMR5A01ZH3P1FW3XG8EK","decided_by":null,"existing":null,"possible_duplicates":["01M89SFDHF9DAKQFEX20GPF44E","01M89SFDDYNPRTZMRC1SQGGFY3","01M89SFDF5X5SZVMFBVH30Q7TM","01M89SFDJR7YP1X8HMFXZPHCJS","01M89SFDNMHGMS46PGCE4FXE6P"]}
+  result: {"is_error":false,"num_turns":2,"result":"done"}
+
+$ engramma proposals
+[in coda] FW3XG8EK mcp:claude-code — Auth: JWT
+      motivo: Read in commit 4f1c
+[exit 0]
+$ engramma proposals show 01M89SGMR5A01ZH3P1FW3XG8EK
+---
+id: 01M89SGMR5A01ZH3P1FW3XG8EK
+type: fact
+title: 'Auth: JWT'
+tags: [auth]
+source: mcp:claude-code
+confidence: stated
+status: quarantined
+created_at: 2026-11-25T16:44:39Z
+updated_at: 2026-11-25T16:44:39Z
+---
+Auth moved to JWT; the sessions table was dropped.
+
+proposta da mcp:claude-code il 2026-11-25T16:44:39Z
+motivo: Read in commit 4f1c
+[exit 0]
+$ engramma search How do we authenticate? --k 2
+1. [active] Gaia abita a Milano (1SQGGFY3)
+   punteggio 1.0000 (grezzo 0.8172)
+   liste: vector, graph
+   rango semantico: 4
+   rango grafo: 1
+   coseno: 0.7328
+   supporto: strong
+   blocco vincente: 0
+   via: [[note:01M89SFDNMHGMS46PGCE4FXE6P]] -mentions-> [[Milano]] -mentions-> (nota 1SQGGFY3)
+   peso grafo: 0.35 (stacco 0.09)
+   validità: 2026-09-01 → ora
+   fonte: user
+
+2. [active] Contratti Acme (FXZPHCJS)
+   punteggio 0.7954 (grezzo 0.6500)
+   liste: vector
+   rango semantico: 1
+   coseno: 0.7544
+   supporto: weak
+   blocco vincente: 0
+   peso grafo: 0.35 (stacco 0.09)
+   validità: sempre → ora
+   fonte: user
+[exit 0]
+$ engramma proposals accept 01M89SGMR5A01ZH3P1FW3XG8EK
+accettata: 01M89SGMR5A01ZH3P1FW3XG8EK
+[exit 0]
+$ engramma proposals
+ FW3XG8EK mcp:claude-code — Auth: JWT
+      motivo: Read in commit 4f1c
+      decisa da user@cli il 2026-11-25T16:44:51Z
+[exit 0]
+$ engramma decisions
+FSTQZATF  accetta  user@cli  2026-11-25T16:44:51Z
+      proposta FW3XG8EK
+      perché: accettata dalla CLI
+[exit 0]
+$ engramma embed
+incorporate: 1 note
+[exit 0]
+$ engramma search How do we authenticate? --k 2
+1. [active] Il lavoro di Giulia (20GPF44E)
+   punteggio 1.0000 (grezzo 0.6847)
+   liste: vector, graph
+   rango semantico: 4
+   rango grafo: 1
+   coseno: 0.7442
+   supporto: weak
+   blocco vincente: 0
+   via: [[note:01M89SFDJR7YP1X8HMFXZPHCJS]] -mentions-> [[Acme]] -mentions-> (nota 20GPF44E)
+   peso grafo: 0.35 (stacco 0.41)
+   validità: sempre → ora
+   fonte: user
+
+2. [active] Auth: JWT (FW3XG8EK)
+   punteggio 0.9494 (grezzo 0.6500)
+   liste: vector
+   rango semantico: 1
+   coseno: 0.8068
+   supporto: strong
+   blocco vincente: 0
+   peso grafo: 0.35 (stacco 0.41)
+   validità: sempre → ora
+   fonte: mcp:claude-code
+[exit 0]
+
+$ codex exec --skip-git-repo-check --sandbox read-only \
+    -c 'approval_policy="never"' \
+    -c 'mcp_servers.engramma.command="<tmp>/bin/bin/engramma"' \
+    -c 'mcp_servers.engramma.args=["mcp","--cells","default","--write","default","--actor","codex"]' \
+    -c 'mcp_servers.engramma.env={ENGRAMMA_ROOT="<tmp>/root",ENGRAMMA_MODEL_DIR="<tmp>/models"}' \
+    --json "<use the engramma memory_search tool once: query How do we authenticate?, limit 3>"
+[exit 0]
+  mcp_tool_call: {"server":"engramma","tool":"memory_search","arguments":{"query":"How do we authenticate?","limit":3},"status":"completed"}
+    hits:
+          Il lavoro di Giulia | source: user | liste: vector, graph | coseno 0.7442
+          Auth: JWT | source: mcp:claude-code | liste: vector | coseno 0.8068
+          Gaia abita a Milano | source: user | liste: vector, graph | coseno 0.7328
+  agent_message: "Il lavoro di Giulia | user\nAuth: JWT | mcp:claude-code\nGaia abita a Milano | user"
+
+$ engramma verify
+registro verificato: 12 operazioni, catena hash, ricostruzione e indice FTS a posto
+copertura vettori: granite-embedding-97m-multilingual-r2@835ad140 [ready] 9/9 note
+[exit 0]
+
+A first attempt at the read failed, and it was the capture's fault, not
+Codex's: the server had been started with `--actor codex` and no `--write`,
+which the binary refuses —
+  engramma: mcp: `--actor` goes with `--write <cells>`: an actor without a writable cell does nothing
+— and the call came back to Codex as "Mcp error: -32603: Internal error".
