@@ -1,0 +1,276 @@
+---
+// The team hub: the strong point of the homepage, twin of Engramma's Hub.
+// Bots around one shared workspace, you among them; the log on the right is
+// the app's own Activity panel, with the labels the app really prints.
+import ProductSymbol from "../brand/ProductSymbol.astro";
+import SignedLog from "../family/SignedLog.astro";
+
+const CENTER = { x: 300, y: 220 };
+const members = [
+	{ name: "Chief of staff", x: 300, y: 46 },
+	{ name: "Scout", x: 520, y: 130 },
+	{ name: "Inbox manager", x: 520, y: 312 },
+	{ name: "You", x: 300, y: 396 },
+	{ name: "Daily briefing", x: 80, y: 312 },
+	{ name: "Account manager", x: 80, y: 130 },
+];
+const positions = Object.fromEntries(members.map(({ name, x, y }) => [name, { x, y }]));
+
+// The Activity panel's own words, checked on the app 0.3 (beta.20): "Asked
+// {name}: {text}" and "Summary for you" (AgentSendRow.tsx, TeamChat.tsx),
+// "Opened {host}" and "Took note" (renderer/src/lib/activity.ts), "waiting for
+// you" (ActivityPanel.tsx), "{name} wants to…" (lib/approval-app.ts), "Allowed
+// for this turn" (ApprovalCard.tsx), "draft awaiting your click"
+// (shared/ui-messages.ts), "source: {source}" (MemoryPanel.tsx).
+const rows = [
+	{ kind: "ask", state: "ok", scene: 0, step: 0, time: "11:22", actor: "Chief of staff", text: "Asked Scout: a venue for Dec 12, 20 people" },
+	{ kind: "work", scene: 0, step: 1, time: "11:24", actor: "Scout", text: "Opened salanavigli.it", why: "in the bots’ computer" },
+	{ kind: "ask", state: "wait", scene: 0, step: 2, time: "11:25", actor: "Scout", text: "Wants to send the booking request", why: "waiting for you" },
+	{ kind: "verdict", state: "ok", scene: 0, step: 3, time: "11:26", actor: "You", text: "Allowed for this turn" },
+	{ kind: "ask", state: "ok", scene: 1, step: 0, time: "11:40", actor: "Chief of staff", text: "Asked Inbox manager: the offsite invites" },
+	{ kind: "work", state: "wait", scene: 1, step: 1, time: "11:41", actor: "Inbox manager", text: "Draft awaiting your click: 20 invites", why: "waiting for you" },
+	{ kind: "verdict", state: "ok", scene: 1, step: 2, time: "11:42", actor: "Chief of staff", text: "Summary for you" },
+	{ kind: "note", state: "mem", scene: 2, step: 0, time: "11:50", actor: "Account manager", text: "Took note: Acme only signs annual contracts", why: "source: you" },
+	{ kind: "read", state: "mem", scene: 2, step: 1, time: "11:51", actor: "Daily briefing", text: "Used the note “Acme only signs annual contracts”", why: "source: you" },
+];
+
+// Three scenes, in cycle: the handoff and your OK; the drafts that wait; the
+// memory one bot writes and another reads.
+const scenes = [
+	{
+		hand: { from: "Chief of staff", to: "Scout", label: "Chief of staff · in the group", text: "@Scout a venue for Dec 12, 20 people, under €2,000." },
+		worker: { who: "Scout", label: "Scout · on its computer", text: "Browsing salanavigli.it… Sala Navigli fits: €1,800, free on the 12th." },
+		ask: { label: "Scout · is asking you", text: "Scout wants to send the booking request on salanavigli.it.", pick: "For this turn" },
+		verdict: "✓ nothing went out without you",
+	},
+	{
+		hand: { from: "Chief of staff", to: "Inbox manager", label: "Chief of staff · in the group", text: "@Inbox manager the invites for the offsite. The guest list is in the Library." },
+		worker: { who: "Inbox manager", label: "Inbox manager", text: "20 invites drafted. They wait for your OK." },
+		verdict: "✓ only the summary comes to you",
+	},
+	{
+		hand: { from: "Account manager", to: null, label: "Account manager · after the call", text: "Acme only signs annual contracts." },
+		worker: { who: "Daily briefing", label: "Daily briefing · Monday", text: "Acme renewal today: remember, annual contracts only. — from you, Tue" },
+		verdict: "✓ what one bot learns, the team knows",
+	},
+];
+---
+
+<div class="hub-wrap">
+	<div class="hub" data-hub aria-label="Five bots and you around one shared workspace">
+		<svg viewBox="0 0 600 440" data-hub-svg aria-hidden="true">
+			<g stroke="#2a3532" stroke-width="2">
+				{members.map(({ name, x, y }) => <line class="spoke" data-spoke={name} x1={x} y1={y} x2={CENTER.x} y2={CENTER.y} />)}
+			</g>
+			<circle cx={CENTER.x} cy={CENTER.y} r="74" fill="none" stroke="#2a3532" stroke-width="18" opacity=".6" />
+			<ProductSymbol product="homun" size={104} x={248} y={168} />
+			<text class="caption" x={CENTER.x} y="352" text-anchor="middle">apps · library · memory</text>
+			{members.map(({ name, x, y }) => (
+				<g class:list={["node", { you: name === "You" }]} data-node={name} style={`--w:${name.length * 8 + 30};--x:${x - (name.length * 8 + 30) / 2};--wm:${name.length * 11.5 + 30};--xm:${x - (name.length * 11.5 + 30) / 2}`}>
+					<rect x={x - (name.length * 8 + 30) / 2} y={y - 18} width={name.length * 8 + 30} height="36" rx="18" />
+					<text x={x} y={y + 5} text-anchor="middle">{name}</text>
+				</g>
+			))}
+			<circle data-dot r="7" fill="#5CC2B3" opacity="0" />
+		</svg>
+		<div class="bubble" data-bubble aria-hidden="true"></div>
+	</div>
+	<div class="side">
+		<SignedLog product="homun" id="team-log" title="Activity · every step, by who" entries={rows}>
+			<span slot="foot" data-verdict></span>
+		</SignedLog>
+		<p class="legend">
+			<span><i class="wait"></i>waits for you</span>
+			<span><i class="ok"></i>done, or allowed by you</span>
+			<span><i class="mem"></i>remembered, with its source</span>
+		</p>
+	</div>
+</div>
+
+<script define:vars={{ scenes, positions, center: CENTER }}>
+	(() => {
+		const hub = document.querySelector("[data-hub]");
+		const svg = hub.querySelector("[data-hub-svg]");
+		const node = (name) => svg.querySelector(`[data-node="${name}"]`);
+		const spoke = (name) => svg.querySelector(`[data-spoke="${name}"]`);
+		const dot = svg.querySelector("[data-dot]");
+		const bubble = hub.querySelector("[data-bubble]");
+		const rows = [...document.querySelectorAll("#team-log li[data-scene]")];
+		const verdict = document.querySelector("[data-verdict]");
+		const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+		// The final state is already in the markup: with "reduce motion", or
+		// without IntersectionObserver, nothing plays.
+		if (motion.matches || !("IntersectionObserver" in window)) return;
+
+		let stopped = false;
+		let visible = false;
+		const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+		const untilVisible = async () => {
+			while (!visible && !stopped) await wait(300);
+		};
+		const fly = (from, to, ms) => new Promise((resolve) => {
+			dot.setAttribute("opacity", "1");
+			const started = performance.now();
+			const frame = (now) => {
+				if (stopped) { dot.setAttribute("opacity", "0"); resolve(); return; }
+				const k = Math.min(1, (now - started) / ms);
+				const eased = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+				dot.setAttribute("cx", from.x + (to.x - from.x) * eased);
+				dot.setAttribute("cy", from.y + (to.y - from.y) * eased);
+				if (k < 1) requestAnimationFrame(frame);
+				else { dot.setAttribute("opacity", "0"); resolve(); }
+			};
+			requestAnimationFrame(frame);
+		});
+		const say = (who, label, text, actions) => {
+			const { x, y } = positions[who];
+			bubble.replaceChildren();
+			const small = document.createElement("small");
+			small.textContent = label;
+			bubble.append(small, document.createTextNode(text));
+			if (actions) {
+				const btns = document.createElement("span");
+				btns.className = "btns";
+				for (const action of actions) {
+					const chip = document.createElement("span");
+					chip.textContent = action;
+					if (action === "For this turn") chip.className = "hit";
+					btns.append(chip);
+				}
+				bubble.append(btns);
+			}
+			const [drawing, box] = [svg.getBoundingClientRect(), hub.getBoundingClientRect()];
+			const scale = drawing.width / 600;
+			const { offsetWidth: width, offsetHeight: height } = bubble;
+			const left = Math.max(8, Math.min(hub.clientWidth - width - 8, drawing.left - box.left + x * scale - width / 2));
+			const top = drawing.top - box.top + y * scale + (y < center.y ? 26 : -height - 14);
+			bubble.style.left = `${Math.round(left)}px`;
+			bubble.style.top = `${Math.round(top)}px`;
+			bubble.classList.add("show");
+		};
+		const hush = () => bubble.classList.remove("show");
+		const on = (name, value) => {
+			node(name).classList.toggle("on", value);
+			spoke(name).classList.toggle("on", value);
+		};
+		const beat = (scene, step) => {
+			for (const row of rows) {
+				if (Number(row.dataset.scene) === scene && Number(row.dataset.step) === step) row.classList.add("shown");
+			}
+		};
+		const rest = async (ms) => { await wait(ms); await untilVisible(); };
+
+		async function play(scene, index) {
+			if (stopped) return;
+			// The coordinator hands the work to a bot, through the workspace.
+			on(scene.hand.from, true);
+			say(scene.hand.from, scene.hand.label, scene.hand.text);
+			await rest(1400);
+			hush();
+			await fly(positions[scene.hand.from], center, 700);
+			on(scene.hand.from, false);
+			beat(index, 0);
+			if (scene.hand.to) {
+				await fly(center, positions[scene.hand.to], 700);
+				on(scene.hand.to, true);
+			} else {
+				// The memory scene: what one bot wrote waits in the workspace.
+				await rest(600);
+			}
+
+			// The bot works: on its computer, at its drafts, or reading the note.
+			if (!scene.hand.to) await fly(center, positions[scene.worker.who], 800);
+			on(scene.worker.who, true);
+			say(scene.worker.who, scene.worker.label, scene.worker.text);
+			await rest(1700);
+			hush();
+			beat(index, 1);
+			await rest(500);
+
+			// What waits for you — or what the team remembered.
+			if (scene.ask) {
+				await fly(positions[scene.worker.who], positions.You, 900);
+				on("You", true);
+				say("You", scene.ask.label, scene.ask.text, ["Allow", scene.ask.pick, "Deny"]);
+				await rest(2100);
+				hush();
+				beat(index, 2);
+				await rest(400);
+				beat(index, 3);
+				on("You", false);
+			} else {
+				beat(index, 2);
+			}
+			verdict.textContent = scene.verdict;
+			await rest(1800);
+			verdict.textContent = "";
+			if (scene.hand.to) on(scene.hand.to, false);
+			await rest(400);
+		}
+
+		new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; }, { threshold: 0.3 }).observe(hub);
+		motion.addEventListener("change", () => {
+			if (!motion.matches) return;
+			stopped = true;
+			hush();
+			dot.setAttribute("opacity", "0");
+			for (const name of Object.keys(positions)) on(name, false);
+			verdict.textContent = "";
+		});
+
+		(async () => {
+			await untilVisible();
+			for (;;) {
+				// Each loop starts from an empty log, as the page loaded.
+				for (const row of rows) row.classList.remove("shown");
+				for (const [index, scene] of scenes.entries()) await play(scene, index);
+				if (stopped) return;
+			}
+		})();
+	})();
+</script>
+
+<style>
+	.hub-wrap { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, .65fr); gap: 24px; align-items: stretch; }
+	.hub { position: relative; min-width: 0; padding: 10px; border-radius: 28px; background: var(--band-card); }
+	.hub svg[data-hub-svg] { display: block; width: 100%; height: auto; }
+	.node rect { fill: #1E2725; stroke: #2a3532; stroke-width: 1.5; transition: stroke .3s, fill .3s; }
+	.node text { fill: #F4F1EE; font: 600 13px var(--body); }
+	.node.on rect { stroke: var(--accent-band); fill: #163631; }
+	.node.you rect { fill: #F4F1EE; }
+	.node.you text { fill: #0E1413; }
+	.node.you.on rect { stroke: #F2D38E; stroke-width: 3; }
+	.spoke { transition: stroke .3s; }
+	.spoke.on { stroke: var(--accent-band); }
+	.caption { fill: #9AA5A1; font: 12px var(--mono); letter-spacing: .06em; }
+	.bubble { position: absolute; max-width: 62%; padding: 8px 12px; border-radius: 14px; background: #F4F1EE; color: #0E1413; font-size: .84rem; line-height: 1.4; box-shadow: 0 14px 40px -16px #000; opacity: 0; transform: translateY(6px); transition: opacity .35s, transform .35s; pointer-events: none; }
+	.bubble.show { opacity: 1; transform: none; }
+	.bubble small { display: block; margin-bottom: 2px; font: .68rem var(--mono); color: #5D6663; }
+	.bubble .btns { display: flex; gap: 6px; margin-top: 6px; }
+	.bubble .btns span { font-size: .72rem; border: 1px solid #cfd6d3; border-radius: 999px; padding: .1em .6em; }
+	.bubble .btns span.hit { background: #0E1413; color: #F4F1EE; }
+	.side { display: grid; gap: 12px; align-content: start; min-width: 0; }
+	.legend { display: flex; flex-wrap: wrap; gap: 16px; margin: 0; font-size: .82rem; color: var(--band-muted); }
+	.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+	.legend .wait { background: #F2D38E; }
+	.legend .ok { background: #5CC2B3; }
+	.legend .mem { background: #8EA3F2; }
+
+	/* The log's own accent for the memory rows: Engramma blue, the bridge. */
+	.side :global(li.mem) { border-color: #8EA3F2; }
+	.side :global(li.mem b) { color: #8EA3F2; }
+	.side :global(li.read) { border-color: #8EA3F2; border-left-style: dashed; }
+	.side :global(li.read)::after { content: "with its source"; margin-left: 8px; color: var(--band-muted); font-size: .86em; text-transform: uppercase; letter-spacing: .06em; }
+
+	@media (max-width: 640px) {
+		/* On a phone the drawing shrinks: the names grow to stay readable. */
+		.node rect { x: var(--xm); width: var(--wm); }
+		.node text { font-size: 20px; }
+		.caption { font-size: 20px; }
+	}
+	@media (max-width: 980px) {
+		.hub-wrap { grid-template-columns: minmax(0, 1fr); }
+		.bubble { max-width: 80%; }
+	}
+</style>

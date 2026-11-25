@@ -1,83 +1,47 @@
 ---
-import FeatureSection from "./FeatureSection.astro";
+import DeepDive from "../family/DeepDive.astro";
 import BotAvatar from "../app/BotAvatar.astro";
-import Surface from "../app/Surface.astro";
 
 const bots = [
-  { name: "Daily briefing", family: "device", color: "#E7B93A", model: "Built-in local model" },
+  { name: "Daily briefing", family: "device", color: "#E7B93A", model: "Built-in (on your Mac)" },
   { name: "Account manager", family: "jelly", color: "#E9418A", model: "Ollama · on this Mac" },
-  { name: "Scout", family: "robo", color: "#3F7BEA", model: "Claude Sonnet" },
+  { name: "Scout", family: "robo", color: "#3F7BEA", model: "Anthropic · your key" },
 ] as const;
 
-const localProviders = [
-  { name: "Homun local", detail: "built into Homun" },
-  { name: "Ollama", detail: "found on this Mac" },
-  { name: "LM Studio", detail: "found on this Mac" },
-];
-
-const cloudProviders = [
-  "Anthropic", "OpenAI", "Mistral", "OpenRouter", "DeepSeek", "Groq", "xAI", "Z.ai", "Any OpenAI-compatible",
-];
+const providers = ["Anthropic", "OpenAI", "Mistral", "OpenRouter", "DeepSeek", "Groq", "xAI", "Z.ai", "any OpenAI-compatible"];
 ---
 
-<FeatureSection id="models" eyebrow="Any model" layout="flip" title="Your choice of model. Even fully local."
-  lead="Use Claude, GPT, Mistral, DeepSeek or anything on OpenRouter. Or run models on your own computer, with the one built into Homun, Ollama or LM Studio, and your conversations never leave it. Pick a different model for each bot.">
-  <div slot="visual" class="models">
-    <Surface>
-      <div class="group">
-        <p class="label">Each bot, its own model</p>
-        <ul class="rows" role="list">
-          {bots.map(({ name, family, color, model }, i) => (
-            <li data-bot-model class="bot play" style={{ "--i": i }}>
-              <BotAvatar family={family} color={color} size={28} />
-              <b>{name}</b>
-              <em>{model}</em>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div class="group">
-        <p class="label"><span>On this computer</span><span>nothing leaves</span></p>
-        <ul class="rows" role="list">
-          {localProviders.map(({ name, detail }, i) => (
-            <li class="provider play" style={{ "--i": i + 3 }}>
-              <span>{name}</span>
-              <small>{detail}</small>
-              <span class="tag" data-model-location="local">local</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div class="group">
-        <p class="label"><span>Cloud providers</span><span>your own key</span></p>
-        <ul class="cloud play" style={{ "--i": 6 }} role="list">
-          {cloudProviders.map((name) => <li>{name}</li>)}
-        </ul>
-      </div>
-    </Surface>
+<DeepDive id="models" product="homun" tone="band" eyebrow="Any model" title="Your choice of model. Even fully local."
+  lead="Use Anthropic, OpenAI, Mistral, DeepSeek or anything on OpenRouter. Or run models on your own computer — the one built into Homun, Ollama or LM Studio — and your conversations never leave it. Web searches, pages and apps a bot uses still go out. Pick a different model for each bot."
+  chips={["a model per bot", "your own keys", "OpenAI-compatible"]}>
+  <div slot="visual" class="models" data-motion="models">
+    <div class="rows" role="list">
+      {bots.map(({ name, family, color, model }, i) => (
+        <div class="mrow" role="listitem">
+          <span class="who"><BotAvatar {family} {color} size={28} />{name}<small>{model}</small></span>
+          <span class:list={["local", { cloud: i === 2 }]}>{i === 2 ? "cloud" : "local"}</span>
+        </div>
+      ))}
+    </div>
+    <p class="provs">{providers.map((name) => <span>{name}</span>)}</p>
   </div>
-</FeatureSection>
+</DeepDive>
 
 <style>
-  .models :global([data-surface]) { gap: 14px; }
-  .group, .rows { display: grid; gap: 6px; }
-  .rows, .cloud { list-style: none; margin: 0; padding: 0; }
-  .label { display: flex; justify-content: space-between; gap: 8px; margin: 0; font-size: 12px; color: var(--a-mfg); }
-  .bot, .provider { display: flex; align-items: center; gap: 10px; font-size: 13.5px; }
-  .bot b { font-weight: 600; }
-  .bot em, .provider small { font-size: 12px; color: var(--a-mfg); }
-  .bot em { margin-left: auto; text-align: right; font-style: normal; }
-  .provider { background: var(--a-card); border-radius: 12px; padding: 9px 12px; }
-  .tag {
-    margin-left: auto;
-    font: 10.5px/1.45 var(--mono);
-    text-transform: uppercase;
-    letter-spacing: .05em;
-    padding: 3px 7px;
-    border-radius: 6px;
-    background: color-mix(in srgb, var(--ok) 14%, transparent);
-    color: var(--teal-text);
+  .models { display: grid; gap: 12px; }
+  .rows { display: grid; gap: 10px; }
+  .mrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 12px; border: 1px solid var(--band-line, #2a3532); border-radius: 12px; background: #1E2725; font-size: .86rem; color: var(--band-fg); }
+  .who { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .who small { color: var(--band-muted); font: .72rem var(--mono); }
+  .local { color: var(--accent-band); font: .66rem var(--mono); letter-spacing: .06em; text-transform: uppercase; border: 1px solid #2f5a53; border-radius: 6px; padding: .1em .45em; }
+  .local.cloud { color: var(--band-muted); border-color: var(--band-line, #2a3532); }
+  .provs { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+  .provs span { font: .72rem var(--mono); border: 1px solid var(--band-line, #2a3532); border-radius: 999px; padding: .15em .7em; color: var(--band-muted); }
+  @media (prefers-reduced-motion: no-preference) {
+    .local { opacity: .3; }
+    .models.in .local:not(.cloud) { animation: f-on .4s ease forwards; }
+    .models.in .mrow:nth-child(2) .local:not(.cloud) { animation-delay: .4s; }
+    .models.in .mrow:nth-child(3) .local:not(.cloud) { animation-delay: .8s; }
   }
-  .cloud { display: flex; flex-wrap: wrap; gap: 6px; }
-  .cloud li { font-size: 12.5px; padding: 5px 10px; border-radius: 99px; background: var(--a-card); }
+  @keyframes f-on { to { opacity: 1; box-shadow: 0 0 18px -4px #5CC2B3; } }
 </style>

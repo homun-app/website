@@ -1,42 +1,63 @@
 ---
-import FeatureSection from "./FeatureSection.astro";
+import DeepDive from "../family/DeepDive.astro";
 import ComputerScreen from "../app/ComputerScreen.astro";
 
 const venues = [
-  { name: "Sala Navigli", details: "24 seats · from €1,800", status: "Dec 12 free", tint: "linear-gradient(135deg, #C9B79A, #8E7A5E)" },
+  { name: "Sala Navigli", details: "24 seats · from €1,800", status: "Dec 12 free", yes: true, tint: "linear-gradient(135deg, #C9B79A, #8E7A5E)" },
   { name: "Loft Isola", details: "30 seats · from €2,600", status: "over budget", tint: "linear-gradient(135deg, #9FB2C4, #5E7186)" },
   { name: "Corte Brera", details: "18 seats · from €1,500", status: "too small", tint: "linear-gradient(135deg, #B9C7A5, #6F8257)" },
 ];
 ---
 
-<FeatureSection id="computer" eyebrow="Its own computer" layout="flip" title="No connector? It opens the browser."
-  lead="Each bot has a computer of its own, separate from yours. It browses, fills in forms and keeps files there. Watch it work, or take over.">
-  <div slot="visual" class="computer">
+<DeepDive id="computer" product="homun" tone="band" flip eyebrow="The bots’ computer" title="No connector? It opens the browser."
+  lead="Your bots get a computer of their own, separate from yours: a box with a browser, files and a terminal. It browses, fills in forms and keeps files there. Watch it work, or take control."
+  chips={["a box apart from yours", "Screen · Terminal · Files", "Take control"]}>
+  <div slot="visual" class="computer" data-motion="computer">
     <ComputerScreen url="salanavigli.it/eventi" state="On" bot={{ name: "Scout", family: "robo", color: "#3F7BEA", state: "thinking" }}>
       <h3>Private events · Milano</h3>
-      {venues.map(({ name, details, status, tint }) => (
-        <div class="venue">
+      {venues.map(({ name, details, status, yes, tint }) => (
+        <div class:list={["venue", { yes }]}>
           <span class="thumbnail" style={{ background: tint }} aria-hidden="true"></span>
           <div><b>{name}</b><span>{details}</span></div>
-          <span class="status">{status}</span>
+          <em>{status}</em>
         </div>
       ))}
     </ComputerScreen>
   </div>
-</FeatureSection>
+</DeepDive>
 
 <style>
   .computer { container-type: inline-size; }
   h3 { margin: 12px 14px 6px; font-size: 1.25em; }
-  .venue { display: grid; grid-template-columns: clamp(44px, 14cqw, 84px) minmax(0, 1fr) auto; gap: 12px; padding: 8px 14px; align-items: center; border-top: 1px solid #EEE; }
+  .venue { display: grid; grid-template-columns: clamp(44px, 14cqw, 84px) minmax(0, 1fr) auto; gap: 12px; padding: 8px 14px; align-items: center; border-top: 1px solid #EEE; position: relative; }
   .thumbnail { aspect-ratio: 16 / 10; border-radius: 6px; }
   b { display: block; }
   .venue div span { font-size: .85em; color: #666; }
-  .status { font-size: .8em; border: 1px solid #DDD; border-radius: 99px; padding: .2em .7em; }
+  em { font-style: normal; font: .66rem var(--mono); text-transform: uppercase; border: 1px solid #DDD; border-radius: 999px; padding: .2em .7em; color: #9a4b3a; }
+  .venue.yes { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .venue.yes em { color: var(--accent); }
   .computer :global(.screen) { width: 100%; display: grid; padding: clamp(8px, 1.6vw, 16px); aspect-ratio: auto; min-height: 62.5cqw; }
   .computer :global(.browser) { position: relative; inset: auto; }
   .computer :global(.content) { overflow: visible; flex-shrink: 0; }
   .computer :global(.takeover) { position: static; align-self: flex-end; margin: auto 14px 12px 0; }
+  /* The cursor visits the three venues; the labels follow, the choice circles. */
+  @media (prefers-reduced-motion: no-preference) {
+    .venue em { opacity: 0; }
+    .computer.in .venue em { animation: f-line .3s ease forwards; }
+    .computer.in .venue:nth-child(3) em { animation-delay: 1.4s; }
+    .computer.in .venue:nth-child(4) em { animation-delay: 2.2s; }
+    .computer.in .venue:nth-child(2) em { animation-delay: 3s; }
+    .computer :global(.cursor) { left: 12%; top: 70%; }
+    .computer.in :global(.cursor) { animation: f-cursor-visit 3.6s ease forwards; }
+    .venue.yes { outline-color: transparent; transition: outline-color .4s ease 3s; }
+    .computer.in .venue.yes { outline-color: var(--accent); }
+  }
+  @keyframes f-cursor-visit {
+    0% { left: 12%; top: 70%; }
+    30% { left: 48%; top: 55%; }
+    60% { left: 80%; top: 55%; }
+    100% { left: 16%; top: 55%; }
+  }
   @container (max-width: 480px) {
     .venue { gap: 8px; padding: 5px 8px; }
   }

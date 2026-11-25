@@ -9,16 +9,17 @@ contracts, how you like your reports, who to copy on invoices. Memory runs on
 
 ## What a memory looks like
 
-Every memory is a short note with its **source** and its **date**. When a bot uses a
-memory, you can see where it comes from. When something changes, the old version is kept
-in the history instead of being overwritten.
+Every memory is a short note with its **source** and its **date**; open a note to see
+where it came from. When something changes, the old version is kept in the history
+instead of being overwritten.
 
 Memories belong to one bot, or are **shared** by every bot.
 
 ## Opening a bot's memory
 
-In the bot panel, open **Memory**. You can search, filter by bot or shared memories, and
-see which memories are active, waiting for confirmation or deleted.
+In the bot's settings, open **Memory**: it comes up on the chat. You can search, choose
+between **this bot**'s notes and the **shared** ones, and see which memories are active,
+waiting for confirmation or deleted.
 
 ## Waiting for confirmation
 
@@ -28,7 +29,8 @@ plant a memory by itself.
 
 ## Correcting and forgetting
 
-Delete a memory and it moves to the deleted list. From there you can forget it for good.
+Delete a memory and it moves to the deleted list, from where you can restore it or forget
+it forever.
 
 ## Better search
 

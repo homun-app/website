@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Engramma mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=M+PLUS+Rounded+1c:wght@800&display=swap" rel="stylesheet">
+<style>
+/* Tokens: the homepage mockup's, plus Engramma blue as the product accent. */
+:root{--bg:#FBFAF8;--surface:#F0EEEA;--card:#FDFCFA;--line:#E2DED8;--fg:#101917;--muted:#5D6663;--accent:#3A5BD9;--accent-text:#2F4BC0;--accent-soft:#E7ECFB;--teal:#157A6E;--band:#0E1413;--band-fg:#F4F1EE;--band-muted:#9AA5A1;--band-card:#18201E;--term:#121816;--term-fg:#E6ECEA;--term-dim:#7F8C88;--ok:#1F8F72;--warn:#B7791F;--cream:#F4F1EE;
+--display:"M PLUS Rounded 1c",ui-rounded,"SF Pro Rounded",system-ui,sans-serif;--body:"Figtree",ui-sans-serif,system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0B100F;--surface:#151C1A;--card:#121918;--line:#25302D;--fg:#F4F1EE;--muted:#9AA5A1;--accent:#5574E8;--accent-text:#8EA3F2;--accent-soft:#18213F;--band:#060909;--band-card:#121918}}
+:root[data-theme=dark]{--bg:#0B100F;--surface:#151C1A;--card:#121918;--line:#25302D;--fg:#F4F1EE;--muted:#9AA5A1;--accent:#5574E8;--accent-text:#8EA3F2;--accent-soft:#18213F;--band:#060909;--band-card:#121918}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 var(--body);-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.03em;margin:0;line-height:1.05}
+p{margin:0}a{color:inherit}code,.mono{font-family:var(--mono)}
+.wrap{max-width:1180px;margin-inline:auto;padding-inline:16px}
+.eyebrow{font:500 .74rem/1.5 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--accent-text)}
+.lead{font-size:clamp(1.05rem,1.8vw,1.22rem);color:var(--muted);max-width:44ch}
+section{padding-block:clamp(80px,12vh,140px)}
+.band{background:var(--band);color:var(--band-fg)}.band .lead,.band .muted{color:var(--band-muted)}.band .eyebrow{color:#8EA3F2}
+h2{font-size:clamp(2rem,5vw,3.6rem);margin-top:14px}
+.head{display:grid;gap:16px;max-width:52rem;margin-bottom:clamp(32px,5vw,56px)}
+/* nav: the family nav of the site */
+nav.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav.top .brand{font:800 1.2rem var(--display)}nav.top ul{display:flex;gap:18px;list-style:none;margin:0;padding:0;font-size:.92rem}
+nav.top .pill{font:.62rem var(--mono);background:var(--surface);border-radius:6px;padding:.15em .45em;margin-left:4px;text-transform:uppercase}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:.7em 1.25em;font-weight:600;text-decoration:none;border:1px solid var(--line)}
+.btn.primary{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(28px,5vw,64px);align-items:center;padding-block:clamp(48px,8vh,96px) clamp(64px,10vh,120px)}
+.hero .id{display:flex;align-items:center;gap:12px;font:800 1.5rem var(--display)}
+.hero h1{font-size:clamp(2.6rem,6.4vw,5rem);margin-top:22px}
+.hero h1 em{font-style:normal;color:var(--accent-text)}
+.hero .lead{margin-top:20px}
+.install{margin-top:28px;display:grid;gap:10px;max-width:520px}
+.cmd{display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--card);border-radius:14px;padding:10px 10px 10px 16px;font:.9rem var(--mono);min-width:0}
+.cmd code{flex:1;min-width:0;overflow-x:auto;white-space:nowrap}.cmd code::before{content:"$ ";color:var(--muted)}
+.cmd button{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:.3em .9em;font:inherit;font-size:.78rem;cursor:pointer}
+.small{font-size:.84rem;color:var(--muted)}.small a{color:var(--accent-text)}
+.works{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:22px;font-size:.85rem}
+.works span{font:.68rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.chip{border:1px solid var(--line);border-radius:999px;padding:.22em .8em;text-decoration:none;white-space:nowrap}
+/* product shot: a real terminal session beside the note it found */
+.shot{position:relative;display:grid;gap:14px}
+.term{background:var(--term);color:var(--term-fg);border-radius:18px;box-shadow:0 30px 80px -30px rgb(10 20 18/.5);overflow:hidden;font:.8rem/1.6 var(--mono)}
+.term .bar{display:flex;gap:6px;padding:12px 14px;border-bottom:1px solid #24302d}.term .bar i{width:10px;height:10px;border-radius:50%;background:#2C3835}
+.term pre{margin:0;padding:16px 18px;overflow-x:auto;white-space:pre}
+.term .p{color:#8EA3F2}.term .d{color:var(--term-dim)}.term .ok{color:#5CC2B3}.term .hl{color:#F2D38E}
+.note{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px;font-size:.88rem;box-shadow:0 20px 50px -30px rgb(10 20 18/.35)}
+.note .fm{font:.76rem/1.6 var(--mono);color:var(--muted)}.note .fm b{color:var(--accent-text);font-weight:500}
+.note .link{color:var(--accent-text);font-weight:600}
+.shot .note{margin-left:clamp(0px,8%,64px);margin-top:-18px;position:relative}
+/* how it works: the pipeline */
+.pipe{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;position:relative}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;display:grid;align-content:start;gap:10px;min-width:0;position:relative}
+.stage .n{font:.7rem var(--mono);color:var(--accent-text);letter-spacing:.08em;text-transform:uppercase}
+.stage h3{font-size:1.15rem}.stage p{font-size:.88rem;color:var(--muted)}
+.stage ul{margin:0;padding:0;list-style:none;display:grid;gap:6px;font:.74rem/1.45 var(--mono)}
+.stage li{background:var(--surface);border-radius:8px;padding:5px 8px}
+.stage:not(:last-child)::after{content:"→";position:absolute;right:-12px;top:22px;color:var(--accent-text);font-weight:700;z-index:1}
+.stage.core{grid-column:span 1;background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+/* deep dives */
+.dive{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(28px,6vw,80px);align-items:center}
+.dive.flip>:first-child{order:2}
+.dive .tech{margin-top:18px;display:flex;flex-wrap:wrap;gap:8px}.dive .tech span{font:.74rem var(--mono);border:1px solid var(--line);border-radius:8px;padding:.25em .6em;color:var(--muted)}
+.band .dive .tech span{border-color:#2a3532;color:var(--band-muted)}
+.visual{background:var(--surface);border-radius:24px;padding:clamp(18px,3vw,30px);display:grid;gap:12px;min-width:0}
+.band .visual{background:var(--band-card)}
+.q{font:600 .95rem var(--body);background:var(--fg);color:var(--bg);border-radius:16px 16px 4px 16px;padding:10px 14px;justify-self:end;max-width:85%}
+.band .q{background:var(--band-fg);color:var(--band)}
+.hit{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;gap:6px}
+.band .hit{background:#1E2725;border-color:#2a3532}
+.hit .why{font:.72rem/1.5 var(--mono);color:var(--muted)}.band .hit .why{color:var(--band-muted)}
+.bar2{height:6px;border-radius:3px;background:var(--line);overflow:hidden}.bar2 i{display:block;height:100%;background:var(--accent)}
+.graph svg{width:100%;height:auto}
+.tl{display:grid;gap:10px}.tl .row{display:grid;grid-template-columns:110px 1fr;gap:12px;align-items:center;font-size:.9rem}
+.tl .span{height:28px;border-radius:8px;display:flex;align-items:center;padding-inline:10px;font:.76rem var(--mono)}
+.tl .old{background:var(--line);color:var(--muted);width:62%}.tl .new{background:var(--accent);color:#fff;margin-left:62%;width:38%}
+.tl .asof{font:.74rem var(--mono);color:var(--accent-text)}
+.queue{display:grid;gap:10px}.pending{border-style:dashed!important}
+.tag{font:.66rem var(--mono);letter-spacing:.06em;text-transform:uppercase;border-radius:6px;padding:.15em .5em;background:var(--accent-soft);color:var(--accent-text)}
+.tag.w{background:#3a2d12;color:#F2D38E}
+.actions{display:flex;gap:8px}.actions span{font-size:.8rem;border:1px solid var(--line);border-radius:999px;padding:.2em .8em}
+/* numbers */
+.nums{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:20px}
+.num b{display:block;font:800 clamp(2rem,4vw,3rem)/1 var(--display);letter-spacing:-.03em}.num span{font-size:.88rem;color:var(--band-muted)}
+/* compare */
+.cmp{display:grid;border:1px solid var(--line);border-radius:22px;overflow:hidden}
+.cmp .r{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1fr) minmax(0,1.2fr);gap:16px;padding:14px 20px;border-top:1px solid var(--line);font-size:.92rem}
+.cmp .r:first-child{border-top:0;font:.7rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--surface)}
+.cmp .u{color:var(--muted)}.cmp .e::before{content:"● ";color:var(--accent)}
+/* connect */
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.tabs button{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:.45em 1em;font:500 .88rem var(--body);cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.tabs .t{font:.58rem var(--mono);text-transform:uppercase;color:var(--teal);margin-left:5px}
+.connect{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:28px;align-items:start}
+.side{display:grid;gap:14px;font-size:.92rem;color:var(--muted)}.side b{color:var(--fg)}
+/* releases & roadmap */
+.road{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.era{background:var(--band-card);border-radius:22px;padding:20px;display:grid;gap:14px;align-content:start}
+.era h3{font:.74rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--band-muted);font-weight:500}
+.era.now{outline:2px solid #5574E8}
+.rel{display:grid;gap:3px;padding-left:16px;border-left:2px solid #2a3532}
+.rel .v{font:.72rem var(--mono);color:#8EA3F2}.rel b{font-size:.98rem}.rel span{font-size:.86rem;color:var(--band-muted)}
+.era.future .rel{border-left-style:dashed}
+.vision{margin-top:36px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.vision div{border-top:1px solid #2a3532;padding-top:16px}.vision b{font:800 1.4rem var(--display);display:block;margin-bottom:6px}
+/* faq & close */
+.faq{display:grid;gap:10px;max-width:860px}
+.faq details{border:1px solid var(--line);border-radius:16px;padding:16px 20px;background:var(--card)}
+.faq summary{cursor:pointer;font-weight:600}.faq p{margin-top:10px;color:var(--muted)}
+.close{text-align:center;display:grid;justify-items:center;gap:18px}
+.close .cmd{width:min(560px,100%)}
+footer{border-top:1px solid var(--line);padding:28px 16px;font-size:.85rem;color:var(--muted);text-align:center}
+.annot{font:.72rem var(--mono);color:#B7791F;background:#FFF6E5;border:1px dashed #E8C47A;border-radius:8px;padding:6px 10px;margin-top:14px}
+@media (prefers-color-scheme:dark){.annot{background:#2A2112}}
+@media (max-width:980px){.hero,.dive,.connect{grid-template-columns:minmax(0,1fr)}.dive.flip>:first-child{order:0}.pipe{grid-template-columns:repeat(2,minmax(0,1fr))}.stage::after{display:none}.nums{grid-template-columns:repeat(2,minmax(0,1fr))}.road,.vision{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){nav.top ul{display:none}.pipe{grid-template-columns:minmax(0,1fr)}.cmp .r{grid-template-columns:minmax(0,1fr);gap:4px}.cmp .r:first-child{display:none}.shot .note{margin:0}}
+@media (prefers-reduced-motion:no-preference){.rise{opacity:0;transform:translateY(18px);transition:opacity .7s,transform .7s}.rise.in{opacity:1;transform:none}}
+
+/* ── motion: every animation shows the mechanism of its section ── */
+.ln{display:block}
+#pipe{position:relative}.packet{position:absolute;top:-10px;left:0;width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 6px color-mix(in srgb,var(--accent) 25%,transparent);opacity:0}
+.scrub{position:relative;height:4px;background:var(--line);border-radius:2px;margin-top:6px}.scrub .cursor{position:absolute;top:-6px;left:96%;width:3px;height:16px;border-radius:2px;background:var(--accent-text)}
+.asof{display:grid}.asof span{grid-area:1/1}.asof .q2{opacity:0}
+.swap{display:grid;justify-items:end}.swap>*{grid-area:1/1}.st-ok{opacity:0;background:#123a30;color:#5CC2B3}
+.verifyline{font-size:.78rem;color:var(--band-muted);opacity:0}.verifyline b{color:#5CC2B3;font-weight:500}
+#road{position:relative}.progress{position:absolute;left:0;right:0;top:-18px;height:3px;background:#2a3532;border-radius:2px}.progress i{display:block;height:100%;width:62%;background:linear-gradient(90deg,#5574E8,#8EA3F2);border-radius:2px}
+.walk path{stroke-dasharray:1;stroke-dashoffset:1}
+@media (prefers-reduced-motion:no-preference){
+ .lids{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
+ @keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.15)}}
+ .seq .ln{opacity:0;transform:translateY(4px)}
+ .play .seq .ln{animation:ln .35s ease forwards;animation-delay:calc(var(--d) * .22s + .9s)}
+ .play .seq .ln:first-child{animation:type 1s steps(42) forwards;clip-path:inset(0 100% 0 0);opacity:1;transform:none}
+ @keyframes ln{to{opacity:1;transform:none}}@keyframes type{to{clip-path:inset(0 0 0 0)}}
+ #heroNote{opacity:0;transform:translateY(16px)}.play #heroNote{animation:ln .6s ease 3.4s forwards}
+ .play #heroNote .link{animation:glow 1.2s ease 4.1s 2}@keyframes glow{50%{background:var(--accent-soft);border-radius:4px;box-shadow:0 0 0 3px var(--accent-soft)}}
+ #pipe.in .packet{animation:pk 7s cubic-bezier(.6,0,.4,1) infinite}
+ @keyframes pk{0%{opacity:0;left:2%}5%{opacity:1}20%{left:20%}40%{left:40%}60%{left:60%}80%{left:80%}95%{opacity:1;left:96%}100%{opacity:0;left:96%}}
+ #pipe.in .stage{animation:lit 7s infinite}#pipe.in .stage:nth-of-type(1){animation-delay:0s}#pipe.in .stage:nth-of-type(2){animation-delay:1.4s}#pipe.in .stage:nth-of-type(3){animation-delay:2.8s}#pipe.in .stage:nth-of-type(4){animation-delay:4.2s}#pipe.in .stage:nth-of-type(5){animation-delay:5.6s}
+ @keyframes lit{0%,14%{box-shadow:0 0 0 2px var(--accent),0 18px 40px -20px var(--accent);transform:translateY(-4px)}22%,100%{box-shadow:none;transform:none}}
+ .stagger>*{opacity:0;transform:translateY(10px)}.stagger.in>*{animation:ln .5s ease forwards}.stagger.in>:nth-child(2){animation-delay:.7s}.stagger.in>:nth-child(3){animation-delay:1.1s}
+ .stagger .bar2 i{width:0!important;transition:width 1.2s cubic-bezier(.2,.7,.2,1) 1.4s}.stagger.in .bar2 i{width:var(--w)!important}
+ #graphVis.in .w1{animation:draw .8s ease .3s forwards}#graphVis.in .w2{animation:draw .6s ease 1.1s forwards}#graphVis.in .w3{animation:draw .8s ease .3s forwards}
+ @keyframes draw{to{stroke-dashoffset:0}}
+ #graphVis.in .target{animation:tg 1.4s ease 1.6s forwards}@keyframes tg{to{stroke:#3A5BD9;stroke-width:3}}
+ #graphVis.in circle:first-of-type{animation:pulse 2.4s ease infinite}@keyframes pulse{50%{opacity:.7}}
+ #timeVis .old{width:100%;transition:width 1s ease .4s}#timeVis.in .old{width:62%}
+ #timeVis .new{width:0;transition:width .9s ease 1.3s}#timeVis.in .new{width:38%}
+ #timeVis.in .cursor{animation:scrub 1.2s ease 2.8s forwards}@keyframes scrub{to{left:40%}}
+ #timeVis.in .q1{animation:out .4s ease 3.6s forwards}#timeVis.in .q2{animation:ln .4s ease 3.8s forwards}@keyframes out{to{opacity:0}}
+ #queueVis .hit{opacity:0;transform:translateX(24px)}#queueVis.in .hit{animation:ln .5s ease forwards}#queueVis.in .prop{animation-delay:.5s}
+ #queueVis.in .acc{animation:press .5s ease 1.8s}@keyframes press{50%{background:var(--band-fg);color:var(--band)}}
+ #queueVis.in .st-wait{animation:out .2s ease 2.3s forwards}#queueVis.in .st-ok{animation:ln .3s ease 2.4s forwards}
+ #queueVis.in .prop{border-style:solid!important}
+ #queueVis.in .verifyline{animation:ln .5s ease 3s forwards}
+ #road .progress i{width:0;transition:width 2s cubic-bezier(.2,.7,.2,1) .3s}#road.in .progress i{width:62%}
+ .era.now{animation:now 3s ease-in-out infinite}@keyframes now{50%{outline-color:#8EA3F2;box-shadow:0 0 40px -10px #5574E8}}
+}
+@media (prefers-reduced-motion:reduce){.walk path{stroke-dashoffset:0}.asof .q1{display:none}.asof .q2{opacity:1}.st-wait{opacity:0}.st-ok{opacity:1}.verifyline{opacity:1}#timeVis .cursor{left:40%}}
+
+.relay{gap:14px}.who{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:.86rem;color:var(--muted)}.who .tool{font:600 .78rem var(--mono);background:var(--fg);color:var(--bg);border-radius:999px;padding:.25em .8em}
+.found{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.rules{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;counter-reset:r}
+.rules li{display:grid;gap:8px;padding:20px;border:1px solid var(--line);border-radius:20px;background:var(--card);counter-increment:r}
+.rules b::before{content:counter(r) "  ";font-family:var(--mono);color:var(--accent-text)}.rules span{color:var(--muted);font-size:.92rem}
+.conflict{margin-top:28px;display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;background:var(--surface);border-radius:24px;padding:22px}
+.conflict .side{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;display:grid;gap:6px}.conflict .tool{font:.72rem var(--mono);color:var(--muted)}
+.conflict .mid{display:grid;justify-items:center;gap:6px}.conflict .arrow{font-size:1.4rem;color:var(--accent-text)}
+.conflict .verdict{grid-column:1/-1;font-size:.9rem;color:var(--muted);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+@media (max-width:980px){.rules{grid-template-columns:minmax(0,1fr)}.conflict{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:no-preference){
+ #relayVis>*{opacity:0;transform:translateY(10px)}#relayVis.in>*{animation:ln .5s ease forwards}
+ #relayVis.in>:nth-child(2){animation-delay:.6s}#relayVis.in>:nth-child(3){animation-delay:2.4s}#relayVis.in>:nth-child(4){animation-delay:3.2s}
+ #relayVis.in .st-wait{animation:out .2s ease 1.6s forwards}#relayVis.in .st-ok{animation:ln .3s ease 1.7s forwards}#relayVis.in .cellcard{border-style:solid!important}
+ #relayVis.in .found{animation:ln .5s ease 3.2s forwards,glow 1.2s ease 3.8s 1}
+ #conflictVis .side{opacity:0}#conflictVis.in .a{animation:ln .5s ease .2s forwards}#conflictVis.in .b{animation:ln .5s ease .5s forwards}
+ #conflictVis .verdict{opacity:0}#conflictVis.in .verdict{animation:ln .5s ease 2s forwards}#conflictVis.in .a{animation:ln .5s ease .2s forwards,fade .6s ease 2s forwards}@keyframes fade{to{opacity:.45}}
+ #conflictVis.in .arrow{animation:pulse 1s ease .8s 2}
+}
+
+.hub-wrap{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr);gap:24px;align-items:stretch}
+.hub{position:relative;background:var(--band-card);border-radius:28px;padding:10px;min-width:0}
+.hub svg{width:100%;height:auto;display:block}
+.hub .node rect{fill:#1E2725;stroke:#2a3532;stroke-width:1.5;transition:stroke .3s,fill .3s}
+.hub .node text{fill:#F4F1EE;font:600 13px Figtree,system-ui,sans-serif}
+.hub .node.on rect{stroke:#8EA3F2;fill:#1d2745}
+.hub .spoke.on{stroke:#5574E8}
+.bubble{position:absolute;max-width:62%;background:#F4F1EE;color:#0E1413;border-radius:14px;padding:8px 12px;font-size:.84rem;line-height:1.4;box-shadow:0 14px 40px -16px #000;opacity:0;transform:translateY(6px);transition:opacity .35s,transform .35s;pointer-events:none}
+.bubble.show{opacity:1;transform:none}.bubble small{display:block;font:.68rem var(--mono);color:#5D6663;margin-bottom:2px}
+.feed{background:var(--band-card);border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.feed-h,.feed-f{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--band-muted)}
+.feed ol{list-style:none;margin:0;padding:0;display:grid;gap:8px;align-content:start;flex:1}
+.feed li{font:.76rem/1.45 var(--mono);color:#C9D2CF;border-left:2px solid #2a3532;padding:2px 0 2px 10px;animation:ln .4s ease}
+.feed li b{font-weight:500;color:#8EA3F2}.feed li.ok{border-color:#5CC2B3}.feed li.wait{border-color:#F2D38E}.feed li.read{border-color:#5574E8}
+.feed-f{color:#5CC2B3;min-height:1.2em}
+@media (max-width:980px){.hub-wrap{grid-template-columns:minmax(0,1fr)}.bubble{max-width:80%}}
+</style>
+</head>
+<body>
+
+<nav class="top">
+	<span class="brand">homun</span>
+	<ul><li>Homun</li><li>Engramma<span class="pill">beta</span></li><li>Docs</li><li>Roadmap</li></ul>
+	<a class="btn primary" href="#install" style="padding:.5em 1em;font-size:.88rem">Install Engramma</a>
+</nav>
+
+<!-- 1 · HERO: what it is, the install, and the product working -->
+<header class="wrap hero" id="install">
+	<div>
+		<div class="id"><svg width="44" height="44" viewBox="8 6 86 88" aria-hidden="true"><path d="M50 12C74 10 90 28 88 52C86 76 70 90 48 88C26 86 10 72 12 50C14 28 28 14 50 12Z" fill="#3A5BD9"><animate attributeName="d" dur="6.5s" repeatCount="indefinite" values="M50 12C74 10 90 28 88 52C86 76 70 90 48 88C26 86 10 72 12 50C14 28 28 14 50 12Z;M52 14C78 14 88 32 86 54C84 78 66 88 46 86C22 84 12 68 14 46C16 26 30 14 52 14Z;M48 10C70 12 92 26 88 50C84 74 72 92 50 90C28 88 12 76 10 52C10 30 28 10 48 10Z;M50 12C74 10 90 28 88 52C86 76 70 90 48 88C26 86 10 72 12 50C14 28 28 14 50 12Z"/></path><path class="lids" d="M33 50Q39.5 58 46 50M54 50Q60.5 58 67 50" fill="none" stroke="#F4F1EE" stroke-width="5" stroke-linecap="round"/></svg>Engramma <span class="tag">beta 0.6.17</span></div>
+		<h1>Memory your assistant can <em>prove</em>.</h1>
+		<p class="lead">One memory for all your AI tools: what Claude Code learned, Codex knows. Notes you can read, linked in a graph, searched by words and meaning with a model that runs inside the engine — every fact with who said it, its source, its dates and why it matched.</p>
+		<div class="install">
+			<div class="cmd"><code>curl -LsSf homun.app/engramma/install.sh | sh</code><button>Copy</button></div>
+			<p class="small">macOS (Apple Silicon) and Linux (x86_64, arm64) · Windows soon · <a href="#">release notes</a> · <a href="#">GitHub</a></p>
+		</div>
+		<div class="works"><span>Works with</span><a class="chip" href="#connect">Claude</a><a class="chip" href="#connect">ChatGPT</a><a class="chip" href="#connect">Cursor</a><a class="chip" href="#connect">VS Code</a><a class="chip" href="#connect">Codex</a><a class="chip" href="#connect">Gemini CLI</a><a class="chip" href="#connect">OpenCode</a><a class="chip" href="#connect">Homun</a></div>
+	</div>
+	<div class="shot rise">
+		<div class="term" id="heroTerm"><div class="bar"><i></i><i></i><i></i></div><pre class="seq"><span class="ln" style="--d:0"><span class="p">$</span> engramma search "where does Gaia live now?"</span><span class="ln" style="--d:1">1. [active] Gaia abita a Milano  <span class="d">(DRNF99RG)</span></span><span class="ln" style="--d:2">   score <span class="hl">1.0000</span></span><span class="ln" style="--d:3">   lists: <span class="ok">text + vector + graph</span></span><span class="ln" style="--d:4">   terms: <span class="hl">gaia</span></span><span class="ln" style="--d:5">   graph: Gaia → Milano  <span class="d">(weight 0.35)</span></span><span class="ln" style="--d:6">   valid: <span class="ok">2026-09-01 → now</span></span><span class="ln" style="--d:7">   source: user · stated</span><span class="ln" style="--d:8">&nbsp;</span><span class="ln" style="--d:9"><span class="p">$</span> engramma verify</span><span class="ln" style="--d:10"><span class="ok">log verified:</span> 2 operations, hash chain,</span><span class="ln" style="--d:11">rebuild and FTS index in order</span></pre></div>
+		<div class="note" id="heroNote"><div class="fm">---<br>title: Gaia abita a Milano<br>source: <b>user</b> · confidence: <b>stated</b><br>valid_from: <b>2026-09-01</b> · tags: casa/milano<br>---</div><p style="margin-top:8px">Gaia ha traslocato a <span class="link">[[Milano]]</span> con <span class="link">[[Giulia]]</span> a settembre 2026.</p></div>
+	</div>
+</header>
+<div class="wrap"><p class="annot">MOCKUP NOTE · the terminal must show REAL output captured from the released binary (the CLI prints Italian labels today: keep them, or translate the CLI first — never fake it). The short install URL is an nginx redirect on homun.app to the versioned GitHub installer.</p></div>
+
+
+<!-- 1b · ONE MEMORY, EVERY TOOL: the tools talk through one memory -->
+<section class="band" id="shared">
+	<div class="wrap">
+		<div class="head"><p class="eyebrow">One memory, every tool</p><h2>What one assistant learns, the others know.</h2><p class="lead">Claude Code, Codex, Cursor, OpenCode, ChatGPT and Homun connect to the same memory. Each signs what it proposes, your policy decides what becomes true, and the next tool picks up where the last one stopped.</p></div>
+		<div class="hub-wrap">
+			<div class="hub" id="hub" aria-label="Tools exchanging memories through Engramma">
+				<svg viewBox="0 0 600 440" id="hubSvg" role="img" aria-hidden="true">
+					<g id="spokes" stroke="#2a3532" stroke-width="2"></g>
+					<circle cx="300" cy="220" r="96" fill="none" stroke="#5574E8" stroke-opacity=".18" stroke-width="18" class="halo"/>
+					<g id="gate" opacity="0"><circle cx="300" cy="220" r="74" fill="none" stroke="#F2D38E" stroke-width="3" stroke-dasharray="6 7"/></g>
+					<g transform="translate(244 164) scale(1.12)"><path d="M50 12C74 10 90 28 88 52C86 76 70 90 48 88C26 86 10 72 12 50C14 28 28 14 50 12Z" fill="#3A5BD9"><animate attributeName="d" dur="6.5s" repeatCount="indefinite" values="M50 12C74 10 90 28 88 52C86 76 70 90 48 88C26 86 10 72 12 50C14 28 28 14 50 12Z;M52 14C78 14 88 32 86 54C84 78 66 88 46 86C22 84 12 68 14 46C16 26 30 14 52 14Z;M48 10C70 12 92 26 88 50C84 74 72 92 50 90C28 88 12 76 10 52C10 30 28 10 48 10Z;M50 12C74 10 90 28 88 52C86 76 70 90 48 88C26 86 10 72 12 50C14 28 28 14 50 12Z"/></path>
+					<path class="lids" d="M33 50Q39.5 58 46 50M54 50Q60.5 58 67 50" fill="none" stroke="#F4F1EE" stroke-width="5" stroke-linecap="round"/></g>
+					<text x="300" y="352" text-anchor="middle" fill="#9AA5A1" font-family="Geist Mono,monospace" font-size="12">one memory · one log</text>
+					<g id="nodes"></g>
+					<circle id="dot" r="7" fill="#8EA3F2" opacity="0"/>
+				</svg>
+				<div class="bubble" id="bubble"></div>
+			</div>
+			<div class="feed">
+				<p class="feed-h mono">the log · signed, in order</p>
+				<ol id="feed"></ol>
+				<p class="feed-f mono" id="verdict"></p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- 2 · INSIDE: not a SQL file — the pipeline -->
+<section class="wrap" id="how">
+	<div class="head"><p class="eyebrow">Inside Engramma</p><h2>Not a database. A memory with a method.</h2><p class="lead">One file per memory space on your disk, and inside it five stages that turn what an assistant learns into answers you can check.</p></div>
+	<div class="pipe rise" id="pipe"><span class="packet" aria-hidden="true"></span>
+		<div class="stage"><p class="n">1 · Write</p><h3>Anyone can propose</h3><p>You, Homun, or an assistant over MCP. Third-party content and agent writes wait in quarantine.</p><ul><li>CLI · Node · MCP</li><li>proposals + review</li></ul></div>
+		<div class="stage"><p class="n">2 · Log</p><h3>Every change recorded</h3><p>One operation per write, ordered by a hybrid logical clock and chained by hashes.</p><ul><li>HLC ordering</li><li>hash chain</li><li>replayable</li></ul></div>
+		<div class="stage core"><p class="n">3 · Memory</p><h3>Notes, graph, vectors</h3><p>Markdown notes with source, confidence and validity; [[names]] become a graph; text becomes vectors.</p><ul><li>SQLite + FTS5</li><li>entity graph</li><li>int8 vectors</li></ul></div>
+		<div class="stage"><p class="n">4 · Search</p><h3>Three lists, one answer</h3><p>Words, meaning and the graph are fused, then weighed by time and reliability.</p><ul><li>BM25 · 6 languages</li><li>embeddings</li><li>personalized PageRank</li></ul></div>
+		<div class="stage"><p class="n">5 · Answer</p><h3>With its reasons</h3><p>Each result says which list found it, the graph path, its validity and its source.</p><ul><li>explain</li><li>MCP tools</li></ul></div>
+	</div>
+</section>
+
+<!-- 3 · DEEP DIVES: one per technology, each with its own visual -->
+<section class="band" id="meaning">
+	<div class="wrap dive">
+		<div><p class="eyebrow">Meaning · embedded model</p><h2>A language model inside the engine.</h2><p class="lead" style="margin-top:16px">Engramma turns every note into a vector with IBM Granite Embedding Multilingual R2, running in-process in pure Rust. No API key, no service to call, nothing leaves your computer. It finds a note asked in other words, or in another language.</p>
+			<div class="tech"><span>Granite R2 · 97M</span><span>Apache 2.0</span><span>tract · pure Rust</span><span>384 dims · int8</span><span>offline</span></div></div>
+		<div class="visual rise stagger">
+			<div class="q">Where did Gaia move to?</div>
+			<div class="hit"><b>Gaia abita a Milano</b><div class="why">vector match · cosine 0.81 · no word in common</div><div class="bar2"><i style="--w:81%;width:81%"></i></div></div>
+			<div class="hit"><b>Trasloco: scatoloni da Torino</b><div class="why">vector match · cosine 0.64</div><div class="bar2"><i style="--w:64%;width:64%"></i></div></div>
+		</div>
+	</div>
+</section>
+
+<section class="wrap" id="graph">
+	<div class="dive flip">
+		<div><p class="eyebrow">Graph</p><h2>Names connect what you told it.</h2><p class="lead" style="margin-top:16px">Every [[name]] in a note becomes an entity. When a question names one, a personalized PageRank walks the graph from it and brings up notes that never mention the words you used.</p>
+			<div class="tech"><span>entities + aliases</span><span>personalized PageRank</span><span>wakes only when a name is asked</span></div></div>
+		<div class="visual graph rise" id="graphVis"><svg viewBox="0 0 520 280" role="img" aria-label="A small graph of notes and entities">
+			<g stroke="#3A5BD9" stroke-width="2" opacity=".35"><line x1="120" y1="140" x2="260" y2="70"/><line x1="120" y1="140" x2="260" y2="210"/><line x1="260" y1="70" x2="410" y2="70"/><line x1="260" y1="210" x2="410" y2="210"/><line x1="260" y1="70" x2="260" y2="210"/></g>
+			<g class="walk" fill="none" stroke="#3A5BD9" stroke-width="4" stroke-linecap="round"><path class="w1" pathLength="1" d="M120 140L260 70"/><path class="w2" pathLength="1" d="M260 70L350 70"/><path class="w3" pathLength="1" d="M120 140L260 210"/></g><g font-family="Geist Mono,monospace" font-size="13" text-anchor="middle">
+			<circle cx="120" cy="140" r="38" fill="#3A5BD9"/><text x="120" y="145" fill="#fff">Gaia</text>
+			<circle cx="260" cy="70" r="34" fill="#E7ECFB" stroke="#3A5BD9"/><text x="260" y="75" fill="#2F4BC0">Milano</text>
+			<circle cx="260" cy="210" r="34" fill="#E7ECFB" stroke="#3A5BD9"/><text x="260" y="215" fill="#2F4BC0">Giulia</text>
+			<rect class="target" x="350" y="48" width="130" height="44" rx="10" fill="#FDFCFA" stroke="#E2DED8"/><text x="415" y="75" fill="#101917">note: new office</text>
+			<rect x="350" y="188" width="130" height="44" rx="10" fill="#FDFCFA" stroke="#E2DED8"/><text x="415" y="215" fill="#101917">note: Giulia's job</text></g>
+		</svg><p class="small">“What about Gaia?” starts the walk at Gaia and reaches the office note through Milano.</p></div>
+	</div>
+</section>
+
+<section class="wrap" id="time" style="padding-top:0">
+	<div class="dive">
+		<div><p class="eyebrow">Time</p><h2>Facts change. History stays.</h2><p class="lead" style="margin-top:16px">Notes carry when they are valid. A new fact supersedes the old one instead of overwriting it, so you can ask what was true on any date.</p>
+			<div class="tech"><span>valid_from / valid_to</span><span>supersede, never overwrite</span><span>--as-of</span></div></div>
+		<div class="visual tl rise" id="timeVis">
+			<div class="row"><span>The office</span><div class="span old">Torino · until Sep 2026</div></div>
+			<div class="row"><span></span><div class="span new">Milano</div></div>
+			<div class="scrub"><i class="cursor"></i></div><p class="asof"><span class="q1">engramma search "office" → <b>Milano</b></span><span class="q2">engramma search "office" --as-of 2026-08-01 → <b>Torino</b></span></p>
+		</div>
+	</div>
+</section>
+
+<section class="band" id="trust">
+	<div class="wrap dive flip">
+		<div><p class="eyebrow">Control</p><h2>Nothing enters unchecked.</h2><p class="lead" style="margin-top:16px">What an assistant reads on the web is born in quarantine. What it wants to remember is a proposal. You accept, reject or roll back, and engramma verify replays the whole log to prove nothing else changed.</p>
+			<div class="tech"><span>quarantine by default</span><span>proposals + rollback</span><span>purge: forget for real</span><span>verify</span></div></div>
+		<div class="visual queue rise" id="queueVis">
+			<div class="hit pending"><div style="display:flex;justify-content:space-between;gap:8px"><b>Acme’s CFO is leaving in March.</b><span class="tag w">quarantine</span></div><div class="why">source: website · inferred · not in search results</div><div class="actions"><span>Accept</span><span>Reject</span></div></div>
+			<div class="hit pending prop"><div style="display:flex;justify-content:space-between;gap:8px"><b>Prefers calls after 3 pm.</b><span class="swap"><span class="tag w st-wait">proposal</span><span class="tag st-ok">accepted</span></span></div><div class="why">from: mcp:claude · waiting for review</div><div class="actions"><span class="acc">Accept</span><span>Reject</span></div></div>
+			<p class="verifyline mono">$ engramma verify <b>✓ log verified: hash chain, rebuild, index</b></p>
+		</div>
+	</div>
+</section>
+
+
+<!-- 3b · HOW TRUTH IS KEPT -->
+<section class="wrap" id="truth">
+	<div class="head"><p class="eyebrow">How truth is kept</p><h2>Many tools write. One history decides.</h2><p class="lead">When several assistants share a memory, the hard part is not storing facts: it is knowing which ones to believe. Engramma answers with rules, not with whoever wrote last.</p></div>
+	<ol class="rules rise">
+		<li><b>The log is the truth</b><span>Notes, graph and indexes are derived from one hash-chained log. engramma verify rebuilds them and must find the same state.</span></li>
+		<li><b>Every fact is signed</b><span>Who wrote it (you, mcp:codex, a reviewer), from which source, with what confidence, valid from when.</span></li>
+		<li><b>Your policy is the gate</b><span>Per memory space: proposals wait for you, or a reviewer model decides within your limits — confidence, note types, a cap per hour.</span></li>
+		<li><b>Disagreements stay visible</b><span>Two writes to the same note that did not see each other — two devices, or two tools’ accepted proposals — make a conflict copy, closed only by a decision. Never last-write-wins.</span></li>
+		<li><b>Change keeps history</b><span>A new fact supersedes the old one with dates; ask what was true on any day.</span></li>
+		<li><b>Mistakes undo in one move</b><span>Revert everything one tool or reviewer did since Tuesday, with a preview. Purge forgets for real.</span></li>
+	</ol>
+	<div class="conflict rise" id="conflictVis">
+		<div class="side a"><span class="tool">Claude Code</span><p>“Deploys run on Fridays.”</p></div>
+		<div class="mid"><span class="tag w">conflict copy</span><span class="arrow">⇄</span></div>
+		<div class="side b"><span class="tool">Codex</span><p>“No deploys on Fridays.”</p></div>
+		<div class="verdict"><span class="tag st-ok" style="opacity:1">decided by you</span> “No deploys on Fridays” · the other kept in history</div>
+	</div>
+</section>
+
+<div class="wrap"><p class="annot">MOCKUP NOTE · each rule must point to the code or doc that enforces it (DESIGN § 4 conflicts, § 8.5 policy and reviewers, docs/cli.md revert --by). Check that revert --by accepts an mcp:&lt;actor&gt;, not only reviewer:&lt;name&gt;, before writing “one tool”. The shared-memory example must be a real session captured with two clients on one cell.</p></div>
+<!-- 4 · NUMBERS: only measured, sourced figures -->
+<section class="band" style="padding-top:0">
+	<div class="wrap nums" id="nums">
+		<div class="num"><b data-count="97.5%">97.5%</b><span>LongMemEval: right session in the top 5 (320 held-out questions)</span></div>
+		<div class="num"><b data-count="6">6</b><span>languages with stemming: it, en, fr, de, es, pt</span></div>
+		<div class="num"><b data-count="0">0</b><span>services to call: model, search and index run in-process</span></div>
+		<div class="num"><b data-count="700+">700+</b><span>tests, property tests and golden files on every push</span></div>
+		<div class="num"><b data-count="1">1</b><span>file per memory space, readable by any SQLite tool</span></div>
+	</div>
+	<div class="wrap"><p class="annot">MOCKUP NOTE · every number must cite its source in the repo (DESIGN § 11 for LongMemEval, the CI for tests, the stemmer list in the code). Verify the six languages before publishing.</p></div>
+</section>
+
+<!-- 5 · COMPARISON -->
+<section class="wrap" id="different">
+	<div class="head"><p class="eyebrow">Why Engramma</p><h2>Memory you can check.</h2><p class="lead">Most memory layers are a store the assistant writes into and you have to trust. Engramma is built the other way round.</p></div>
+	<div class="cmp rise">
+		<div class="r"><span></span><span>Usual assistant memory</span><span>Engramma</span></div>
+		<div class="r"><b>Where it runs</b><span class="u">A cloud service, or a server with a vector database</span><span class="e">One file per memory space, on your computer</span></div>
+		<div class="r"><b>What it stores</b><span class="u">Embeddings only the system can read</span><span class="e">Markdown notes you can read, edit and export</span></div>
+		<div class="r"><b>When a fact changes</b><span class="u">The old value is overwritten</span><span class="e">The old version stays, with its dates</span></div>
+		<div class="r"><b>Why this answer</b><span class="u">A similarity score</span><span class="e">Source, confidence, graph path and validity</span></div>
+		<div class="r"><b>What the assistant adds</b><span class="u">Anything it reads goes into memory</span><span class="e">Proposals and third-party content wait for you</span></div>
+		<div class="r"><b>Proof</b><span class="u">Trust the database</span><span class="e">A hash-chained log anyone can replay</span></div>
+	</div>
+</section>
+
+<!-- 6 · CONNECT -->
+<section class="wrap" id="connect" style="padding-top:0">
+	<div class="head"><p class="eyebrow">Connect</p><h2>Your memory in the assistant you use.</h2></div>
+	<div class="connect">
+		<div>
+			<div class="tabs" role="tablist"><button aria-selected="true">Claude Code</button><button>Claude Desktop</button><button>Cursor</button><button>VS Code</button><button>Codex</button><button>Gemini CLI</button><button>OpenCode</button><button>ChatGPT<span class="t">tested</span></button><button>claude.ai<span class="t">tested</span></button></div>
+			<div class="term"><div class="bar"><i></i><i></i><i></i></div><pre><span class="p">$</span> claude mcp add engramma -- ~/.cargo/bin/engramma \
+    mcp --cells work --write work --actor claude-code</pre></div>
+		</div>
+		<div class="side"><p><b>Local apps</b> start Engramma on your computer over stdio.</p><p><b>Web and mobile apps</b> reach it over HTTPS with OAuth 2.1, through a tunnel you choose.</p><p><b>Only the spaces you name</b> are exposed. Assistants can search and propose — never confirm, delete or change a rule.</p></div>
+	</div>
+</section>
+
+<!-- 7 · RELEASES & ROADMAP: what shipped, what it becomes -->
+<section class="band" id="roadmap">
+	<div class="wrap">
+		<div class="head"><p class="eyebrow">Releases and roadmap</p><h2>From your memory, to your team’s, to your company’s.</h2><p class="lead">Every release below is tagged in the repository. What comes next follows the design document.</p></div>
+		<div class="road rise" id="road"><span class="progress" aria-hidden="true"><i></i></span>
+			<div class="era"><h3>Foundations · shipped</h3>
+				<div class="rel"><span class="v">0.1</span><b>Notes and the log</b><span>Markdown format, one SQLite file, hash-chained log, text search, quarantine, read-only MCP.</span></div>
+				<div class="rel"><span class="v">0.2</span><b>Meaning</b><span>The embedded model, int8 vectors, mixed search.</span></div>
+				<div class="rel"><span class="v">0.3</span><b>Graph and forgetting</b><span>Personalized PageRank, purge, Markdown vault view.</span></div></div>
+			<div class="era"><h3>Inside Homun · shipped</h3>
+				<div class="rel"><span class="v">0.4</span><b>Node module</b><span>Engramma becomes Homun’s memory; tuned on LongMemEval.</span></div>
+				<div class="rel"><span class="v">0.5</span><b>Other assistants</b><span>Proposals, review and rollback; MCP over HTTPS for ChatGPT and claude.ai.</span></div>
+				<div class="rel"><span class="v">0.6</span><b>Encrypted sync</b><span>Your devices share one memory, end to end encrypted.</span></div></div>
+			<div class="era now"><h3>Now</h3>
+				<div class="rel"><span class="v">0.6.17 · beta</span><b>Developer preview</b><span>Public binaries, installer, the compatibility promise.</span></div>
+				<div class="rel"><span class="v">0.6.x</span><b>More platforms</b><span>Windows and Intel Macs, once every test passes.</span></div></div>
+			<div class="era future"><h3>Next</h3>
+				<div class="rel"><span class="v">planned</span><b>Your documents</b><span>PDF, Office files and web pages become sourced notes; a watched folder reindexes itself.</span></div>
+				<div class="rel"><span class="v">0.7</span><b>Organizations</b><span>Shared memory with signed rules: who reads, proposes, writes.</span></div>
+				<div class="rel"><span class="v">0.7.1</span><b>Protection at rest</b><span>Encrypted company memory, device revocation.</span></div>
+				<div class="rel"><span class="v">0.8</span><b>Engramma server</b><span>Many spaces in one service, SSO, admin console, read audit.</span></div>
+				<div class="rel"><span class="v">0.9</span><b>Cluster</b><span>Replicas, placement, backups to object storage.</span></div></div>
+		</div>
+		<div class="vision"><div><b>You</b><span class="muted">One person’s memory, on their own devices, shared with the assistants they choose.</span></div><div><b>Your team</b><span class="muted">Spaces shared by role, with rules everyone can verify and no central server required.</span></div><div><b>Your company</b><span class="muted">An optional server, single sign-on and audit, scaling to a cluster.</span></div></div>
+	</div>
+</section>
+
+<!-- 8 · FAQ -->
+<section class="wrap" id="faq">
+	<div class="head"><p class="eyebrow">Questions</p><h2>Asked before you install.</h2></div>
+	<div class="faq">
+		<details open><summary>Does it replace a RAG stack?</summary><p>For your notes and conversations, yes: it chunks, embeds and searches them by words, meaning and graph in one file, with no vector database and no embedding API — and says why each result matched. Point it at a Markdown folder or an Obsidian vault with engramma import. PDF, Office files and web pages are not ingested yet: they are on the roadmap.</p></details>
+		<details><summary>Can several tools use the same memory at once?</summary><p>Yes. Each connects with its own name; reads are shared, writes are proposals signed by that tool and handled by the memory space’s policy.</p></details>
+		<details><summary>Does it need an API key or a GPU?</summary><p>No. The embedding model runs on the CPU inside the engine. A remote embedding endpoint is optional.</p></details>
+		<details><summary>Where is my data?</summary><p>In one file per memory space on your disk. Sync between your devices is end-to-end encrypted; a relay can forward it but never read it.</p></details>
+		<details><summary>How does it relate to Homun?</summary><p>Engramma is Homun’s memory. The same engine ships as a command line and an MCP server for any assistant.</p></details>
+		<details><summary>Will my memory survive updates?</summary><p>Yes: every later version opens memory written by this one. The promise and its tests are in the repository.</p></details>
+	</div>
+</section>
+
+<section class="wrap close" id="start">
+	<h2>Start a memory in a minute.</h2>
+	<div class="cmd"><code>curl -LsSf homun.app/engramma/install.sh | sh</code><button>Copy</button></div>
+	<p class="small">Open source · Apache 2.0 · <a href="#">GitHub</a> · <a href="#">Docs</a> · <a href="#">Homun, with Engramma inside</a></p>
+</section>
+
+<footer>homun · a family of products · Homun · Engramma</footer>
+
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add('in')),{threshold:.15});
+document.querySelectorAll('.rise').forEach(el=>io.observe(el));
+document.querySelectorAll('.tabs').forEach(t=>t.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;t.querySelectorAll('button').forEach(x=>x.setAttribute('aria-selected',x===b));}));
+
+const watch=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');watch.unobserve(e.target)}}),{threshold:.35});
+['pipe','graphVis','timeVis','queueVis','road','nums','conflictVis'].forEach(id=>{const el=document.getElementById(id);el&&watch.observe(el)});
+document.querySelectorAll('.stagger').forEach(el=>watch.observe(el));
+document.querySelector('.hero').classList.add('play');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+new IntersectionObserver((es,o)=>es.forEach(e=>{if(!e.isIntersecting)return;o.disconnect();if(reduce)return;
+ document.querySelectorAll('[data-count]').forEach(b=>{const raw=b.dataset.count,m=raw.match(/[\d.]+/);if(!m)return;const end=parseFloat(m[0]),dec=(m[0].split('.')[1]||'').length,t0=performance.now();
+  const step=t=>{const k=Math.min(1,(t-t0)/1400),v=(end*(1-Math.pow(1-k,3))).toFixed(dec);b.textContent=raw.replace(m[0],v);if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)})
+}),{threshold:.4}).observe(document.getElementById('nums'));
+
+/* hub: tools talk through one memory; scenes loop, the log fills */
+(()=>{const svg=document.getElementById('hubSvg');if(!svg)return;const NS='http://www.w3.org/2000/svg',C={x:300,y:220};
+const tools=[['Claude Code',300,46],['Codex',520,130],['Cursor',520,312],['OpenCode',300,396],['ChatGPT',80,312],['Homun',80,130]];
+const pos={},spoke={},node={};
+tools.forEach(([n,x,y])=>{pos[n]={x,y};const l=document.createElementNS(NS,'line');l.setAttribute('x1',x);l.setAttribute('y1',y);l.setAttribute('x2',C.x);l.setAttribute('y2',C.y);l.classList.add('spoke');document.getElementById('spokes').append(l);spoke[n]=l;
+ const g=document.createElementNS(NS,'g');g.classList.add('node');const w=n.length*8+30;g.innerHTML=`<rect x="${x-w/2}" y="${y-18}" width="${w}" height="36" rx="18"/><text x="${x}" y="${y+5}" text-anchor="middle">${n}</text>`;document.getElementById('nodes').append(g);node[n]=g});
+const dot=document.getElementById('dot'),bub=document.getElementById('bubble'),feed=document.getElementById('feed'),verdict=document.getElementById('verdict'),gate=document.getElementById('gate'),hub=document.getElementById('hub');
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const fly=(a,b,ms=900)=>new Promise(r=>{dot.setAttribute('opacity',1);const t0=performance.now();const f=t=>{const k=Math.min(1,(t-t0)/ms),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;dot.setAttribute('cx',a.x+(b.x-a.x)*e);dot.setAttribute('cy',a.y+(b.y-a.y)*e);k<1?requestAnimationFrame(f):(dot.setAttribute('opacity',0),r())};requestAnimationFrame(f)});
+const say=(tool,who,text)=>{const p=pos[tool],r=hub.getBoundingClientRect(),sx=r.width/600,sy=svg.getBoundingClientRect().height/440;bub.innerHTML=`<small>${who}</small>${text}`;bub.style.left=Math.max(8,Math.min(r.width-bub.offsetWidth-8,p.x*sx-60))+'px';bub.style.top=(p.y<220?p.y*sy+26:p.y*sy-70)+'px';bub.classList.add('show')};
+const hush=()=>bub.classList.remove('show');
+const on=(t,v)=>{node[t].classList.toggle('on',v);spoke[t].classList.toggle('on',v)};
+const log=(cls,html)=>{const li=document.createElement('li');li.className=cls;li.innerHTML=html;feed.append(li);while(feed.children.length>7)feed.firstElementChild.remove()};
+const scenes=[
+ {from:'Claude Code',actor:'mcp:claude-code',fact:'Auth moved to JWT; sessions table dropped',src:'commit 4f1c',decide:'accepted by you',to:'Codex',ask:'How do we authenticate?',ok:true},
+ {from:'Cursor',actor:'mcp:cursor',fact:'Use pnpm, never npm, in this repo',src:'chat',decide:'accepted by reviewer:local (confidence 0.92)',to:'OpenCode',ask:'Which package manager?',ok:true},
+ {from:'ChatGPT',actor:'mcp:chatgpt',fact:'Acme’s CFO leaves in March',src:'web page · inferred',decide:'held in quarantine',to:'Homun',ask:'Who is Acme’s CFO?',ok:false}];
+let t='14:02';const tick=()=>{const[h,m]=t.split(':').map(Number);const n=m+3;t=`${h+Math.floor(n/60)}:${String(n%60).padStart(2,'0')}`;return t};
+async function play(s){on(s.from,true);say(s.from,s.actor+' · proposes',`“${s.fact}”`);await wait(1300);hush();await fly(pos[s.from],C);on(s.from,false);
+ log('wait',`${tick()} <b>${s.actor}</b> proposed “${s.fact}” · ${s.src}`);gate.setAttribute('opacity',1);await wait(1100);gate.setAttribute('opacity',0);
+ log(s.ok?'ok':'wait',`${tick()} ${s.decide}`);await wait(700);
+ on(s.to,true);say(s.to,'mcp:'+s.to.toLowerCase().replace(' ','-')+' · asks',s.ask);await wait(1200);hush();await fly(pos[s.to],C,700);
+ log('read',`${tick()} <b>mcp:${s.to.toLowerCase().replace(' ','-')}</b> searched “${s.ask}”`);await fly(C,pos[s.to],700);
+ say(s.to,'engramma · answers',s.ok?`“${s.fact}” <small style="display:inline;color:#126A5F">— by ${s.actor}, ${s.decide}</small>`:`Nothing confirmed yet. <small style="display:inline;color:#8a6d1f">— one claim waits in quarantine</small>`);
+ verdict.textContent=s.ok?'✓ the next tool knows':'⏸ unconfirmed claims stay out of answers';await wait(2600);hush();on(s.to,false);verdict.textContent='';await wait(500)}
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(reduce){scenes.forEach(s=>{log('wait',`<b>${s.actor}</b> proposed “${s.fact}”`);log(s.ok?'ok':'wait',s.decide)});return}
+let started=false;new IntersectionObserver(es=>{if(es[0].isIntersecting&&!started){started=true;(async()=>{for(;;)for(const s of scenes)await play(s)})()}},{threshold:.3}).observe(hub);
+})();
+</script>
+</body>
+</html>

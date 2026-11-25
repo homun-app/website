@@ -1,4 +1,4 @@
-import { compareVersions, MIN_PUBLIC_VERSION } from "../lib/versions.mjs";
+import { baseVersion, compareVersions, MIN_PUBLIC_VERSION } from "../lib/versions.mjs";
 
 export const RELEASES_REPOSITORY_URL = "https://github.com/homun-app/homun-releases";
 export const RELEASES_PAGE_URL = `${RELEASES_REPOSITORY_URL}/releases`;
@@ -43,72 +43,159 @@ export function preferredInstaller(platform, grouped) {
 	return grouped[platform][0] ?? null;
 }
 
-const platformLabels = {
-	macos: "Download for macOS",
-	windows: "Download for Windows",
-	linux: "Download for Linux",
-	unknown: "Get Homun for your computer",
-};
-
 const platformNames = {
 	macos: "macOS",
 	windows: "Windows",
 	linux: "Linux",
 };
 
-export function platformBadge(platform) {
-	return platform === "windows" || platform === "linux" ? "beta" : null;
+// The channel of a release the site may speak about: pre-releases are «beta»,
+// everything else is stable. Drafts are nothing.
+export function releaseChannel(release) {
+	if (!release || release.draft || typeof release.tag_name !== "string") return null;
+	return release.prerelease ? "beta" : "stable";
 }
 
-/** @returns {string | null} */
-export function platformRequirement(_platform) {
-	// No public stable release meets MIN_PUBLIC_VERSION yet. Add requirements
-	// when the changelog documents them for a release the resolver can offer.
+// A release the site may offer: not a draft, and on the 0.3 line or later.
+// MIN_PUBLIC_VERSION draws the line: everything below is the retired Homun 2.
+function isOfferable(release, min) {
+	if (!release || release.draft) return false;
+	if (typeof release.tag_name !== "string") return false;
+	return compareVersions(baseVersion(release.tag_name), min) >= 0;
+}
+
+// Newer by line first ("v0.3.1002-beta.1" follows "v0.3.1001-beta.20"), then
+// by publication date — a re-published tag does not lose its place.
+function supersedes(release, current) {
+	const comparison = compareVersions(baseVersion(release.tag_name), baseVersion(current.tag_name));
+	if (comparison !== 0) return comparison > 0;
+	return Date.parse(release.published_at ?? "") > Date.parse(current.published_at ?? "");
+}
+
+// The release the site offers: the latest stable ≥ MIN_PUBLIC_VERSION when one
+// exists; while it does not, the latest pre-release ≥ MIN_PUBLIC_VERSION,
+// which the site marks «beta». A 0.2 is never offered. When a 0.3 stable
+// ships, the offer moves to it on its own, without touching this code.
+export function pickCurrentRelease(releases = [], min = MIN_PUBLIC_VERSION) {
+	if (!Array.isArray(releases)) return null;
+	let stable = null;
+	let beta = null;
+	for (const release of releases) {
+		if (!isOfferable(release, min)) continue;
+		if (release.prerelease) {
+			if (!beta || supersedes(release, beta)) beta = release;
+		} else if (!stable || supersedes(release, stable)) stable = release;
+	}
+	return stable ?? beta ?? null;
+}
+
+// The Macs a macOS installer fits, read from its file name: the 0.3 beta
+// ships an arm64 .dmg only, and an Intel Mac must not receive it unannounced.
+export function macInstallerArch(grouped) {
+	const name = grouped?.macos?.[0]?.name;
+	if (typeof name !== "string") return null;
+	const lower = name.toLowerCase();
+	if (lower.includes("universal")) return "universal";
+	if (lower.includes("arm64") || lower.includes("aarch64")) return "arm64";
+	if (lower.includes("x64") || lower.includes("x86_64") || lower.includes("amd64")) return "x64";
 	return null;
 }
 
-let installersPromise;
-
-export function pickCurrentRelease(releases = [], min = MIN_PUBLIC_VERSION) {
-	if (!Array.isArray(releases)) return null;
-	let current = null;
-	for (const release of releases) {
-		if (!release || release.draft || release.prerelease) continue;
-		if (typeof release.tag_name !== "string") continue;
-		if (compareVersions(release.tag_name, min) < 0) continue;
-		if (!current) {
-			current = release;
-			continue;
-		}
-		const comparison = compareVersions(release.tag_name, current.tag_name);
-		if (comparison > 0) current = release;
-		else if (comparison === 0 && Date.parse(release.published_at ?? "") > Date.parse(current.published_at ?? "")) current = release;
-	}
-	return current;
+// Everything the download UI needs to say about the release on offer: its
+// channel, the installers it ships, which platforms it covers. The chips and
+// the badges come from here, never from a hand-written platform list.
+export function offerFromRelease(release) {
+	const installers = groupInstallers(release?.assets ?? []);
+	return {
+		release: release ?? null,
+		channel: releaseChannel(release),
+		installers,
+		available: {
+			macos: installers.macos.length > 0,
+			windows: installers.windows.length > 0,
+			linux: installers.linux.length > 0,
+		},
+		macArch: macInstallerArch(installers),
+	};
 }
 
-export async function loadLatestInstallers(fetchImpl = fetch, { useCache = true } = {}) {
-	if (useCache && installersPromise) return installersPromise;
+// A platform chip's badge: «beta» while the offered release is a pre-release,
+// «soon» while the offered release has no installer for it.
+export function platformBadge(platform, offer) {
+	if (!(platform in platformNames) || !offer?.release) return null;
+	if (!offer.available[platform]) return "soon";
+	return offer.channel === "beta" ? "beta" : null;
+}
+
+// The small line under a platform: while the macOS installer is arm64-only,
+// the chip says which Macs it fits.
+export function platformRequirement(platform, offer) {
+	if (platform !== "macos" || !offer?.available?.macos) return null;
+	if (offer.macArch === "arm64") return "Apple Silicon";
+	if (offer.macArch === "x64") return "Intel";
+	return null;
+}
+
+// What a button says it downloads. When the offered release covers none of
+// the visitor's platform, the button invites them to choose instead.
+export function downloadLabel(platform, offer = null) {
+	const name = platformNames[platform];
+	if (!name || (offer && !offer.available[platform])) return "Get Homun for your computer";
+	const beta = offer?.channel === "beta" ? " the beta" : "";
+	return `Download${beta} for ${name}`;
+}
+
+let offerPromise;
+
+export async function loadCurrentOffer(fetchImpl = fetch, { useCache = true } = {}) {
+	if (useCache && offerPromise) return offerPromise;
 	const request = (async () => {
 		const response = await fetchImpl(RELEASES_API_URL, {
 			headers: { Accept: "application/vnd.github+json" },
 		});
 		if (!response.ok) throw new Error(`GitHub release request failed: ${response.status}`);
 		const releases = await response.json();
-		const current = pickCurrentRelease(releases);
-		return groupInstallers(current?.assets ?? []);
+		return offerFromRelease(pickCurrentRelease(releases));
 	})();
-	if (useCache) installersPromise = request;
+	if (useCache) offerPromise = request;
 	try {
 		return await request;
 	} catch (error) {
-		if (useCache) installersPromise = undefined;
+		if (useCache) offerPromise = undefined;
 		throw error;
 	}
 }
 
 function navigateTo(url) {
 	window.location.assign(url);
+}
+
+// Which Mac is asking. Chromium answers through the high-entropy UA-CH hints;
+// Safari and Firefox do not, and there an Intel Mac cannot be told from an
+// Apple Silicon one — the button then keeps its «Apple Silicon» note and the
+// choice stays with the visitor.
+export async function detectMacArch(navigatorLike = navigator) {
+	const hints = navigatorLike?.userAgentData?.getHighEntropyValues;
+	if (typeof hints !== "function") return null;
+	try {
+		const { architecture } = await hints.call(navigatorLike.userAgentData, ["architecture"]);
+		if (architecture === "arm") return "arm64";
+		if (architecture === "x86") return "x64";
+	} catch {
+		// A hint that does not answer is no hint: the note on the chip decides.
+	}
+	return null;
+}
+
+// What a click may download: the installer when the offered release ships one
+// that fits this computer, the chooser otherwise. An Intel Mac never receives
+// the arm64 .dmg of the beta as if it ran.
+async function resolveDownloadPlan(platform, offer, navigatorLike) {
+	if (!(platform in platformNames) || !offer?.available?.[platform]) return { kind: "choose" };
+	if (platform === "macos" && offer.macArch === "arm64" && (await detectMacArch(navigatorLike)) === "x64") {
+		return { kind: "choose" };
+	}
+	return { kind: "installer", asset: preferredInstaller(platform, offer.installers) };
 }
 
 function installerKind(name) {
@@ -133,22 +220,24 @@ function scopedDownloadOptions(element, root = document) {
 	return scope?.querySelector?.("[data-download-options]") ?? null;
 }
 
-function wireDownloadControl(control, platform, root = document, dependencies = {}) {
-	const { loadInstallers = loadLatestInstallers, navigate = navigateTo } = dependencies;
+function wireDownloadControl(control, platform, root = document, navigatorLike = navigator, dependencies = {}) {
+	const { loadOffer = loadCurrentOffer, navigate = navigateTo } = dependencies;
+	const isPrimary = control.matches?.("[data-homun-download]") ?? false;
 	control.addEventListener("click", async (event) => {
 		event.preventDefault();
-		if (platform === "unknown") {
-			const options = scopedDownloadOptions(control, root);
-			if (options) {
-				const opening = options.hidden;
-				options.hidden = !opening;
-				control.setAttribute("aria-expanded", String(opening));
-				return;
-			}
-		}
 		if (control.getAttribute("aria-busy") === "true") return;
+		const openOptions = () => {
+			const options = scopedDownloadOptions(control, root);
+			if (!options) return false;
+			const opening = options.hidden;
+			options.hidden = !opening;
+			control.setAttribute("aria-expanded", String(opening));
+			return true;
+		};
+		// A phone or an unrecognized system opens the chooser without touching
+		// the network; no installer is invented for it.
+		if (!(platform in platformNames) && isPrimary && openOptions()) return;
 		control.setAttribute("aria-busy", "true");
-		const isPrimary = control.matches("[data-homun-download]");
 		const responsiveLabels = isPrimary ? responsiveDownloadLabels(control) : null;
 		const statusLabel = responsiveLabels
 			? null
@@ -164,19 +253,28 @@ function wireDownloadControl(control, platform, root = document, dependencies = 
 		} else if (statusLabel) {
 			statusLabel.textContent = "Finding the latest installer…";
 		}
+		// The label the offer itself dictates: what the button goes back to.
+		let refreshedLabel = null;
 		try {
-			const grouped = await loadInstallers();
-			const asset = preferredInstaller(platform, grouped);
-			navigate(asset?.browser_download_url ?? RELEASES_PAGE_URL);
+			const offer = await loadOffer();
+			refreshedLabel = downloadLabel(platform, offer);
+			const plan = await resolveDownloadPlan(platform, offer, navigatorLike);
+			if (plan.kind === "installer") {
+				navigate(plan.asset?.browser_download_url ?? RELEASES_PAGE_URL);
+			} else if (!(isPrimary && openOptions())) {
+				// A platform row inside the panel already points at the
+				// releases page; a primary control without a panel goes there.
+				navigate(RELEASES_PAGE_URL);
+			}
 		} catch {
 			navigate(RELEASES_PAGE_URL);
 		} finally {
 			control.removeAttribute("aria-busy");
 			if (responsiveLabels && typeof original === "object") {
-				responsiveLabels.compact.textContent = original.compact;
-				responsiveLabels.full.textContent = original.full;
+				responsiveLabels.compact.textContent = "Download";
+				responsiveLabels.full.textContent = refreshedLabel ?? original.full;
 			} else if (statusLabel && original) {
-				statusLabel.textContent = original;
+				statusLabel.textContent = refreshedLabel ?? original;
 			}
 		}
 	});
@@ -217,16 +315,18 @@ function appendFallbackLink(list) {
 	list.append(link);
 }
 
-function renderInstallerLinks(list, grouped) {
+function renderInstallerLinks(list, offer) {
 	list.replaceChildren();
 	for (const platform of ["macos", "windows", "linux"]) {
-		for (const asset of grouped[platform]) {
+		for (const asset of offer.installers[platform]) {
 			const link = document.createElement("a");
 			link.href = asset.browser_download_url;
 			link.className = "flex items-center justify-between rounded-xl border border-line bg-bg/45 px-4 py-3 text-sm text-muted transition-colors hover:border-line-strong hover:text-cream";
 			const label = document.createElement("span");
-			const badge = platformBadge(platform);
-			label.textContent = `${platformNames[platform]}${badge ? ` (${badge})` : ""} · ${installerKind(asset.name)}`;
+			const badge = platformBadge(platform, offer);
+			const requirement = platformRequirement(platform, offer);
+			const details = [installerKind(asset.name), requirement].filter(Boolean).join(" · ");
+			label.textContent = `${platformNames[platform]}${badge ? ` (${badge})` : ""} · ${details}`;
 			const arrow = document.createElement("span");
 			arrow.className = "text-accent-bright";
 			arrow.textContent = "↓";
@@ -238,23 +338,36 @@ function renderInstallerLinks(list, grouped) {
 }
 
 export function initDownloadControls(root = document, navigatorLike = navigator, dependencies = {}) {
+	const { loadOffer = loadCurrentOffer } = dependencies;
 	const platform = detectPlatform(navigatorLike);
-	const badge = platformBadge(platform);
-	const label = badge ? `${platformLabels[platform]} (${badge})` : platformLabels[platform];
 	for (const control of root.querySelectorAll("[data-homun-download]")) {
-		const responsiveLabels = responsiveDownloadLabels(control);
-		if (responsiveLabels) {
-			responsiveLabels.compact.textContent = "Download";
-			responsiveLabels.full.textContent = label;
-		} else {
-			control.textContent = label;
-		}
-		wireDownloadControl(control, platform, root, dependencies);
+		wireDownloadControl(control, platform, root, navigatorLike, dependencies);
 	}
 	for (const control of root.querySelectorAll("[data-download-platform]")) {
-		wireDownloadControl(control, control.dataset.downloadPlatform, root, dependencies);
+		wireDownloadControl(control, control.dataset.downloadPlatform, root, navigatorLike, dependencies);
 	}
 	wireShareControls(root, navigatorLike);
+
+	// The markup already says what the build-time offer ships; the live offer
+	// can only know more (a stable 0.3, a Windows build joining), so the
+	// labels follow it when it arrives.
+	const applyLabel = (offer) => {
+		const label = downloadLabel(platform, offer);
+		for (const control of root.querySelectorAll("[data-homun-download]")) {
+			const responsiveLabels = responsiveDownloadLabels(control);
+			if (responsiveLabels) {
+				responsiveLabels.compact.textContent = "Download";
+				responsiveLabels.full.textContent = label;
+			} else {
+				control.textContent = label;
+			}
+		}
+	};
+	if (platform in platformNames) {
+		loadOffer().then(applyLabel).catch(() => {});
+	} else {
+		applyLabel(null);
+	}
 
 	for (const chooser of root.querySelectorAll("[data-download-chooser]")) {
 		const options = scopedDownloadOptions(chooser, root);
@@ -273,8 +386,7 @@ export function initDownloadControls(root = document, navigatorLike = navigator,
 			chooser.setAttribute("aria-busy", "true");
 			status.textContent = "Finding the latest installers…";
 			try {
-				const grouped = await loadLatestInstallers();
-				renderInstallerLinks(list, grouped);
+				renderInstallerLinks(list, await loadOffer());
 				list.dataset.loaded = "true";
 				status.textContent = "Choose the installer that matches your system.";
 			} catch {

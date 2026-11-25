@@ -1,0 +1,40 @@
+---
+// The numbers that count, on the dark band. Each one counts up to its value
+// when it enters the screen, and each one names where it comes from: a number
+// without a source in the repository does not belong here.
+interface Number {
+	value: string;
+	label: string;
+	source: { label: string; url: string };
+}
+
+interface Props {
+	product: "homun" | "engramma";
+	numbers: readonly Number[];
+	class?: string;
+}
+
+const { product, numbers, class: className } = Astro.props;
+---
+
+<div class:list={["nums", className]} data-product={product} role="list">
+	{numbers.map(({ value, label, source }) => (
+		<div class="num" role="listitem">
+			<b data-count>{value}</b>
+			<span>{label}</span>
+			<a class="src" href={source.url}>{source.label}</a>
+		</div>
+	))}
+</div>
+
+<style>
+	.nums { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 28px 20px; }
+	.num { display: grid; gap: 6px; min-width: 0; }
+	.num b { font: 800 clamp(2rem, 4vw, 3rem)/1 var(--display); letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+	.num span { font-size: .88rem; line-height: 1.45; color: var(--band-muted); }
+	.src { justify-self: start; margin-top: 2px; font: .7rem/1.4 var(--mono); letter-spacing: .04em; color: var(--accent-text); text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); text-underline-offset: .18em; }
+	.src:hover { text-decoration-color: currentColor; }
+	@media (max-width: 980px) {
+		.nums { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+</style>

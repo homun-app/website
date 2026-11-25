@@ -1,12 +1,697 @@
 {
   "schemaVersion": 2,
-  "contentUpdatedAt": "2026-10-10T10:01:44.126Z",
+  "contentUpdatedAt": "2026-11-25T15:49:50.987Z",
   "items": [
+    {
+      "version": "v0.3.1001-beta.20",
+      "name": "0.3.1001-beta.20",
+      "publishedAt": "2026-11-24T18:00:27Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.3.1001-beta.20",
+      "prerelease": true,
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.3.1001-beta.20-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.20/Homun-0.3.1001-beta.20-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.20-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.20/Homun-0.3.1001-beta.20-arm64.zip"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.20-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.20/Homun-0.3.1001-beta.20-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.20/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.20/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.3.1001-beta.19",
+      "name": "0.3.1001-beta.19",
+      "publishedAt": "2026-11-23T16:14:37Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.3.1001-beta.19",
+      "prerelease": true,
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.3.1001-beta.19-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.19/Homun-0.3.1001-beta.19-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.19-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.19/Homun-0.3.1001-beta.19-arm64.zip"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.19-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.19/Homun-0.3.1001-beta.19-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.19/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.19/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.3.1001-beta.18",
+      "name": "0.3.1001-beta.18",
+      "publishedAt": "2026-11-22T23:22:00Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.3.1001-beta.18",
+      "prerelease": true,
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.3.1001-beta.18-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.18/Homun-0.3.1001-beta.18-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.18-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.18/Homun-0.3.1001-beta.18-arm64.zip"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.18-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.18/Homun-0.3.1001-beta.18-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.18/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.18/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.3.1001-beta.17",
+      "name": "0.3.1001-beta.17",
+      "publishedAt": "2026-11-21T09:38:34Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.3.1001-beta.17",
+      "prerelease": true,
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.3.1001-beta.17-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.17/Homun-0.3.1001-beta.17-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.17-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.17/Homun-0.3.1001-beta.17-arm64.zip"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.17-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.17/Homun-0.3.1001-beta.17-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.17/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.17/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.3.1001-beta.15",
+      "name": "0.3.1001-beta.15",
+      "publishedAt": "2026-11-20T21:21:02Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.3.1001-beta.15",
+      "prerelease": true,
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.3.1001-beta.15-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.15/Homun-0.3.1001-beta.15-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.15-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.15/Homun-0.3.1001-beta.15-arm64.zip"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.15-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.15/Homun-0.3.1001-beta.15-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.15/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.15/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.3.1001-beta.14",
+      "name": "0.3.1001-beta.14",
+      "publishedAt": "2026-11-20T18:29:09Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.3.1001-beta.14",
+      "prerelease": true,
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.3.1001-beta.14-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.14/Homun-0.3.1001-beta.14-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.14-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.14/Homun-0.3.1001-beta.14-arm64.zip"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.14-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.14/Homun-0.3.1001-beta.14-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.14/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.14/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.3.1001-beta.13",
+      "name": "0.3.1001-beta.13",
+      "publishedAt": "2026-11-20T15:26:46Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.3.1001-beta.13",
+      "prerelease": true,
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.3.1001-beta.13-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.13/Homun-0.3.1001-beta.13-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.13-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.13/Homun-0.3.1001-beta.13-arm64.zip"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.13-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.13/Homun-0.3.1001-beta.13-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.13/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.13/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.3.1001-beta.12",
+      "name": "0.3.1001-beta.12",
+      "publishedAt": "2026-11-20T13:28:07Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.3.1001-beta.12",
+      "prerelease": true,
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.3.1001-beta.12-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.12/Homun-0.3.1001-beta.12-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.12-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.12/Homun-0.3.1001-beta.12-arm64.zip"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.12-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.12/Homun-0.3.1001-beta.12-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.12/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.12/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.3.1001-beta.11",
+      "name": "0.3.1001-beta.11",
+      "publishedAt": "2026-11-20T13:00:07Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.3.1001-beta.11",
+      "prerelease": true,
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.3.1001-beta.11-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.11/Homun-0.3.1001-beta.11-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.11-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.11/Homun-0.3.1001-beta.11-arm64.zip"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.11-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.11/Homun-0.3.1001-beta.11-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.11/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.11/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.3.1001-beta.10",
+      "name": "0.3.1001-beta.10",
+      "publishedAt": "2026-11-20T08:52:35Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.3.1001-beta.10",
+      "prerelease": true,
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.3.1001-beta.10-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.10/Homun-0.3.1001-beta.10-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.10-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.10/Homun-0.3.1001-beta.10-arm64.zip"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.10-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.10/Homun-0.3.1001-beta.10-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.10/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.10/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.3.1001-beta.9",
+      "name": "0.3.1001-beta.9",
+      "publishedAt": "2026-11-18T09:17:09Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.3.1001-beta.9",
+      "prerelease": true,
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.3.1001-beta.9-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.9/Homun-0.3.1001-beta.9-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.9-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.9/Homun-0.3.1001-beta.9-arm64.zip"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.9-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.9/Homun-0.3.1001-beta.9-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.9/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.9/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.3.1001-beta.8",
+      "name": "0.3.1001-beta.8",
+      "publishedAt": "2026-11-16T19:23:55Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.3.1001-beta.8",
+      "prerelease": true,
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.3.1001-beta.8-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.8/Homun-0.3.1001-beta.8-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.8-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.8/Homun-0.3.1001-beta.8-arm64.zip"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.8-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.8/Homun-0.3.1001-beta.8-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.8/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.8/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.3.1001-beta.7",
+      "name": "0.3.1001-beta.7",
+      "publishedAt": "2026-11-16T12:15:11Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.3.1001-beta.7",
+      "prerelease": true,
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.3.1001-beta.7-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.7/Homun-0.3.1001-beta.7-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.7-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.7/Homun-0.3.1001-beta.7-arm64.zip"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.7-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.7/Homun-0.3.1001-beta.7-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.7/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.7/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.3.1001-beta.6",
+      "name": "0.3.1001-beta.6",
+      "publishedAt": "2026-11-16T09:53:57Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.3.1001-beta.6",
+      "prerelease": true,
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.3.1001-beta.6-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.6/Homun-0.3.1001-beta.6-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.6-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.6/Homun-0.3.1001-beta.6-arm64.zip"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.6-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.6/Homun-0.3.1001-beta.6-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.6/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.6/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.3.1001-beta.5",
+      "name": "0.3.1001-beta.5",
+      "publishedAt": "2026-11-15T20:47:50Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.3.1001-beta.5",
+      "prerelease": true,
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.3.1001-beta.5-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.5/Homun-0.3.1001-beta.5-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.5-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.5/Homun-0.3.1001-beta.5-arm64.zip"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.5-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.5/Homun-0.3.1001-beta.5-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.5/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.5/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.3.1001-beta.4",
+      "name": "0.3.1001-beta.4",
+      "publishedAt": "2026-11-12T08:57:20Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.3.1001-beta.4",
+      "prerelease": true,
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.3.1001-beta.4-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.4/Homun-0.3.1001-beta.4-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.4-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.4/Homun-0.3.1001-beta.4-arm64.zip"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.4-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.4/Homun-0.3.1001-beta.4-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.4/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.4/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.3.1001-beta.3",
+      "name": "0.3.1001-beta.3",
+      "publishedAt": "2026-11-11T16:31:53Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.3.1001-beta.3",
+      "prerelease": true,
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.3.1001-beta.3-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.3/Homun-0.3.1001-beta.3-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.3-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.3/Homun-0.3.1001-beta.3-arm64.zip"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.3-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.3/Homun-0.3.1001-beta.3-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.3/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.3/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.3.1001-beta.2",
+      "name": "0.3.1001-beta.2",
+      "publishedAt": "2026-11-10T19:55:07Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.3.1001-beta.2",
+      "prerelease": true,
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.3.1001-beta.2-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.2/Homun-0.3.1001-beta.2-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.2-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.2/Homun-0.3.1001-beta.2-arm64.zip"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.2-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.2/Homun-0.3.1001-beta.2-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.2/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.2/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
+    {
+      "version": "v0.3.1001-beta.1",
+      "name": "0.3.1001-beta.1",
+      "publishedAt": "2026-11-10T17:57:38Z",
+      "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.3.1001-beta.1",
+      "prerelease": true,
+      "highlights": [],
+      "improvements": [],
+      "fixes": [],
+      "platforms": [
+        "macOS"
+      ],
+      "assets": [
+        {
+          "name": "Homun-0.3.1001-beta.1-arm64.dmg",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.1/Homun-0.3.1001-beta.1-arm64.dmg"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.1-arm64.zip",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.1/Homun-0.3.1001-beta.1-arm64.zip"
+        },
+        {
+          "name": "Homun-0.3.1001-beta.1-arm64.zip.blockmap",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.1/Homun-0.3.1001-beta.1-arm64.zip.blockmap"
+        },
+        {
+          "name": "SHA256SUMS-mac.txt",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.1/SHA256SUMS-mac.txt"
+        },
+        {
+          "name": "latest-mac.yml",
+          "downloadUrl": "https://github.com/homun-app/homun-releases/releases/download/v0.3.1001-beta.1/latest-mac.yml"
+        }
+      ],
+      "projectSlugs": []
+    },
     {
       "version": "v0.2.1004",
       "name": "0.2.1004",
       "publishedAt": "2026-10-10T10:01:25Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.2.1004",
+      "prerelease": false,
       "highlights": [
         "**Linux AppImage auto-update.** Packaged AppImage builds check `homun-releases` (`latest-linux.yml`) the same way macOS does; nothing installs without consent. `.deb` installs still update from the release page."
       ],
@@ -64,6 +749,7 @@
       "name": "0.2.1003",
       "publishedAt": "2026-10-09T17:25:16Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.2.1003",
+      "prerelease": false,
       "highlights": [
         "**Sealed object transfers between host and peer.** Chunked, resumable HTTP transfers with per-object wraps; credentials and secret stores never enter the transfer payload.",
         "**Transfers announced on the remote event cursor**, so a peer learns about new sealed versions while reading the shared project — without a second polling channel.",
@@ -128,6 +814,7 @@
       "name": "0.2.1002",
       "publishedAt": "2026-10-08T12:26:51Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.2.1002",
+      "prerelease": false,
       "highlights": [
         "**People, invites and real sessions.** Single-use invites create persons with roles; sessions are bound to the person and die with their revocation, which also closes devices, grants and delegations. Access stays explicit: an invited person sees nothing until you share a project.",
         "**Pairing between machines with proof of possession.** A device joins with its own Ed25519 key and must sign a challenge: the invite is consumed only on the correct signature, so a stolen or mistyped token burns nothing.",
@@ -193,6 +880,7 @@
       "name": "0.2.1001",
       "publishedAt": "2026-09-23T09:57:36Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.2.1001",
+      "prerelease": false,
       "highlights": [],
       "improvements": [
         "**Download progress window.** Accepting an update now opens a small progress window (percentage and megabytes); the Dock icon mirrors the progress. Homun keeps working while it downloads.",
@@ -234,6 +922,7 @@
       "name": "0.2.1000",
       "publishedAt": "2026-09-23T09:05:23Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.2.1000",
+      "prerelease": false,
       "highlights": [],
       "improvements": [
         "**The installed version is now visible in Settings → Guide, with a \"Check for updates now\" action.** The automatic check still runs at startup and nothing is ever installed without consent; the new card makes \"already up to date\" distinguishable from \"cannot tell\".",
@@ -272,6 +961,7 @@
       "name": "0.2.1",
       "publishedAt": "2026-09-23T08:32:33Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.2.1",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [
@@ -306,6 +996,7 @@
       "name": "0.2.0",
       "publishedAt": "2026-09-23T07:23:58Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.2.0",
+      "prerelease": false,
       "highlights": [
         "**Il collaboratore scrive il lavoro con il suo modello.** Le fasi di sintesi producono bozze vere (cataloghi, relazioni) a partire da materiali, vincoli e procedure approvate, sempre consegnate in revisione alla persona; ogni modello usato è dichiarato nell'artifact.",
         "**Niente più esecuzioni silenziose.** Confronto CSV, lettura materiali, chiamate a strumenti MCP e sintesi nascono come proposte con digest che approvi tu: il motore non esegue nulla senza un tuo via esplicito.",
@@ -357,6 +1048,7 @@
       "name": "0.1.1100",
       "publishedAt": "2026-09-07T11:42:13Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1100",
+      "prerelease": false,
       "highlights": [
         "**The assistant now proposes a plan for approval before complex work.** For non-trivial multi-step requests that create or mutate things, Homun defers the work tools and asks the model to propose a plan the user can accept or edit, instead of choosing a language or folder and proceeding on its own."
       ],
@@ -432,6 +1124,7 @@
       "name": "0.1.1099",
       "publishedAt": "2026-09-01T14:25:29Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1099",
+      "prerelease": false,
       "highlights": [
         "**Packaged smoke now covers the full realistic scenario matrix.** The rebuilt package has passed chat, browser, automation, MCP, skill/tool selection, memory/privacy, code-routing, payment-approval and Italian web-discovery scenarios.",
         "**Real-profile integrity audit now separates hard failures from delivered historical plan debt.** Completed turns with delivered assistant output but stale open plan UI are visible as warnings instead of blocking the audit as unresolved runtime failures.",
@@ -513,6 +1206,7 @@
       "name": "0.1.1098",
       "publishedAt": "2026-09-01T09:19:50Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1098",
+      "prerelease": false,
       "highlights": [
         "**Real profile integrity can now be audited and repaired.** Homun can detect stale streaming turns, orphaned approvals and browser tasks that exhausted their action budget, then close them canonically with backups.",
         "**Model selection is easier to trust.** The composer treats `Unavailable` as a placeholder, keeps `Auto` visible for automatic routing and records the effective model choice as routing metadata.",
@@ -595,6 +1289,7 @@
       "name": "0.1.1096",
       "publishedAt": "2026-08-30T07:33:02Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1096",
+      "prerelease": false,
       "highlights": [
         "**Browser controls now open the browser directly.** Clicking Browser in the working island opens the PiP browser instead of first expanding the right-side panel.",
         "**Memory briefing now follows the turn workspace.** Chat turns carry their resolved memory workspace explicitly, so project and personal recall do not drift through process-global workspace state."
@@ -673,6 +1368,7 @@
       "name": "0.1.1095",
       "publishedAt": "2026-08-26T19:27:47Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1095",
+      "prerelease": false,
       "highlights": [
         "**The chat runtime now has one typed turn contract.** Goal, policy, perimeter, recall, tools, execution identity, tracing and tail state now move through explicit owners instead of scattered scalar state.",
         "**The UI follows the canonical runtime projection.** Active turn, submission state, task queue, composer mode and thread status now render from the runtime view model instead of independent fallbacks.",
@@ -754,6 +1450,7 @@
       "name": "0.1.1094",
       "publishedAt": "2026-08-04T17:38:45Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1094",
+      "prerelease": false,
       "highlights": [
         "**Hard restarts preserve one canonical turn.** Process fencing, durable checkpoints and lease recovery now converge tasks, runs and assistant messages without duplicate ownership after a gateway crash.",
         "**Release builds fail closed.** GitHub produces installers only after formatting, warning-free Clippy, the complete deterministic test gate and dependency audits all pass on the same source commit."
@@ -832,6 +1529,7 @@
       "name": "0.1.1078",
       "publishedAt": "2026-07-23T00:43:36Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1078",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -889,6 +1587,7 @@
       "name": "0.1.1077",
       "publishedAt": "2026-07-22T23:23:12Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1077",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -946,6 +1645,7 @@
       "name": "0.1.1076",
       "publishedAt": "2026-07-22T12:23:28Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1076",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -1003,6 +1703,7 @@
       "name": "0.1.1075",
       "publishedAt": "2026-07-22T06:48:45Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1075",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -1060,6 +1761,7 @@
       "name": "0.1.1074",
       "publishedAt": "2026-07-21T20:40:46Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1074",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -1117,6 +1819,7 @@
       "name": "Homun v0.1.1073",
       "publishedAt": "2026-07-21T14:49:51Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1073",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -1174,6 +1877,7 @@
       "name": "Homun v0.1.1072",
       "publishedAt": "2026-07-21T13:04:24Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1072",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -1231,6 +1935,7 @@
       "name": "Homun 0.1.1071",
       "publishedAt": "2026-07-21T11:23:53Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1071",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -1288,6 +1993,7 @@
       "name": "Homun 0.1.1070",
       "publishedAt": "2026-07-20T21:43:38Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1070",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -1345,6 +2051,7 @@
       "name": "Homun 0.1.1069",
       "publishedAt": "2026-07-20T13:42:30Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1069",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -1402,6 +2109,7 @@
       "name": "Homun 0.1.1068",
       "publishedAt": "2026-07-19T23:09:47Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1068",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -1459,6 +2167,7 @@
       "name": "Homun 0.1.1067",
       "publishedAt": "2026-07-19T17:54:22Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1067",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -1516,6 +2225,7 @@
       "name": "0.1.1066",
       "publishedAt": "2026-07-19T08:18:13Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1066",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -1573,6 +2283,7 @@
       "name": "0.1.1065",
       "publishedAt": "2026-07-18T23:23:33Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1065",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -1630,6 +2341,7 @@
       "name": "0.1.1064",
       "publishedAt": "2026-07-18T21:55:39Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1064",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -1687,6 +2399,7 @@
       "name": "0.1.1063",
       "publishedAt": "2026-07-18T20:51:40Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1063",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -1744,6 +2457,7 @@
       "name": "0.1.1062",
       "publishedAt": "2026-07-18T19:51:17Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1062",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -1801,6 +2515,7 @@
       "name": "0.1.1061",
       "publishedAt": "2026-07-18T06:18:00Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1061",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -1858,6 +2573,7 @@
       "name": "0.1.1060",
       "publishedAt": "2026-07-15T06:12:38Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1060",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -1915,6 +2631,7 @@
       "name": "0.1.1059",
       "publishedAt": "2026-07-14T15:53:51Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1059",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -1977,6 +2694,7 @@
       "name": "0.1.1058",
       "publishedAt": "2026-07-14T10:01:57Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1058",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2034,6 +2752,7 @@
       "name": "0.1.1057",
       "publishedAt": "2026-07-14T09:20:34Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1057",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2091,6 +2810,7 @@
       "name": "0.1.1056",
       "publishedAt": "2026-07-13T20:01:08Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1056",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2148,6 +2868,7 @@
       "name": "0.1.1055",
       "publishedAt": "2026-07-13T05:40:03Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1055",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2205,6 +2926,7 @@
       "name": "0.1.1054",
       "publishedAt": "2026-07-11T07:54:16Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1054",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2262,6 +2984,7 @@
       "name": "0.1.1053",
       "publishedAt": "2026-07-11T06:45:55Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1053",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2319,6 +3042,7 @@
       "name": "0.1.1050",
       "publishedAt": "2026-06-26T20:43:57Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1050",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2376,6 +3100,7 @@
       "name": "0.1.1049",
       "publishedAt": "2026-06-26T19:22:12Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1049",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2407,6 +3132,7 @@
       "name": "0.1.1048",
       "publishedAt": "2026-06-25T08:18:40Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1048",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2438,6 +3164,7 @@
       "name": "0.1.1047",
       "publishedAt": "2026-06-25T06:08:34Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1047",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2469,6 +3196,7 @@
       "name": "0.1.1046",
       "publishedAt": "2026-06-23T15:46:57Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1046",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2500,6 +3228,7 @@
       "name": "0.1.1045",
       "publishedAt": "2026-06-23T11:41:06Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1045",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2531,6 +3260,7 @@
       "name": "0.1.1044",
       "publishedAt": "2026-06-23T09:49:12Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1044",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2562,6 +3292,7 @@
       "name": "0.1.1043",
       "publishedAt": "2026-06-22T09:22:44Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1043",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2593,6 +3324,7 @@
       "name": "0.1.1042",
       "publishedAt": "2026-06-22T08:22:29Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1042",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2624,6 +3356,7 @@
       "name": "0.1.1041",
       "publishedAt": "2026-06-22T05:14:25Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1041",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2655,6 +3388,7 @@
       "name": "0.1.1040",
       "publishedAt": "2026-06-22T03:46:47Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1040",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2686,6 +3420,7 @@
       "name": "0.1.1038",
       "publishedAt": "2026-06-21T15:22:30Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1038",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2717,6 +3452,7 @@
       "name": "0.1.1037",
       "publishedAt": "2026-06-21T14:09:45Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1037",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2748,6 +3484,7 @@
       "name": "0.1.1036",
       "publishedAt": "2026-06-21T12:59:56Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1036",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2779,6 +3516,7 @@
       "name": "0.1.1035",
       "publishedAt": "2026-06-21T11:22:06Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1035",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2810,6 +3548,7 @@
       "name": "0.1.1034",
       "publishedAt": "2026-06-21T10:42:12Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1034",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2841,6 +3580,7 @@
       "name": "0.1.1032",
       "publishedAt": "2026-06-21T09:26:52Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1032",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2872,6 +3612,7 @@
       "name": "0.1.1030",
       "publishedAt": "2026-06-21T08:24:58Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1030",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2903,6 +3644,7 @@
       "name": "0.1.1029",
       "publishedAt": "2026-06-21T07:45:44Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1029",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2934,6 +3676,7 @@
       "name": "0.1.1028",
       "publishedAt": "2026-06-21T07:09:12Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1028",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2965,6 +3708,7 @@
       "name": "0.1.1027",
       "publishedAt": "2026-06-20T21:19:48Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1027",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -2996,6 +3740,7 @@
       "name": "0.1.1026",
       "publishedAt": "2026-06-20T20:48:23Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1026",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -3027,6 +3772,7 @@
       "name": "0.1.1025",
       "publishedAt": "2026-06-20T20:34:02Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1025",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -3058,6 +3804,7 @@
       "name": "0.1.1023",
       "publishedAt": "2026-06-20T19:54:37Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1023",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -3089,6 +3836,7 @@
       "name": "0.1.1022",
       "publishedAt": "2026-06-20T19:40:33Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1022",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -3120,6 +3868,7 @@
       "name": "0.1.1021",
       "publishedAt": "2026-06-20T17:25:41Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1021",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -3151,6 +3900,7 @@
       "name": "0.1.1020",
       "publishedAt": "2026-06-20T16:29:53Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1020",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -3182,6 +3932,7 @@
       "name": "0.1.1013",
       "publishedAt": "2026-06-19T20:52:09Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1013",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -3213,6 +3964,7 @@
       "name": "0.1.1012",
       "publishedAt": "2026-06-17T23:45:15Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1012",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -3244,6 +3996,7 @@
       "name": "0.1.1011",
       "publishedAt": "2026-06-17T21:29:06Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1011",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -3275,6 +4028,7 @@
       "name": "0.1.1010",
       "publishedAt": "2026-06-17T19:55:07Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1010",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -3306,6 +4060,7 @@
       "name": "0.1.1009",
       "publishedAt": "2026-06-17T19:01:23Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1009",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -3337,6 +4092,7 @@
       "name": "0.1.1008",
       "publishedAt": "2026-06-17T14:52:24Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1008",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -3368,6 +4124,7 @@
       "name": "0.1.1007",
       "publishedAt": "2026-06-17T13:49:13Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1007",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -3399,6 +4156,7 @@
       "name": "0.1.1005",
       "publishedAt": "2026-06-17T12:40:58Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1005",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -3430,6 +4188,7 @@
       "name": "0.1.1004",
       "publishedAt": "2026-06-17T11:42:08Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1004",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -3461,6 +4220,7 @@
       "name": "0.1.1003",
       "publishedAt": "2026-06-17T07:42:56Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1003",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -3492,6 +4252,7 @@
       "name": "0.1.1002",
       "publishedAt": "2026-06-16T23:27:20Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1002",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],
@@ -3523,6 +4284,7 @@
       "name": "0.1.1001",
       "publishedAt": "2026-06-16T22:30:15Z",
       "githubUrl": "https://github.com/homun-app/homun-releases/releases/tag/v0.1.1001",
+      "prerelease": false,
       "highlights": [],
       "improvements": [],
       "fixes": [],

@@ -79,8 +79,41 @@ export function readConfig(env = process.env) {
 	};
 }
 
+// Every public release of the releases repository, drafts included: what is
+// kept of them is decided by `normalizeReleases`. Without a token the request
+// is anonymous.
+export async function fetchReleasePages(
+	releasesRepo,
+	token,
+	fetchImpl = fetch,
+	{ maxPages = MAX_GITHUB_PAGES, timeoutMs = GITHUB_REQUEST_TIMEOUT_MS } = {},
+) {
+	if (!Number.isInteger(maxPages) || maxPages < 1) {
+		throw new Error("maxPages must be a positive integer");
+	}
+	const releasePayload = [];
+	for (let page = 1; ; page += 1) {
+		if (page > maxPages) {
+			throw new Error(`GitHub releases pagination exceeded ${maxPages} pages`);
+		}
+		const releasePage = await githubRequest(
+			`https://api.github.com/repos/${releasesRepo}/releases?per_page=100&page=${page}`,
+			token,
+			{},
+			fetchImpl,
+			timeoutMs,
+		);
+		if (!Array.isArray(releasePage)) {
+			throw new Error(`GitHub releases response page ${page} is not an array`);
+		}
+		releasePayload.push(...releasePage);
+		if (releasePage.length < 100) break;
+	}
+	return releasePayload;
+}
+
 export function parseSyncArgs(args = []) {
-	const supported = new Set(["--dry-run", "--write", "--allow-empty", "--allow-schema-upgrade"]);
+	const supported = new Set(["--dry-run", "--write", "--allow-empty", "--allow-schema-upgrade", "--releases-only"]);
 	for (const arg of args) {
 		if (!supported.has(arg)) throw new Error(`Unknown option: ${arg}`);
 	}
@@ -92,12 +125,19 @@ export function parseSyncArgs(args = []) {
 	const write = args.includes("--write");
 	const allowEmpty = args.includes("--allow-empty");
 	const allowSchemaUpgrade = args.includes("--allow-schema-upgrade");
+	const releasesOnly = args.includes("--releases-only");
 	if (dryRun && write) throw new Error("Cannot combine --dry-run and --write");
 	if (allowEmpty && !write) throw new Error("--allow-empty requires --write");
 	if (allowEmpty && allowSchemaUpgrade) {
 		throw new Error("Cannot combine --allow-empty and --allow-schema-upgrade");
 	}
-	return { mode: write ? "write" : "dry-run", allowEmpty, allowSchemaUpgrade };
+	if (releasesOnly && allowEmpty) {
+		throw new Error("Cannot combine --releases-only and --allow-empty");
+	}
+	if (releasesOnly && allowSchemaUpgrade) {
+		throw new Error("Cannot combine --releases-only and --allow-schema-upgrade");
+	}
+	return { mode: write ? "write" : "dry-run", allowEmpty, allowSchemaUpgrade, releasesOnly };
 }
 
 async function githubRequest(
@@ -112,7 +152,9 @@ async function githubRequest(
 		signal: init.signal ?? AbortSignal.timeout(timeoutMs),
 		headers: {
 			Accept: "application/vnd.github+json",
-			Authorization: `Bearer ${token}`,
+			// The releases of the repository are public: without a token the
+			// request is anonymous.
+			...(token ? { Authorization: `Bearer ${token}` } : {}),
 			"X-GitHub-Api-Version": "2022-11-28",
 			"User-Agent": "homun-website-product-sync",
 			...init.headers,
@@ -206,28 +248,34 @@ export async function fetchProductData(
 			},
 		},
 	};
-	const releasePayload = [];
-	for (let page = 1; ; page += 1) {
-		if (page > maxPages) {
-			throw new Error(`GitHub releases pagination exceeded ${maxPages} pages`);
-		}
-		const releasePage = await githubRequest(
-			`https://api.github.com/repos/${config.releasesRepo}/releases?per_page=100&page=${page}`,
-			config.token,
-			{},
-			fetchImpl,
-			timeoutMs,
-		);
-		if (!Array.isArray(releasePage)) {
-			throw new Error(`GitHub releases response page ${page} is not an array`);
-		}
-		releasePayload.push(...releasePage);
-		if (releasePage.length < 100) break;
-	}
+	const releasePayload = await fetchReleasePages(config.releasesRepo, config.token, fetchImpl, {
+		maxPages,
+		timeoutMs,
+	});
 	const roadmap = normalizeProject(projectPayload);
 	const releases = normalizeReleases(releasePayload, roadmap.candidates, syncedAt);
 	validateSnapshot(roadmap, releases);
 	return { roadmap, releases };
+}
+
+// The releases alone (`--releases-only`): no token and no Project query. The
+// roadmap is the one already on disk, and its items stand in for the Project's
+// candidates when the release links are decided, so a link follows the same
+// policy as in the full sync. Only the releases snapshot can come out changed.
+async function fetchReleasesOnly(
+	{ roadmap },
+	{ releasesRepo },
+	fetchImpl,
+	syncedAt,
+	{ maxPages = MAX_GITHUB_PAGES, timeoutMs = GITHUB_REQUEST_TIMEOUT_MS } = {},
+) {
+	const releasePayload = await fetchReleasePages(releasesRepo, null, fetchImpl, { maxPages, timeoutMs });
+	const candidates = roadmap.items.map(({ slug, underReview }) => ({
+		slug,
+		publicationStatus: underReview ? "review" : "published",
+	}));
+	const releases = normalizeReleases(releasePayload, candidates, syncedAt);
+	return { candidates, releases };
 }
 
 export async function syncProductData({
@@ -238,6 +286,7 @@ export async function syncProductData({
 	mode = "dry-run",
 	allowEmpty = false,
 	allowSchemaUpgrade = false,
+	releasesOnly = false,
 } = {}) {
 	if (!new Set(["dry-run", "write"]).has(mode)) {
 		throw new Error(`Unknown sync mode: ${mode}`);
@@ -248,6 +297,9 @@ export async function syncProductData({
 	if (allowEmpty && allowSchemaUpgrade) {
 		throw new Error("Cannot combine allowEmpty and allowSchemaUpgrade");
 	}
+	if (releasesOnly && (allowEmpty || allowSchemaUpgrade)) {
+		throw new Error("releasesOnly cannot be combined with allowEmpty or allowSchemaUpgrade");
+	}
 	await recoverSnapshotPair(paths);
 	const current = await readSnapshotPair(paths);
 	if (![2, 3].includes(current.roadmap?.schemaVersion) || !Array.isArray(current.roadmap.items)) {
@@ -255,10 +307,13 @@ export async function syncProductData({
 	}
 	validateSnapshot(current.roadmap, current.releases);
 
-	const config = readConfig(env);
 	const syncedAt = clock();
-	const raw = await fetchProductData(config, fetchImpl, () => syncedAt);
-	if (raw.roadmap.schemaVersion !== current.roadmap.schemaVersion && !allowSchemaUpgrade) {
+	// `--releases-only` reads the public releases without a token and keeps the
+	// roadmap as it is on disk.
+	const raw = releasesOnly
+		? await fetchReleasesOnly(current, { releasesRepo: env.HOMUN_RELEASES_REPO ?? "homun-app/homun-releases" }, fetchImpl, syncedAt)
+		: await fetchProductData(readConfig(env), fetchImpl, () => syncedAt);
+	if (!releasesOnly && raw.roadmap.schemaVersion !== current.roadmap.schemaVersion && !allowSchemaUpgrade) {
 		throw new Error(
 			`Roadmap schema change ${current.roadmap.schemaVersion} -> ${raw.roadmap.schemaVersion} requires --allow-schema-upgrade`,
 		);
@@ -266,19 +321,22 @@ export async function syncProductData({
 	const manifest = allowSchemaUpgrade
 		? JSON.parse(await readFile(new URL("./fixtures/roadmap-v3-manifest.json", import.meta.url), "utf8"))
 		: null;
-	const publishedRoadmap = raw.roadmap.candidates.length === 0
-		? {
-			schemaVersion: current.roadmap.schemaVersion,
-			contentUpdatedAt: current.roadmap.contentUpdatedAt,
-			items: [],
-		}
-		: allowSchemaUpgrade
-			? upgradePublishedRoadmap(current.roadmap, raw.roadmap.candidates, manifest)
-			: applyPublicationPolicy(current.roadmap, raw.roadmap.candidates);
+	const publishedRoadmap = releasesOnly
+		? current.roadmap
+		: raw.roadmap.candidates.length === 0
+			? {
+				schemaVersion: current.roadmap.schemaVersion,
+				contentUpdatedAt: current.roadmap.contentUpdatedAt,
+				items: [],
+			}
+			: allowSchemaUpgrade
+				? upgradePublishedRoadmap(current.roadmap, raw.roadmap.candidates, manifest)
+				: applyPublicationPolicy(current.roadmap, raw.roadmap.candidates);
+	const candidates = releasesOnly ? raw.candidates : raw.roadmap.candidates;
 	const releasePublication = applyReleasePublicationPolicy(
 		current.releases,
 		raw.releases,
-		raw.roadmap.candidates,
+		candidates,
 		current.roadmap,
 	);
 	const candidate = {
@@ -286,7 +344,7 @@ export async function syncProductData({
 		releases: releasePublication.releases,
 	};
 	const validation = validateSnapshot(candidate.roadmap, candidate.releases, {
-		knownRoadmapSlugs: raw.roadmap.candidates.map(({ slug }) => slug),
+		knownRoadmapSlugs: candidates.map(({ slug }) => slug),
 	});
 	const warnings = [...new Set([
 		...releasePublication.warnings,
@@ -305,8 +363,9 @@ export async function syncProductData({
 			warnings,
 		};
 	}
-	candidate.roadmap.contentUpdatedAt = syncedAt;
 	candidate.releases.contentUpdatedAt = syncedAt;
+	// The roadmap was not read again in `--releases-only`: its time stays.
+	if (!releasesOnly) candidate.roadmap.contentUpdatedAt = syncedAt;
 	if (mode === "dry-run") {
 		return {
 			status: "WOULD_CHANGE",

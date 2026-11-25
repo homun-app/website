@@ -1,10 +1,25 @@
 ---
-import Head from "@astrojs/starlight/components/Head.astro";
-
+// Starlight's own Head renders the route's head entries as they come. We take
+// the array to give Engramma's docs their name in the browser tab — «… |
+// Engramma» instead of «… | Homun» — and pass everything else through
+// untouched. The analytics scripts follow, as before.
 const isGenerated404 = Astro.url.pathname === "/404/";
+const path = Astro.url.pathname;
+const isEngrammaDocs = path === "/docs/engramma" || path.startsWith("/docs/engramma/")
+	|| path === "/it/docs/engramma" || path.startsWith("/it/docs/engramma/");
+
+// Starlight writes «<page title> | <site title>»; the site title is the logo's
+// own object here, so the suffix is replaced by pattern, not by string.
+const head = Astro.locals.starlightRoute.head.map((entry) => {
+	if (!isEngrammaDocs || entry.tag !== "title" || typeof entry.content !== "string") return entry;
+	const pageTitle = /^(.*) \| [^|]+$/.exec(entry.content)?.[1];
+	if (pageTitle === undefined) return entry;
+	// The index page is titled «Engramma» already: no suffix to repeat.
+	return { ...entry, content: pageTitle === "Engramma" ? pageTitle : `${pageTitle} | Engramma` };
+});
 ---
 
-<Head />
+{head.map(({ tag: Tag, attrs, content }) => <Tag {...attrs} set:html={content} />)}
 {
 	!isGenerated404 && (
 		<>

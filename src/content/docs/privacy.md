@@ -7,7 +7,7 @@ description: How homun.app handles aggregate website analytics.
 
 This notice explains how the public [homun.app](https://homun.app) website handles
 information during a visit. It covers website analytics only; it does not cover data in
-the Homun desktop app, including account data, workspaces, prompts, or files.
+the Homun desktop app, such as conversations, prompts, or files.
 
 ## Data controller
 
@@ -36,9 +36,9 @@ The request IP address is used technically to derive an approximate country, reg
 
 ## What is excluded
 
-Website analytics do not collect Homun account data, workspace content, prompts, files,
-personal names, email addresses, advertising identifiers, custom distinct IDs, or session
-replay data. Query parameters and URL fragments are excluded. The analytics do not
+Website analytics do not collect data from the Homun desktop app — conversations, prompts,
+or files — nor personal names, email addresses, advertising identifiers, custom distinct
+IDs, or session replay data. Query parameters and URL fragments are excluded. The analytics do not
 identify visitors across websites. They do not use analytics cookies, and a browser's
 Do Not Track setting disables analytics.
 

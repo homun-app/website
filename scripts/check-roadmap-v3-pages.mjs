@@ -6,7 +6,9 @@ const plain = (html) => html.replace(/<[^>]+>/g, " ").replace(/&amp;/g, "&").rep
 const releases = JSON.parse(
 	await readFile(new URL("../src/data/releases.json", import.meta.url), "utf8"),
 );
-const visibleRoadmapReleases = releases.items.slice(0, 4).map(({ version }) => version);
+// The roadmap page shows stable releases as its evidence: a pre-release is
+// a channel, not what the page hands out.
+const visibleRoadmapReleases = releases.items.filter(({ prerelease }) => !prerelease).slice(0, 4).map(({ version }) => version);
 const [latestVersion, previousVersion] = visibleRoadmapReleases;
 
 function assertNoNestedAnchors(html) {

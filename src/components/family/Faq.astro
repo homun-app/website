@@ -1,0 +1,37 @@
+---
+// Questions and answers as an accordion. It is the browser's own disclosure:
+// the first answer is open, the others open on click, and nothing moves that
+// "reduce motion" has to stop.
+interface Item {
+	question: string;
+	/** Trusted HTML, written in the repository: it may carry links. */
+	answer: string;
+}
+
+interface Props {
+	product: "homun" | "engramma";
+	items: readonly Item[];
+	class?: string;
+}
+
+const { product, items, class: className } = Astro.props;
+---
+
+<div class:list={["faq", className]} data-product={product}>
+	{items.map(({ question, answer }, index) => (
+		<details open={index === 0}>
+			<summary>{question}</summary>
+			<p set:html={answer} />
+		</details>
+	))}
+</div>
+
+<style>
+	.faq { display: grid; gap: 10px; max-width: 860px; }
+	details { padding: 16px 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); }
+	summary { cursor: pointer; font-weight: 600; }
+	p { margin: 10px 0 0; color: var(--muted); }
+	/* The answer is trusted HTML from the repository: its links are reached through it. */
+	p :global(code) { font-family: var(--mono); font-size: .9em; }
+	p :global(a) { color: var(--accent-text); }
+</style>

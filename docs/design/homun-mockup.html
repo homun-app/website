@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Homun home mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=M+PLUS+Rounded+1c:wght@800&display=swap" rel="stylesheet">
+<style>
+/* Tokens: the Engramma page's, with Homun teal as the product accent. Same family, other accent. */
+:root{--bg:#FBFAF8;--surface:#F0EEEA;--card:#FDFCFA;--line:#E2DED8;--fg:#101917;--muted:#5D6663;--accent:#157A6E;--accent-text:#126A5F;--accent-soft:#E3F1EE;--blue:#3A5BD9;--blue-text:#2F4BC0;--blue-soft:#E7ECFB;--band:#0E1413;--band-fg:#F4F1EE;--band-muted:#9AA5A1;--band-card:#18201E;--band-line:#2a3532;--band-accent:#5CC2B3;--ok:#1F8F72;--warn:#B7791F;
+--display:"M PLUS Rounded 1c",ui-rounded,"SF Pro Rounded",system-ui,sans-serif;--body:"Figtree",ui-sans-serif,system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0B100F;--surface:#151C1A;--card:#121918;--line:#25302D;--fg:#F4F1EE;--muted:#9AA5A1;--accent:#1E9A8B;--accent-text:#5CC2B3;--accent-soft:#12302B;--blue-text:#8EA3F2;--blue-soft:#18213F;--band:#060909;--band-card:#121918}}
+:root[data-theme=dark]{--bg:#0B100F;--surface:#151C1A;--card:#121918;--line:#25302D;--fg:#F4F1EE;--muted:#9AA5A1;--accent:#1E9A8B;--accent-text:#5CC2B3;--accent-soft:#12302B;--blue-text:#8EA3F2;--blue-soft:#18213F;--band:#060909;--band-card:#121918}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.03em;margin:0;line-height:1.05}
+p{margin:0}a{color:inherit}code,.mono{font-family:var(--mono)}
+.wrap{max-width:1180px;margin-inline:auto;padding-inline:16px}
+.eyebrow{font:500 .74rem/1.5 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--accent-text)}
+.lead{font-size:clamp(1.05rem,1.8vw,1.22rem);color:var(--muted);max-width:46ch}
+section{padding-block:clamp(80px,12vh,140px)}
+.band{background:var(--band);color:var(--band-fg)}.band .lead,.band .muted{color:var(--band-muted)}.band .eyebrow{color:var(--band-accent)}
+h2{font-size:clamp(2rem,5vw,3.6rem);margin-top:14px}
+.head{display:grid;gap:16px;max-width:52rem;margin-bottom:clamp(32px,5vw,56px)}
+.annot{font:.72rem var(--mono);color:#B7791F;background:#FFF6E5;border:1px dashed #E8C47A;border-radius:8px;padding:6px 10px;margin-top:14px}
+@media (prefers-color-scheme:dark){.annot{background:#2A2112}}
+/* nav: the family nav. The mark follows the product of the page. */
+nav.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav.top .brand{display:flex;align-items:center;gap:8px;font:800 1.2rem var(--display);text-decoration:none}
+nav.top ul{display:flex;gap:18px;list-style:none;margin:0;padding:0;font-size:.92rem}nav.top ul a{text-decoration:none}
+nav.top .pill{font:.62rem var(--mono);background:var(--surface);border-radius:6px;padding:.15em .45em;margin-left:4px;text-transform:uppercase}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:.7em 1.25em;font-weight:600;text-decoration:none;border:1px solid var(--line);white-space:nowrap}
+.btn.primary{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip{border:1px solid var(--line);border-radius:999px;padding:.22em .8em;text-decoration:none;white-space:nowrap;font-size:.85rem}
+.chip i{font:normal .6rem var(--mono);text-transform:uppercase;color:var(--accent-text);margin-left:4px}
+.tag{font:.66rem var(--mono);letter-spacing:.06em;text-transform:uppercase;border-radius:6px;padding:.15em .5em;background:var(--accent-soft);color:var(--accent-text);white-space:nowrap}
+.tag.w{background:#FBEFD6;color:#8a5a12}.tag.b{background:var(--blue-soft);color:var(--blue-text)}
+@media (prefers-color-scheme:dark){.tag.w{background:#3a2d12;color:#F2D38E}}
+
+/* hero: the pitch on the left, the app at work on the right */
+.hero{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.1fr);gap:clamp(28px,5vw,64px);align-items:center;padding-block:clamp(40px,7vh,88px) clamp(64px,10vh,120px)}
+.id{display:flex;align-items:center;gap:12px;font:800 1.5rem var(--display)}
+.hero h1{font-size:clamp(2.5rem,5.4vw,4.4rem);margin-top:22px}
+.hero h1 em{font-style:normal;color:var(--accent-text)}
+.hero .lead{margin-top:20px}
+.ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:18px}
+.row>span:first-child{font:.68rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+
+/* the app window: a real piece of Homun, light like the app */
+.app{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:0 40px 90px -40px rgb(10 20 18/.45);overflow:hidden;display:grid;grid-template-columns:170px minmax(0,1fr);min-height:440px;font-size:.86rem}
+.app .side{background:var(--surface);padding:14px 10px;display:grid;align-content:start;gap:4px;border-right:1px solid var(--line)}
+.app .side .lbl{font:.62rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:8px 8px 4px}
+.bot{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;align-items:center;padding:7px 8px;border-radius:10px}
+.bot.on{background:var(--card);box-shadow:0 1px 0 var(--line)}
+.bot b{font-weight:600;font-size:.8rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bot small{color:var(--muted);font-size:.7rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.av{width:22px;height:22px;border-radius:50%;background:var(--accent);display:grid;place-items:center}
+.av svg{width:22px;height:22px}
+.chat{display:flex;flex-direction:column;gap:10px;padding:14px 16px;min-width:0}
+.chat .top{display:flex;justify-content:space-between;align-items:center;font-weight:600;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.chat .top small{font:.7rem var(--mono);color:var(--muted);font-weight:400}
+.me{align-self:flex-end;background:var(--fg);color:var(--bg);border-radius:16px 16px 4px 16px;padding:9px 13px;max-width:86%}
+.step{display:flex;gap:8px;align-items:center;font-size:.8rem;color:var(--muted)}.step::before{content:"✓";color:var(--ok);font-weight:700}
+.step time{margin-left:auto;font:.68rem var(--mono)}
+.say{background:var(--surface);border-radius:16px 16px 16px 4px;padding:9px 13px;max-width:92%}
+.draft{border:1px solid var(--line);border-radius:14px;padding:11px 13px;display:grid;gap:6px;background:var(--card)}
+.draft .h{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.78rem;color:var(--muted)}.draft .h b{color:var(--fg)}
+.draft .lock{font:.68rem var(--mono);color:var(--warn)}
+.act{display:flex;gap:6px}.act span{font-size:.76rem;border:1px solid var(--line);border-radius:999px;padding:.2em .8em}.act span:first-child{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.composer{margin-top:auto;border:1px solid var(--line);border-radius:14px;padding:9px 12px;color:var(--muted);font-size:.8rem;display:flex;justify-content:space-between}
+
+/* team hub: the strong point. Bots around your workspace, the activity log on the right. */
+.hub-wrap{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr);gap:24px;align-items:stretch}
+.hub{position:relative;background:var(--band-card);border-radius:28px;padding:10px;min-width:0}
+.hub svg{width:100%;height:auto;display:block}
+.hub .spoke{stroke:var(--band-line);stroke-width:2;transition:stroke .3s}.hub .spoke.on{stroke:var(--band-accent)}
+.hub .node rect{fill:#1E2725;stroke:var(--band-line);stroke-width:1.5;transition:stroke .3s,fill .3s}
+.hub .node text{fill:#F4F1EE;font:600 13px Figtree,system-ui,sans-serif}
+.hub .node.on rect{stroke:var(--band-accent);fill:#163631}
+.hub .node.you rect{fill:#F4F1EE}.hub .node.you text{fill:#0E1413}
+.hub .node.you.on rect{stroke:#F2D38E;stroke-width:3}
+.hub .core text{fill:var(--band-muted);font:500 11px "Geist Mono",monospace;letter-spacing:.06em}
+.bubble{position:absolute;max-width:62%;background:#F4F1EE;color:#0E1413;border-radius:14px;padding:8px 12px;font-size:.84rem;line-height:1.4;box-shadow:0 14px 40px -16px #000;opacity:0;transform:translateY(6px);transition:opacity .35s,transform .35s;pointer-events:none}
+.bubble.show{opacity:1;transform:none}.bubble small{display:block;font:.68rem var(--mono);color:#5D6663;margin-bottom:2px}
+.bubble .btns{display:flex;gap:6px;margin-top:6px}.bubble .btns span{font-size:.72rem;border:1px solid #cfd6d3;border-radius:999px;padding:.1em .6em}.bubble .btns span.hit{background:#0E1413;color:#F4F1EE}
+.feed{background:var(--band-card);border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.feed-h,.feed-f{font:.7rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--band-muted)}
+.feed ol{list-style:none;margin:0;padding:0;display:grid;gap:8px;align-content:start;flex:1}
+.feed li{font:.76rem/1.45 var(--mono);color:#C9D2CF;border-left:2px solid var(--band-line);padding:2px 0 2px 10px;animation:ln .4s ease}
+.feed li b{font-weight:500;color:var(--band-accent)}.feed li.ok{border-color:#5CC2B3}.feed li.wait{border-color:#F2D38E}.feed li.mem{border-color:#8EA3F2}.feed li.mem b{color:#8EA3F2}
+.verdict{position:absolute;left:0;right:0;bottom:16px;text-align:center;font:.78rem var(--mono);color:var(--band-accent)}
+.legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:18px;font-size:.82rem;color:var(--band-muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+
+/* how a bot works: the pipeline with the point of light */
+.pipe{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;position:relative}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;display:grid;align-content:start;gap:10px;min-width:0;position:relative}
+.stage .n{font:.7rem var(--mono);color:var(--accent-text);letter-spacing:.08em;text-transform:uppercase}
+.stage h3{font-size:1.15rem}.stage p{font-size:.88rem;color:var(--muted)}
+.stage ul{margin:0;padding:0;list-style:none;display:grid;gap:6px;font:.74rem/1.45 var(--mono)}
+.stage li{background:var(--surface);border-radius:8px;padding:5px 8px}
+.stage:not(:last-child)::after{content:"→";position:absolute;right:-12px;top:22px;color:var(--accent-text);font-weight:700;z-index:1}
+.stage.gate{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+.stage.mem{background:var(--blue-soft);border-color:color-mix(in srgb,var(--blue) 30%,var(--line))}.stage.mem .n{color:var(--blue-text)}
+.packet{position:absolute;top:-10px;left:0;width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 6px color-mix(in srgb,var(--accent) 25%,transparent);opacity:0}
+
+/* deep dives */
+.dive{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(28px,6vw,80px);align-items:center}
+.dive.flip>:first-child{order:2}
+.dive .tech{margin-top:18px;display:flex;flex-wrap:wrap;gap:8px}.dive .tech span{font:.74rem var(--mono);border:1px solid var(--line);border-radius:8px;padding:.25em .6em;color:var(--muted)}
+.band .dive .tech span{border-color:var(--band-line);color:var(--band-muted)}
+.dive .more{margin-top:16px;font-size:.92rem}.dive .more a{color:var(--accent-text);font-weight:600;text-decoration:none}
+.visual{background:var(--surface);border-radius:24px;padding:clamp(18px,3vw,30px);display:grid;gap:12px;min-width:0}
+.band .visual{background:var(--band-card)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;gap:6px}
+.band .card{background:#1E2725;border-color:var(--band-line)}
+.card .why{font:.72rem/1.5 var(--mono);color:var(--muted)}.band .card .why{color:var(--band-muted)}
+.apps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:4px;justify-items:start;min-width:0}
+.tile .ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font:700 .8rem var(--mono);color:#fff}
+.tile b{font-size:.82rem}.tile small{font-size:.7rem;color:var(--muted)}
+.tile.add{border-style:dashed;color:var(--muted)}
+.browser{background:#F4F1EE;color:#101917;border-radius:16px;overflow:hidden}
+.browser .bar{display:flex;gap:6px;align-items:center;padding:9px 12px;background:#E7E3DD;font:.72rem var(--mono);color:#5D6663}.browser .bar i{width:9px;height:9px;border-radius:50%;background:#c9c3ba}
+.browser .bar span{margin-left:8px;background:#F4F1EE;border-radius:6px;padding:2px 10px}
+.venues{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:14px}
+.venue{border:1px solid #E2DED8;border-radius:12px;padding:10px;display:grid;gap:3px;font-size:.78rem;position:relative}
+.venue b{font-size:.86rem}.venue em{font-style:normal;font:.66rem var(--mono);text-transform:uppercase}
+.venue.yes{outline:2px solid var(--accent)}.venue.yes em{color:var(--accent)}.venue.no em{color:#9a4b3a}
+.cursor{position:absolute;width:18px;height:18px;left:12%;top:70%;pointer-events:none}
+.takeover{display:flex;justify-content:space-between;align-items:center;font-size:.8rem;color:var(--band-muted)}
+.cal{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;font:.7rem var(--mono)}
+.cal span{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px;text-align:center;color:var(--muted)}
+.cal span.ask{background:var(--accent-soft);color:var(--accent-text);border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+.models{display:grid;gap:10px}
+.mrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;background:#1E2725;border:1px solid var(--band-line);border-radius:12px;padding:10px 12px;font-size:.86rem}
+.mrow small{color:var(--band-muted);font:.72rem var(--mono)}
+.local{color:var(--band-accent);font:.66rem var(--mono);letter-spacing:.06em;text-transform:uppercase;border:1px solid #2f5a53;border-radius:6px;padding:.1em .45em}
+.provs{display:flex;flex-wrap:wrap;gap:6px}.provs span{font:.72rem var(--mono);border:1px solid var(--band-line);border-radius:999px;padding:.15em .7em;color:var(--band-muted)}
+.approve{border:1px solid var(--line);border-radius:18px;background:var(--card);padding:16px;display:grid;gap:10px}
+.approve .q{font-weight:600}.approve .r{font-size:.84rem;color:var(--muted)}
+.approve .btns{display:flex;flex-wrap:wrap;gap:6px}.approve .btns span{font-size:.8rem;border:1px solid var(--line);border-radius:999px;padding:.25em .9em}
+.approve .btns .pick{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.answer{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.notes{display:grid;gap:8px}
+.mnote{display:grid;gap:2px;border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:10px;padding:8px 12px;background:var(--card);font-size:.86rem}
+.mnote small{font:.7rem var(--mono);color:var(--muted)}.mnote.wait{border-left-color:#E8C47A;border-style:dashed}
+
+/* where your data stays */
+.map{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:22px;align-items:center}
+.mine{border:2px solid var(--accent);border-radius:28px;padding:22px;display:grid;gap:14px;background:var(--accent-soft);position:relative}
+.mine>b{font:800 1.2rem var(--display)}
+.inside{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.inside div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;font-size:.86rem;display:grid;gap:3px}
+.inside small{color:var(--muted);font-size:.76rem}
+.out{display:grid;gap:12px}
+.out div{border:1px dashed var(--line);border-radius:16px;padding:12px 14px;font-size:.86rem;display:grid;gap:3px;position:relative}
+.out div::before{content:"⟵";position:absolute;left:-22px;top:12px;color:var(--accent-text);font-weight:700}
+.out small{color:var(--muted);font-size:.76rem}
+
+/* uses */
+.uses{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.use{border:1px solid var(--line);border-radius:20px;padding:20px;display:grid;gap:10px;align-content:start;background:var(--card)}
+.use .who{font:.68rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent-text)}
+.use p{font:700 1.05rem/1.35 var(--body)}.use small{color:var(--muted);font-size:.82rem}
+
+/* releases & roadmap: the family component with the Homun accent */
+.road{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.era{background:var(--band-card);border-radius:22px;padding:20px;display:grid;gap:14px;align-content:start}
+.era h3{font:.74rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--band-muted);font-weight:500}
+.era.now{outline:2px solid var(--band-accent)}
+.rel{display:grid;gap:3px;padding-left:16px;border-left:2px solid var(--band-line)}
+.rel .v{font:.72rem var(--mono);color:var(--band-accent)}.rel b{font-size:.98rem}.rel span{font-size:.86rem;color:var(--band-muted)}
+.era.future .rel{border-left-style:dashed}
+.progress{position:absolute;left:0;right:0;top:-18px;height:3px;background:var(--band-line);border-radius:2px}.progress i{display:block;height:100%;width:40%;background:linear-gradient(90deg,#157A6E,#5CC2B3);border-radius:2px}
+.vision{margin-top:36px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.vision div{border-top:1px solid var(--band-line);padding-top:16px}.vision b{font:800 1.4rem var(--display);display:block;margin-bottom:6px}
+.links{margin-top:28px;display:flex;flex-wrap:wrap;gap:18px;font-size:.92rem}.links a{color:var(--band-accent);text-decoration:none}
+
+/* faq & close */
+.faq{display:grid;gap:10px;max-width:860px}
+.faq details{border:1px solid var(--line);border-radius:16px;padding:16px 20px;background:var(--card)}
+.faq summary{cursor:pointer;font-weight:600}.faq p{margin-top:10px;color:var(--muted)}
+.close{text-align:center;display:grid;justify-items:center;gap:18px}
+footer{border-top:1px solid var(--line);padding:28px 16px;font-size:.85rem;color:var(--muted);text-align:center}
+
+@media (max-width:980px){.hero,.dive,.hub-wrap,.map{grid-template-columns:minmax(0,1fr)}.dive.flip>:first-child{order:0}.pipe{grid-template-columns:repeat(2,minmax(0,1fr))}.stage::after{display:none}.road,.vision,.uses{grid-template-columns:minmax(0,1fr)}.out div::before{display:none}}
+@media (max-width:640px){nav.top ul{display:none}.pipe{grid-template-columns:minmax(0,1fr)}.app{grid-template-columns:minmax(0,1fr)}.app .side{display:none}.apps{grid-template-columns:repeat(2,minmax(0,1fr))}.venues{grid-template-columns:minmax(0,1fr)}.inside{grid-template-columns:minmax(0,1fr)}}
+
+/* ── motion: every animation shows the mechanism of its section ── */
+.ln{display:block}
+@keyframes ln{to{opacity:1;transform:none}}@keyframes out{to{opacity:0}}
+@media (prefers-reduced-motion:no-preference){
+ .lids{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
+ @keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.15)}}
+ .seq>*{opacity:0;transform:translateY(6px)}
+ .play .seq>*{animation:ln .45s ease forwards;animation-delay:calc(var(--d) * .55s + .4s)}
+ .play .draft.glow{animation:ln .45s ease forwards calc(var(--d) * .55s + .4s),glow 1.2s ease calc(var(--d) * .55s + 1.2s) 2}
+ @keyframes glow{50%{box-shadow:0 0 0 4px var(--accent-soft);border-color:var(--accent)}}
+ #pipe.in .packet{animation:pk 7s cubic-bezier(.6,0,.4,1) infinite}
+ @keyframes pk{0%{opacity:0;left:2%}5%{opacity:1}20%{left:20%}40%{left:40%}60%{left:60%}80%{left:80%}95%{opacity:1;left:96%}100%{opacity:0;left:96%}}
+ #pipe.in .stage{animation:lit 7s infinite}#pipe.in .stage:nth-of-type(2){animation-delay:1.4s}#pipe.in .stage:nth-of-type(3){animation-delay:2.8s}#pipe.in .stage:nth-of-type(4){animation-delay:4.2s}#pipe.in .stage:nth-of-type(5){animation-delay:5.6s}
+ @keyframes lit{0%,14%{box-shadow:0 0 0 2px var(--accent),0 18px 40px -20px var(--accent);transform:translateY(-4px)}22%,100%{box-shadow:none;transform:none}}
+ .stagger>*{opacity:0;transform:translateY(10px)}.stagger.in>*{animation:ln .5s ease forwards}
+ .stagger.in>:nth-child(2){animation-delay:.35s}.stagger.in>:nth-child(3){animation-delay:.7s}.stagger.in>:nth-child(4){animation-delay:1.05s}.stagger.in>:nth-child(5){animation-delay:1.4s}.stagger.in>:nth-child(6){animation-delay:1.75s}.stagger.in>:nth-child(7){animation-delay:2.1s}.stagger.in>:nth-child(8){animation-delay:2.45s}.stagger.in>:nth-child(9){animation-delay:2.8s}
+ .apps.in .tile:not(.add){animation:pop .4s ease forwards}.apps .tile:not(.add){opacity:0;transform:scale(.9)}
+ .apps.in .tile:nth-child(2){animation-delay:.12s}.apps.in .tile:nth-child(3){animation-delay:.24s}.apps.in .tile:nth-child(4){animation-delay:.36s}.apps.in .tile:nth-child(5){animation-delay:.48s}.apps.in .tile:nth-child(6){animation-delay:.6s}.apps.in .tile:nth-child(7){animation-delay:.72s}
+ @keyframes pop{to{opacity:1;transform:none}}
+ .swap{display:grid;justify-items:start}.swap>*{grid-area:1/1}.swap .after{opacity:0}
+ #skillVis.in .swap .before{animation:out .2s ease 2.2s forwards}#skillVis.in .swap .after{animation:ln .3s ease 2.3s forwards}
+ #skillVis.in .pressed{animation:press .5s ease 1.8s}@keyframes press{50%{background:var(--accent);color:#fff;border-color:var(--accent)}}
+ #compVis .cursor{transition:left 1s ease,top 1s ease}
+ #compVis .venue.no em,#compVis .venue.yes em{opacity:0}
+ #compVis.in .venue em{animation:ln .3s ease forwards}#compVis.in .venue:nth-child(2) em{animation-delay:1.4s}#compVis.in .venue:nth-child(3) em{animation-delay:2.2s}#compVis.in .venue:nth-child(1) em{animation-delay:3s}
+ #compVis .venue.yes{outline-color:transparent;transition:outline-color .4s ease 3s}#compVis.in .venue.yes{outline-color:var(--accent)}
+ #calVis .cal span.ask{background:var(--card);color:var(--muted);border-color:var(--line)}
+ #calVis.in .cal span.ask{animation:mark .4s ease forwards}#calVis.in .cal span.ask:nth-of-type(6){animation-delay:.7s}#calVis.in .cal span.ask:nth-of-type(11){animation-delay:1.4s}
+ @keyframes mark{to{background:var(--accent-soft);color:var(--accent-text);border-color:var(--accent)}}
+ #calVis .offer{opacity:0;transform:translateY(10px)}#calVis.in .offer{animation:ln .5s ease 2.2s forwards}
+ #modelVis .local{opacity:.3}#modelVis.in .local{animation:on .4s ease forwards}#modelVis.in .mrow:nth-child(2) .local{animation-delay:.4s}#modelVis.in .mrow:nth-child(3) .local{animation-delay:.8s}
+ @keyframes on{to{opacity:1;box-shadow:0 0 18px -4px #5CC2B3}}
+ #apprVis .btns .pick{background:transparent;color:inherit;border-color:var(--line)}#apprVis.in .btns .pick{animation:choose .4s ease 1.6s forwards}
+ @keyframes choose{to{background:var(--fg);color:var(--bg);border-color:var(--fg)}}
+ #apprVis .done{opacity:0}#apprVis.in .done{animation:ln .4s ease 2.2s forwards}
+ #memVis .answer,#memVis .mnote{opacity:0;transform:translateY(8px)}#memVis.in .answer{animation:ln .5s ease .2s forwards}
+ #memVis.in .mnote{animation:ln .5s ease forwards}#memVis.in .mnote:nth-child(1){animation-delay:1s}#memVis.in .mnote:nth-child(2){animation-delay:1.4s}#memVis.in .mnote:nth-child(3){animation-delay:1.8s}
+ #road .progress i{width:0;transition:width 2s cubic-bezier(.2,.7,.2,1) .3s}#road.in .progress i{width:40%}
+ .era.now{animation:now 3s ease-in-out infinite}@keyframes now{50%{outline-color:#9be0d5;box-shadow:0 0 40px -10px #157A6E}}
+ #mapVis .out div{opacity:0;transform:translateX(16px)}#mapVis.in .out div{animation:ln .5s ease forwards}#mapVis.in .out div:nth-child(2){animation-delay:.4s}#mapVis.in .out div:nth-child(3){animation-delay:.8s}
+}
+</style>
+</head>
+<body>
+
+<nav class="top">
+	<a class="brand" href="#"><svg width="26" height="26" viewBox="8 6 86 88" aria-hidden="true"><path d="M50 12C74 10 90 28 88 52C86 76 70 90 48 88C26 86 10 72 12 50C14 28 28 14 50 12Z" fill="#157A6E"/><path class="lids" d="M33 50Q39.5 58 46 50M54 50Q60.5 58 67 50" fill="none" stroke="#F4F1EE" stroke-width="6" stroke-linecap="round"/></svg>homun</a>
+	<ul><li><a href="#">Homun</a></li><li><a href="engramma-mockup.html">Engramma<span class="pill">Preview</span></a></li><li><a href="#">Docs</a></li></ul>
+	<a class="btn primary" href="#download">Download for macOS</a>
+</nav>
+<div class="wrap"><p class="annot">MOCKUP NOTE · La nav segue il prodotto della pagina: qui la gelatina teal e «homun»; su /engramma/ e /docs/engramma/ la gelatina blu e «engramma», e il bottone diventa «Install Engramma» (porta a #install). Le docs di Homun restano con il marchio Homun.</p></div>
+
+<!-- ═══ HERO ═══ -->
+<header class="wrap hero" id="top">
+	<div>
+		<div class="id"><svg width="44" height="44" viewBox="8 6 86 88" aria-hidden="true"><path d="M50 12C74 10 90 28 88 52C86 76 70 90 48 88C26 86 10 72 12 50C14 28 28 14 50 12Z" fill="#157A6E"><animate attributeName="d" dur="6.5s" repeatCount="indefinite" values="M50 12C74 10 90 28 88 52C86 76 70 90 48 88C26 86 10 72 12 50C14 28 28 14 50 12Z;M52 14C78 14 88 32 86 54C84 78 66 88 46 86C22 84 12 68 14 46C16 26 30 14 52 14Z;M48 10C70 12 92 26 88 50C84 74 72 92 50 90C28 88 12 76 10 52C10 30 28 10 48 10Z;M50 12C74 10 90 28 88 52C86 76 70 90 48 88C26 86 10 72 12 50C14 28 28 14 50 12Z"/></path><path class="lids" d="M33 50Q39.5 58 46 50M54 50Q60.5 58 67 50" fill="none" stroke="#F4F1EE" stroke-width="5" stroke-linecap="round"/></svg>Homun <span class="tag">open source · Apache-2.0</span></div>
+		<h1>Your bot team.<br><em>On your computer.</em></h1>
+		<p class="lead">Give each bot one job. It works with your apps and on a computer of its own, remembers what matters, and asks before anything goes out. Any model, even fully local.</p>
+		<div class="ctas"><a class="btn primary" href="#download">Download for macOS</a><a class="btn" href="#">★ Star on GitHub</a><a class="btn" href="#team">See it work ↓</a></div>
+		<div class="row"><span>Runs on</span><span class="chip">macOS</span><span class="chip">Windows<i>beta</i></span><span class="chip">Linux<i>beta</i></span></div>
+		<div class="row"><span>Works with</span><span class="chip">Gmail</span><span class="chip">Calendar</span><span class="chip">Slack</span><span class="chip">Notion</span><span class="chip">GitHub</span><span class="chip">Claude</span><span class="chip">GPT</span><span class="chip">Ollama</span></div>
+	</div>
+	<div class="app" aria-label="Homun at work: the Inbox manager sweeps the inbox and leaves a draft">
+		<div class="side">
+			<span class="lbl">Bots</span>
+			<div class="bot on"><span class="av"><svg viewBox="8 6 86 88"><path d="M33 50Q39.5 58 46 50M54 50Q60.5 58 67 50" fill="none" stroke="#F4F1EE" stroke-width="7" stroke-linecap="round"/></svg></span><span><b>Inbox manager</b><small>Draft for Nora is ready</small></span></div>
+			<div class="bot"><span class="av" style="background:#B7791F"><svg viewBox="8 6 86 88"><path d="M33 50Q39.5 58 46 50M54 50Q60.5 58 67 50" fill="none" stroke="#F4F1EE" stroke-width="7" stroke-linecap="round"/></svg></span><span><b>Scout</b><small>Venue options for Dec 12</small></span></div>
+			<div class="bot"><span class="av" style="background:#6B5BD9"><svg viewBox="8 6 86 88"><path d="M33 50Q39.5 58 46 50M54 50Q60.5 58 67 50" fill="none" stroke="#F4F1EE" stroke-width="7" stroke-linecap="round"/></svg></span><span><b>Daily briefing</b><small>Your Monday in five lines</small></span></div>
+			<div class="bot"><span class="av" style="background:#9a4b3a"><svg viewBox="8 6 86 88"><path d="M33 50Q39.5 58 46 50M54 50Q60.5 58 67 50" fill="none" stroke="#F4F1EE" stroke-width="7" stroke-linecap="round"/></svg></span><span><b>Account manager</b><small>Acme renewal</small></span></div>
+			<span class="lbl">Teams</span>
+			<div class="bot"><span class="av" style="background:#101917"><svg viewBox="8 6 86 88"><path d="M33 50Q39.5 58 46 50M54 50Q60.5 58 67 50" fill="none" stroke="#F4F1EE" stroke-width="7" stroke-linecap="round"/></svg></span><span><b>Offsite Dec 12</b><small>Chief of staff · 3 bots</small></span></div>
+		</div>
+		<div class="chat seq">
+			<div class="top" style="--d:0">Inbox manager <small>Claude Sonnet · cloud</small></div>
+			<div class="me" style="--d:1">Sweep my inbox since Friday. Archive the noise, draft replies, don't send anything.</div>
+			<div class="step" style="--d:2">Read 41 threads in Gmail <time>9:02</time></div>
+			<div class="step" style="--d:3">Archived 26 newsletters and receipts <time>9:03</time></div>
+			<div class="say" style="--d:4">Done. 9 routine threads have draft replies. One needs you: Nora asks if the renewal covers the 5 new seats.</div>
+			<div class="draft glow" style="--d:5"><div class="h"><b>Draft for Nora Fields</b> · from work Gmail <span class="lock">draft — sent only if you confirm</span></div><p>Hi Nora, yes: the renewal covers the new seats from March 1st (section 4.2). Happy to send the updated order form.</p><div class="act"><span>Send</span><span>Edit</span></div></div>
+			<div class="composer" style="--d:6"><span>Message Inbox manager</span><span>↑</span></div>
+		</div>
+	</div>
+</header>
+<div class="wrap"><p class="annot">MOCKUP NOTE · Hero diviso come Engramma: a destra la finestra vera dell'app (lo Showcase di oggi, ridotto) che recita la scena: la richiesta, i passi che si spuntano, la risposta, la bozza che si illumina su «sent only if you confirm». La mascotte grande dell'hero di oggi diventa il simbolo accanto al nome; resta la protagonista nei bot dell'app. Gli avatar dei bot sono quelli veri dell'app kit (colori e occhi), non questi segnaposto.</p></div>
+
+<!-- ═══ TEAM: the strong point ═══ -->
+<section class="band" id="team">
+	<div class="wrap">
+		<div class="head">
+			<p class="eyebrow">A team, not a chatbot</p>
+			<h2>Your bots work together. You approve what matters.</h2>
+			<p class="lead">A coordinator hands out the work. Each bot does its part with your apps, its own computer and one shared memory. What changes the world waits for your OK, and every step is in the activity log.</p>
+		</div>
+		<div class="hub-wrap">
+			<div class="hub" id="hub">
+				<svg viewBox="0 0 600 440" id="hubSvg" role="img" aria-label="Five bots and you around one shared workspace">
+					<g id="spokes"></g>
+					<g class="core" transform="translate(300 220)">
+						<circle r="74" fill="none" stroke="#2a3532" stroke-width="18" opacity=".6"/>
+						<circle r="52" fill="#157A6E"/>
+						<g transform="scale(1.15) translate(-50 -54)"><path class="lids" d="M33 50Q39.5 58 46 50M54 50Q60.5 58 67 50" fill="none" stroke="#F4F1EE" stroke-width="5" stroke-linecap="round"/></g>
+						<text y="100" text-anchor="middle">apps · library · memory</text>
+					</g>
+					<g id="nodes"></g>
+					<circle id="dot" r="7" fill="#5CC2B3" opacity="0"/>
+				</svg>
+				<div class="bubble" id="bubble"></div>
+				<p class="verdict" id="verdict"></p>
+			</div>
+			<div class="feed">
+				<p class="feed-h">Activity · every step, by who</p>
+				<ol id="feed"></ol>
+				<p class="feed-f">Reads that serve your request just happen. Writing to someone new, paying or deleting waits for you.</p>
+			</div>
+		</div>
+		<div class="legend"><span><i style="background:#F2D38E"></i>waits for you</span><span><i style="background:#5CC2B3"></i>done, or allowed by you</span><span><i style="background:#8EA3F2"></i>remembered, with its source</span></div>
+		<p class="annot">MOCKUP NOTE · È la sezione più curata, come l'hub di Engramma. Tre scene in ciclo: (1) il Chief of staff passa il locale a Scout, Scout cerca nel suo computer e chiede il permesso di mandare il modulo: si accende «You», Allow · for this turn; (2) il Chief of staff passa gli inviti all'Inbox manager: 20 bozze, nulla parte; (3) l'Account manager impara «Acme only signs annual contracts», va in memoria, e il Daily briefing lo usa con la fonte. I testi vengono dalle scene vere della home (Offsite Dec 12, Acme); le etichette del registro devono essere quelle del pannello Activity dell'app: chi costruisce le verifica sull'app 0.3.</p>
+	</div>
+</section>
+
+<!-- ═══ HOW A BOT WORKS ═══ -->
+<section id="how">
+	<div class="wrap">
+		<div class="head">
+			<p class="eyebrow">How a bot works</p>
+			<h2>One job, five steps, nothing hidden.</h2>
+			<p class="lead">Every bot follows the same method, whether it sweeps an inbox or plans an offsite.</p>
+		</div>
+		<div class="pipe" id="pipe"><span class="packet"></span>
+			<div class="stage"><span class="n">1 · The job</span><h3>You ask, or it wakes up</h3><p>A message in the chat, a routine on a schedule, or something that changed.</p><ul><li>chat</li><li>routines</li><li>triggers</li></ul></div>
+			<div class="stage"><span class="n">2 · The model</span><h3>Thinks with the model you chose</h3><p>A different model per bot. In the cloud with your key, or on this computer.</p><ul><li>Claude · GPT · Mistral</li><li>built-in · Ollama · LM Studio</li></ul></div>
+			<div class="stage"><span class="n">3 · The tools</span><h3>Works with your apps and its computer</h3><p>The apps you connected, the skills it learned, a browser and files of its own.</p><ul><li>Composio · MCP</li><li>skills</li><li>its own computer</li></ul></div>
+			<div class="stage gate"><span class="n">4 · Your OK</span><h3>Asks before it goes too far</h3><p>Writing to someone new, paying or deleting shows an approval card first.</p><ul><li>allow once</li><li>for this turn · always</li><li>deny</li></ul></div>
+			<div class="stage mem"><span class="n">5 · The memory</span><h3>Remembers, and says where from</h3><p>What it learned becomes a note with its source and the date it was true.</p><ul><li>by Engramma</li><li>shared by the team</li></ul></div>
+		</div>
+		<p class="annot">MOCKUP NOTE · È il componente comune Pipeline con l'accento teal (sulla pagina Engramma è blu); l'ultimo passo è blu perché è Engramma. Ogni chip deve esistere nell'app 0.3 (i trigger «quando qualcosa cambia» vengono dalla sezione Routines di oggi).</p>
+	</div>
+</section>
+
+<!-- ═══ DEEP DIVES ═══ -->
+<section id="drafts" style="padding-top:0">
+	<div class="wrap dive">
+		<div><p class="eyebrow">Drafts</p><h2>It does the work. You press Send.</h2><p class="lead" style="margin-top:16px">It reads Gmail through the apps you connected. Replies wait in the chat as drafts: edit them, send them, or let them go.</p><div class="tech"><span>nothing leaves without you</span><span>edit in place</span><span>two accounts, named</span></div></div>
+		<div class="visual stagger">
+			<div class="draft"><div class="h"><b>Draft for Nora Fields</b> · from work Gmail <span class="lock">draft — sent only if you confirm</span></div><p>Hi Nora, yes: the renewal covers the new seats from March 1st (section 4.2).</p><div class="act"><span>Send</span><span>Edit</span></div></div>
+			<div class="draft"><div class="h"><b>Draft for Marco Bassi</b> · from work Gmail <span class="lock">draft — sent only if you confirm</span></div><p>Thursday at 3 works. I've added the call to your calendar as tentative.</p><div class="act"><span>Send</span><span>Edit</span></div></div>
+			<p class="step">7 more drafts in Gmail · nothing sent</p>
+		</div>
+	</div>
+</section>
+
+<section id="apps" style="padding-top:0">
+	<div class="wrap dive flip">
+		<div><p class="eyebrow">Apps</p><h2>Connect your apps once. Every bot can use them.</h2><p class="lead" style="margin-top:16px">Gmail, Calendar, Slack, Notion, GitHub and more than a thousand others through Composio, or any MCP server you add.</p><div class="tech"><span>Composio · 1,000+ apps</span><span>MCP servers</span><span>direct GitHub</span></div></div>
+		<div class="visual"><div class="apps" id="appsVis">
+			<div class="tile"><span class="ic" style="background:#C5221F">M</span><b>Gmail</b><small>work · personal</small></div>
+			<div class="tile"><span class="ic" style="background:#1A73E8">31</span><b>Calendar</b><small>Connected</small></div>
+			<div class="tile"><span class="ic" style="background:#4A154B">#</span><b>Slack</b><small>Connected</small></div>
+			<div class="tile"><span class="ic" style="background:#101917">N</span><b>Notion</b><small>Connected</small></div>
+			<div class="tile"><span class="ic" style="background:#24292F">gh</span><b>GitHub</b><small>Direct</small></div>
+			<div class="tile"><span class="ic" style="background:#FF7A59">H</span><b>HubSpot</b><small>Connected</small></div>
+			<div class="tile"><span class="ic" style="background:#5E6AD2">L</span><b>Linear</b><small>via Composio</small></div>
+			<div class="tile add"><span class="ic" style="background:var(--surface);color:var(--muted)">+</span><b>Add MCP server</b><small>your own tools</small></div>
+		</div></div>
+	</div>
+</section>
+
+<section id="skills" style="padding-top:0">
+	<div class="wrap dive">
+		<div><p class="eyebrow">Skills</p><h2>Teach it once. It keeps the recipe.</h2><p class="lead" style="margin-top:16px">When a bot works out how you like something done, it offers to save it as a skill, and asks first. Or add skills from a catalog, a GitHub repo or a plugin in the Claude Code format.</p><div class="tech"><span>Claude Code skill format</span><span>catalog</span><span>GitHub repos</span></div></div>
+		<div class="visual" id="skillVis">
+			<div class="say">You fixed my expense report the same way three Fridays in a row. Want me to remember how?</div>
+			<div class="card"><b>Save skill · Weekly expense report</b><span class="why">When to use: on Fridays, or when you ask for expenses. Match receipts in Gmail to card payments, flag anything over €200, one table per project.</span>
+				<div class="swap"><div class="act before"><span class="pressed">Save skill</span><span>Edit</span><span>Not now</span></div><span class="tag after">✓ saved · Inbox manager uses it</span></div></div>
+		</div>
+	</div>
+</section>
+
+<section class="band" id="computer">
+	<div class="wrap dive flip">
+		<div><p class="eyebrow">Its own computer</p><h2>No connector? It opens the browser.</h2><p class="lead" style="margin-top:16px">Each bot has a computer of its own, separate from yours. It browses, fills in forms and keeps files there. Watch it work, or take over.</p><div class="tech"><span>isolated from your computer</span><span>browser · files · terminal</span><span>take over any time</span></div></div>
+		<div class="visual" id="compVis">
+			<div class="browser" style="position:relative">
+				<div class="bar"><i></i><i></i><i></i><span>salanavigli.it/eventi</span></div>
+				<div class="venues">
+					<div class="venue yes"><b>Sala Navigli</b>24 seats · from €1,800<em>✓ Dec 12 free</em></div>
+					<div class="venue no"><b>Loft Isola</b>30 seats · from €2,600<em>over budget</em></div>
+					<div class="venue no"><b>Corte Brera</b>18 seats · from €1,500<em>too small</em></div>
+				</div>
+				<svg class="cursor" id="cur" viewBox="0 0 18 18"><path d="M2 1l13 7-6 1.5L6 16z" fill="#101917" stroke="#fff" stroke-width="1.2"/></svg>
+			</div>
+			<div class="takeover"><span>Scout's computer · on</span><span class="btn" style="padding:.35em .9em;font-size:.8rem;border-color:var(--band-line)">Take over</span></div>
+		</div>
+	</div>
+	<div class="wrap"><p class="annot">MOCKUP NOTE · Il cursore percorre le tre schede e le etichette compaiono una dopo l'altra; la scelta finale si cerchia. «browser · files · terminal» e «isolated» vanno verificati sulla guida «The bot's computer» (requisito Docker incluso, da dire nelle FAQ se serve).</p></div>
+</section>
+
+<section id="approvals">
+	<div class="wrap dive">
+		<div><p class="eyebrow">Approvals</p><h2>It asks before it goes too far.</h2><p class="lead" style="margin-top:16px">Reads that serve your request just happen. Writing to someone new, paying or deleting waits for you, with what it wants to do and why.</p><div class="tech"><span>allow once</span><span>for this turn</span><span>always allow</span><span>deny</span></div></div>
+		<div class="visual" id="apprVis">
+			<div class="say">Sala Navigli fits: 24 seats, €1,800, free on the 12th. Their site only takes requests through a form.</div>
+			<div class="approve"><p class="q">Send the booking request on salanavigli.it?</p><p class="r">It writes to someone you haven't named. Your name, email and the date go in the form.</p><div class="btns"><span>Allow</span><span class="pick">For this turn</span><span>Always allow</span><span>Deny</span></div></div>
+			<p class="step done">Allowed for this turn · request sent · in the activity log</p>
+		</div>
+	</div>
+</section>
+
+<section id="routines" style="padding-top:0">
+	<div class="wrap dive flip">
+		<div><p class="eyebrow">Routines</p><h2>It notices what you repeat.</h2><p class="lead" style="margin-top:16px">Three Mondays in a row? It offers a routine. Nothing runs until you press Activate. It can also wake up on a schedule or when something changes.</p><div class="tech"><span>schedules</span><span>when something changes</span><span>runs on a local model</span></div></div>
+		<div class="visual" id="calVis">
+			<div class="cal"><span class="ask">Mon 27</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span class="ask">Mon 3</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span class="ask">Mon 10</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span></div>
+			<div class="card offer"><span class="why">Daily briefing · runs on a local model</span><b>You've asked me for this three Mondays in a row. Want it every weekday?</b><span class="why">New routine · Weekdays at 8:00 · Europe/Rome</span><div class="act"><span>Activate</span><span>Change time</span></div></div>
+		</div>
+	</div>
+</section>
+
+<section class="band" id="models">
+	<div class="wrap dive">
+		<div><p class="eyebrow">Any model</p><h2>Your choice of model. Even fully local.</h2><p class="lead" style="margin-top:16px">Use Claude, GPT, Mistral, DeepSeek or anything on OpenRouter. Or run models on your own computer, with the one built into Homun, Ollama or LM Studio, and your conversations never leave it.</p><div class="tech"><span>a model per bot</span><span>your own keys</span><span>OpenAI-compatible</span></div></div>
+		<div class="visual" id="modelVis">
+			<div class="models">
+				<div class="mrow"><span>Daily briefing<br><small>Built-in local model</small></span><span class="local">local</span></div>
+				<div class="mrow"><span>Account manager<br><small>Ollama · on this Mac</small></span><span class="local">local</span></div>
+				<div class="mrow"><span>Scout<br><small>Claude Sonnet · your key</small></span><span class="local" style="color:var(--band-muted);border-color:var(--band-line)">cloud</span></div>
+			</div>
+			<div class="provs"><span>Anthropic</span><span>OpenAI</span><span>Mistral</span><span>OpenRouter</span><span>DeepSeek</span><span>Groq</span><span>xAI</span><span>Z.ai</span><span>any OpenAI-compatible</span></div>
+		</div>
+	</div>
+</section>
+
+<section id="memory">
+	<div class="wrap dive flip">
+		<div><p class="eyebrow" style="color:var(--blue-text)">Memory by Engramma</p><h2>It remembers. And says where from.</h2><p class="lead" style="margin-top:16px">What one bot learns, the team knows. Every memory is a note on your computer, with its source and the date it was true. Claims from the web wait for your OK.</p><div class="tech"><span>notes you can read</span><span>source and dates</span><span>quarantine</span></div><p class="more"><a href="engramma-mockup.html" style="color:var(--blue-text)">Meet Engramma, the memory engine →</a></p></div>
+		<div class="visual" id="memVis">
+			<div class="me" style="justify-self:end">Draft the Acme renewal. 24 months, 8% off.</div>
+			<div class="answer">Careful: Acme only signs annual contracts. You told me on Tuesday, after the call with their CFO. I drafted 12 months with 8% off.</div>
+			<div class="notes">
+				<div class="mnote">Acme only signs annual contracts.<small>from you · Tue 11 Nov · stated</small></div>
+				<div class="mnote">The office moved to Milano.<small>valid since Sep 2026 · replaces “Torino”</small></div>
+				<div class="mnote wait">Acme's CFO is leaving in March.<small>from a website · waiting for your OK</small></div>
+			</div>
+		</div>
+	</div>
+	<div class="wrap"><p class="annot">MOCKUP NOTE · L'unico tocco blu della home: è il ponte verso Engramma, con le stesse note di esempio della pagina Engramma (famiglia coerente).</p></div>
+</section>
+
+<!-- ═══ WHERE YOUR DATA STAYS ═══ -->
+<section class="band" id="privacy" style="background:var(--surface);color:var(--fg)">
+	<div class="wrap">
+		<div class="head"><p class="eyebrow">Where your data stays</p><h2>On your computer. Out only where you send it.</h2><p class="lead" style="color:var(--muted)">Homun, the bots' computers, the library and the memory live on your machine. Data goes out only to the apps you connected and to a cloud model, if you pick one.</p></div>
+		<div class="map" id="mapVis">
+			<div class="mine"><b>Your computer</b>
+				<div class="inside">
+					<div><b>Homun</b><small>the app and its bots</small></div>
+					<div><b>The bots' computers</b><small>browser and files, apart from yours</small></div>
+					<div><b>Library and memory</b><small>files and notes you can open</small></div>
+					<div><b>Local models</b><small>built-in, Ollama, LM Studio</small></div>
+				</div>
+			</div>
+			<div class="out">
+				<div><b>The apps you connected</b><small>Gmail, Slack… only what a job needs</small></div>
+				<div><b>A cloud model</b><small>only if you choose one, with your key</small></div>
+				<div><b>Updates</b><small>checked on GitHub, installed with your OK</small></div>
+			</div>
+		</div>
+		<p class="annot">MOCKUP NOTE · Sezione nuova, ma niente promesse: ogni freccia in uscita va verificata sulle guide Privacy e Architecture di Homun e sul codice (telemetria? Composio passa dai suoi server: va detto). Se esiste un'uscita che non è qui, si aggiunge; se una frase non è vera, si toglie. Le frecce entrano una alla volta.</p>
+	</div>
+</section>
+
+<!-- ═══ USES ═══ -->
+<section id="uses">
+	<div class="wrap">
+		<div class="head"><p class="eyebrow">What people use it for</p><h2>One job each. Here are a few.</h2><p class="lead">Each one is a sentence you can type into a new bot today.</p></div>
+		<div class="uses stagger">
+			<div class="use"><span class="who">Founders</span><p>Every morning, get my inbox to zero and leave me only what needs me.</p><small>Gmail · drafts held for you · a routine at 7:00</small><span class="tag">Template · Inbox manager</span></div>
+			<div class="use"><span class="who">Busy weeks</span><p>Before every call, tell me who I'm meeting and what we promised them.</p><small>Calendar · Gmail · memory of past calls</small><span class="tag">Template · Meeting preparation</span></div>
+			<div class="use"><span class="who">Sales</span><p>Research these 40 accounts and draft a first email for each. Don't send.</p><small>Web search · its own browser · HubSpot</small></div>
+			<div class="use"><span class="who">Freelancers</span><p>Match my receipts to card payments and tell me what's missing for my accountant.</p><small>Gmail · files in the Library · a Friday routine</small></div>
+			<div class="use"><span class="who">Teams of bots</span><p>Plan the offsite: venue, invites and a budget. Bring me one summary.</p><small>A coordinator with two helpers in a group</small><span class="tag">Template · Chief of staff</span></div>
+			<div class="use"><span class="who">Developers</span><p>Watch new GitHub issues, reproduce the bugs in its computer and write down the steps.</p><small>GitHub · terminal in its own computer</small></div>
+		</div>
+	</div>
+</section>
+
+<!-- ═══ RELEASES & ROADMAP ═══ -->
+<section class="band" id="roadmap">
+	<div class="wrap">
+		<div class="head"><p class="eyebrow">Releases and roadmap</p><h2>Where Homun is going.</h2><p class="lead">What shipped, what we're building now, and what comes next. Open source, so you can follow every change.</p></div>
+		<div class="road" id="road"><div class="progress"><i></i></div>
+			<div class="era"><h3>Shipped</h3>
+				<div class="rel"><span class="v">0.3 · beta</span><b>The bot team</b><span>Bots with one job, teams, approvals, its own computer.</span></div>
+				<div class="rel"><span class="v">0.2.1004</span><b>Linux updates itself</b><span>The AppImage checks for updates and installs only with your OK.</span></div>
+				<div class="rel"><span class="v">0.2.1002</span><b>People and invites</b><span>Invite people with a role; revoking one closes their devices.</span></div>
+				<div class="rel"><span class="v">0.2.1001</span><b>Update progress</b><span>A small window shows the download as it happens.</span></div>
+			</div>
+			<div class="era now"><h3>Now</h3><div class="rel"><span class="v">Team processes</span><b>Homun Flow</b><span>Tasks, approvals and audit for real processes, and the board to see them.</span></div></div>
+			<div class="era future"><h3>Next</h3>
+				<div class="rel"><span class="v">Collaboration</span><b>Team Spaces & Roles</b><span>The right context and permissions for every person and bot.</span></div>
+				<div class="rel"><span class="v">Apps</span><b>Homun Mobile</b><span>Review work and approve actions from your phone.</span></div>
+				<div class="rel"><span class="v">Channels</span><b>More ways to reach Homun</b><span>From the chat tools your company already uses.</span></div>
+			</div>
+			<div class="era future"><h3>Later</h3>
+				<div class="rel"><span class="v">Company AI</span><b>Learns how your company works</b><span>Terms, knowledge and review criteria.</span></div>
+				<div class="rel"><span class="v">Input</span><b>Voice & meetings</b><span>Only when you turn it on.</span></div>
+				<div class="rel"><span class="v">Ecosystem</span><b>Developer platform</b><span>For partners who build on Homun.</span></div>
+			</div>
+		</div>
+		<div class="vision"><div><b>You</b><span class="muted">A team of bots on your computer.</span></div><div><b>Your team</b><span class="muted">People and bots in the same spaces, with roles.</span></div><div><b>Your company</b><span class="muted">Processes that run, with approvals and an audit trail.</span></div></div>
+		<div class="links"><a href="#">All releases →</a><a href="#">Full changelog →</a><a href="#">Roadmap and votes →</a></div>
+		<p class="annot">MOCKUP NOTE · È ReleasesRoadmap, lo stesso componente della pagina Engramma, con dati da releases.json e roadmap.json (mai a mano). Due cose da risolvere nei dati, non nel layout: (1) le beta 0.3 devono comparire, marcate «beta» (decisione di Fabio richiesta); (2) i titoli delle release sono tecnici («Sealed object transfers…»): serve un titolo per utenti nel progetto GitHub, oppure si mostrano solo le release che ce l'hanno. La barra non mostra mai «0 of 6».</p>
+	</div>
+</section>
+
+<!-- ═══ FAQ & DOWNLOAD ═══ -->
+<section id="faq">
+	<div class="wrap">
+		<div class="head"><p class="eyebrow">Questions</p><h2>Asked before you download.</h2></div>
+		<div class="faq">
+			<details open><summary>Can a bot act without asking?</summary><p>Not by default. Before an action that changes something, a bot shows an approval card with what it wants to do and why: allow it once, for this turn, always, or deny it. Messages to other people become drafts that leave only when you press Send.</p></details>
+			<details><summary>Does it need an API key?</summary><p>Not with a local model: the built-in one, Ollama or LM Studio. For a cloud model you use your own key.</p></details>
+			<details><summary>Where does my data stay?</summary><p>On your computer. It goes out only to the apps you connect and to the cloud model you pick, if you pick one.</p></details>
+			<details><summary>Which systems does it run on?</summary><p>macOS today; Windows and Linux in beta.</p></details>
+		</div>
+	</div>
+</section>
+
+<section id="download" class="band">
+	<div class="wrap close">
+		<svg width="96" height="96" viewBox="8 6 86 88" aria-hidden="true"><path d="M50 12C74 10 90 28 88 52C86 76 70 90 48 88C26 86 10 72 12 50C14 28 28 14 50 12Z" fill="#157A6E"><animate attributeName="d" dur="6.5s" repeatCount="indefinite" values="M50 12C74 10 90 28 88 52C86 76 70 90 48 88C26 86 10 72 12 50C14 28 28 14 50 12Z;M52 14C78 14 88 32 86 54C84 78 66 88 46 86C22 84 12 68 14 46C16 26 30 14 52 14Z;M50 12C74 10 90 28 88 52C86 76 70 90 48 88C26 86 10 72 12 50C14 28 28 14 50 12Z"/></path><path class="lids" d="M33 50Q39.5 58 46 50M54 50Q60.5 58 67 50" fill="none" stroke="#F4F1EE" stroke-width="5" stroke-linecap="round"/></svg>
+		<h2>Meet your first bot.</h2>
+		<p class="lead">Free and open source. Give it one job today.</p>
+		<div class="ctas" style="justify-content:center"><a class="btn primary" style="background:var(--band-fg);color:var(--band);border-color:var(--band-fg)" href="#">Download for macOS</a><a class="btn" style="border-color:var(--band-line)" href="#">Windows · Linux beta</a></div>
+	</div>
+</section>
+
+<footer>Homun · Engramma · Docs · Privacy · License · GitHub</footer>
+
+<script>
+const watch=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');watch.unobserve(e.target)}}),{threshold:.35});
+['pipe','appsVis','skillVis','compVis','apprVis','calVis','modelVis','memVis','road','mapVis'].forEach(id=>{const el=document.getElementById(id);el&&watch.observe(el)});
+document.querySelectorAll('.stagger').forEach(el=>watch.observe(el));
+document.querySelector('.hero').classList.add('play');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* its own computer: the cursor visits the three venues, then rests on the one that fits */
+(()=>{const cur=document.getElementById('cur'),vis=document.getElementById('compVis');if(!cur||reduce)return;
+ new IntersectionObserver((es,o)=>{if(!es[0].isIntersecting)return;o.disconnect();
+  const stops=[[48,55],[80,55],[16,55]];stops.forEach(([x,y],i)=>setTimeout(()=>{cur.style.left=x+'%';cur.style.top=y+'%'},700+i*800));
+ },{threshold:.35}).observe(vis)})();
+
+/* team hub: bots hand work to each other through one workspace; you approve; the log fills */
+(()=>{const svg=document.getElementById('hubSvg');if(!svg)return;const NS='http://www.w3.org/2000/svg',C={x:300,y:220};
+const bots=[['Chief of staff',300,46],['Scout',520,130],['Inbox manager',520,312],['You',300,396],['Daily briefing',80,312],['Account manager',80,130]];
+const pos={},spoke={},node={};
+bots.forEach(([n,x,y])=>{pos[n]={x,y};const l=document.createElementNS(NS,'line');l.setAttribute('x1',x);l.setAttribute('y1',y);l.setAttribute('x2',C.x);l.setAttribute('y2',C.y);l.classList.add('spoke');document.getElementById('spokes').append(l);spoke[n]=l;
+ const g=document.createElementNS(NS,'g');g.classList.add('node');if(n==='You')g.classList.add('you');const w=n.length*7.6+32;g.innerHTML=`<rect x="${x-w/2}" y="${y-18}" width="${w}" height="36" rx="18"/><text x="${x}" y="${y+5}" text-anchor="middle">${n}</text>`;document.getElementById('nodes').append(g);node[n]=g});
+const dot=document.getElementById('dot'),bub=document.getElementById('bubble'),feed=document.getElementById('feed'),verdict=document.getElementById('verdict'),hub=document.getElementById('hub');
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const fly=(a,b,ms=900)=>new Promise(r=>{dot.setAttribute('opacity',1);const t0=performance.now();const f=t=>{const k=Math.min(1,(t-t0)/ms),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;dot.setAttribute('cx',a.x+(b.x-a.x)*e);dot.setAttribute('cy',a.y+(b.y-a.y)*e);k<1?requestAnimationFrame(f):(dot.setAttribute('opacity',0),r())};requestAnimationFrame(f)});
+const say=(who,label,html)=>{const p=pos[who],r=hub.getBoundingClientRect(),sx=r.width/600,sy=svg.getBoundingClientRect().height/440;bub.innerHTML=`<small>${label}</small>${html}`;bub.style.left=Math.max(8,Math.min(r.width-bub.offsetWidth-8,p.x*sx-60))+'px';bub.style.top=(p.y<220?p.y*sy+26:p.y*sy-86)+'px';bub.classList.add('show')};
+const hush=()=>bub.classList.remove('show');
+const on=(t,v)=>{node[t].classList.toggle('on',v);spoke[t].classList.toggle('on',v)};
+const log=(cls,html)=>{const li=document.createElement('li');li.className=cls;li.innerHTML=html;feed.append(li);while(feed.children.length>7)feed.firstElementChild.remove()};
+let t='11:20';const tick=()=>{const[h,m]=t.split(':').map(Number);const n=m+2;t=`${h+Math.floor(n/60)}:${String(n%60).padStart(2,'0')}`;return t};
+const hand=async(a,b,label,text)=>{on(a,true);say(a,label,text);await wait(1300);hush();await fly(pos[a],C,700);await fly(C,pos[b],700);on(a,false)};
+const scenes=[
+ async()=>{await hand('Chief of staff','Scout','Chief of staff · in the group','@Scout a venue for Dec 12, 20 people, under €2,000.');
+  on('Scout',true);say('Scout','Scout · on its computer','Browsing salanavigli.it… Sala Navigli fits: €1,800, free on the 12th.');log('ok',`${tick()} <b>Scout</b> compared 3 venues in its browser`);await wait(1800);hush();
+  await fly(pos['Scout'],pos['You'],900);on('You',true);say('You','Scout · asks you','Send the booking request on salanavigli.it?<div class="btns"><span>Allow</span><span class="hit">For this turn</span><span>Deny</span></div>');
+  log('wait',`${tick()} <b>Scout</b> asked: send the booking form`);await wait(2000);hush();log('ok',`${tick()} <b>you</b> allowed, for this turn`);on('You',false);
+  verdict.textContent='✓ nothing went out without you';await wait(1600);on('Scout',false);verdict.textContent=''},
+ async()=>{await hand('Chief of staff','Inbox manager','Chief of staff · in the group','@Inbox manager invites for the offsite. The guest list is in the Library.');
+  on('Inbox manager',true);say('Inbox manager','Inbox manager','20 invites drafted. They wait for your OK.');log('wait',`${tick()} <b>Inbox manager</b> drafted 20 invites · nothing sent`);await wait(1900);hush();
+  log('ok',`${tick()} <b>Chief of staff</b> sent the summary to your chat`);verdict.textContent='✓ only the summary comes to you';await wait(1600);on('Inbox manager',false);verdict.textContent=''},
+ async()=>{on('Account manager',true);say('Account manager','Account manager · after the call','Acme only signs annual contracts.');await wait(1400);hush();await fly(pos['Account manager'],C,800);on('Account manager',false);
+  log('mem',`${tick()} <b>memory</b> “Acme only signs annual contracts” · from you`);await wait(900);
+  on('Daily briefing',true);await fly(C,pos['Daily briefing'],800);say('Daily briefing','Daily briefing · Monday','Acme renewal today: remember, annual contracts only. <small style="display:inline;color:#2F4BC0">— from you, Tue</small>');
+  log('read',`${tick()} <b>Daily briefing</b> used the note, with its source`);verdict.textContent='✓ what one bot learns, the team knows';await wait(2600);hush();on('Daily briefing',false);verdict.textContent='';await wait(500)}];
+if(reduce){log('wait','<b>Scout</b> asked: send the booking form');log('ok','<b>you</b> allowed, for this turn');log('wait','<b>Inbox manager</b> drafted 20 invites · nothing sent');log('mem','<b>memory</b> “Acme only signs annual contracts” · from you');log('ok','<b>Daily briefing</b> used the note, with its source');return}
+let started=false;new IntersectionObserver(es=>{if(es[0].isIntersecting&&!started){started=true;(async()=>{for(;;)for(const s of scenes)await s()})()}},{threshold:.3}).observe(hub);
+})();
+</script>
+</body>
+</html>

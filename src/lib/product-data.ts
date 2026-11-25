@@ -50,6 +50,8 @@ export interface ReleaseItem {
 	name: string;
 	publishedAt: string;
 	githubUrl: string;
+	/** A pre-release of a version to come: the beta channel. */
+	prerelease?: boolean;
 	highlights: string[];
 	improvements: string[];
 	fixes: string[];
@@ -61,9 +63,16 @@ export interface ReleaseItem {
 export const roadmapItems = [...(roadmapSnapshot.items as RoadmapItem[])].sort(
 	(a, b) => a.order - b.order,
 );
-export const releases = [...(releaseSnapshot.items as ReleaseItem[])].sort(
-	(a, b) => new Date(b.publishedAt).valueOf() - new Date(a.publishedAt).valueOf(),
-);
+const byNewest = (a: ReleaseItem, b: ReleaseItem) =>
+	new Date(b.publishedAt).valueOf() - new Date(a.publishedAt).valueOf();
+
+/** Every release of the snapshot, newest first: stable and pre-release. */
+export const allReleases = [...(releaseSnapshot.items as ReleaseItem[])].sort(byNewest);
+/** Stable releases only: what the downloads, the roadmap evidence and the
+ * changelog's "Latest" point to. */
+export const releases = allReleases.filter((release) => !release.prerelease);
+/** The pre-releases of the snapshot, newest first. */
+export const prereleases = allReleases.filter((release) => release.prerelease);
 export const roadmapSyncedAt = roadmapSnapshot.contentUpdatedAt;
 export const releasesSyncedAt = releaseSnapshot.contentUpdatedAt;
 export const strategicPrograms = roadmapItems.filter(

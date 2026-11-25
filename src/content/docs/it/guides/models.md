@@ -1,6 +1,6 @@
 ---
 title: Modelli
-description: Usa un provider cloud, un modello sulla tua rete, oppure il modello integrato in Homun che gira tutto sul tuo computer.
+description: Usa un provider cloud, un modello sul tuo Mac o sulla tua rete, oppure il modello integrato in Homun che gira tutto sul tuo computer.
 ---
 
 Ogni bot usa un modello che scegli tu. Puoi mescolarli: un modello cloud per il bot che
@@ -10,9 +10,9 @@ scrive i report, uno locale per il bot che legge la tua posta.
 
 - **Integrato**: un modello che gira dentro Homun sul tuo computer. Niente costi, e i dati
   restano sulla tua macchina. È più lento e sbaglia più spesso dei modelli cloud.
-- **Sulla tua rete**: [Ollama](https://ollama.com) e [LM Studio](https://lmstudio.ai) che
-  girano sul tuo computer vengono trovati da soli; puoi anche aggiungere un server
-  altrove sulla tua rete con il suo indirizzo.
+- **Sul tuo Mac**: [Ollama](https://ollama.com) e [LM Studio](https://lmstudio.ai) che
+  girano sul tuo computer vengono trovati da soli. Da **Altro server** puoi anche
+  aggiungere un server compatibile OpenAI altrove sulla tua rete, con il suo indirizzo.
 - **Cloud**: OpenAI, Anthropic, Mistral, OpenRouter, Z.ai, xAI, DeepSeek, Groq, o
   qualsiasi servizio compatibile con OpenAI, con la tua chiave API. Paghi il provider a
   consumo.
@@ -21,14 +21,15 @@ scrive i report, uno locale per il bot che legge la tua posta.
 
 Apri **Impostazioni › Modelli** e premi **Aggiungi provider**. Inserisci la chiave API, o
 l'indirizzo per un server sulla tua rete; Homun lo prova e ti dice quanti modelli sono
-disponibili. Le chiavi API sono salvate cifrate nella [Cassaforte](/it/guides/security/#la-cassaforte).
+disponibili. La chiave resta sigillata nel portachiavi del tuo Mac.
 
 ## Il modello integrato
 
-Il modello integrato è **Qwen3.5 4B** (circa 2,7 GB, licenza Apache-2.0). Lo installi da
-**Impostazioni › Modelli › Integrato**. Homun controlla prima il tuo computer: con meno di
-16 GB di memoria ti avverte che sarà lento, e serve abbastanza spazio libero su disco. Puoi
-mettere in pausa, riprendere e togliere il download.
+Il modello integrato è **Qwen3.5 4B** (circa 2,5 GB, licenza Apache-2.0). Lo installi da
+**Impostazioni › Modelli** — richiede Apple Silicon. Homun controlla prima il tuo
+computer: con meno di 16 GB di memoria ti avverte che sarà lento e può bloccare il Mac, e
+serve abbastanza spazio libero su disco. Durante il download puoi annullarlo e riprenderlo;
+una volta installato, puoi toglierlo.
 
 ## Scegliere il modello di ogni bot
 
@@ -41,5 +42,5 @@ mettere in pausa, riprendere e togliere il download.
 
 ## Costi
 
-**Impostazioni › Uso e costi** mostra quanto costano i modelli cloud questo mese, bot per
-bot.
+**Impostazioni › Uso e costi** mostra chiamate, token e costo per modello, per bot o per
+origine — oggi, ultimi 7 o 30 giorni, o questo mese.

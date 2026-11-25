@@ -1,0 +1,95 @@
+---
+// The image of the graph: a walk from the name the question mentions, through
+// the entities the notes share, to a note the question never named.
+import { ENGRAMMA_GRAPH } from "../../data/engramma.mjs";
+
+const { query, via, nodes } = ENGRAMMA_GRAPH;
+const start = { x: 120, y: 140 };
+const middle = { x: 260, y: 70 };
+const other = { x: 260, y: 210 };
+const target = { x: 336, y: 48 };
+const second = { x: 336, y: 188 };
+const box = { width: 170, height: 44 };
+const line = (a, b, edge) => ({ x1: a.x, y1: a.y, x2: edge.x, y2: edge.y });
+---
+
+<div class="graph" data-motion data-product="engramma">
+	<svg viewBox="0 0 520 280" role="img" aria-label={`The graph of the notes: ${nodes.start} mentions ${nodes.middle}, which the note “${nodes.target}” mentions too`}>
+		<g class="mesh">
+			<line {...line(start, middle, middle)} />
+			<line {...line(start, other, other)} />
+			<line {...line(middle, target, target)} />
+			<line {...line(other, second, second)} />
+			<line {...line(middle, other, other)} />
+		</g>
+		<g class="walk" fill="none" stroke-linecap="round">
+			<path class="w1" pathLength="1" d={`M${start.x} ${start.y}L${middle.x} ${middle.y}`} />
+			<path class="w2" pathLength="1" d={`M${middle.x} ${middle.y}L${target.x} ${target.y}`} />
+			<path class="w3" pathLength="1" d={`M${start.x} ${start.y}L${other.x} ${other.y}`} />
+		</g>
+		<circle class="start" cx={start.x} cy={start.y} r="38" />
+		<circle class="entity" cx={middle.x} cy={middle.y} r="34" />
+		<circle class="entity" cx={other.x} cy={other.y} r="34" />
+		<rect class="note target" x={target.x} y={target.y} width={box.width} height={box.height} rx="10" />
+		<rect class="note" x={second.x} y={second.y} width={box.width} height={box.height} rx="10" />
+		<text class="name on-accent" x={start.x} y={start.y + 5}>{nodes.start}</text>
+		<text class="name on-soft" x={middle.x} y={middle.y + 5}>{nodes.middle}</text>
+		<text class="name on-soft" x={other.x} y={other.y + 5}>{nodes.other}</text>
+		<text class="note-label" x={target.x + box.width / 2} y={target.y + 27}>note: {nodes.target}</text>
+		<text class="note-label" x={second.x + box.width / 2} y={second.y + 27}>note: {nodes.second}</text>
+	</svg>
+	<p class="small">“{query}” starts the walk at {nodes.start} and reaches the office note through {nodes.middle}.</p>
+	<p class="via">via: {via}</p>
+</div>
+
+<style>
+	.graph { display: grid; gap: 12px; min-width: 0; }
+	svg { width: 100%; height: auto; }
+	svg text { text-anchor: middle; }
+	.name { font: 600 13px var(--body); }
+	.note-label { font: 12px var(--mono); fill: var(--fg); }
+	.mesh { stroke: var(--accent); stroke-width: 2; opacity: .35; }
+	.start { fill: var(--accent); }
+	.entity { fill: var(--accent-soft); stroke: var(--accent); }
+	.note { fill: var(--card); stroke: var(--line); }
+	.on-accent { fill: #fff; }
+	.on-soft { fill: var(--accent-text); }
+	.small { margin: 0; font-size: .84rem; line-height: 1.5; color: var(--muted); }
+	.via { margin: 0; font: .72rem/1.5 var(--mono); color: var(--accent-text); overflow-wrap: anywhere; }
+
+	.walk path { stroke: var(--accent); stroke-width: 4; }
+	/* The final state: the walk is drawn and the note it reaches stands out. */
+	.target { stroke: var(--accent); stroke-width: 3; }
+
+	@media (prefers-reduced-motion: no-preference) {
+		:global(html.js) .graph:not(.in) .walk path {
+			stroke-dasharray: 1;
+			stroke-dashoffset: 1;
+		}
+		:global(html.js) .graph:not(.in) .target {
+			stroke: var(--line);
+			stroke-width: 1.5;
+		}
+		.graph.in .walk path {
+			stroke-dasharray: 1;
+			animation: f-draw .8s ease .3s forwards;
+		}
+		.graph.in .w2 { animation-delay: 1.1s; animation-duration: .6s; }
+		.graph.in .target { animation: f-target 1.4s ease 1.6s both; }
+		.graph.in .start { animation: f-pulse 1.2s ease 1.6s 2; }
+	}
+
+	@keyframes f-draw {
+		to { stroke-dashoffset: 0; }
+	}
+
+	@keyframes f-target {
+		from { stroke: var(--line); stroke-width: 1.5; }
+	}
+
+	@media (max-width: 640px) {
+		/* The drawing shrinks on a phone: the names grow to stay readable. */
+		.name { font-size: 17px; }
+		.note-label { font-size: 15px; }
+	}
+</style>

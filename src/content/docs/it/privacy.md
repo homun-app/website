@@ -7,7 +7,7 @@ description: Come homun.app gestisce le analisi aggregate del sito.
 
 Questa informativa spiega come il sito pubblico [homun.app](https://homun.app) gestisce
 le informazioni durante una visita. Riguarda esclusivamente le analisi del sito e non i
-dati dell'app desktop Homun, inclusi dati dell'account, spazi di lavoro, prompt o file.
+dati dell'app desktop Homun, come conversazioni, prompt o file.
 
 ## Titolare del trattamento
 
@@ -38,9 +38,9 @@ non viene conservato. Le analisi usano un salt a rotazione e non usano cookie.
 
 ## Cosa è escluso
 
-Le analisi del sito non raccolgono dati dell'account Homun, contenuti degli spazi di
-lavoro, prompt, file, nomi personali, indirizzi email, identificatori pubblicitari, ID
-distinti personalizzati o dati di session replay. Parametri di query e frammenti URL sono
+Le analisi del sito non raccolgono dati dall'app desktop Homun — conversazioni, prompt o
+file — né nomi personali, indirizzi email, identificatori pubblicitari, ID distinti
+personalizzati o dati di session replay. Parametri di query e frammenti URL sono
 esclusi. Le analisi non identificano i visitatori tra siti diversi. Non usano cookie di
 analisi e l'impostazione Do Not Track del browser disabilita le analisi.
 

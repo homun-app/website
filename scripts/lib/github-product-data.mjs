@@ -397,6 +397,9 @@ function normalizeRelease(release) {
 		name: release.name || release.tag_name,
 		publishedAt: release.published_at,
 		githubUrl: release.html_url,
+		// Prereleases are part of the public record now (the homepage shows the
+		// beta channel); downloads still resolve to stable releases only.
+		prerelease: release.prerelease === true,
 		highlights: listItems(sections.get("highlights")),
 		improvements: listItems(sections.get("improvements")),
 		fixes: listItems(sections.get("fixes")),
@@ -416,7 +419,7 @@ function normalizeRelease(release) {
 
 export function normalizeReleases(payload, _roadmapCandidates, syncedAt = new Date().toISOString()) {
 	const items = payload
-		.filter((release) => !release.draft && !release.prerelease && release.published_at)
+		.filter((release) => !release.draft && release.published_at)
 		.map(normalizeRelease)
 		.sort(
 			(a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
@@ -666,6 +669,11 @@ export function validateSnapshot(
 		}
 		if (!isIsoTimestamp(release.publishedAt)) {
 			throw new Error(`Invalid release publishedAt: ${release.version}`);
+		}
+		// Absent means stable: snapshots written before prereleases were kept
+		// validate unchanged.
+		if (release.prerelease !== undefined && typeof release.prerelease !== "boolean") {
+			throw new Error(`Invalid release prerelease: ${release.version}`);
 		}
 		for (const field of ["highlights", "improvements", "fixes", "platforms"]) {
 			if (

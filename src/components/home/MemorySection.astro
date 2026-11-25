@@ -1,55 +1,55 @@
 ---
-import FeatureSection from "./FeatureSection.astro";
+import DeepDive from "../family/DeepDive.astro";
 import ProductSymbol from "../brand/ProductSymbol.astro";
-import Surface from "../app/Surface.astro";
 import Msg from "../app/Msg.astro";
 
 const notes = [
   { text: "Acme only signs annual contracts.", source: "from you · Tue 11 Nov · stated", state: "matched" },
   { text: "The office moved to Milano.", source: "valid since Sep 2026 · replaces “Torino”", state: "saved" },
-  { text: "Acme's CFO is leaving in March.", source: "from a website · waiting for your OK", state: "pending" },
+  { text: "Acme's CFO is leaving in March.", source: "from a website · waiting for confirmation", state: "wait" },
 ];
 ---
 
-<FeatureSection id="memory" eyebrow="Memory by Engramma" tone="band" title="It remembers. And says where from."
-  lead="What one bot learns, the team knows. Every memory is a note on your computer, with its source and the date it was true.">
-  <span slot="eyebrow-icon" class="symbol" aria-hidden="true"><ProductSymbol product="engramma" size={26} /></span>
-  <p slot="after-lead" class="more"><a href="/engramma">Meet Engramma →</a></p>
-  <div slot="visual" class="memory">
-    <Surface bot={{ name: "Account manager", family: "jelly", color: "#E9418A", state: "speaking" }}>
-      <Msg from="me" i={0}>Draft the Acme renewal. 24 months, 8% off.</Msg>
-      <Msg from="bot" i={1}>Careful: Acme only signs annual contracts. You told me on Tuesday, after the call with their CFO. I drafted 12 months with 8% off.</Msg>
-      <ul class="notes" role="list">
-        {notes.map(({ text, source, state }, i) => (
-          <li class:list={["play", state]} style={{ "--i": i + 2 }} data-memory-note>
-            {text}
-            <small>{source}</small>
-          </li>
-        ))}
-      </ul>
-    </Surface>
+<DeepDive id="memory" product="homun" class="mem" flip eyebrow="Memory by Engramma" title="It remembers. And says where from."
+  lead="What you tell one bot, every bot knows. Every memory is a note on your computer, with its source and its dates. What a bot writes after reading the web waits for your confirmation.">
+  <Fragment slot="after">
+    <p class="more"><a href="/engramma/">Meet Engramma, the memory engine →</a></p>
+  </Fragment>
+  <div slot="visual" class="memory" data-motion="memory">
+    <Msg from="me">Draft the Acme renewal. 24 months, 8% off.</Msg>
+    <Msg from="bot" class="answer">Careful: Acme only signs annual contracts. You told me on Tuesday, after the call with their CFO. I drafted 12 months with 8% off.</Msg>
+    <ul class="notes" role="list">
+      {notes.map(({ text, source, state }) => (
+        <li class:list={[state]}>
+          {text}
+          <small>{source}</small>
+        </li>
+      ))}
+    </ul>
   </div>
-</FeatureSection>
+</DeepDive>
 
 <style>
-  .symbol { display: inline-flex; }
+  /* The one blue touch of the homepage: the bridge to Engramma. */
+  .memory { display: grid; gap: 10px; }
+  .memory :global([data-from]) { font-size: 15px; max-width: 100%; }
   .more { margin: 0; }
-  .more a { color: #8EA3F2; font-weight: 600; }
-  .memory :global([data-surface]) { background: #141B19; color: var(--band-fg); box-shadow: 0 0 0 1px #24302D; }
-  .memory :global(.bar b) { color: var(--band-muted); }
-  .memory :global([data-from="bot"]) { background: #222B29; color: var(--band-fg); }
-  .memory :global([data-from="me"]) { background: var(--band-fg); color: var(--band); }
-  .notes { display: grid; gap: 8px; list-style: none; margin: 0; padding: 0; }
-  .notes li {
-    display: grid;
-    gap: 4px;
-    padding: 12px 14px;
-    border-radius: 14px;
-    background: var(--band-card);
-    color: var(--band-fg);
-    font-size: 15px;
+  /* The one blue touch of the homepage, in Engramma's own variable. */
+  .mem :global(.f-eyebrow) { color: var(--blue-text); }
+  .more a { color: var(--blue-text); font-weight: 600; }
+  .notes { display: grid; gap: 8px; list-style: none; margin: 4px 0 0; padding: 0; }
+  .notes li { display: grid; gap: 2px; padding: 8px 12px; border: 1px solid var(--line); border-left: 3px solid var(--blue); border-radius: 10px; background: var(--card); font-size: .86rem; }
+  .notes small { font: .7rem var(--mono); color: var(--muted); }
+  .notes .matched { border-left-color: var(--blue); }
+  .notes .saved { border-left-color: var(--blue); }
+  .notes .wait { border-left-color: #E8C47A; border-left-style: dashed; }
+  @media (prefers-reduced-motion: no-preference) {
+    .memory :global([data-from]), .notes li { opacity: 0; transform: translateY(8px); }
+    .memory.in :global([data-from="me"]) { animation: f-line .5s ease .1s forwards; }
+    .memory.in :global([data-from="bot"]) { animation: f-line .5s ease .5s forwards; }
+    .memory.in .notes li { animation: f-line .5s ease forwards; }
+    .memory.in .notes li:nth-child(1) { animation-delay: 1.1s; }
+    .memory.in .notes li:nth-child(2) { animation-delay: 1.5s; }
+    .memory.in .notes li:nth-child(3) { animation-delay: 1.9s; }
   }
-  .notes small { font: 11px/1.45 var(--mono); color: var(--band-muted); }
-  .notes .matched { box-shadow: 0 0 0 2px #8EA3F2; }
-  .notes .pending small { color: #F2C46B; }
 </style>

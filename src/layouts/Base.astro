@@ -5,6 +5,7 @@ import "@fontsource/geist-mono/latin-400.css";
 import "@fontsource/geist-mono/latin-500.css";
 import "@fontsource/geist-mono/latin-600.css";
 import "../styles/global.css";
+import "../styles/family.css";
 import "../styles/scroll.css";
 import "../styles/mascot.css";
 
@@ -14,11 +15,11 @@ interface Props {
 	noindex?: boolean;
 }
 
-const {
+	const {
 	title = "Homun — Your bot team, on your computer",
-	description = "Every Homun bot has a job, a computer of its own and a memory that stays on your machine. Open source.",
+	description = "Every Homun bot has a job, they share one contained computer, and a memory that stays on your machine. Open source.",
 	noindex = false,
-} = Astro.props;
+	} = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL("/og.png", Astro.site);
@@ -37,6 +38,9 @@ const ogImage = new URL("/og.png", Astro.site);
 		<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f9f8" />
 		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#050807" />
 		<meta name="color-scheme" content="light dark" />
+		{/* The family components hold their starting states back only while this
+		    class is here: without JavaScript the page is already in its final state. */}
+		<script is:inline>document.documentElement.classList.add("js");</script>
 		<meta property="og:type" content="website" />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
@@ -128,6 +132,10 @@ const ogImage = new URL("/og.png", Astro.site);
 					});
 				}
 			})();
+		</script>
+		<script>
+			import { initFamilyMotion } from "../scripts/family.mjs";
+			initFamilyMotion();
 		</script>
 		<script>
 			import { initDownloadControls } from "../scripts/downloads.mjs";

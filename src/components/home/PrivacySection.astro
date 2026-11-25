@@ -1,0 +1,79 @@
+---
+// Where your data stays. Every arrow out of the box was verified on the app's
+// code (0.3, beta.20) and its published guides: the files and the lines are in
+// the site report. The connected apps go through Composio's servers or straight
+// to the app's own address, and that is said here.
+const inside = [
+	{ title: "Homun", body: "the app and its bots" },
+	{ title: "The bots’ computer", body: "a box with a browser, files and a terminal, apart from yours" },
+	{ title: "Library and memory", body: "files and notes you can open; memory by Engramma" },
+	{ title: "Local models", body: "the built-in one, Ollama, LM Studio" },
+];
+// What leaves, and for which service. "On by default" marks what leaves
+// without the person connecting anything.
+const out = [
+	{ title: "The apps you connected", body: "Gmail, Slack… through Composio’s servers, or straight to the app’s own address. A bot sends what it puts in the request." },
+	{ title: "A cloud model", body: "only if you choose one: your key, straight to the provider." },
+	{ title: "Web search and web pages", body: "on by default, without a key: You.com, Exa or Tavily get the query; a site sees the bot’s visit." },
+	{ title: "Skills, plugins and MCP servers", body: "when you add one: GitHub for skills and plugins; a remote MCP server gets what a call carries." },
+	{ title: "Models to download", body: "once, when you ask: the built-in model (about 2.5 GB, as the app shows it) from Hugging Face, and the memory model." },
+	{ title: "Updates and setup", body: "GitHub at start and every six hours, for updates; Docker or Apple container when you prepare the bots’ computer. Nothing installs without your OK." },
+];
+---
+
+<section id="privacy" class="privacy" data-product="homun" aria-labelledby="privacy-title">
+	<div class="f-wrap">
+		<div class="f-head">
+			<p class="f-eyebrow">Where your data stays</p>
+			<h2 id="privacy-title">On your computer. This is everything that leaves.</h2>
+			<p class="f-lead">Homun, the bots’ computer, the library and the memory live on your machine. Homun has no servers of its own: what leaves goes to a service that does the work — the apps you connect, a model, the web.</p>
+		</div>
+		<div class="map" data-motion="privacy">
+			<div class="mine">
+				<b>Your computer</b>
+				<div class="inside">
+					{inside.map(({ title, body }) => (
+						<div><b>{title}</b><small>{body}</small></div>
+					))}
+				</div>
+			</div>
+			<div class="outs">
+				<p class="out-label">What leaves, and why</p>
+				{out.map(({ title, body }, index) => (
+					<div class="out" style={{ "--d": index }}><b>{title}</b><small>{body}</small></div>
+				))}
+			</div>
+		</div>
+		<p class="note">No telemetry, no analytics, no crash reports. In Automatic mode, the model that reviews each action receives your request and the action. Details in the <a href="/reference/architecture/">architecture guide</a> and the <a href="/guides/security/#your-data">security guide</a>.</p>
+	</div>
+</section>
+
+<style>
+	.privacy { padding-block: clamp(80px, 12vh, 140px); background: var(--surface); }
+	/* The box is as tall as the list of the ways out: every arrow faces it. */
+	.map { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 22px; align-items: stretch; }
+	.mine { display: grid; align-content: center; gap: 14px; padding: 22px; border: 2px solid var(--accent); border-radius: 28px; background: var(--accent-soft); }
+	.mine > b { font: 800 1.2rem var(--display); letter-spacing: -.03em; }
+	.inside { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+	.inside div { display: grid; gap: 3px; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); font-size: .86rem; }
+	.inside small { color: var(--muted); font-size: .76rem; }
+	.outs { display: grid; gap: 10px; align-content: center; }
+	.out-label { margin: 0 0 2px; font: .7rem var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+	.out { position: relative; display: grid; gap: 3px; padding: 12px 14px; border: 1px dashed var(--line); border-radius: 16px; background: var(--bg); font-size: .86rem; }
+	.out::before { content: "⟵"; position: absolute; left: -22px; top: 12px; color: var(--accent-text); font-weight: 700; }
+	.out small { color: var(--muted); font-size: .76rem; }
+	.note { margin: 18px 0 0; font-size: .84rem; color: var(--muted); }
+	.note a { color: var(--accent-text); }
+	/* The arrows enter one at a time; the box is already there. */
+	@media (prefers-reduced-motion: no-preference) {
+		:global(html.js) .map:not(.in) .out { opacity: 0; transform: translateX(16px); }
+		.map.in .out { animation: f-line .5s ease forwards; animation-delay: calc(var(--d, 0) * .3s); }
+	}
+	@media (max-width: 980px) {
+		.map { grid-template-columns: minmax(0, 1fr); }
+		.out::before { display: none; }
+	}
+	@media (max-width: 640px) {
+		.inside { grid-template-columns: minmax(0, 1fr); }
+	}
+</style>

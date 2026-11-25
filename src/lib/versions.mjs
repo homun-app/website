@@ -20,3 +20,11 @@ export function compareVersions(a, b) {
 	}
 	return 0;
 }
+
+// A pre-release tag names the version it precedes: "v0.3.1001-beta.20" is a
+// pre-release of 0.3.1001. The line it belongs to is what places a release
+// in a product ("Homun 2" is everything before MIN_PUBLIC_VERSION).
+export function baseVersion(tag) {
+	if (typeof tag !== "string") return null;
+	return tag.trim().replace(/-[a-zA-Z][\w.-]*$/, "");
+}

@@ -1,0 +1,46 @@
+---
+// The comparison with the usual assistant memory. The first column names the
+// question, the other two answer it; on a phone the header goes away and each
+// answer says which side it is on.
+import { ENGRAMMA_DIFFERENT } from "../../data/engramma.mjs";
+---
+
+<div class="cmp" data-motion="rise" data-product="engramma">
+	<div class="r head" role="row">
+		<span role="columnheader"></span>
+		<span role="columnheader">Usual assistant memory</span>
+		<span role="columnheader">Engramma</span>
+	</div>
+	{ENGRAMMA_DIFFERENT.map(({ topic, usual, engramma }) => (
+		<div class="r" role="row">
+			<b role="rowheader">{topic}</b>
+			<span role="cell" class="u">{usual}</span>
+			<span role="cell" class="e">{engramma}</span>
+		</div>
+	))}
+</div>
+
+<style>
+	.cmp { display: grid; overflow: hidden; border: 1px solid var(--line); border-radius: 22px; }
+	.r { display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1fr) minmax(0, 1.2fr); gap: 16px; padding: 14px 20px; border-top: 1px solid var(--line); font-size: .92rem; line-height: 1.5; }
+	.r.head { border-top: 0; background: var(--surface); font: .7rem/1.6 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+	.r b { font-size: .92rem; }
+	.u { color: var(--muted); }
+	.e::before { content: "● "; color: var(--accent); }
+
+	@media (prefers-reduced-motion: no-preference) {
+		:global(html.js) .cmp:not(.in) {
+			opacity: 0;
+			transform: translateY(18px);
+		}
+		.cmp { transition: opacity .7s, transform .7s; }
+	}
+
+	@media (max-width: 640px) {
+		.r { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+		.r.head { display: none; }
+		.r b { margin-bottom: 4px; }
+		.u::before { content: "Usual: "; font: .78rem var(--mono); }
+		.e::before { content: "Engramma: "; font: .78rem var(--mono); }
+	}
+</style>

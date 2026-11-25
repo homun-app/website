@@ -1,0 +1,79 @@
+---
+// How truth is kept: the rules, each with the document that makes the engine
+// keep it, then the example of two tools that disagree.
+import { ENGRAMMA_RULES, ENGRAMMA_CONFLICT } from "../../data/engramma.mjs";
+
+const { target, left, right, verdict } = ENGRAMMA_CONFLICT;
+---
+
+<ol class="rules" role="list">
+	{ENGRAMMA_RULES.map(({ title, body, source }) => (
+		<li>
+			<b>{title}</b>
+			<span>{body}</span>
+			<a class="src" href={source.url}>{source.label}</a>
+		</li>
+	))}
+</ol>
+
+<div class="conflict" data-motion data-product="engramma" aria-label="Two tools correct the same note">
+	<div class="side a">
+		<span class="tool">{left.tool} · {left.actor}</span>
+		<p>“{left.text}”</p>
+	</div>
+	<div class="mid">
+		<span class="tag w">both in the queue</span>
+		<span class="arrow" aria-hidden="true">⇄</span>
+		<span class="small">rettifica di · {target}</span>
+	</div>
+	<div class="side b">
+		<span class="tool">{right.tool} · {right.actor}</span>
+		<p>“{right.text}”</p>
+	</div>
+	<p class="verdict">
+		<span class="tag ok">{verdict.tag}</span>
+		“{verdict.kept}” {verdict.other}
+	</p>
+</div>
+
+<style>
+	.rules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin: 0; padding: 0; list-style: none; counter-reset: rule; }
+	.rules li { display: grid; align-content: start; gap: 8px; padding: 20px; border: 1px solid var(--line); border-radius: 20px; background: var(--card); counter-increment: rule; }
+	.rules b::before { content: counter(rule) "  "; font-family: var(--mono); color: var(--accent-text); }
+	.rules span { font-size: .92rem; line-height: 1.5; color: var(--muted); }
+	.src { justify-self: start; font: .7rem/1.4 var(--mono); color: var(--accent-text); text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); text-underline-offset: .18em; }
+	.src:hover { text-decoration-color: currentColor; }
+
+	.conflict { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 14px; margin-top: 28px; padding: 22px; border-radius: 24px; background: var(--surface); }
+	.side { display: grid; gap: 6px; padding: 14px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); }
+	.tool { font: .72rem/1.4 var(--mono); color: var(--muted); }
+	.side p { margin: 0; font-size: .95rem; line-height: 1.4; }
+	.mid { display: grid; justify-items: center; gap: 6px; text-align: center; }
+	.arrow { font-size: 1.4rem; color: var(--accent-text); }
+	.small { font: .66rem var(--mono); color: var(--muted); }
+	.tag { padding: .15em .5em; border-radius: 6px; font: .66rem var(--mono); letter-spacing: .06em; text-transform: uppercase; background: var(--accent-soft); color: var(--accent-text); }
+	.tag.w { background: #FBF0D6; color: #8A6D1F; }
+	.tag.ok { background: #DDF3EC; color: #126A5F; }
+	.verdict { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; grid-column: 1 / -1; margin: 0; font-size: .9rem; line-height: 1.5; color: var(--muted); }
+
+	@media (prefers-reduced-motion: no-preference) {
+		:global(html.js) .conflict:not(.in) .side,
+		:global(html.js) .conflict:not(.in) .verdict { opacity: 0; transform: translateY(10px); }
+		.conflict.in .side,
+		.conflict.in .verdict { animation: f-line .5s ease forwards; }
+		.conflict.in .verdict { animation-delay: .3s; }
+		.conflict.in .arrow { animation: f-pulse 1s ease .8s 2; }
+		/* The correction you refused stays on the page, a step back. */
+		.conflict.in .b { animation: f-line .5s ease .3s forwards, f-dim .6s ease 2s forwards; }
+	}
+
+	@keyframes f-dim {
+		to { opacity: .55; }
+	}
+
+	@media (max-width: 980px) {
+		.rules { grid-template-columns: minmax(0, 1fr); }
+		.conflict { grid-template-columns: minmax(0, 1fr); }
+		.arrow { transform: rotate(90deg); }
+	}
+</style>

@@ -20,9 +20,10 @@ si presenta: ti chiede a cosa serve, si scrive la descrizione e parte. Se prefer
 
 ## Parlare con un bot
 
-Scrivi come a un collega. Puoi allegare file e immagini. Mentre il bot lavora, la chat
-mostra cosa sta facendo; se scrivi mentre è occupato, il messaggio entra nel lavoro in
-corso invece di aspettare in coda.
+Scrivi come a un collega. A un messaggio puoi allegare immagini; i file arrivano ai bot
+dalla vista File del [loro computer](/it/guides/local-computer/). Mentre il bot lavora, la
+chat mostra cosa sta facendo; se scrivi mentre è occupato, il messaggio entra nel lavoro
+in corso invece di aspettare in coda.
 
 I messaggi che Homun manda da solo, come l'avvio di una routine o il giro al tuo rientro,
 compaiono come piccole righe di sistema, mai come se li avessi scritti tu.
@@ -30,21 +31,25 @@ compaiono come piccole righe di sistema, mai come se li avessi scritti tu.
 ## Le bozze
 
 Quando un bot prepara un messaggio per qualcuno, ti mostra una **card di bozza**:
-destinatario, oggetto, testo e l'account da cui partirà. La bozza si invia solo se premi
-**Invia**. Prima puoi **Modificarla** o **Scartarla**.
+destinatario, oggetto, testo e l'account da cui partirà. La bozza aspetta te: premi
+**Invia**, prima **Modificarla**, o **Scartarla**. In **Automatico** un revisore può
+lasciar partire una bozza perché la tua richiesta o una tua regola la copre — la card lo
+dice («Inviata automaticamente»).
 
 ## Il pannello del bot
 
 Fai clic sul nome del bot in cima alla chat per aprire il suo pannello. Lì trovi:
 
 - il **modello** del bot, che puoi cambiare lì stesso;
-- le note della sua **memoria** e le sue **skill**;
 - gli ultimi lavori e le sue **routine**, che puoi mettere in pausa, riprendere o
   aggiungere;
-- le notifiche, le istruzioni e **Cambia aspetto**.
+- le notifiche e le istruzioni;
+- le impostazioni del bot: **memoria**, **skill** e **Cambia aspetto**.
 
-La card **Computer** dice cosa sta facendo il computer del bot: Acceso mentre il bot
-lavora, In attesa quando è pronto, In avvio mentre parte, Spento quando è fermo.
+La card **Computer** nel pannello dice cosa sta facendo il [computer dei
+bot](/it/guides/local-computer/): **Acceso** mentre il bot lavora, con cosa sta facendo
+(mai il testo dei comandi), **In attesa** quando è pronto, **In avvio** mentre parte,
+**Spento** quando è fermo, **In preparazione** mentre viene configurato.
 
 ## La Libreria
 
