@@ -1,0 +1,76 @@
+---
+// The signed log of a memory space: who proposed, who decided, when. Only
+// changes are signed. A read leaves no trace in the log, so a `read` row is
+// drawn apart and says so: it never passes for a signature.
+type Kind = "propose" | "decide" | "read";
+
+interface Entry {
+	kind: Kind;
+	/** When it happened, as the engine prints it. */
+	time: string;
+	/** Who signed it, as the engine prints it: mcp:codex, user@cli, reviewer:local. */
+	actor?: string;
+	text: string;
+	/** Why, as the engine keeps it. */
+	why?: string;
+	/** `wait`: the proposal is still in quarantine. `ok`: it became memory. */
+	state?: "wait" | "ok";
+	/** The scene and the beat a row belongs to. A player may hold a row back
+	 * until its beat comes; without JavaScript every row is already there. */
+	scene?: number;
+	step?: number;
+}
+
+interface Props {
+	product: "homun" | "engramma";
+	entries: readonly Entry[];
+	title?: string;
+	/** A `foot` slot takes the line that closes the log, also when a player writes it. */
+	foot?: string;
+	id?: string;
+	class?: string;
+}
+
+const { product, entries, title, foot, id, class: className } = Astro.props;
+---
+
+<div class:list={["feed", className]} id={id} data-product={product} data-log>
+	{title && <p class="head">{title}</p>}
+	<ol>
+		{entries.map(({ kind, state, scene, step, time, actor, text, why }) => (
+			<li class:list={[kind, state]} data-scene={scene} data-step={step}>
+				{time && <time>{time}</time>}
+				{actor && <b>{actor}</b>}
+				{' '}{text}
+				{why && <small>{why}</small>}
+			</li>
+		))}
+	</ol>
+	{(foot || Astro.slots.has("foot")) && <p class="foot">{foot}<slot name="foot" /></p>}
+</div>
+
+<style>
+	.feed { display: flex; flex-direction: column; gap: 12px; min-width: 0; padding: 20px; border-radius: 28px; background: var(--band-card); color: var(--band-fg); }
+	.head, .foot { margin: 0; font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--band-muted); }
+	.head { font-family: var(--mono); }
+	ol { display: grid; gap: 8px; align-content: start; flex: 1; margin: 0; padding: 0; list-style: none; }
+	li { padding: 2px 0 2px 10px; border-left: 2px solid #2a3532; font: .76rem/1.45 var(--mono); color: #C9D2CF; overflow-wrap: anywhere; }
+	li b { font-weight: 500; color: var(--accent-text); }
+	li time { color: var(--band-muted); }
+	li small { display: block; color: var(--band-muted); }
+	li.wait { border-color: #F2D38E; }
+	li.ok { border-color: #5CC2B3; }
+	li.read { border-color: var(--accent); border-left-style: dashed; }
+	li.read::after { content: "not in the log"; margin-left: 8px; color: var(--band-muted); font-size: .86em; text-transform: uppercase; letter-spacing: .06em; }
+	.foot { min-height: 1.2em; color: #5CC2B3; }
+
+	@media (prefers-reduced-motion: no-preference) {
+		/* A row of a scene waits for its beat while the scene plays. */
+		:global(html.js) .feed li[data-scene]:not(.shown) {
+			display: none;
+		}
+		.feed li.shown {
+			animation: f-line .4s ease;
+		}
+	}
+</style>

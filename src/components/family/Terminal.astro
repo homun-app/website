@@ -1,0 +1,95 @@
+---
+// A dark terminal of the family. Its lines appear in sequence and the first one
+// types itself when `motion` is set; with "reduce motion", without JavaScript,
+// or with `motion` off, the window shows every line at once.
+// The text is printed verbatim: a line is a string, or a list of segments where
+// a `[tone, text]` pair is coloured (p prompt · d dim · ok · hl highlighted).
+type Tone = "p" | "d" | "ok" | "hl";
+type Segment = string | readonly [Tone, string];
+
+interface Props {
+	product: "homun" | "engramma";
+	lines: readonly (string | readonly Segment[])[];
+	/** What the window shows, read by assistive technology. */
+	label?: string;
+	/** The title of the window, for what the output cannot say by itself. */
+	caption?: string;
+	/** `visible`: plays once it enters the screen. `now`: plays from load. */
+	motion?: "visible" | "now";
+	/** A copy button that copies exactly the text of the window. */
+	copy?: boolean;
+	class?: string;
+}
+
+const { product, lines, label, caption, motion, copy, class: className } = Astro.props;
+
+const escape = (text: string) => text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+// A `$` prompt is drawn, not copied: the copy button leaves it out.
+const segment = (part: Segment) => {
+	if (typeof part === "string") return escape(part);
+	const [tone, text] = part;
+	return `<span class="${tone}"${tone === "p" ? ' data-prompt' : ""}>${escape(text)}</span>`;
+};
+// The lines stay separate lines in the text too (a newline between two), so
+// that a copy of the window can be pasted as it reads: a comment on its own
+// line must not swallow the command after it.
+const body = lines
+	.map((line, index) => `<span class="ln" style="--d:${index}">${typeof line === "string" ? escape(line) : line.map(segment).join("")}</span>`)
+	.join("\n");
+---
+
+<figure class:list={["term", className]} data-product={product} data-motion={motion ? (motion === "now" ? "now" : "") : undefined} data-command>
+	<div class="window">
+		<div class="bar">
+			<span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+			{caption && <span class="caption">{caption}</span>}
+			{copy && <button type="button" data-copy aria-label={`Copy: ${label ?? "command"}`}>Copy</button>}
+		</div>
+		<pre><code aria-label={label} set:html={body} /></pre>
+	</div>
+</figure>
+
+<script>
+	import { initCopyButtons } from "../../scripts/copy.mjs";
+	initCopyButtons();
+</script>
+
+<style>
+	.term { position: relative; min-width: 0; margin: 0; }
+	.window { overflow: hidden; border-radius: 18px; background: var(--term); color: var(--term-fg); box-shadow: 0 30px 80px -30px rgb(10 20 18 / .5); font: .8rem/1.6 var(--mono); }
+	.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 10px 14px; border-bottom: 1px solid #24302d; }
+	.dots { display: flex; gap: 6px; }
+	.dots i { width: 10px; height: 10px; border-radius: 50%; background: #2C3835; }
+	.caption { flex: 1; min-width: 0; font: .72rem/1.45 var(--mono); color: var(--term-dim); text-align: right; }
+	/* The lines are written as they are (set:html), so they carry no scope
+	   class of their own: they are reached through the window that holds them. */
+	/* A line is a block that keeps its own spaces and wraps when too long; the
+	   newline between two lines is only there for the copy. */
+	pre { margin: 0; padding: 16px 18px; white-space: normal; }
+	pre :global(.ln) { display: block; white-space: pre-wrap; overflow-wrap: anywhere; }
+	pre :global(.ln:empty) { min-height: 1.6em; }
+	pre :global(.p) { color: var(--accent-bright); }
+	pre :global(.d) { color: var(--term-dim); }
+	pre :global(.ok) { color: #5CC2B3; }
+	pre :global(.hl) { color: #F2D38E; }
+	button { flex: none; margin-inline-start: auto; padding: .2em .8em; border: 1px solid #2C3835; border-radius: 999px; background: transparent; color: var(--term-fg); font: inherit; font-size: .72rem; cursor: pointer; }
+	button:hover { border-color: var(--accent-bright); color: var(--accent-bright); }
+
+	@media (prefers-reduced-motion: no-preference) {
+		/* Until the window enters the screen its lines wait hidden. */
+		:global(html.js) .term[data-motion] pre :global(.ln) {
+			opacity: 0;
+			transform: translateY(4px);
+		}
+		.term[data-motion].in pre :global(.ln) {
+			animation: f-line .35s ease forwards;
+			animation-delay: calc(var(--d) * .22s + .9s);
+		}
+		.term[data-motion].in pre :global(.ln:first-child) {
+			animation: f-type 1s steps(42) forwards;
+			opacity: 1;
+			transform: none;
+			clip-path: inset(0 100% 0 0);
+		}
+	}
+</style>

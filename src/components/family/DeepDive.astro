@@ -1,0 +1,71 @@
+---
+// One technology of a product, told the family's way: the text and its chips
+// on one side, an image that plays on the other. The image is the slot
+// `visual`; it animates by itself when it enters the screen.
+interface Props {
+	product: "homun" | "engramma";
+	eyebrow: string;
+	title: string;
+	lead: string;
+	chips?: readonly string[];
+	/** Puts the image first, on the left. */
+	flip?: boolean;
+	tone?: "default" | "band";
+	/** Removes the space above, when the section follows its sibling closely. */
+	tight?: boolean;
+	id?: string;
+	class?: string;
+}
+
+const { product, eyebrow, title, lead, chips, flip = false, tone = "default", tight = false, id, class: className } = Astro.props;
+const titleId = `${id ?? "dive"}-title`;
+---
+
+<section id={id} class:list={["dive", className, { "f-band": tone === "band", flip, tight }]} data-product={product} data-tone={tone} aria-labelledby={titleId}>
+	<div class="wrap">
+		<div class="text">
+			<p class="f-eyebrow">{eyebrow}</p>
+			<h2 id={titleId}>{title}</h2>
+			<p class="lead">{lead}</p>
+			{chips && (
+				<ul class="tech" role="list">
+					{chips.map((chip) => <li>{chip}</li>)}
+				</ul>
+			)}
+			<slot name="after" />
+		</div>
+		<div class="visual" data-motion="rise"><slot name="visual" /></div>
+	</div>
+</section>
+
+<style>
+	.dive { padding-block: clamp(80px, 12vh, 140px); }
+	.dive.tight { padding-top: 0; }
+	.wrap { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: center; gap: clamp(28px, 6vw, 80px); max-width: 1180px; margin-inline: auto; padding-inline: 16px; }
+	.text { display: grid; gap: 14px; min-width: 0; }
+	h2 { margin: 0; font-size: clamp(2rem, 5vw, 3.6rem); }
+	.lead { margin: 0; font-size: clamp(1.05rem, 1.8vw, 1.22rem); color: var(--muted); max-width: 44ch; }
+	.tech { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 0; padding: 0; list-style: none; }
+	.tech li { padding: .25em .6em; border: 1px solid var(--line); border-radius: 8px; font: .74rem var(--mono); color: var(--muted); }
+	.visual { display: grid; gap: 12px; min-width: 0; padding: clamp(18px, 3vw, 30px); border-radius: 24px; background: var(--surface); }
+
+	/* The dark band. */
+	.f-band .lead { color: var(--band-muted); }
+	.f-band .tech li { border-color: #2a3532; color: var(--band-muted); }
+	.f-band .visual { background: var(--band-card); }
+
+	.flip.wrap > .text { order: 2; }
+
+	@media (prefers-reduced-motion: no-preference) {
+		:global(html.js) .visual:not(.in) {
+			opacity: 0;
+			transform: translateY(18px);
+		}
+		.visual { transition: opacity .7s, transform .7s; }
+	}
+
+	@media (max-width: 980px) {
+		.wrap { grid-template-columns: minmax(0, 1fr); }
+		.flip.wrap > .text { order: 0; }
+	}
+</style>

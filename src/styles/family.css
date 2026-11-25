@@ -1,0 +1,171 @@
+/* The family's shared language. A family component carries `data-product`, and
+   the product's accent follows it: teal for Homun, blue for Engramma. */
+
+[data-product] {
+	--accent: var(--teal);
+	--accent-band: #5CC2B3;
+	--accent-text: var(--teal-text);
+	--accent-bright: #5CC2B3;
+	--accent-soft: color-mix(in srgb, var(--teal) 13%, var(--bg));
+}
+
+[data-product="engramma"] {
+	--accent: var(--blue);
+	--accent-band: #5574E8;
+	--accent-text: #2F4BC0;
+	--accent-bright: #8EA3F2;
+	--accent-soft: #E7ECFB;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme="light"]) [data-product="engramma"] {
+		--accent-text: #8EA3F2;
+		--accent-soft: #18213F;
+	}
+}
+
+:root[data-theme="dark"] [data-product="engramma"] {
+	--accent-text: #8EA3F2;
+	--accent-soft: #18213F;
+}
+
+/* On the dark band the accent needs its brighter shade to stay readable. The
+   band section carries `data-product` too. */
+.f-band[data-product],
+.f-band [data-product] {
+	--accent: var(--accent-band);
+	--accent-text: var(--accent-bright);
+}
+
+/* Section shell: the homepage's, plus the eyebrow in the product's accent. */
+.f-wrap {
+	max-width: 1180px;
+	margin-inline: auto;
+	padding-inline: 16px;
+}
+
+/* The dark window of a terminal, and the card on a light surface: the same
+   for the whole family. */
+[data-product] {
+	--term: #121816;
+	--term-fg: #E6ECEA;
+	--term-dim: #7F8C88;
+	--card: #FDFCFA;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme="light"]) [data-product] {
+		--card: #121918;
+	}
+}
+
+:root[data-theme="dark"] [data-product] {
+	--card: #121918;
+}
+
+.f-band {
+	background: var(--band);
+	color: var(--band-fg);
+}
+
+.f-head {
+	display: grid;
+	gap: 16px;
+	max-width: 52rem;
+	margin-bottom: clamp(32px, 5vw, 56px);
+}
+
+/* A header breathes through its gap alone. */
+.f-head > * {
+	margin: 0;
+}
+
+.f-head h2 {
+	font-size: clamp(2rem, 5vw, 3.6rem);
+}
+
+/* A page whose titles run larger says so: the homepage. */
+.f-head.loud h2 {
+	font-size: clamp(2.1rem, 5.6vw, 4.2rem);
+}
+
+.f-eyebrow {
+	margin: 0;
+	font: 500 .74rem/1.5 var(--mono);
+	letter-spacing: .09em;
+	text-transform: uppercase;
+	color: var(--accent-text);
+}
+
+.f-lead {
+	margin: 0;
+	font-size: clamp(1.05rem, 1.8vw, 1.22rem);
+	color: var(--muted);
+	max-width: 44ch;
+}
+
+.f-band .f-lead,
+.f-band .f-muted {
+	color: var(--band-muted);
+}
+
+.f-small {
+	font-size: .84rem;
+	color: var(--muted);
+}
+
+.f-small a {
+	color: var(--accent-text);
+}
+
+/* Shared movement. Every animation shows the mechanism of its section, starts
+   when the section enters the screen and runs once; only the hub, the pipeline
+   and the roadmap's "Now" loop. The markup is the final state: the starting
+   states live in each component, behind `html.js` (JavaScript runs) and
+   `prefers-reduced-motion: no-preference`. No animation library. */
+
+@keyframes f-line {
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@keyframes f-out {
+	to {
+		opacity: 0;
+	}
+}
+
+@keyframes f-type {
+	to {
+		clip-path: inset(0 0 0 0);
+	}
+}
+
+@keyframes f-press {
+	50% {
+		background: var(--band-fg);
+		color: var(--band);
+	}
+}
+
+@keyframes f-glow {
+	50% {
+		background: var(--accent-soft);
+		border-radius: 4px;
+		box-shadow: 0 0 0 3px var(--accent-soft);
+	}
+}
+
+@keyframes f-pulse {
+	50% {
+		opacity: .7;
+	}
+}
+
+@media (max-width: 640px) {
+	.f-wrap {
+		padding-inline: 16px;
+	}
+}
