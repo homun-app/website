@@ -1,0 +1,41 @@
+---
+// The questions of the homepage. Each answer condenses a published guide and
+// links it: nothing here says more than the guide does.
+import Faq from "../family/Faq.astro";
+
+const items = [
+	{
+		question: "Can a bot act without asking?",
+		answer: "Not by default. Before an action that changes something, a bot shows an approval card with what it wants to do and why: allow it once, for this turn, always, or deny it. Messages to other people become drafts that leave only when you press Send. <a href=\"/guides/security/\">Approvals and safety</a>",
+	},
+	{
+		question: "Does it need an API key?",
+		answer: "Only for a cloud model. Each bot uses the model you choose: a cloud provider with your API key, a model on your network (Ollama and LM Studio are found automatically), or the built-in model, which runs inside Homun on your computer at no cost. <a href=\"/guides/models/\">Models</a>",
+	},
+	{
+		question: "Where does my data stay?",
+		answer: "Bots, chats, memory, routines and the Library live on your computer. What reaches a cloud service depends on your choices: with the built-in model or one on your network, conversations stay on your machine. <a href=\"/guides/security/#your-data\">Your data</a>",
+	},
+	{
+		question: "Which systems does it run on?",
+		answer: "macOS, with the app signed and notarized. Windows and Linux are in beta: some parts may work differently from macOS. <a href=\"/guides/download/\">Download</a>",
+	},
+];
+---
+
+<section id="faq" class="questions" data-product="homun" aria-labelledby="faq-title">
+	<div class="inner">
+		<div class="f-head">
+			<p class="f-eyebrow">Questions</p>
+			<h2 id="faq-title">Asked before you download.</h2>
+		</div>
+		<Faq product="homun" items={items} />
+	</div>
+</section>
+
+<style>
+	/* Not `faq`: the family component inside carries that class, and a section's
+	   rule would reach its root. */
+	.questions { padding-block: clamp(90px, 14vh, 160px); }
+	.inner { max-width: 1180px; margin-inline: auto; padding-inline: 16px; }
+</style>

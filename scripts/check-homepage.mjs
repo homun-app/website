@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 
 const html = await readFile(new URL("../dist/index.html", import.meta.url), "utf8");
@@ -153,14 +154,26 @@ for (const [, article] of articles) {
 }
 assert.equal(templateCount, 3);
 
-const releases = [...news.matchAll(/<article\b[^>]*data-news-version="[^"]+"[^>]*>([\s\S]*?)<\/article>/g)];
-assert.equal(releases.length, 4);
-for (const [, release] of releases) assert.match(release, /data-release-badge[^>]*>beta</);
-assert.deepEqual([...news.matchAll(/data-roadmap-lane="([^"]+)"/g)].map(([, lane]) => lane), ["Now", "Next", "Later"]);
+// The releases and the roadmap come from the two snapshots: check-news.mjs
+// compares the section with them, through the adapter.
+assert.match(news, /^<section\b[^>]*\bdata-tone="band"/);
+assert.ok(!news.includes("data-news-version") && !news.includes("data-roadmap-lane"), "No hand-written news or roadmap on the homepage");
 assert.match(download, /<svg\b[^>]*data-mascot(?=[\s>])/);
 assert.match(download, /<a\b[^>]*data-homun-download(?=[\s>])/);
 
 await import("./check-news.mjs");
+
+// The questions of the homepage answer from the published guides: each answer
+// links a page of the documentation that the build has produced.
+const faq = section("faq", "download");
+const answers = [...faq.matchAll(/<details\b[\s\S]*?<\/details>/g)].map(([details]) => details);
+assert.equal(answers.length, 4);
+for (const answer of answers) {
+	const hrefs = [...answer.matchAll(/href="(\/[^"#]+)(#[^"]*)?"/g)].map(([, path]) => path);
+	assert.ok(hrefs.length >= 1, "Each answer links its guide");
+	for (const path of hrefs) assert.ok(existsSync(`dist${path}index.html`), `The answer links a page that does not exist: ${path}`);
+}
+assert.match(faq, /data-product="homun"/);
 
 console.log("Homepage bot-team contract passed");
 
