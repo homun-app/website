@@ -165,7 +165,7 @@ await import("./check-news.mjs");
 console.log("Homepage bot-team contract passed");
 
 const nav = html.match(/<nav\b[^>]*>[\s\S]*?<\/nav>/)?.[0] ?? "";
-assert.ok(nav.includes('href="/engramma/"') && nav.includes(">Soon<"), "Nav must link Engramma with a Soon label");
+assert.ok(nav.includes('href="/engramma/"') && nav.includes(">Preview<"), "Nav must link Engramma with a Preview label");
 for (const link of ["/marketplace", "#computer", "#memory"]) assert.ok(!nav.includes(link), "Unexpected nav link " + link);
 assert.match(nav, /href="\/docs\/?"/);
 assert.match(nav, /data-homun-download/);
