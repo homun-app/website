@@ -8,7 +8,7 @@ Engramma is inside Homun today. For developers, **Engramma 0.6.17-beta.1** is a 
 **Available**
 - Inside Homun: readable notes with sources, dates and quarantine, on your computer.
 - Developer preview: the CLI and the MCP server, on macOS (Apple Silicon) and Linux (x86_64, arm64).
-- Encrypted sync: the same memory on your own devices, end-to-end encrypted, with no server in between.
+- Encrypted sync: the same memory on your own devices, end-to-end encrypted; a relay can forward it but never read it, and you can run your own or none.
 
 **Next**
 - More platforms: Windows and Intel Macs, once their builds pass every test.

@@ -3,26 +3,49 @@ import Page from "../layouts/Page.astro";
 import ProductSymbol from "../components/brand/ProductSymbol.astro";
 import EngrammaMark from "../components/brand/EngrammaMark.astro";
 import FeatureSection from "../components/home/FeatureSection.astro";
-import DownloadButton from "../components/home/DownloadButton.astro";
 import Surface from "../components/app/Surface.astro";
 import Msg from "../components/app/Msg.astro";
 import MemoryNote from "../components/engramma/MemoryNote.astro";
-import DeveloperPreview from "../components/engramma/DeveloperPreview.astro";
+import CommandBlock from "../components/engramma/CommandBlock.astro";
+import HowItWorks from "../components/engramma/HowItWorks.astro";
+import ConnectClients from "../components/engramma/ConnectClients.astro";
+import Trust from "../components/engramma/Trust.astro";
 import EngrammaRoadmap from "../components/engramma/EngrammaRoadmap.astro";
-import { ENGRAMMA_RELEASE } from "../data/engramma.mjs";
+import { ENGRAMMA_RELEASE, ENGRAMMA_INSTALL_COMMAND, ENGRAMMA_FIRST_COMMANDS, ENGRAMMA_WORKS_WITH } from "../data/engramma.mjs";
 ---
 
-<Page title="Engramma · Memory for assistants" description="Readable notes with sources and dates. Inside Homun today, and in developer preview for Claude and other MCP clients.">
+<Page title="Engramma · Memory for assistants" description="An open-source memory engine for assistants: readable notes with sources and dates, a search that explains itself, on your computer. Developer preview for Claude, ChatGPT, Cursor and other MCP clients.">
 	<section id="hero" aria-labelledby="engramma-title">
 		<ProductSymbol product="engramma" size={190} />
 		<h1 id="engramma-title"><EngrammaMark /></h1>
 		<p class="signature">a homun product</p>
-		<p class="status">Inside Homun today · <a href="#developers">developer preview {ENGRAMMA_RELEASE.version}</a></p>
-		<p class="hero-lead">Memory your assistant can search and you can read.</p>
-		<DownloadButton source="engramma" closing />
-		<p class="cta-note">The download is Homun, with Engramma inside.</p>
+		<p class="status">Developer preview {ENGRAMMA_RELEASE.version} · also inside Homun</p>
+		<p class="hero-lead">Memory your assistant can search and you can read. Open source, on your computer, for any MCP client.</p>
+		<div class="install" id="install">
+			<CommandBlock label="Install · macOS and Linux" code={ENGRAMMA_INSTALL_COMMAND} />
+			<ul class="platforms" aria-label="Platforms">
+				{ENGRAMMA_RELEASE.platforms.map(({ label, shipped }) => (
+					<li class:list={["chip", { later: !shipped }]}>{label}{!shipped && <span class="tag"> not yet</span>}</li>
+				))}
+			</ul>
+			<details>
+				<summary>Then try it</summary>
+				<CommandBlock label="Terminal" code={ENGRAMMA_FIRST_COMMANDS} />
+			</details>
+			<p class="note">The macOS binary is not signed yet: the terminal installer is not blocked by Gatekeeper, a file downloaded from the browser is. A beta: the command line can still change, and memory written by this version opens in every later one (<a href={ENGRAMMA_RELEASE.compatibilityUrl}>the compatibility promise</a>).</p>
+		</div>
+		<p class="works"><span>Works with</span>{ENGRAMMA_WORKS_WITH.map((name) => <a href="#connect">{name}</a>)}</p>
+		<nav class="jump" aria-label="On this page">
+			<a href="#how">How it works</a>
+			<a href="#different">Why Engramma</a>
+			<a href="#connect">Connect your assistant</a>
+			<a href="#roadmap">Roadmap</a>
+			<a href={ENGRAMMA_RELEASE.releaseUrl}>Release notes</a>
+			<a href={ENGRAMMA_RELEASE.repository}>GitHub</a>
+		</nav>
 	</section>
 
+	<HowItWorks />
 	<FeatureSection id="remembers" eyebrow="Remembers" title="Find the detail you told it." lead="Engramma keeps what an assistant learns in readable notes. Search can find a note even when you ask in different words.">
 		<Surface slot="visual" title="Memory search">
 			<Msg from="me" i={0}>What length of contract does Acme accept?</Msg>
@@ -46,13 +69,8 @@ import { ENGRAMMA_RELEASE } from "../data/engramma.mjs";
 			<MemoryNote detail="Source: website · Waiting for your confirmation" i={0} pending>Acme’s CFO is leaving in March.</MemoryNote>
 		</Surface>
 	</FeatureSection>
-	<FeatureSection id="local" eyebrow="Local" title="The notes live on your computer." lead="Each memory space is stored in a local file. The memory engine works without a server.">
-		<Surface slot="visual" title="Memory spaces">
-			<MemoryNote detail="Local memory space" i={0}>Work</MemoryNote>
-			<MemoryNote detail="Local memory space" i={1}>Personal</MemoryNote>
-		</Surface>
-	</FeatureSection>
-	<DeveloperPreview />
+	<ConnectClients />
+	<Trust />
 	<EngrammaRoadmap />
 </Page>
 
@@ -61,7 +79,18 @@ import { ENGRAMMA_RELEASE } from "../data/engramma.mjs";
 	h1 { display: grid; justify-items: center; width: 100%; }
 	.signature, .status { font: .78rem/1.6 var(--mono); color: var(--muted); }
 	.status { background: var(--surface); border-radius: 16px; padding: 5px 12px; }
-	.status a { color: var(--teal-text); text-decoration: underline; }
-	.cta-note { font-size: .86rem; color: var(--muted); }
-	.hero-lead { font-size: clamp(1.05rem, 2vw, 1.25rem); max-width: 36ch; }
+	.hero-lead { font-size: clamp(1.05rem, 2vw, 1.25rem); max-width: 40ch; }
+	.install { display: grid; gap: 12px; width: 100%; max-width: 760px; margin-top: 12px; text-align: left; }
+	.platforms { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 0; margin: 0; list-style: none; font-size: .82rem; color: var(--muted); }
+	.chip { border: 1px solid var(--line); border-radius: 999px; padding: .2em .75em; }
+	.later { opacity: .6; }
+	.tag { font: .66rem var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+	details { display: grid; gap: 10px; }
+	summary { cursor: pointer; font-size: .9rem; color: var(--muted); text-align: center; }
+	.note { font-size: .84rem; line-height: 1.55; color: var(--muted); text-align: center; }
+	.note a, .jump a { color: var(--teal-text); text-decoration: underline; }
+	.works { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; margin-top: 4px; font-size: .86rem; }
+	.works span { font: .7rem var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+	.works a { border: 1px solid var(--line); border-radius: 999px; padding: .25em .8em; color: var(--fg); }
+	.jump { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; margin-top: 8px; font-size: .92rem; }
 </style>

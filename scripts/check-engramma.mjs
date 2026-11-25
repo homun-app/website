@@ -1,16 +1,19 @@
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
 import * as brand from "../src/data/brand.mjs";
-import { ENGRAMMA_RELEASE, ENGRAMMA_ROADMAP } from "../src/data/engramma.mjs";
+import { ENGRAMMA_RELEASE, ENGRAMMA_ROADMAP, ENGRAMMA_CLIENTS } from "../src/data/engramma.mjs";
 
 const output = "dist/engramma/index.html";
 assert.ok(existsSync(output), "Build must include the Engramma product page");
 const html = readFileSync(output, "utf8");
-assert.match(html, /Inside Homun today · <a href="#developers"[^>]*>developer preview /);
+assert.match(html, /Developer preview \d+\.\d+\.\d+-beta\.\d+ · also inside Homun/);
 const sections = [...html.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map((match) => match[1]);
-assert.deepEqual(sections, ["hero", "remembers", "time", "sources", "quarantine", "local", "developers", "roadmap"]);
-// The hero still downloads Homun: Engramma for end users ships inside it.
-assert.match(html, /\bdata-homun-download\b/);
+assert.deepEqual(sections, ["hero", "how", "different", "remembers", "time", "sources", "quarantine", "connect", "trust", "roadmap"]);
+// The hero installs Engramma; Homun's download stays in the nav only.
+const hero = html.slice(html.indexOf('id="hero"'), html.indexOf('id="how"'));
+assert.ok(hero.includes(ENGRAMMA_RELEASE.installerUrl), "The hero must carry the installer");
+assert.doesNotMatch(hero, /\bdata-homun-download\b/, "The hero must not download Homun");
+for (const { id, name } of ENGRAMMA_CLIENTS) assert.ok(html.includes(`id="panel-${id}"`) && html.includes(name), `Connect needs ${name}`);
 
 // The developer preview is a prerelease, so every link names the version
 // (GitHub's releases/latest skips prereleases).
