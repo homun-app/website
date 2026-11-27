@@ -4,8 +4,8 @@
 //
 // Every terminal line and every log row below is a capture of the released
 // binary on the synthetic notes of the page (Gaia, Milano, Torino, Acme).
-// Nothing is typed by hand or translated: the CLI prints Italian labels today,
-// and the page shows them as they are.
+// Nothing is typed by hand or translated: the CLI prints in English since
+// 0.6.19, and the page shows its lines as they are.
 const REPOSITORY = "https://github.com/homun-app/engramma";
 const VERSION = "0.6.19-beta.1";
 const TAG = `v${VERSION}`;
@@ -51,7 +51,7 @@ export const ENGRAMMA_INSTALL_COMMAND = `curl --proto '=https' --tlsv1.2 -LsSf \
 // ── The captures ────────────────────────────────────────────────────────────
 // A terminal line is a string, or a list where [tone, text] is coloured:
 // p the prompt, d dim, ok what the engine confirms, hl the value to read.
-const CAPTURED_WITH = "engramma 0.6.17-beta.1";
+const CAPTURED_WITH = "engramma 0.6.19-beta.1";
 
 // The hero: a search that explains its first result, then the check.
 // `engramma search "where does Gaia live now?"` and `engramma verify`.
@@ -59,16 +59,16 @@ export const ENGRAMMA_HERO_TERMINAL = {
 	capturedWith: CAPTURED_WITH,
 	lines: [
 		[["p", "$"], " engramma search \"where does Gaia live now?\""],
-		["1. [active] Gaia abita a Milano ", ["d", "(QPEK4BVM)"]],
-		["   punteggio ", ["hl", "1.0000"], " (grezzo 0.6500)"],
-		["   liste: ", ["ok", "text, vector"]],
-		["   termini: ", ["hl", "gai"]],
-		"   coseno: 0.8857",
-		["   validità: ", ["ok", "2026-09-01 → ora"]],
-		"   fonte: user",
+		["1. [active] Gaia abita a Milano ", ["d", "(VNZ05F2R)"]],
+		["   score ", ["hl", "1.0000"], " (raw 0.6500)"],
+		["   lists: ", ["ok", "text, vector"]],
+		["   terms: ", ["hl", "gai"]],
+		"   cosine: 0.8857",
+		["   validity: ", ["ok", "2026-09-01 → now"]],
+		"   source: user",
 		"",
 		[["p", "$"], " engramma verify"],
-		[["ok", "registro verificato:"], " 9 operazioni, catena hash, ricostruzione e indice FTS a posto"],
+		[["ok", "log verified:"], " 9 operations, hash chain, reconstruction and FTS index in place"],
 	],
 };
 
@@ -101,8 +101,8 @@ export const ENGRAMMA_HUB = {
 		{
 			from: "Claude Code", actor: "mcp:claude-code", policy: "write=propose",
 			fact: "Auth moved to JWT; the sessions table was dropped.", why: "Read in commit 4f1c",
-			proposedAt: "12:48:24Z",
-			decided: { actor: "user@cli", text: "accettata dalla CLI", at: "12:49:38Z" },
+			proposedAt: "06:54:17Z",
+			decided: { actor: "user@cli", text: "accepted from the CLI", at: "06:54:23Z" },
 			to: "Codex", asks: "How do we authenticate?",
 			answer: "Auth moved to JWT; the sessions table was dropped.",
 			found: true,
@@ -110,8 +110,8 @@ export const ENGRAMMA_HUB = {
 		{
 			from: "Cursor", actor: "mcp:cursor", policy: "write=auto · reviewer local · min_confidence 0.8",
 			fact: "Use pnpm, never npm, in this repo.", why: "The user said so in this chat",
-			proposedAt: "12:49:41Z",
-			decided: { actor: "reviewer:local", text: "confidenza 0.9", at: "12:49:41Z" },
+			proposedAt: "06:54:25Z",
+			decided: { actor: "reviewer:local", text: "confidence 0.9", at: "06:54:25Z" },
 			to: "OpenCode", asks: "Which package manager?",
 			answer: "Use pnpm, never npm, in this repo.",
 			found: true,
@@ -119,8 +119,8 @@ export const ENGRAMMA_HUB = {
 		{
 			from: "ChatGPT", actor: "mcp:chatgpt", policy: "write=auto · the reviewer passes it to a person",
 			fact: "Acme’s CFO is leaving in March.", why: "Read on acme.example.com/news",
-			proposedAt: "12:49:42Z",
-			decided: { actor: null, text: "in coda · status: quarantined", at: "12:49:42Z" },
+			proposedAt: "06:54:27Z",
+			decided: { actor: null, text: "queued · status: quarantined", at: "06:54:27Z" },
 			to: "Homun", asks: "Who is Acme’s CFO?",
 			answer: "Nothing confirmed yet.",
 			found: false,
@@ -152,7 +152,7 @@ export const ENGRAMMA_MEANING = {
 // question: Gaia's note (QPEK4BVM) mentions Milano, which the office note mentions.
 export const ENGRAMMA_GRAPH = {
 	query: "What about Gaia?",
-	via: "[[note:01M89BWH2TRHP85SQ0QPEK4BVM]] -mentions-> [[Milano]] -mentions-> (nota HJ5YSP3E)",
+	via: "[[note:01M8DWGS6Z49KHF1AGVNZ05F2R]] -mentions-> [[Milano]] -mentions-> (note 9XAKZPNT)",
 	nodes: {
 		start: "Gaia",
 		middle: "Milano",
@@ -166,7 +166,7 @@ export const ENGRAMMA_GRAPH = {
 export const ENGRAMMA_TIME = {
 	topic: "The office",
 	old: { title: "Ufficio a Torino", span: "Torino · until Sep 2026", valid: "2026-01-05 → 2026-09-01" },
-	now: { title: "Ufficio a Milano", span: "Milano", valid: "2026-09-01 → ora" },
+	now: { title: "Ufficio a Milano", span: "Milano", valid: "2026-09-01 → now" },
 };
 
 // The queue of the cell, as `engramma proposals` prints it, and the check.
@@ -179,9 +179,9 @@ export const ENGRAMMA_CONTROL = {
 	},
 	proposal: {
 		title: "Auth: JWT", text: "Auth moved to JWT; the sessions table was dropped.",
-		why: "da mcp:claude-code · in coda", decided: "decisa da user@cli",
+		why: "proposed by mcp:claude-code · queued", decided: "decided by user@cli",
 	},
-	verify: { command: "engramma verify", result: "registro verificato: 9 operazioni, catena hash, ricostruzione e indice FTS a posto" },
+	verify: { command: "engramma verify", result: "log verified: 9 operations, hash chain, reconstruction and FTS index in place" },
 };
 
 // ── How truth is kept ───────────────────────────────────────────────────────
@@ -206,8 +206,8 @@ export const ENGRAMMA_RULES = [
 	},
 	{
 		title: "Disagreements stay visible",
-		body: "Two tools that correct the same fact both land in the queue, each signed: you keep one and the other stays in history. Two devices that write the same note make a conflict copy. Never last-write-wins.",
-		source: { label: "DESIGN § 4.3.1", url: `${DESIGN}#431-la-convergenza-del-registro-v06` },
+		body: "Two tools that correct the same fact both land in the queue, each signed. The correction you accept first stands; the other is refused and waits in the queue — reject it, or revert the first and it becomes valid. Two devices that write the same note make a conflict copy. Never last-write-wins.",
+		source: { label: "node.md · v0.6.18, F3", url: `${DOCS}/node.md#una-correzione-vale-contro-la-versione-che-correggeva-v0618-f3` },
 	},
 	{
 		title: "Change keeps history",
@@ -216,18 +216,19 @@ export const ENGRAMMA_RULES = [
 	},
 	{
 		title: "Mistakes undo in one move",
-		body: "Revert in bulk what a reviewer decided since Tuesday — or what you decided — with a preview first. Any single decision goes back the same way, and the proposal returns to the queue. Purge forgets for real.",
-		source: { label: "cli.md · revert", url: `${CLI}#engramma-revert-decision---by-actor---since-date` },
+		body: "Revert in bulk what a reviewer decided since Tuesday, what you decided, or what an assistant proposed — with a preview first. Any single decision goes back the same way, and the proposal returns to the queue. Purge forgets for real.",
+		source: { label: "cli.md · revert", url: `${CLI}#engramma-revert-decision---by-actor---proposed-by-actor---since-date` },
 	},
 ];
 
 // The example of rule 4, as it ran: two corrections of one note, both proposed
-// before either was decided. The queue showed both as "rettifica di" the note.
+// before either was decided. The queue showed both as "correction of" the note;
+// the first that was accepted stands, the second was refused (S11, S11b).
 export const ENGRAMMA_CONFLICT = {
 	target: "Contratti Acme",
 	left: { tool: "Claude Code", actor: "mcp:claude-code", text: "Acme signs quarterly contracts." },
 	right: { tool: "Codex", actor: "mcp:codex", text: "Acme signs two-year contracts." },
-	verdict: { kept: "Acme signs quarterly contracts.", tag: "decided by you", other: "accepted; the other, rifiutata (lapide), stays in history" },
+	verdict: { kept: "Acme signs quarterly contracts.", tag: "decided by you", other: "accepted first; the other was refused as not the current version, and stays in the queue" },
 };
 
 // What sets Engramma apart from the usual memory layer for assistants.
@@ -360,13 +361,15 @@ const REMOTE = `engramma mcp --cells default --http 127.0.0.1:8787 \\
 engramma oauth pending
 engramma oauth approve XXXX-XXXX --label chatgpt --yes`;
 const TESTED_ON = "Exercised on 12 November 2026 through a tunnel: claude.ai searched, showed the proposal form and was revoked; ChatGPT searched, queued a proposal and was revoked. Not re-run on this beta yet.";
-// Story 1 of the capture is real end to end on THIS beta: Claude Code 2.1.332
-// proposed through its own MCP client and MCP Inspector 2.16.0 read the same
-// cell (scripts/fixtures/engramma-session.txt, in the website repository).
+// Story 1 of the capture is real on its proposing side, on THIS beta: Claude
+// Code 2.1.332 proposed through its own MCP client and MCP Inspector 2.16.0
+// read the same cell (scripts/fixtures/engramma-session.txt, in the website
+// repository).
 const TESTED_ON_THIS_BETA = "Exercised on this beta: story 1 of the capture behind this page — Claude Code 2.1.332 proposed through its own MCP client, MCP Inspector 2.16.0 read the same cell (the session is scripts/fixtures/engramma-session.txt in the website repository).";
-// Story 1 was then run a second time with Codex as the reader: its own CLI
-// searched through its own MCP client and found what Claude Code had proposed.
-const TESTED_ON_THIS_BETA_CODEX = "Exercised on this beta: story 1 of the capture behind this page, run again with Codex as the reader — the Codex CLI 0.171.0-alpha.13.2 searched through its own MCP client and found the note Claude Code had proposed (the session is scripts/fixtures/engramma-session.txt in the website repository).";
+// Codex was the reader of story 1 on 0.6.17-beta.1: its own CLI searched
+// through its own MCP client and found what Claude Code had proposed. On the
+// capture of 0.6.19 it is not installed: a driver carried its configuration.
+const TESTED_ON_THIS_BETA_CODEX = "Exercised on 0.6.17-beta.1: story 1 of the capture of that release, run again with Codex as the reader — the Codex CLI 0.171.0-alpha.13.2 searched through its own MCP client and found the note Claude Code had proposed. Not re-run on this beta: Codex is not installed on the machine of the 0.6.19 capture, where a driver carried its configuration.";
 
 export const ENGRAMMA_CLIENTS = [
 	{
