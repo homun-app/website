@@ -121,7 +121,7 @@ engramma mcp --cells default --http 127.0.0.1:8787 \
 ```
 
 ```console
-mcp-http: in ascolto su http://127.0.0.1:8787 — pubblico: https://memory.example.net (approva i collegamenti con `engramma oauth pending`)
+mcp-http: listening on http://127.0.0.1:8787 — public: https://memory.example.net (approve the connections with `engramma oauth pending`)
 ```
 
 Over HTTP there is no `--actor`: the proposing actor is the **label you choose when you approve the connection**. No token exists until you type, on the computer where Engramma runs, the code your browser shows:
