@@ -59,7 +59,7 @@ export const ENGRAMMA_HERO_TERMINAL = {
 	capturedWith: CAPTURED_WITH,
 	lines: [
 		[["p", "$"], " engramma search \"where does Gaia live now?\""],
-		["1. [active] Gaia abita a Milano ", ["d", "(VNZ05F2R)"]],
+		["1. [active] Gaia abita a Milano ", ["d", "(GC7GVP4H)"]],
 		["   score ", ["hl", "1.0000"], " (raw 0.6500)"],
 		["   lists: ", ["ok", "text, vector"]],
 		["   terms: ", ["hl", "gai"]],
@@ -89,9 +89,11 @@ export const ENGRAMMA_HERO_NOTE = {
 // the grant's label over HTTP): it comes from the configuration, never from
 // what the client says it is. `decided` is what `engramma decisions` shows.
 export const ENGRAMMA_HUB = {
+	// The nodes of the drawing. Story 1 is read by the MCP Inspector, the
+	// client that read the cell in the capture; Codex read only as a driver.
 	tools: [
 		{ name: "Claude Code", x: 300, y: 46 },
-		{ name: "Codex", x: 520, y: 130 },
+		{ name: "MCP Inspector", x: 505, y: 130 },
 		{ name: "Cursor", x: 520, y: 312 },
 		{ name: "OpenCode", x: 300, y: 396 },
 		{ name: "ChatGPT", x: 80, y: 312 },
@@ -101,17 +103,17 @@ export const ENGRAMMA_HUB = {
 		{
 			from: "Claude Code", actor: "mcp:claude-code", policy: "write=propose",
 			fact: "Auth moved to JWT; the sessions table was dropped.", why: "Read in commit 4f1c",
-			proposedAt: "06:54:17Z",
-			decided: { actor: "user@cli", text: "accepted from the CLI", at: "06:54:23Z" },
-			to: "Codex", asks: "How do we authenticate?",
+			proposedAt: "07:38:34Z",
+			decided: { actor: "user@cli", text: "accepted from the CLI", at: "07:38:43Z" },
+			to: "MCP Inspector", asks: "How do we authenticate?",
 			answer: "Auth moved to JWT; the sessions table was dropped.",
 			found: true,
 		},
 		{
 			from: "Cursor", actor: "mcp:cursor", policy: "write=auto · reviewer local · min_confidence 0.8",
 			fact: "Use pnpm, never npm, in this repo.", why: "The user said so in this chat",
-			proposedAt: "06:54:25Z",
-			decided: { actor: "reviewer:local", text: "confidence 0.9", at: "06:54:25Z" },
+			proposedAt: "07:38:45Z",
+			decided: { actor: "reviewer:local", text: "confidence 0.9", at: "07:38:45Z" },
 			to: "OpenCode", asks: "Which package manager?",
 			answer: "Use pnpm, never npm, in this repo.",
 			found: true,
@@ -119,8 +121,8 @@ export const ENGRAMMA_HUB = {
 		{
 			from: "ChatGPT", actor: "mcp:chatgpt", policy: "write=auto · the reviewer passes it to a person",
 			fact: "Acme’s CFO is leaving in March.", why: "Read on acme.example.com/news",
-			proposedAt: "06:54:27Z",
-			decided: { actor: null, text: "queued · status: quarantined", at: "06:54:27Z" },
+			proposedAt: "07:38:47Z",
+			decided: { actor: null, text: "queued · status: quarantined", at: "07:38:47Z" },
 			to: "Homun", asks: "Who is Acme’s CFO?",
 			answer: "Nothing confirmed yet.",
 			found: false,
@@ -149,10 +151,10 @@ export const ENGRAMMA_MEANING = {
 };
 
 // The graph of the page's notes. `via` is the path the engine printed for the
-// question: Gaia's note (QPEK4BVM) mentions Milano, which the office note mentions.
+// question: Gaia's note mentions Milano, which the office note mentions too.
 export const ENGRAMMA_GRAPH = {
 	query: "What about Gaia?",
-	via: "[[note:01M8DWGS6Z49KHF1AGVNZ05F2R]] -mentions-> [[Milano]] -mentions-> (note 9XAKZPNT)",
+	via: "[[note:01M8DZ1WRK3PJQ9WT0GC7GVP4H]] -mentions-> [[Milano]] -mentions-> (note F339GJK6)",
 	nodes: {
 		start: "Gaia",
 		middle: "Milano",
@@ -221,14 +223,18 @@ export const ENGRAMMA_RULES = [
 	},
 ];
 
-// The example of rule 4, as it ran: two corrections of one note, both proposed
-// before either was decided. The queue showed both as "correction of" the note;
-// the first that was accepted stands, the second was refused (S11, S11b).
+// The example of rule 4, the whole story as it ran (S11, S11b, S14, S14b):
+// two corrections of one note, both proposed before either was decided, both
+// in the queue. Claude Code's is accepted first; Codex's is refused and waits.
+// The first is reverted and the second accepted; the first, in its turn, is
+// refused as not the current version and rejected. `refused` is the side the
+// drawing sets a step back.
 export const ENGRAMMA_CONFLICT = {
 	target: "Contratti Acme",
 	left: { tool: "Claude Code", actor: "mcp:claude-code", text: "Acme signs quarterly contracts." },
 	right: { tool: "Codex", actor: "mcp:codex", text: "Acme signs two-year contracts." },
-	verdict: { kept: "Acme signs quarterly contracts.", tag: "decided by you", other: "accepted first; the other was refused as not the current version, and stays in the queue" },
+	refused: "left",
+	verdict: { kept: "Acme signs two-year contracts.", tag: "decided by you", other: "refused as long as the correction accepted first stood, accepted once it was reverted; that correction was then refused in its turn, and rejected" },
 };
 
 // What sets Engramma apart from the usual memory layer for assistants.

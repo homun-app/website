@@ -3,7 +3,7 @@
 // keep it, then the example of two tools that disagree.
 import { ENGRAMMA_RULES, ENGRAMMA_CONFLICT } from "../../data/engramma.mjs";
 
-const { target, left, right, verdict } = ENGRAMMA_CONFLICT;
+const { target, left, right, refused, verdict } = ENGRAMMA_CONFLICT;
 ---
 
 <ol class="rules" role="list">
@@ -17,7 +17,7 @@ const { target, left, right, verdict } = ENGRAMMA_CONFLICT;
 </ol>
 
 <div class="conflict" data-motion data-product="engramma" aria-label="Two tools correct the same note">
-	<div class="side a">
+	<div class:list={["side", "a", { refused: refused === "left" }]}>
 		<span class="tool">{left.tool} · {left.actor}</span>
 		<p>“{left.text}”</p>
 	</div>
@@ -26,7 +26,7 @@ const { target, left, right, verdict } = ENGRAMMA_CONFLICT;
 		<span class="arrow" aria-hidden="true">⇄</span>
 		<span class="small">correction of · {target}</span>
 	</div>
-	<div class="side b">
+	<div class:list={["side", "b", { refused: refused === "right" }]}>
 		<span class="tool">{right.tool} · {right.actor}</span>
 		<p>“{right.text}”</p>
 	</div>
@@ -63,8 +63,8 @@ const { target, left, right, verdict } = ENGRAMMA_CONFLICT;
 		.conflict.in .verdict { animation: f-line .5s ease forwards; }
 		.conflict.in .verdict { animation-delay: .3s; }
 		.conflict.in .arrow { animation: f-pulse 1s ease .8s 2; }
-		/* The correction you refused stays on the page, a step back. */
-		.conflict.in .b { animation: f-line .5s ease .3s forwards, f-dim .6s ease 2s forwards; }
+		/* The correction the example refuses stays on the page, a step back. */
+		.conflict.in .side.refused { animation: f-line .5s ease .3s forwards, f-dim .6s ease 2s forwards; }
 	}
 
 	@keyframes f-dim {
