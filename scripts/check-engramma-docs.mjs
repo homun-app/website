@@ -70,12 +70,18 @@ assert.ok(options.size > 30, "the fixture must carry the options");
 // before 0.6.19 survives.
 const italianLabels = ["registro verificato", "punteggio", "in coda", "decisa da", "rettifica"];
 const versionLine = `engramma ${ENGRAMMA_RELEASE.version} (commit 5d0e02a, schema 24)`;
+const ulid = /\b([0-9A-HJKMNP-TV-Z]{26})\b/g;
+const capturedIds = new Set();
 for (const path of ["scripts/fixtures/engramma-session.txt", "scripts/fixtures/engramma-docs-session.txt"]) {
 	const fixture = readFileSync(path, "utf8");
 	assert.ok(fixture.includes(versionLine), `${path} must be the capture of the released binary: "${versionLine}" is not in it`);
 	const label = italianLabels.find((word) => fixture.includes(word));
 	assert.equal(label, undefined, `${path} must be the capture of a binary that prints English: "${label}" is in it`);
+	for (const [, id] of fixture.matchAll(ulid)) capturedIds.add(id);
 }
+// The docs say a revert is refused while a later correction stands on it:
+// the docs capture has to show it.
+assert.ok(readFileSync("scripts/fixtures/engramma-docs-session.txt", "utf8").includes("corrects this note: revert that correction first"), "the docs capture must show a revert refused under a later correction");
 assert.ok(help.startsWith(`Engramma ${ENGRAMMA_RELEASE.version} — the --help of every command`), "the fixture must be the help of the released binary");
 
 // ── What the docs cite ──────────────────────────────────────────────────────
@@ -169,13 +175,26 @@ for (const file of pages) {
 	// The CLI prints in English since 0.6.19: none of its former Italian labels.
 	const label = italianLabels.find((word) => markdown.includes(word));
 	assert.equal(label, undefined, `${file}: carries an Italian label of the CLI: "${label}"`);
+
+	// Every id the page quotes is in a capture: a capture run again moves them.
+	for (const [, id] of markdown.matchAll(ulid)) {
+		assert.ok(capturedIds.has(id), `${file}: quotes the id ${id}, which no capture holds`);
+	}
 }
-// The Italian pages (src/content/docs/it/engramma/) quote the English output
-// too: inside their code blocks no Italian label of the CLI.
+// The Italian pages (src/content/docs/it/engramma/) are the English pages in
+// prose: each one has a page of its own name to send the reader to, and
+// inside their code blocks no Italian label of the CLI.
 const italianDir = join(docsDir, "..", "it", "engramma");
-for (const file of existsSync(italianDir) ? readdirSync(italianDir).filter((name) => name.endsWith(".md")) : []) {
+assert.ok(existsSync(italianDir), "the Italian pages of the docs are missing: src/content/docs/it/engramma");
+const italianPages = readdirSync(italianDir).filter((name) => name.endsWith(".md"));
+assert.ok(italianPages.length > 0, "src/content/docs/it/engramma holds no page");
+for (const file of italianPages) {
+	const markdown = readFileSync(join(italianDir, file), "utf8");
+	assert.ok(pages.includes(file), `it/${file}: the English page of the same name is missing`);
+	const english = file === "index.md" ? "/docs/engramma/" : `/docs/engramma/${file.replace(/\.md$/, "")}/`;
+	assert.ok(markdown.includes(`](${english})`), `it/${file}: must send the reader to the English page (${english})`);
 	let inBlock = false;
-	for (const line of readFileSync(join(italianDir, file), "utf8").split("\n")) {
+	for (const line of markdown.split("\n")) {
 		if (line.startsWith("```")) inBlock = !inBlock;
 		else if (inBlock) {
 			const label = italianLabels.find((word) => line.includes(word));

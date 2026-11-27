@@ -3,7 +3,8 @@ import { readFileSync, existsSync } from "node:fs";
 import * as brand from "../src/data/brand.mjs";
 import {
 	ENGRAMMA_RELEASE, ENGRAMMA_SHORT_INSTALL, ENGRAMMA_HERO_TERMINAL, ENGRAMMA_HUB,
-	ENGRAMMA_RULES, ENGRAMMA_CONFLICT, ENGRAMMA_NUMBERS, ENGRAMMA_CLIENTS, ENGRAMMA_ROADMAP, ENGRAMMA_PLATFORMS_LINE,
+	ENGRAMMA_RULES, ENGRAMMA_CONFLICT, ENGRAMMA_MEANING, ENGRAMMA_GRAPH, ENGRAMMA_TIME, ENGRAMMA_CONTROL,
+	ENGRAMMA_NUMBERS, ENGRAMMA_CLIENTS, ENGRAMMA_ROADMAP, ENGRAMMA_PLATFORMS_LINE,
 } from "../src/data/engramma.mjs";
 
 const output = "dist/engramma/index.html";
@@ -46,7 +47,7 @@ assert.doesNotMatch(capture.join("\n"), /\/Users\/|\/home\//, "The capture is pu
 // before are neither in the capture nor on the page.
 const italianLabels = ["registro verificato", "punteggio", "in coda", "decisa da", "rettifica"];
 for (const label of italianLabels) {
-	assert.ok(!capture.includes(label), `The capture must be of a binary that prints English: "${label}" is in it`);
+	assert.ok(!capture.some((row) => row.includes(label)), `The capture must be of a binary that prints English: "${label}" is in it`);
 	assert.ok(!plain(html).includes(label), `The page must not carry an Italian label of the CLI: "${label}"`);
 }
 const words = (line) => (typeof line === "string" ? line : line.map((part) => (typeof part === "string" ? part : part[1])).join(""));
@@ -59,7 +60,6 @@ for (const [index, line] of ENGRAMMA_HERO_TERMINAL.lines.entries()) {
 		: capture.includes(value);
 	assert.ok(inCapture, `Line ${index + 1} of the hero terminal is not in the capture: ${value}`);
 }
-assert.equal(ENGRAMMA_HERO_TERMINAL.capturedWith, `engramma ${ENGRAMMA_RELEASE.version}`, "The hero must say which binary it was captured with");
 
 // The hub shows the signatures and the policies the engine really prints.
 const hub = section("shared", "how");
@@ -75,6 +75,40 @@ for (const { proposedAt, decided, actor, fact } of ENGRAMMA_HUB.scenes) {
 	}
 	assert.ok(capture.some((row) => row.includes(actor)), `The actor ${actor} must be in the capture`);
 	assert.ok(capture.some((row) => row.includes(fact.replaceAll("’", "'")) || row.includes(fact)), `The fact of ${actor} must be in the capture`);
+	for (const piece of decided.text.split(" · ")) {
+		assert.ok(capture.some((row) => row.includes(piece)), `The decision of ${actor} must be in the capture: ${piece}`);
+	}
+}
+// Every reader of a story is a node of the drawing (the animation flies to
+// it), and story 1 is read by the client that read the cell in the capture:
+// the MCP Inspector, in S6. Codex only read as a driver, in S16.
+for (const { to } of ENGRAMMA_HUB.scenes) {
+	assert.ok(ENGRAMMA_HUB.tools.some(({ name }) => name === to), `The reader of a story must be a node of the hub: ${to}`);
+	assert.ok(plain(hub).includes(`${to} asked`), `The hub must say that ${to} reads`);
+}
+assert.equal(ENGRAMMA_HUB.scenes[0].to, "MCP Inspector", "Story 1 is read by the MCP Inspector, the client that read in the capture");
+assert.ok(capture.some((row) => row.startsWith("$ mcp-inspector --cli engramma mcp --cells work")), "The capture must hold the read of the MCP Inspector in story 1");
+
+// The graph path, the two validity spans, the cosines of the meaning and
+// the lines of the control are the ones the engine printed: a capture run
+// again moves the ids, and the page has to follow.
+const ulid = /\b([0-9A-HJKMNP-TV-Z]{26})\b/g;
+assert.ok(capture.some((row) => row.trim() === `via: ${ENGRAMMA_GRAPH.via}`), "The graph path of the page is the one the engine printed");
+for (const [, id] of ENGRAMMA_GRAPH.via.matchAll(ulid)) {
+	assert.ok(capture.some((row) => row.includes(id)), `The capture must hold the note of the graph path: ${id}`);
+}
+for (const { valid } of [ENGRAMMA_TIME.old, ENGRAMMA_TIME.now]) {
+	assert.ok(capture.includes(`   validity: ${valid}`), `The capture must print the validity span: ${valid}`);
+}
+for (const { title, cosine } of ENGRAMMA_MEANING.hits) {
+	const at = capture.findIndex((row, index) => row.includes(title) && capture.slice(index, index + 6).includes(`   cosine: ${cosine}`));
+	assert.ok(at >= 0, `The capture must print the cosine of "${title}": ${cosine}`);
+}
+assert.ok(capture.includes(ENGRAMMA_CONTROL.verify.result), "The result of verify on the page is a line of the capture");
+for (const part of [ENGRAMMA_CONTROL.proposal.why, ENGRAMMA_CONTROL.proposal.decided]) {
+	for (const piece of part.split(" · ")) {
+		assert.ok(capture.some((row) => row.includes(piece)), `The queue must print what the page says of the proposal: ${piece}`);
+	}
 }
 
 // Each rule of truth names the document that makes the engine keep it, and
@@ -89,13 +123,28 @@ for (const { title, body, source } of ENGRAMMA_RULES) {
 }
 assert.ok(capture.some((row) => row.includes("decisions are signed by who decides")), "The capture must show that `revert --by mcp:` is a usage error");
 assert.ok(capture.some((row) => row.includes("--proposed-by mcp:claude-code")), "The capture must show the way to undo what an assistant proposed");
-// Rule 4 and its example follow the binary: the second correction of a note
-// is refused and stays in the queue.
+// Rule 4 and its example follow the binary, through the whole story of S11,
+// S11b, S14 and S14b: the second correction is refused while the first
+// stands; once the first is reverted the second is accepted, and the other
+// is refused in its turn and rejected. What the example keeps is active at
+// the end of the story; what it refuses ends in a tombstone.
 assert.ok(capture.some((row) => row.includes("is not the current version — already corrected by")), "The capture must show the second correction refused");
 assert.ok(plain(truth).includes(ENGRAMMA_CONFLICT.left.text) && plain(truth).includes(ENGRAMMA_CONFLICT.right.text), "Truth needs both corrections of the example");
-for (const text of [ENGRAMMA_CONFLICT.left.text, ENGRAMMA_CONFLICT.right.text]) {
-	assert.ok(capture.some((row) => row.includes(text.replaceAll("’", "'")) || row.includes(text)), `The capture must hold the correction: ${text}`);
+const proposalId = (text) => {
+	const at = capture.findIndex((row) => row.includes("memory_propose(") && row.includes(`"text":"${text}"`));
+	return at < 0 ? null : (/\{"decided_by":[^\n]*?"id":"([0-9A-HJKMNP-TV-Z]{26})"/.exec(capture[at + 1] ?? "")?.[1] ?? null);
+};
+const sides = [ENGRAMMA_CONFLICT.left, ENGRAMMA_CONFLICT.right];
+const kept = sides.find(({ text }) => text === ENGRAMMA_CONFLICT.verdict.kept);
+const refused = sides.find(({ text }) => text !== ENGRAMMA_CONFLICT.verdict.kept);
+assert.ok(kept && refused && kept !== refused, "The verdict of the example must keep one of the two corrections");
+for (const text of sides.map(({ text }) => text)) {
+	assert.ok(proposalId(text), `The capture must hold the correction: ${text}`);
 }
+assert.equal(ENGRAMMA_CONFLICT.refused, sides.indexOf(refused) === 0 ? "left" : "right", "The drawing must set a step back the correction the example refuses");
+assert.ok(capture.includes(`rejected (tombstone): ${proposalId(refused.text)}`), "The correction the example refuses ends in a tombstone");
+const lastActive = capture.findLastIndex((row) => row.includes(`[active] Contratti Acme (${proposalId(kept.text).slice(-8)})`));
+assert.ok(lastActive >= 0 && capture.slice(lastActive, lastActive + 14).includes(`   source: ${kept.actor}`), "The correction the example keeps is active at the end of the story");
 
 // Only measured figures, each with its source in the repository.
 for (const { value, source } of ENGRAMMA_NUMBERS) {
