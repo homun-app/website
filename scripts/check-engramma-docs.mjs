@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { ENGRAMMA_RELEASE } from "../src/data/engramma.mjs";
 
 // The Engramma documentation speaks about a released binary: every command
 // and every option it cites must exist in the captured --help of that binary
@@ -44,14 +45,14 @@ for (const [name, body] of sections) {
 	for (const [, flag] of body.join("\n").matchAll(/(--[\w][\w.-]*)/g)) options.add(flag);
 }
 
-// The subcommands of the custom-dispatch commands (proposals, oauth, …) have
-// no --help of their own; the flags the docs cite for them are proven by the
-// two captured sessions, where the released binary really ran them. Those
-// flags validate citations but do not widen the reference's duty: the
-// reference covers the help, and the help alone.
+// The fixture carries the help of the top-level commands. The options of a
+// subcommand (`proposals accept --no-embed`, `devices invite --name`) are
+// proven by the two captured sessions, where the released binary really ran
+// them: those flags validate citations but do not widen the reference's duty:
+// the reference follows the help, and the help alone.
 const helpOptions = new Set(options);
 // Only the lines where the binary itself was run count: the other clients the
-// sessions drove (Claude Code, Codex, the inspector) have flags of their own.
+// sessions drove (Claude Code, the inspector) have flags of their own.
 for (const path of ["scripts/fixtures/engramma-session.txt", "scripts/fixtures/engramma-docs-session.txt"]) {
 	let running = false;
 	for (const line of readFileSync(path, "utf8").split("\n")) {
@@ -63,6 +64,19 @@ for (const path of ["scripts/fixtures/engramma-session.txt", "scripts/fixtures/e
 }
 assert.ok(commands.size > 30, "the fixture must carry the whole command surface");
 assert.ok(options.size > 30, "the fixture must carry the options");
+
+// The fixtures are a capture of the release the docs speak of: its version
+// line is in both sessions, and nothing of what the CLI printed in Italian
+// before 0.6.19 survives.
+const italianLabels = ["registro verificato", "punteggio", "in coda", "decisa da", "rettifica"];
+const versionLine = `engramma ${ENGRAMMA_RELEASE.version} (commit 5d0e02a, schema 24)`;
+for (const path of ["scripts/fixtures/engramma-session.txt", "scripts/fixtures/engramma-docs-session.txt"]) {
+	const fixture = readFileSync(path, "utf8");
+	assert.ok(fixture.includes(versionLine), `${path} must be the capture of the released binary: "${versionLine}" is not in it`);
+	const label = italianLabels.find((word) => fixture.includes(word));
+	assert.equal(label, undefined, `${path} must be the capture of a binary that prints English: "${label}" is in it`);
+}
+assert.ok(help.startsWith(`Engramma ${ENGRAMMA_RELEASE.version} — the --help of every command`), "the fixture must be the help of the released binary");
 
 // ── What the docs cite ──────────────────────────────────────────────────────
 // Flags that belong to the other tools quoted in the client snippets, not to
@@ -151,6 +165,23 @@ for (const file of pages) {
 		assert.ok(options.has(flag), `${file}: cites ${flag}, which the binary does not have`);
 		citations++;
 	}
+
+	// The CLI prints in English since 0.6.19: none of its former Italian labels.
+	const label = italianLabels.find((word) => markdown.includes(word));
+	assert.equal(label, undefined, `${file}: carries an Italian label of the CLI: "${label}"`);
+}
+// The Italian pages (src/content/docs/it/engramma/) quote the English output
+// too: inside their code blocks no Italian label of the CLI.
+const italianDir = join(docsDir, "..", "it", "engramma");
+for (const file of existsSync(italianDir) ? readdirSync(italianDir).filter((name) => name.endsWith(".md")) : []) {
+	let inBlock = false;
+	for (const line of readFileSync(join(italianDir, file), "utf8").split("\n")) {
+		if (line.startsWith("```")) inBlock = !inBlock;
+		else if (inBlock) {
+			const label = italianLabels.find((word) => line.includes(word));
+			assert.equal(label, undefined, `it/${file}: quotes an Italian label of the CLI: "${label}"`);
+		}
+	}
 }
 assert.ok(citations > 100, "the docs must cite the command surface, not paraphrase it");
 
@@ -168,6 +199,26 @@ for (const command of commands) {
 }
 for (const option of helpOptions) {
 	assert.ok(referenceText.includes(option), `the CLI reference must cover the option: ${option}`);
+}
+
+// The code blocks of the reference are the help of the fixture, block for
+// block: "The command list" is the main help, every `## `command`` its own.
+const blocks = new Map();
+const referenceLines = reference.split("\n");
+for (let i = 0; i < referenceLines.length; i++) {
+	const heading = /^## (.+)$/.exec(referenceLines[i]);
+	if (!heading) continue;
+	const name = heading[1] === "The command list" ? "engramma --help" : heading[1].replace(/^`|`$/g, "");
+	assert.equal(referenceLines[i + 2], "```text", `the CLI reference must quote \`${name}\` in a text block`);
+	let end = i + 3;
+	while (end < referenceLines.length && referenceLines[end] !== "```") end++;
+	blocks.set(name, referenceLines.slice(i + 3, end).join("\n"));
+	i = end;
+}
+assert.equal(blocks.size, sections.size, "the CLI reference must have one block for each command of the help");
+for (const [name, body] of sections) {
+	assert.ok(blocks.has(name), `the CLI reference must quote \`${name}\``);
+	assert.equal(blocks.get(name), body.join("\n").replace(/\n+$/, ""), `the CLI reference must quote \`${name}\` as the help prints it`);
 }
 
 // The fixture is a capture of the released binary, and carries no paths of
