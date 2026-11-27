@@ -768,6 +768,25 @@ async function capture() {
 	await step("engramma decisions");
 	await step("engramma proposals");
 
+	scene("S12b", "a revert under a later correction is refused");
+	// Two corrections in a row: P closes the note, C closes the note P made
+	// current. Reverting P while C stands on it names C; C goes first.
+	const giulia = docsIds["lavoro-giulia.md"];
+	const proposeAs = (actor, args) => mcp({ cells: "default", write: "default", actor, tool: "memory_propose", format: "pretty", args });
+	const fix = (await proposeAs("claude-code", { text: "[[Giulia]] ha iniziato a novembre in [[Acme]]: si occupa di pricing e dei contratti.", title: "Il lavoro di Giulia", tags: ["amici"], confidence: "stated", reason: "The user corrected it", supersedes: giulia })).json?.id;
+	await step(`engramma proposals accept ${fix.slice(-8)}`);
+	const fixAgain = (await proposeAs("codex", { text: "[[Giulia]] ha iniziato a novembre in [[Acme]]: dal gennaio si occupa solo di contratti.", title: "Il lavoro di Giulia", tags: ["amici"], confidence: "stated", reason: "The user corrected it again", supersedes: fix })).json?.id;
+	await step(`engramma proposals accept ${fixAgain.slice(-8)}`);
+	await step("engramma decisions");
+	const fixDecision = await decisionOf("", fix);
+	const fixAgainDecision = await decisionOf("", fixAgain);
+	await step(`engramma revert ${fixDecision} --dry-run`);
+	await step(`engramma revert ${fixDecision} --yes`);
+	await step(`engramma revert ${fixAgainDecision} --yes`);
+	await step(`engramma revert ${fixDecision} --dry-run`);
+	await step(`engramma revert ${fixDecision} --yes`);
+	await step("engramma decisions");
+
 	scene("S13", "the policy fields");
 	await step("engramma policy set write=auto reviewer=local min_confidence=0.8 kinds=fact,preference max_auto_per_hour=10");
 	await step("engramma policy show");
@@ -795,7 +814,7 @@ async function capture() {
 		"",
 		...prose("The notes are the synthetic notes of the site, in Italian. Two bodies — Ufficio a Torino, CFO di Acme — were written again for this capture, as in the session behind the page (its header says why); so was the text of the second proposal of S12, of which the 0.6.17 capture printed the title alone. S7 edits the Gaia file in the vault before `vault sync`, so that the report shows the folder telling the cell: on a vault just initialized the sync answers `nothing to do`. The 0.6.17 capture showed that report without showing the edit."),
 		"",
-		...prose("The defect the 0.6.17 capture declared is closed since 0.6.18: `engramma revert <id> --dry-run` reverted for real. S5c shows the dry run writing nothing (`verify` counts the same operations before and after) and the real revert after it."),
+		...prose("The defect the 0.6.17 capture declared is closed since 0.6.18: `engramma revert <id> --dry-run` reverted for real. S5c shows the dry run writing nothing (`verify` counts the same operations before and after) and the real revert after it. S12b shows a revert refused while a later correction stands on it: it names that correction, and goes through once that one is reverted."),
 		"",
 	);
 	write("engramma-docs-session.txt");

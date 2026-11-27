@@ -106,35 +106,35 @@ model granite-embedding-97m-multilingual-r2@835ad140 is building (config in <tmp
 ### S1 · the synthetic notes of the mockup (Gaia, Milano, Torino, Acme)
 
 $ nice -n 19 engramma add <tmp>/notes/ufficio-torino.md --cell work --no-embed --source user --confidence stated --title "Ufficio a Torino" --tag ufficio --valid-from 2026-01-05
-added: 01M8DWGS61N184Q3B2DS21WHV4
+added: 01M8DZ1WR00QBP8YH8T9GBMKZH
 [exit 0]
 
 $ nice -n 19 engramma add <tmp>/notes/gaia-milano.md --cell work --no-embed --source user --confidence stated --title "Gaia abita a Milano" --tag casa/milano --valid-from 2026-09-01
-added: 01M8DWGS6Z49KHF1AGVNZ05F2R
+added: 01M8DZ1WRK3PJQ9WT0GC7GVP4H
 [exit 0]
 
 $ nice -n 19 engramma add <tmp>/notes/trasloco.md --cell work --no-embed --source user --confidence stated --title "Trasloco: scatoloni da Torino" --tag casa
-added: 01M8DWGS814A8XBQEAX5CNPAPV
+added: 01M8DZ1WS4MNM3Q8X8ZE0RVV5K
 [exit 0]
 
 $ nice -n 19 engramma add <tmp>/notes/nuovo-ufficio.md --cell work --no-embed --source user --confidence stated --title "Nuovo ufficio" --tag ufficio --valid-from 2027-04-01
-added: 01M8DWGS8TTNXPJMXF3SJZXJM7
+added: 01M8DZ1WSNMNSQBKS6PFRTCG6T
 [exit 0]
 
 $ nice -n 19 engramma add <tmp>/notes/lavoro-giulia.md --cell work --no-embed --source user --confidence stated --title "Il lavoro di Giulia" --tag amici
-added: 01M8DWGS9GKVH761NAM2C7Z0RZ
+added: 01M8DZ1WT6W5RQ1CR8QTQRWRCK
 [exit 0]
 
 $ nice -n 19 engramma add <tmp>/notes/acme-contratti.md --cell work --no-embed --source user --confidence stated --title "Contratti Acme" --tag lavoro/acme
-added: 01M8DWGSBRB4DG90W61STBPSJ4
+added: 01M8DZ1WTPS0FB7FY8D8TY108R
 [exit 0]
 
 $ nice -n 19 engramma add <tmp>/notes/acme-cfo.md --cell work --no-embed --source website --confidence external --title "CFO di Acme" --tag lavoro/acme
-added: 01M8DWGSCNQ7P3EZ2YAY5SVD5P
+added: 01M8DZ1WV8X79CX5276T0R3TGK
 [exit 0]
 
-$ nice -n 19 engramma supersede 01M8DWGS61N184Q3B2DS21WHV4 <tmp>/notes/ufficio-milano.md --cell work --source user --confidence stated --title "Ufficio a Milano" --tag ufficio --valid-from 2026-09-01
-superseded: 01M8DWGS61N184Q3B2DS21WHV4 → 01M8DWGSD7S0HJCF5P9XAKZPNT
+$ nice -n 19 engramma supersede 01M8DZ1WR00QBP8YH8T9GBMKZH <tmp>/notes/ufficio-milano.md --cell work --source user --confidence stated --title "Ufficio a Milano" --tag ufficio --valid-from 2026-09-01
+superseded: 01M8DZ1WR00QBP8YH8T9GBMKZH → 01M8DZ1WVRCMXFXCPYF339GJK6
 [exit 0]
 
 $ nice -n 19 engramma embed --cell work
@@ -150,7 +150,7 @@ vector coverage: granite-embedding-97m-multilingual-r2@835ad140 [ready] 8/8 note
 ### S2 · hero: a search that explains itself, then verify
 
 $ engramma search "where does Gaia live now?" --cell work
-1. [active] Gaia abita a Milano (VNZ05F2R)
+1. [active] Gaia abita a Milano (GC7GVP4H)
    score 1.0000 (raw 0.6500)
    lists: text, vector
    terms: gai
@@ -163,7 +163,7 @@ $ engramma search "where does Gaia live now?" --cell work
    validity: 2026-09-01 → now
    source: user
 
-2. [active] Il lavoro di Giulia (M2C7Z0RZ)
+2. [active] Il lavoro di Giulia (QTQRWRCK)
    score 0.2726 (raw 0.1772)
    lists: vector
    semantic rank: 2
@@ -174,7 +174,7 @@ $ engramma search "where does Gaia live now?" --cell work
    validity: always → now
    source: user
 
-3. [active] Ufficio a Milano (9XAKZPNT)
+3. [active] Ufficio a Milano (F339GJK6)
    score 0.1090 (raw 0.0708)
    lists: vector
    semantic rank: 3
@@ -185,7 +185,7 @@ $ engramma search "where does Gaia live now?" --cell work
    validity: 2026-09-01 → now
    source: user
 
-4. [active] Trasloco: scatoloni da Torino (X5CNPAPV)
+4. [active] Trasloco: scatoloni da Torino (ZE0RVV5K)
    score 0.0637 (raw 0.0414)
    lists: vector
    semantic rank: 4
@@ -202,9 +202,9 @@ log verified: 9 operations, hash chain, reconstruction and FTS index in place
 vector coverage: granite-embedding-97m-multilingual-r2@835ad140 [ready] 8/8 notes
 [exit 0]
 
-$ engramma get 01M8DWGS6Z49KHF1AGVNZ05F2R --cell work
+$ engramma get 01M8DZ1WRK3PJQ9WT0GC7GVP4H --cell work
 ---
-id: 01M8DWGS6Z49KHF1AGVNZ05F2R
+id: 01M8DZ1WRK3PJQ9WT0GC7GVP4H
 type: fact
 title: Gaia abita a Milano
 tags: [casa/milano]
@@ -212,8 +212,8 @@ source: user
 confidence: stated
 status: active
 valid_from: 2026-09-01
-created_at: 2026-11-27T06:54:07Z
-updated_at: 2026-11-27T06:54:07Z
+created_at: 2026-11-27T07:38:25Z
+updated_at: 2026-11-27T07:38:25Z
 ---
 Gaia ha traslocato a [[Milano]] con [[Giulia]] a settembre 2026.
 
@@ -222,7 +222,7 @@ Gaia ha traslocato a [[Milano]] con [[Giulia]] a settembre 2026.
 ### S3 · meaning: the same question in other words, in another language
 
 $ engramma search "Where does she live now?" --cell work
-1. [active] Gaia abita a Milano (VNZ05F2R)
+1. [active] Gaia abita a Milano (GC7GVP4H)
    score 1.0000 (raw 0.6500)
    lists: vector
    semantic rank: 1
@@ -233,7 +233,7 @@ $ engramma search "Where does she live now?" --cell work
    validity: 2026-09-01 → now
    source: user
 
-2. [active] Il lavoro di Giulia (M2C7Z0RZ)
+2. [active] Il lavoro di Giulia (QTQRWRCK)
    score 0.7917 (raw 0.5146)
    lists: vector
    semantic rank: 2
@@ -244,7 +244,7 @@ $ engramma search "Where does she live now?" --cell work
    validity: always → now
    source: user
 
-3. [active] Ufficio a Milano (9XAKZPNT)
+3. [active] Ufficio a Milano (F339GJK6)
    score 0.7113 (raw 0.4623)
    lists: vector
    semantic rank: 3
@@ -255,7 +255,7 @@ $ engramma search "Where does she live now?" --cell work
    validity: 2026-09-01 → now
    source: user
 
-4. [active] Trasloco: scatoloni da Torino (X5CNPAPV)
+4. [active] Trasloco: scatoloni da Torino (ZE0RVV5K)
    score 0.4036 (raw 0.2623)
    lists: vector
    semantic rank: 4
@@ -270,7 +270,7 @@ $ engramma search "Where does she live now?" --cell work
 ### S4 · time: what is true today, and what was true in August
 
 $ engramma search office --cell work
-1. [active] Ufficio a Milano (9XAKZPNT)
+1. [active] Ufficio a Milano (F339GJK6)
    score 1.0000 (raw 0.6500)
    lists: vector
    semantic rank: 1
@@ -281,7 +281,7 @@ $ engramma search office --cell work
    validity: 2026-09-01 → now
    source: user
 
-2. [active] Gaia abita a Milano (VNZ05F2R)
+2. [active] Gaia abita a Milano (GC7GVP4H)
    score 0.5385 (raw 0.3500)
    lists: vector, graph
    semantic rank: 5
@@ -289,12 +289,12 @@ $ engramma search office --cell work
    cosine: 0.7493
    support: weak
    winning chunk: 0
-   via: [[note:01M8DWGSD7S0HJCF5P9XAKZPNT]] -mentions-> [[Milano]] -mentions-> (note VNZ05F2R)
+   via: [[note:01M8DZ1WVRCMXFXCPYF339GJK6]] -mentions-> [[Milano]] -mentions-> (note GC7GVP4H)
    graph weight: 0.35 (gap 0.64)
    validity: 2026-09-01 → now
    source: user
 
-3. [active] Contratti Acme (1STBPSJ4)
+3. [active] Contratti Acme (D8TY108R)
    score 0.3599 (raw 0.2339)
    lists: vector
    semantic rank: 2
@@ -305,7 +305,7 @@ $ engramma search office --cell work
    validity: always → now
    source: user
 
-4. [active] Trasloco: scatoloni da Torino (X5CNPAPV)
+4. [active] Trasloco: scatoloni da Torino (ZE0RVV5K)
    score 0.2901 (raw 0.1885)
    lists: vector
    semantic rank: 3
@@ -316,7 +316,7 @@ $ engramma search office --cell work
    validity: always → now
    source: user
 
-5. [active] Il lavoro di Giulia (M2C7Z0RZ)
+5. [active] Il lavoro di Giulia (QTQRWRCK)
    score 0.2818 (raw 0.1832)
    lists: vector, graph
    semantic rank: 4
@@ -324,14 +324,14 @@ $ engramma search office --cell work
    cosine: 0.7799
    support: strong
    winning chunk: 0
-   via: [[note:01M8DWGSD7S0HJCF5P9XAKZPNT]] -mentions-> [[Milano]] -mentions-> (note VNZ05F2R) -mentions-> [[Giulia]] -mentions-> (note M2C7Z0RZ)
+   via: [[note:01M8DZ1WVRCMXFXCPYF339GJK6]] -mentions-> [[Milano]] -mentions-> (note GC7GVP4H) -mentions-> [[Giulia]] -mentions-> (note QTQRWRCK)
    graph weight: 0.35 (gap 0.64)
    validity: always → now
    source: user
 [exit 0]
 
 $ engramma search office --cell work --as-of 2026-08-01
-1. [superseded] Ufficio a Torino (DS21WHV4)
+1. [superseded] Ufficio a Torino (T9GBMKZH)
    score 1.0000 (raw 0.6500)
    lists: vector
    semantic rank: 1
@@ -342,7 +342,7 @@ $ engramma search office --cell work --as-of 2026-08-01
    validity: 2026-01-05 → 2026-09-01
    source: user
 
-2. [active] Contratti Acme (1STBPSJ4)
+2. [active] Contratti Acme (D8TY108R)
    score 0.1466 (raw 0.0953)
    lists: vector
    semantic rank: 2
@@ -353,7 +353,7 @@ $ engramma search office --cell work --as-of 2026-08-01
    validity: always → now
    source: user
 
-3. [active] Trasloco: scatoloni da Torino (X5CNPAPV)
+3. [active] Trasloco: scatoloni da Torino (ZE0RVV5K)
    score 0.0424 (raw 0.0276)
    lists: vector
    semantic rank: 3
@@ -368,7 +368,7 @@ $ engramma search office --cell work --as-of 2026-08-01
 ### S5 · control: a claim from a web page waits outside the results
 
 $ engramma search "Who is Acme's CFO?" --cell work
-1. [active] Contratti Acme (1STBPSJ4)
+1. [active] Contratti Acme (D8TY108R)
    score 1.0000 (raw 0.6500)
    lists: text, vector
    terms: acme
@@ -381,7 +381,7 @@ $ engramma search "Who is Acme's CFO?" --cell work
    validity: always → now
    source: user
 
-2. [active] Gaia abita a Milano (VNZ05F2R)
+2. [active] Gaia abita a Milano (GC7GVP4H)
    score 0.5701 (raw 0.3706)
    lists: vector, graph
    semantic rank: 4
@@ -389,12 +389,12 @@ $ engramma search "Who is Acme's CFO?" --cell work
    cosine: 0.7350
    support: weak
    winning chunk: 0
-   via: [[note:01M8DWGS9GKVH761NAM2C7Z0RZ]] -mentions-> [[Giulia]] -mentions-> (note VNZ05F2R)
+   via: [[note:01M8DZ1WT6W5RQ1CR8QTQRWRCK]] -mentions-> [[Giulia]] -mentions-> (note GC7GVP4H)
    graph weight: 0.35 (gap 0.72, lists agreeing)
    validity: 2026-09-01 → now
    source: user
 
-3. [active] Il lavoro di Giulia (M2C7Z0RZ)
+3. [active] Il lavoro di Giulia (QTQRWRCK)
    score 0.2777 (raw 0.1805)
    lists: text, vector
    terms: acme
@@ -407,7 +407,7 @@ $ engramma search "Who is Acme's CFO?" --cell work
    validity: always → now
    source: user
 
-4. [active] Ufficio a Milano (9XAKZPNT)
+4. [active] Ufficio a Milano (F339GJK6)
    score 0.1988 (raw 0.1292)
    lists: vector
    semantic rank: 3
@@ -420,7 +420,7 @@ $ engramma search "Who is Acme's CFO?" --cell work
 [exit 0]
 
 $ engramma search "Who is Acme's CFO?" --cell work --include-quarantined --k 3
-1. [active] Contratti Acme (1STBPSJ4)
+1. [active] Contratti Acme (D8TY108R)
    score 1.0000 (raw 0.5315)
    lists: text, vector
    terms: acme
@@ -433,7 +433,7 @@ $ engramma search "Who is Acme's CFO?" --cell work --include-quarantined --k 3
    validity: always → now
    source: user
 
-2. [active] Gaia abita a Milano (VNZ05F2R)
+2. [active] Gaia abita a Milano (GC7GVP4H)
    score 0.6831 (raw 0.3631)
    lists: vector, graph
    semantic rank: 5
@@ -441,12 +441,12 @@ $ engramma search "Who is Acme's CFO?" --cell work --include-quarantined --k 3
    cosine: 0.7350
    support: weak
    winning chunk: 0
-   via: [[note:01M8DWGS9GKVH761NAM2C7Z0RZ]] -mentions-> [[Giulia]] -mentions-> (note VNZ05F2R)
+   via: [[note:01M8DZ1WT6W5RQ1CR8QTQRWRCK]] -mentions-> [[Giulia]] -mentions-> (note GC7GVP4H)
    graph weight: 0.35 (gap 0.18, lists disagreeing)
    validity: 2026-09-01 → now
    source: user
 
-3. [quarantined] CFO di Acme (AY5SVD5P)
+3. [quarantined] CFO di Acme (6T0R3TGK)
    score 0.6114 (raw 0.3250)
    lists: text, vector
    terms: acme, cfo
@@ -493,36 +493,36 @@ $ claude -p "<remember one thing…>" \
 [exit 0]
   mcp_servers: ["engramma:connected"]
   tool_use: mcp__engramma__memory_propose {"text":"Auth moved to JWT; the sessions table was dropped.","title":"Auth: JWT","tags":["auth"],"confidence":"stated","reason":"Read in commit 4f1c"}
-  tool_result: {"decided_by":null,"existing":null,"id":"01M8DWH2VSX0799AC1SYCB9NAG","note":null,"possible_duplicates":[{"cosine":0.7148450613021851,"id":"01M8DWGS9GKVH761NAM2C7Z0RZ"},{"cosine":0.712465226650238,"id":"01M8DWGS814A8XBQEAX5CNPAPV"},{"cosine":0.7101773619651794,"id":"01M8DWGS6Z49KHF1AGVNZ05F2R"},{"cosine":0.6961331963539124,"id":"01M8DWGSBRB4DG90W61STBPSJ4"},{"cosine":0.6889673471450806,"id":"01M8DWGSD7S0HJCF5P9XAKZPNT"}],"reason":null,"status":"pending"}
+  tool_result: {"decided_by":null,"existing":null,"id":"01M8DZ25VD1MDV2Q86EJKP3S2Q","note":null,"possible_duplicates":[{"cosine":0.7148450613021851,"id":"01M8DZ1WT6W5RQ1CR8QTQRWRCK"},{"cosine":0.712465226650238,"id":"01M8DZ1WS4MNM3Q8X8ZE0RVV5K"},{"cosine":0.7101773619651794,"id":"01M8DZ1WRK3PJQ9WT0GC7GVP4H"},{"cosine":0.6961331963539124,"id":"01M8DZ1WTPS0FB7FY8D8TY108R"},{"cosine":0.6889673471450806,"id":"01M8DZ1WVRCMXFXCPYF339GJK6"}],"reason":null,"status":"pending"}
   result: {"is_error":false,"num_turns":2,"result":"done"}
 
 ### S6 (continued) · you accept it, a second client reads
 
 $ engramma proposals --cell work
-[queued] SYCB9NAG mcp:claude-code — Auth: JWT
+[queued] EJKP3S2Q mcp:claude-code — Auth: JWT
       reason: Read in commit 4f1c
 [exit 0]
 
-$ engramma proposals show 01M8DWH2VSX0799AC1SYCB9NAG --cell work
+$ engramma proposals show 01M8DZ25VD1MDV2Q86EJKP3S2Q --cell work
 ---
-id: 01M8DWH2VSX0799AC1SYCB9NAG
+id: 01M8DZ25VD1MDV2Q86EJKP3S2Q
 type: fact
 title: 'Auth: JWT'
 tags: [auth]
 source: mcp:claude-code
 confidence: stated
 status: quarantined
-created_at: 2026-11-27T06:54:17Z
-updated_at: 2026-11-27T06:54:17Z
+created_at: 2026-11-27T07:38:34Z
+updated_at: 2026-11-27T07:38:34Z
 ---
 Auth moved to JWT; the sessions table was dropped.
 
-proposed by mcp:claude-code at 2026-11-27T06:54:17Z
+proposed by mcp:claude-code at 2026-11-27T07:38:34Z
 reason: Read in commit 4f1c
 [exit 0]
 
 $ engramma search "How do we authenticate?" --cell work --k 2
-1. [active] Gaia abita a Milano (VNZ05F2R)
+1. [active] Gaia abita a Milano (GC7GVP4H)
    score 1.0000 (raw 0.8498)
    lists: vector, graph
    semantic rank: 4
@@ -530,12 +530,12 @@ $ engramma search "How do we authenticate?" --cell work --k 2
    cosine: 0.7328
    support: strong
    winning chunk: 0
-   via: [[note:01M8DWGS9GKVH761NAM2C7Z0RZ]] -mentions-> [[Giulia]] -mentions-> (note VNZ05F2R)
+   via: [[note:01M8DZ1WT6W5RQ1CR8QTQRWRCK]] -mentions-> [[Giulia]] -mentions-> (note GC7GVP4H)
    graph weight: 0.35 (gap 0.01)
    validity: 2026-09-01 → now
    source: user
 
-2. [active] Ufficio a Milano (9XAKZPNT)
+2. [active] Ufficio a Milano (F339GJK6)
    score 0.7649 (raw 0.6500)
    lists: vector
    semantic rank: 1
@@ -547,40 +547,40 @@ $ engramma search "How do we authenticate?" --cell work --k 2
    source: user
 [exit 0]
 
-$ engramma proposals accept 01M8DWH2VSX0799AC1SYCB9NAG --cell work
-accepted: 01M8DWH2VSX0799AC1SYCB9NAG
+$ engramma proposals accept 01M8DZ25VD1MDV2Q86EJKP3S2Q --cell work
+accepted: 01M8DZ25VD1MDV2Q86EJKP3S2Q
 embedded: 1 (pending: 0)
 [exit 0]
 
 $ engramma proposals --cell work
- SYCB9NAG mcp:claude-code — Auth: JWT
+ EJKP3S2Q mcp:claude-code — Auth: JWT
       reason: Read in commit 4f1c
-      decided by user@cli at 2026-11-27T06:54:23Z
+      decided by user@cli at 2026-11-27T07:38:43Z
 [exit 0]
 
 $ engramma decisions --cell work
-T05HRD53  accept  user@cli  2026-11-27T06:54:23Z
-      proposal SYCB9NAG
+J1CCVBGT  accept  user@cli  2026-11-27T07:38:43Z
+      proposal EJKP3S2Q
       why: accepted from the CLI
 [exit 0]
 
-$ engramma history 01M8DWH2VSX0799AC1SYCB9NAG --cell work
-proposed by mcp:claude-code at 2026-11-27T06:54:17Z — Read in commit 4f1c
-decided by user@cli at 2026-11-27T06:54:23Z
-v1  2026-11-27T06:54:17Z  Auth: JWT  [decide, user@cli]
+$ engramma history 01M8DZ25VD1MDV2Q86EJKP3S2Q --cell work
+proposed by mcp:claude-code at 2026-11-27T07:38:34Z — Read in commit 4f1c
+decided by user@cli at 2026-11-27T07:38:43Z
+v1  2026-11-27T07:38:34Z  Auth: JWT  [decide, user@cli]
 [exit 0]
 
-$ engramma get 01M8DWH2VSX0799AC1SYCB9NAG --cell work
+$ engramma get 01M8DZ25VD1MDV2Q86EJKP3S2Q --cell work
 ---
-id: 01M8DWH2VSX0799AC1SYCB9NAG
+id: 01M8DZ25VD1MDV2Q86EJKP3S2Q
 type: fact
 title: 'Auth: JWT'
 tags: [auth]
 source: mcp:claude-code
 confidence: stated
 status: active
-created_at: 2026-11-27T06:54:17Z
-updated_at: 2026-11-27T06:54:23Z
+created_at: 2026-11-27T07:38:34Z
+updated_at: 2026-11-27T07:38:43Z
 ---
 Auth moved to JWT; the sessions table was dropped.
 [exit 0]
@@ -597,7 +597,7 @@ $ mcp-inspector --cli engramma mcp --cells work \
   "content": [
     {
       "type": "text",
-      "text": "{\n  \"hits\": [\n    {\n      \"explain\": {\n        \"bm25_rank\": null,\n        \"confidence\": \"stated\",\n        \"cosine\": 0.806820809841156,\n        \"fused_score\": 1.0,\n        \"lists\": [\n          \"vector\"\n        ],\n        \"matched_terms\": [],\n        \"semantic_rank\": 1,\n        \"source\": \"mcp:claude-code\",\n        \"support\": \"strong\",\n        \"valid_from\": null,\n        \"valid_to\": null,\n        \"via\": null,\n        \"winning_chunk\": 0\n      },\n      \"note\": {\n        \"body\": \"Auth moved to JWT; the sessions table was dropped.\",\n        \"confidence\": \"stated\",\n        \"created_at\": \"2026-11-27T06:54:17Z\",\n        \"id\": \"01M8DWH2VSX0799AC1SYCB9NAG\",\n        \"source\": \"mcp:claude-code\",\n        \"status\": \"active\",\n        \"tags\": [\n          \"auth\"\n        ],\n        \"title\": \"Auth: JWT\",\n        \"type\": \"fact\",\n        \"updated_at\": \"2026-11-27T06:54:23Z\",\n        \"valid_from\": null,\n        \"valid_to\": null\n      },\n      \"raw_score\": 0.65,\n      \"score\": 1.0\n    },\n    {\n      \"explain\": {\n        \"bm25_rank\": null,\n        \"confidence\": \"stated\",\n        \"cosine\": 0.7328379154205322,\n        \"fused_score\": 0.3973055111939374,\n        \"lists\": [\n          \"vector\",\n          \"graph\"\n        ],\n        \"matched_terms\": [],\n        \"semantic_rank\": 5,\n        \"source\": \"user\",\n        \"support\": \"strong\",\n        \"valid_from\": \"2026-09-01\",\n        \"valid_to\": null,\n        \"via\": \"[[note:01M8DWGS9GKVH761NAM2C7Z0RZ]] -mentions-> [[Giulia]] -mentions-> (note VNZ05F2R)\",\n        \"winning_chunk\": 0\n      },\n      \"note\": {\n        \"body\": \"Gaia ha traslocato a [[Milano]] con [[Giulia]] a settembre 2026.\\n\",\n        \"confidence\": \"stated\",\n        \"created_at\": \"2026-11-27T06:54:07Z\",\n        \"id\": \"01M8DWGS6Z49KHF1AGVNZ05F2R\",\n        \"source\": \"user\",\n        \"status\": \"active\",\n        \"tags\": [\n          \"casa/milano\"\n        ],\n        \"title\": \"Gaia abita a Milano\",\n        \"type\": \"fact\",\n        \"updated_at\": \"2026-11-27T06:54:07Z\",\n        \"valid_from\": \"2026-09-01\",\n        \"valid_to\": null\n      },\n      \"raw_score\": 0.6082485822760593,\n      \"score\": 0.9357670496554757\n    }\n  ],\n  \"mode\": \"hybrid\",\n  \"query\": \"How do we authenticate?\"\n}"
+      "text": "{\n  \"hits\": [\n    {\n      \"explain\": {\n        \"bm25_rank\": null,\n        \"confidence\": \"stated\",\n        \"cosine\": 0.806820809841156,\n        \"fused_score\": 1.0,\n        \"lists\": [\n          \"vector\"\n        ],\n        \"matched_terms\": [],\n        \"semantic_rank\": 1,\n        \"source\": \"mcp:claude-code\",\n        \"support\": \"strong\",\n        \"valid_from\": null,\n        \"valid_to\": null,\n        \"via\": null,\n        \"winning_chunk\": 0\n      },\n      \"note\": {\n        \"body\": \"Auth moved to JWT; the sessions table was dropped.\",\n        \"confidence\": \"stated\",\n        \"created_at\": \"2026-11-27T07:38:34Z\",\n        \"id\": \"01M8DZ25VD1MDV2Q86EJKP3S2Q\",\n        \"source\": \"mcp:claude-code\",\n        \"status\": \"active\",\n        \"tags\": [\n          \"auth\"\n        ],\n        \"title\": \"Auth: JWT\",\n        \"type\": \"fact\",\n        \"updated_at\": \"2026-11-27T07:38:43Z\",\n        \"valid_from\": null,\n        \"valid_to\": null\n      },\n      \"raw_score\": 0.65,\n      \"score\": 1.0\n    },\n    {\n      \"explain\": {\n        \"bm25_rank\": null,\n        \"confidence\": \"stated\",\n        \"cosine\": 0.7328379154205322,\n        \"fused_score\": 0.3973055111939374,\n        \"lists\": [\n          \"vector\",\n          \"graph\"\n        ],\n        \"matched_terms\": [],\n        \"semantic_rank\": 5,\n        \"source\": \"user\",\n        \"support\": \"strong\",\n        \"valid_from\": \"2026-09-01\",\n        \"valid_to\": null,\n        \"via\": \"[[note:01M8DZ1WT6W5RQ1CR8QTQRWRCK]] -mentions-> [[Giulia]] -mentions-> (note GC7GVP4H)\",\n        \"winning_chunk\": 0\n      },\n      \"note\": {\n        \"body\": \"Gaia ha traslocato a [[Milano]] con [[Giulia]] a settembre 2026.\\n\",\n        \"confidence\": \"stated\",\n        \"created_at\": \"2026-11-27T07:38:25Z\",\n        \"id\": \"01M8DZ1WRK3PJQ9WT0GC7GVP4H\",\n        \"source\": \"user\",\n        \"status\": \"active\",\n        \"tags\": [\n          \"casa/milano\"\n        ],\n        \"title\": \"Gaia abita a Milano\",\n        \"type\": \"fact\",\n        \"updated_at\": \"2026-11-27T07:38:25Z\",\n        \"valid_from\": \"2026-09-01\",\n        \"valid_to\": null\n      },\n      \"raw_score\": 0.6082485822760593,\n      \"score\": 0.9357670496554757\n    }\n  ],\n  \"mode\": \"hybrid\",\n  \"query\": \"How do we authenticate?\"\n}"
     }
   ],
   "isError": false
@@ -633,79 +633,79 @@ max_auto_per_hour: 20
 
 $ engramma mcp --cells work --write work --actor cursor   (the client Cursor would run)
   memory_propose({"text":"Use pnpm, never npm, in this repo.","title":"Package manager","tags":["repo"],"confidence":"stated","reason":"The user said so in this chat"}) ->
-    {"decided_by":"reviewer:local","existing":null,"id":"01M8DWHAXTX33HP3FKTSYG6ZND","note":null,"possible_duplicates":[{"cosine":0.7451248168945312,"id":"01M8DWGSBRB4DG90W61STBPSJ4"},{"cosine":0.7402605414390564,"id":"01M8DWGS9GKVH761NAM2C7Z0RZ"},{"cosine":0.733522355556488,"id":"01M8DWH2VSX0799AC1SYCB9NAG"},{"cosine":0.7109583616256714,"id":"01M8DWGS814A8XBQEAX5CNPAPV"},{"cosine":0.7030860185623169,"id":"01M8DWGSD7S0HJCF5P9XAKZPNT"},{"cosine":0.6851215362548828,"id":"01M8DWGS6Z49KHF1AGVNZ05F2R"}],"reason":"A stable fact the user stated","status":"accepted"}
+    {"decided_by":"reviewer:local","existing":null,"id":"01M8DZ2GGJ7QMCSZCW2ERQ7WQS","note":null,"possible_duplicates":[{"cosine":0.7451248168945312,"id":"01M8DZ1WTPS0FB7FY8D8TY108R"},{"cosine":0.7402605414390564,"id":"01M8DZ1WT6W5RQ1CR8QTQRWRCK"},{"cosine":0.733522355556488,"id":"01M8DZ25VD1MDV2Q86EJKP3S2Q"},{"cosine":0.7109583616256714,"id":"01M8DZ1WS4MNM3Q8X8ZE0RVV5K"},{"cosine":0.7030860185623169,"id":"01M8DZ1WVRCMXFXCPYF339GJK6"},{"cosine":0.6851215362548828,"id":"01M8DZ1WRK3PJQ9WT0GC7GVP4H"}],"reason":"A stable fact the user stated","status":"accepted"}
 
 $ engramma proposals --cell work
- SYCB9NAG mcp:claude-code — Auth: JWT
+ EJKP3S2Q mcp:claude-code — Auth: JWT
       reason: Read in commit 4f1c
-      decided by user@cli at 2026-11-27T06:54:23Z
- TSYG6ZND mcp:cursor — Package manager
+      decided by user@cli at 2026-11-27T07:38:43Z
+ 2ERQ7WQS mcp:cursor — Package manager
       reason: The user said so in this chat
-      decided by reviewer:local at 2026-11-27T06:54:25Z
+      decided by reviewer:local at 2026-11-27T07:38:45Z
 [exit 0]
 
 $ engramma decisions --cell work
-T05HRD53  accept  user@cli  2026-11-27T06:54:23Z
-      proposal SYCB9NAG
+J1CCVBGT  accept  user@cli  2026-11-27T07:38:43Z
+      proposal EJKP3S2Q
       why: accepted from the CLI
-GK6WRHDE  accept  reviewer:local  2026-11-27T06:54:25Z
-      proposal TSYG6ZND
+DV16X35R  accept  reviewer:local  2026-11-27T07:38:45Z
+      proposal 2ERQ7WQS
       why: A stable fact the user stated
       reviewer local model ? confidence 0.9 prompt a3b3df60
 [exit 0]
 
 $ engramma mcp --cells work --write work --actor opencode   (the client OpenCode would run)
   memory_search({"query":"Which package manager?","limit":2}) ->
-    {"hits":[{"explain":{"bm25_rank":1,"confidence":"stated","cosine":0.9226946830749512,"fused_score":1,"lists":["text","vector"],"matched_terms":["packag","manag"],"semantic_rank":1,"source":"mcp:cursor","support":"strong","valid_from":null,"valid_to":null,"via":null,"winning_chunk":0},"note":{"body":"Use pnpm, never npm, in this repo.","confidence":"stated","created_at":"2026-11-27T06:54:25Z","id":"01M8DWHAXTX33HP3FKTSYG6ZND","source":"mcp:cursor","status":"active","tags":["repo"],"title":"Package manager","type":"fact","updated_at":"2026-11-27T06:54:25Z","valid_from":null,"valid_to":null},"raw_score":0.65,"score":1},{"explain":{"bm25_rank":null,"confidence":"stated","cosine":0.7052496075630188,"fused_score":0,"lists":["vector","graph"],"matched_terms":[],"semantic_rank":7,"source":"user","support":"weak","valid_from":"2026-09-01","valid_to":null,"via":"[[note:01M8DWGS9GKVH761NAM2C7Z0RZ]] -mentions-> [[Giulia]] -mentions-> (note VNZ05F2R)","winning_chunk":0},"note":{"body":"Gaia ha traslocato a [[Milano]] con [[Giulia]] a settembre 2026.\n","confidence":"stated","created_at":"2026-11-27T06:54:07Z","id":"01M8DWGS6Z49KHF1AGVNZ05F2R","source":"user","status":"active","tags":["casa/milano"],"title":"Gaia abita a Milano","type":"fact","updated_at":"2026-11-27T06:54:07Z","valid_from":"2026-09-01","valid_to":null},"raw_score":0.35,"score":0.5384615384615384}],"mode":"hybrid","query":"Which package manager?"}
+    {"hits":[{"explain":{"bm25_rank":1,"confidence":"stated","cosine":0.9226946830749512,"fused_score":1,"lists":["text","vector"],"matched_terms":["packag","manag"],"semantic_rank":1,"source":"mcp:cursor","support":"strong","valid_from":null,"valid_to":null,"via":null,"winning_chunk":0},"note":{"body":"Use pnpm, never npm, in this repo.","confidence":"stated","created_at":"2026-11-27T07:38:45Z","id":"01M8DZ2GGJ7QMCSZCW2ERQ7WQS","source":"mcp:cursor","status":"active","tags":["repo"],"title":"Package manager","type":"fact","updated_at":"2026-11-27T07:38:45Z","valid_from":null,"valid_to":null},"raw_score":0.65,"score":1},{"explain":{"bm25_rank":null,"confidence":"stated","cosine":0.7052496075630188,"fused_score":0,"lists":["vector","graph"],"matched_terms":[],"semantic_rank":7,"source":"user","support":"weak","valid_from":"2026-09-01","valid_to":null,"via":"[[note:01M8DZ1WT6W5RQ1CR8QTQRWRCK]] -mentions-> [[Giulia]] -mentions-> (note GC7GVP4H)","winning_chunk":0},"note":{"body":"Gaia ha traslocato a [[Milano]] con [[Giulia]] a settembre 2026.\n","confidence":"stated","created_at":"2026-11-27T07:38:25Z","id":"01M8DZ1WRK3PJQ9WT0GC7GVP4H","source":"user","status":"active","tags":["casa/milano"],"title":"Gaia abita a Milano","type":"fact","updated_at":"2026-11-27T07:38:25Z","valid_from":"2026-09-01","valid_to":null},"raw_score":0.35,"score":0.5384615384615384}],"mode":"hybrid","query":"Which package manager?"}
 
 ### S8 · hub, story 3: ChatGPT proposes something it read on a web page; Homun reads
 
 $ engramma mcp --cells work --write work --actor chatgpt   (the client ChatGPT's grant would carry)
   memory_propose({"text":"Acme's CFO is leaving in March.","title":"CFO di Acme","tags":["lavoro/acme"],"confidence":"inferred","reason":"Read on acme.example.com/news"}) ->
-    {"decided_by":null,"existing":null,"id":"01M8DWHCHXR50B6ZXWESK21ECB","note":null,"possible_duplicates":[{"cosine":0.8295828104019165,"id":"01M8DWGSBRB4DG90W61STBPSJ4"},{"cosine":0.7977344393730164,"id":"01M8DWGSD7S0HJCF5P9XAKZPNT"},{"cosine":0.7870046496391296,"id":"01M8DWGS9GKVH761NAM2C7Z0RZ"},{"cosine":0.7688204050064087,"id":"01M8DWGS6Z49KHF1AGVNZ05F2R"},{"cosine":0.7639809250831604,"id":"01M8DWGS814A8XBQEAX5CNPAPV"},{"cosine":0.722228467464447,"id":"01M8DWH2VSX0799AC1SYCB9NAG"},{"cosine":0.7078759670257568,"id":"01M8DWHAXTX33HP3FKTSYG6ZND"}],"reason":null,"status":"pending"}
+    {"decided_by":null,"existing":null,"id":"01M8DZ2J43K4AHN18PES9N8MH0","note":null,"possible_duplicates":[{"cosine":0.8295828104019165,"id":"01M8DZ1WTPS0FB7FY8D8TY108R"},{"cosine":0.7977344393730164,"id":"01M8DZ1WVRCMXFXCPYF339GJK6"},{"cosine":0.7870046496391296,"id":"01M8DZ1WT6W5RQ1CR8QTQRWRCK"},{"cosine":0.7688204050064087,"id":"01M8DZ1WRK3PJQ9WT0GC7GVP4H"},{"cosine":0.7639809250831604,"id":"01M8DZ1WS4MNM3Q8X8ZE0RVV5K"},{"cosine":0.722228467464447,"id":"01M8DZ25VD1MDV2Q86EJKP3S2Q"},{"cosine":0.7078759670257568,"id":"01M8DZ2GGJ7QMCSZCW2ERQ7WQS"}],"reason":null,"status":"pending"}
 
 $ engramma proposals --cell work
- SYCB9NAG mcp:claude-code — Auth: JWT
+ EJKP3S2Q mcp:claude-code — Auth: JWT
       reason: Read in commit 4f1c
-      decided by user@cli at 2026-11-27T06:54:23Z
- TSYG6ZND mcp:cursor — Package manager
+      decided by user@cli at 2026-11-27T07:38:43Z
+ 2ERQ7WQS mcp:cursor — Package manager
       reason: The user said so in this chat
-      decided by reviewer:local at 2026-11-27T06:54:25Z
-[queued] ESK21ECB mcp:chatgpt — CFO di Acme
+      decided by reviewer:local at 2026-11-27T07:38:45Z
+[queued] ES9N8MH0 mcp:chatgpt — CFO di Acme
       reason: Read on acme.example.com/news
 [exit 0]
 
-$ engramma proposals show 01M8DWHCHXR50B6ZXWESK21ECB --cell work
+$ engramma proposals show 01M8DZ2J43K4AHN18PES9N8MH0 --cell work
 ---
-id: 01M8DWHCHXR50B6ZXWESK21ECB
+id: 01M8DZ2J43K4AHN18PES9N8MH0
 type: fact
 title: CFO di Acme
 tags: [lavoro/acme]
 source: mcp:chatgpt
 confidence: inferred
 status: quarantined
-created_at: 2026-11-27T06:54:27Z
-updated_at: 2026-11-27T06:54:27Z
+created_at: 2026-11-27T07:38:47Z
+updated_at: 2026-11-27T07:38:47Z
 ---
 Acme's CFO is leaving in March.
 
-proposed by mcp:chatgpt at 2026-11-27T06:54:27Z
+proposed by mcp:chatgpt at 2026-11-27T07:38:47Z
 declared client: site-capture-driver 0.0.1
 reason: Read on acme.example.com/news
 [exit 0]
 
 $ engramma decisions --cell work
-T05HRD53  accept  user@cli  2026-11-27T06:54:23Z
-      proposal SYCB9NAG
+J1CCVBGT  accept  user@cli  2026-11-27T07:38:43Z
+      proposal EJKP3S2Q
       why: accepted from the CLI
-GK6WRHDE  accept  reviewer:local  2026-11-27T06:54:25Z
-      proposal TSYG6ZND
+DV16X35R  accept  reviewer:local  2026-11-27T07:38:45Z
+      proposal 2ERQ7WQS
       why: A stable fact the user stated
       reviewer local model ? confidence 0.9 prompt a3b3df60
 [exit 0]
 
 $ engramma search "Who is Acme's CFO?" --cell work --k 3
-1. [active] Contratti Acme (1STBPSJ4)
+1. [active] Contratti Acme (D8TY108R)
    score 1.0000 (raw 0.6500)
    lists: text, vector
    terms: acme
@@ -718,7 +718,7 @@ $ engramma search "Who is Acme's CFO?" --cell work --k 3
    validity: always → now
    source: user
 
-2. [active] Gaia abita a Milano (VNZ05F2R)
+2. [active] Gaia abita a Milano (GC7GVP4H)
    score 0.6119 (raw 0.3977)
    lists: vector, graph
    semantic rank: 5
@@ -726,12 +726,12 @@ $ engramma search "Who is Acme's CFO?" --cell work --k 3
    cosine: 0.7350
    support: weak
    winning chunk: 0
-   via: [[note:01M8DWGS9GKVH761NAM2C7Z0RZ]] -mentions-> [[Giulia]] -mentions-> (note VNZ05F2R)
+   via: [[note:01M8DZ1WT6W5RQ1CR8QTQRWRCK]] -mentions-> [[Giulia]] -mentions-> (note GC7GVP4H)
    graph weight: 0.35 (gap 0.70, lists agreeing)
    validity: 2026-09-01 → now
    source: user
 
-3. [active] Il lavoro di Giulia (M2C7Z0RZ)
+3. [active] Il lavoro di Giulia (QTQRWRCK)
    score 0.2975 (raw 0.1934)
    lists: text, vector
    terms: acme
@@ -747,51 +747,51 @@ $ engramma search "Who is Acme's CFO?" --cell work --k 3
 
 $ engramma mcp --cells work --write work --actor homun   (the client Homun would run)
   memory_search({"query":"Who is Acme's CFO?","limit":3}) ->
-    {"hits":[{"explain":{"bm25_rank":1,"confidence":"stated","cosine":0.8582834005355835,"fused_score":1,"lists":["text","vector"],"matched_terms":["acme"],"semantic_rank":1,"source":"user","support":"strong","valid_from":null,"valid_to":null,"via":null,"winning_chunk":0},"note":{"body":"Acme firma solo contratti annuali.\n","confidence":"stated","created_at":"2026-11-27T06:54:07Z","id":"01M8DWGSBRB4DG90W61STBPSJ4","source":"user","status":"active","tags":["lavoro/acme"],"title":"Contratti Acme","type":"fact","updated_at":"2026-11-27T06:54:07Z","valid_from":null,"valid_to":null},"raw_score":0.65,"score":1},{"explain":{"bm25_rank":null,"confidence":"stated","cosine":0.735042929649353,"fused_score":0.07343064476664278,"lists":["vector","graph"],"matched_terms":[],"semantic_rank":5,"source":"user","support":"weak","valid_from":"2026-09-01","valid_to":null,"via":"[[note:01M8DWGS9GKVH761NAM2C7Z0RZ]] -mentions-> [[Giulia]] -mentions-> (note VNZ05F2R)","winning_chunk":0},"note":{"body":"Gaia ha traslocato a [[Milano]] con [[Giulia]] a settembre 2026.\n","confidence":"stated","created_at":"2026-11-27T06:54:07Z","id":"01M8DWGS6Z49KHF1AGVNZ05F2R","source":"user","status":"active","tags":["casa/milano"],"title":"Gaia abita a Milano","type":"fact","updated_at":"2026-11-27T06:54:07Z","valid_from":"2026-09-01","valid_to":null},"raw_score":0.3977299190983178,"score":0.6118921832281812},{"explain":{"bm25_rank":2,"confidence":"stated","cosine":0.7997913360595703,"fused_score":0.29754278728101935,"lists":["text","vector"],"matched_terms":["acme"],"semantic_rank":2,"source":"user","support":"strong","valid_from":null,"valid_to":null,"via":null,"winning_chunk":0},"note":{"body":"[[Giulia]] ha iniziato a novembre in [[Acme]]: si occupa di pricing.\n","confidence":"stated","created_at":"2026-11-27T06:54:07Z","id":"01M8DWGS9GKVH761NAM2C7Z0RZ","source":"user","status":"active","tags":["amici"],"title":"Il lavoro di Giulia","type":"fact","updated_at":"2026-11-27T06:54:07Z","valid_from":null,"valid_to":null},"raw_score":0.19340281173266258,"score":0.29754278728101935}],"mode":"hybrid","query":"Who is Acme's CFO?"}
+    {"hits":[{"explain":{"bm25_rank":1,"confidence":"stated","cosine":0.8582834005355835,"fused_score":1,"lists":["text","vector"],"matched_terms":["acme"],"semantic_rank":1,"source":"user","support":"strong","valid_from":null,"valid_to":null,"via":null,"winning_chunk":0},"note":{"body":"Acme firma solo contratti annuali.\n","confidence":"stated","created_at":"2026-11-27T07:38:25Z","id":"01M8DZ1WTPS0FB7FY8D8TY108R","source":"user","status":"active","tags":["lavoro/acme"],"title":"Contratti Acme","type":"fact","updated_at":"2026-11-27T07:38:25Z","valid_from":null,"valid_to":null},"raw_score":0.65,"score":1},{"explain":{"bm25_rank":null,"confidence":"stated","cosine":0.735042929649353,"fused_score":0.07343064476664278,"lists":["vector","graph"],"matched_terms":[],"semantic_rank":5,"source":"user","support":"weak","valid_from":"2026-09-01","valid_to":null,"via":"[[note:01M8DZ1WT6W5RQ1CR8QTQRWRCK]] -mentions-> [[Giulia]] -mentions-> (note GC7GVP4H)","winning_chunk":0},"note":{"body":"Gaia ha traslocato a [[Milano]] con [[Giulia]] a settembre 2026.\n","confidence":"stated","created_at":"2026-11-27T07:38:25Z","id":"01M8DZ1WRK3PJQ9WT0GC7GVP4H","source":"user","status":"active","tags":["casa/milano"],"title":"Gaia abita a Milano","type":"fact","updated_at":"2026-11-27T07:38:25Z","valid_from":"2026-09-01","valid_to":null},"raw_score":0.3977299190983178,"score":0.6118921832281812},{"explain":{"bm25_rank":2,"confidence":"stated","cosine":0.7997913360595703,"fused_score":0.29754278728101935,"lists":["text","vector"],"matched_terms":["acme"],"semantic_rank":2,"source":"user","support":"strong","valid_from":null,"valid_to":null,"via":null,"winning_chunk":0},"note":{"body":"[[Giulia]] ha iniziato a novembre in [[Acme]]: si occupa di pricing.\n","confidence":"stated","created_at":"2026-11-27T07:38:25Z","id":"01M8DZ1WT6W5RQ1CR8QTQRWRCK","source":"user","status":"active","tags":["amici"],"title":"Il lavoro di Giulia","type":"fact","updated_at":"2026-11-27T07:38:25Z","valid_from":null,"valid_to":null},"raw_score":0.19340281173266258,"score":0.29754278728101935}],"mode":"hybrid","query":"Who is Acme's CFO?"}
 
 ### S9 · the limit of confidence: the reviewer is not sure enough
 
 $ engramma mcp --cells work --write work --actor cursor   (the reviewer answers 0.6, under min_confidence 0.8)
   memory_propose({"text":"The stand-up is at 9:30.","title":"Stand-up","confidence":"stated","reason":"The user said so, once"}) ->
-    {"decided_by":null,"existing":null,"id":"01M8DWHEJT5CZXYR6GKS4HT3CM","note":null,"possible_duplicates":[{"cosine":0.7681463360786438,"id":"01M8DWGSD7S0HJCF5P9XAKZPNT"},{"cosine":0.7623705267906189,"id":"01M8DWGS9GKVH761NAM2C7Z0RZ"},{"cosine":0.7614837288856506,"id":"01M8DWGS814A8XBQEAX5CNPAPV"},{"cosine":0.7599204778671265,"id":"01M8DWGS6Z49KHF1AGVNZ05F2R"},{"cosine":0.7491957545280457,"id":"01M8DWH2VSX0799AC1SYCB9NAG"},{"cosine":0.7212764024734497,"id":"01M8DWHAXTX33HP3FKTSYG6ZND"},{"cosine":0.7087185382843018,"id":"01M8DWGSBRB4DG90W61STBPSJ4"}],"reason":null,"status":"pending"}
+    {"decided_by":null,"existing":null,"id":"01M8DZ2M41HBT11QVRDMDJ7SAF","note":null,"possible_duplicates":[{"cosine":0.7681463360786438,"id":"01M8DZ1WVRCMXFXCPYF339GJK6"},{"cosine":0.7623705267906189,"id":"01M8DZ1WT6W5RQ1CR8QTQRWRCK"},{"cosine":0.7614837288856506,"id":"01M8DZ1WS4MNM3Q8X8ZE0RVV5K"},{"cosine":0.7599204778671265,"id":"01M8DZ1WRK3PJQ9WT0GC7GVP4H"},{"cosine":0.7491957545280457,"id":"01M8DZ25VD1MDV2Q86EJKP3S2Q"},{"cosine":0.7212764024734497,"id":"01M8DZ2GGJ7QMCSZCW2ERQ7WQS"},{"cosine":0.7087185382843018,"id":"01M8DZ1WTPS0FB7FY8D8TY108R"}],"reason":null,"status":"pending"}
 
 $ engramma proposals --cell work
- SYCB9NAG mcp:claude-code — Auth: JWT
+ EJKP3S2Q mcp:claude-code — Auth: JWT
       reason: Read in commit 4f1c
-      decided by user@cli at 2026-11-27T06:54:23Z
- TSYG6ZND mcp:cursor — Package manager
+      decided by user@cli at 2026-11-27T07:38:43Z
+ 2ERQ7WQS mcp:cursor — Package manager
       reason: The user said so in this chat
-      decided by reviewer:local at 2026-11-27T06:54:25Z
-[queued] ESK21ECB mcp:chatgpt — CFO di Acme
+      decided by reviewer:local at 2026-11-27T07:38:45Z
+[queued] ES9N8MH0 mcp:chatgpt — CFO di Acme
       reason: Read on acme.example.com/news
-[queued] KS4HT3CM mcp:cursor — Stand-up
+[queued] DMDJ7SAF mcp:cursor — Stand-up
       reason: The user said so, once
 [exit 0]
 
-$ engramma proposals show 01M8DWHEJT5CZXYR6GKS4HT3CM --cell work
+$ engramma proposals show 01M8DZ2M41HBT11QVRDMDJ7SAF --cell work
 ---
-id: 01M8DWHEJT5CZXYR6GKS4HT3CM
+id: 01M8DZ2M41HBT11QVRDMDJ7SAF
 type: fact
 title: Stand-up
 source: mcp:cursor
 confidence: stated
 status: quarantined
-created_at: 2026-11-27T06:54:29Z
-updated_at: 2026-11-27T06:54:29Z
+created_at: 2026-11-27T07:38:49Z
+updated_at: 2026-11-27T07:38:49Z
 ---
 The stand-up is at 9:30.
 
-proposed by mcp:cursor at 2026-11-27T06:54:29Z
+proposed by mcp:cursor at 2026-11-27T07:38:49Z
 declared client: site-capture-driver 0.0.1
 reason: The user said so, once
 [exit 0]
 
 $ engramma decisions --cell work
-T05HRD53  accept  user@cli  2026-11-27T06:54:23Z
-      proposal SYCB9NAG
+J1CCVBGT  accept  user@cli  2026-11-27T07:38:43Z
+      proposal EJKP3S2Q
       why: accepted from the CLI
-GK6WRHDE  accept  reviewer:local  2026-11-27T06:54:25Z
-      proposal TSYG6ZND
+DV16X35R  accept  reviewer:local  2026-11-27T07:38:45Z
+      proposal 2ERQ7WQS
       why: A stable fact the user stated
       reviewer local model ? confidence 0.9 prompt a3b3df60
 [exit 0]
@@ -848,10 +848,10 @@ $ engramma decisions --cell work --json
   "decisions": [
     {
       "actor": "user@cli",
-      "decided_at": "2026-11-27T06:54:23Z",
+      "decided_at": "2026-11-27T07:38:43Z",
       "decision": "accept",
-      "op_id": "01M8DWH93S9ZP1K122T05HRD53",
-      "proposal": "01M8DWH2VSX0799AC1SYCB9NAG",
+      "op_id": "01M8DZ2EP8FYBP128CJ1CCVBGT",
+      "proposal": "01M8DZ25VD1MDV2Q86EJKP3S2Q",
       "reason": "accepted from the CLI",
       "reverted_by": null,
       "review": null,
@@ -860,10 +860,10 @@ $ engramma decisions --cell work --json
     },
     {
       "actor": "reviewer:local",
-      "decided_at": "2026-11-27T06:54:25Z",
+      "decided_at": "2026-11-27T07:38:45Z",
       "decision": "accept",
-      "op_id": "01M8DWHAZD8YACT5G9GK6WRHDE",
-      "proposal": "01M8DWHAXTX33HP3FKTSYG6ZND",
+      "op_id": "01M8DZ2GJ5CT08BTNCDV16X35R",
+      "proposal": "01M8DZ2GGJ7QMCSZCW2ERQ7WQS",
       "reason": "A stable fact the user stated",
       "reverted_by": null,
       "review": {
@@ -885,56 +885,56 @@ $ engramma policy set --cell work write=propose
 policy updated
 [exit 0]
 
-$ engramma mcp --cells work --write work --actor claude-code   (corrects the note 01M8DWGSBRB4DG90W61STBPSJ4)
-  memory_propose({"text":"Acme signs quarterly contracts.","title":"Contratti Acme","tags":["lavoro/acme"],"confidence":"stated","reason":"The user corrected it","supersedes":"01M8DWGSBRB4DG90W61STBPSJ4"}) ->
-    {"decided_by":null,"existing":null,"id":"01M8DWHFQ2QYHGD9VTDRZZJYS9","note":null,"possible_duplicates":[{"cosine":0.9477298855781555,"id":"01M8DWGSBRB4DG90W61STBPSJ4"},{"cosine":0.8159127235412598,"id":"01M8DWGS9GKVH761NAM2C7Z0RZ"},{"cosine":0.7685341238975525,"id":"01M8DWGSD7S0HJCF5P9XAKZPNT"},{"cosine":0.7527779936790466,"id":"01M8DWHAXTX33HP3FKTSYG6ZND"},{"cosine":0.7445319294929504,"id":"01M8DWGS814A8XBQEAX5CNPAPV"},{"cosine":0.7286145687103271,"id":"01M8DWGS6Z49KHF1AGVNZ05F2R"},{"cosine":0.7038776278495789,"id":"01M8DWH2VSX0799AC1SYCB9NAG"}],"reason":null,"status":"pending"}
+$ engramma mcp --cells work --write work --actor claude-code   (corrects the note 01M8DZ1WTPS0FB7FY8D8TY108R)
+  memory_propose({"text":"Acme signs quarterly contracts.","title":"Contratti Acme","tags":["lavoro/acme"],"confidence":"stated","reason":"The user corrected it","supersedes":"01M8DZ1WTPS0FB7FY8D8TY108R"}) ->
+    {"decided_by":null,"existing":null,"id":"01M8DZ2N7J3A42WB3CXTJBET9A","note":null,"possible_duplicates":[{"cosine":0.9477298855781555,"id":"01M8DZ1WTPS0FB7FY8D8TY108R"},{"cosine":0.8159127235412598,"id":"01M8DZ1WT6W5RQ1CR8QTQRWRCK"},{"cosine":0.7685341238975525,"id":"01M8DZ1WVRCMXFXCPYF339GJK6"},{"cosine":0.7527779936790466,"id":"01M8DZ2GGJ7QMCSZCW2ERQ7WQS"},{"cosine":0.7445319294929504,"id":"01M8DZ1WS4MNM3Q8X8ZE0RVV5K"},{"cosine":0.7286145687103271,"id":"01M8DZ1WRK3PJQ9WT0GC7GVP4H"},{"cosine":0.7038776278495789,"id":"01M8DZ25VD1MDV2Q86EJKP3S2Q"}],"reason":null,"status":"pending"}
 
-$ engramma mcp --cells work --write work --actor codex   (corrects the note 01M8DWGSBRB4DG90W61STBPSJ4)
-  memory_propose({"text":"Acme signs two-year contracts.","title":"Contratti Acme","tags":["lavoro/acme"],"confidence":"stated","reason":"The user corrected it on the phone","supersedes":"01M8DWGSBRB4DG90W61STBPSJ4"}) ->
-    {"decided_by":null,"existing":null,"id":"01M8DWHGEXKKNZ91Y1EC8QWD86","note":null,"possible_duplicates":[{"cosine":0.9510670304298401,"id":"01M8DWGSBRB4DG90W61STBPSJ4"},{"cosine":0.8141228556632996,"id":"01M8DWGS9GKVH761NAM2C7Z0RZ"},{"cosine":0.772199809551239,"id":"01M8DWGSD7S0HJCF5P9XAKZPNT"},{"cosine":0.7502134442329407,"id":"01M8DWHAXTX33HP3FKTSYG6ZND"},{"cosine":0.7479555010795593,"id":"01M8DWGS814A8XBQEAX5CNPAPV"},{"cosine":0.746464729309082,"id":"01M8DWGS6Z49KHF1AGVNZ05F2R"},{"cosine":0.7016895413398743,"id":"01M8DWH2VSX0799AC1SYCB9NAG"}],"reason":null,"status":"pending"}
+$ engramma mcp --cells work --write work --actor codex   (corrects the note 01M8DZ1WTPS0FB7FY8D8TY108R)
+  memory_propose({"text":"Acme signs two-year contracts.","title":"Contratti Acme","tags":["lavoro/acme"],"confidence":"stated","reason":"The user corrected it on the phone","supersedes":"01M8DZ1WTPS0FB7FY8D8TY108R"}) ->
+    {"decided_by":null,"existing":null,"id":"01M8DZ2NYYGH1BXSDY7M5TN869","note":null,"possible_duplicates":[{"cosine":0.9510670304298401,"id":"01M8DZ1WTPS0FB7FY8D8TY108R"},{"cosine":0.8141228556632996,"id":"01M8DZ1WT6W5RQ1CR8QTQRWRCK"},{"cosine":0.772199809551239,"id":"01M8DZ1WVRCMXFXCPYF339GJK6"},{"cosine":0.7502134442329407,"id":"01M8DZ2GGJ7QMCSZCW2ERQ7WQS"},{"cosine":0.7479555010795593,"id":"01M8DZ1WS4MNM3Q8X8ZE0RVV5K"},{"cosine":0.746464729309082,"id":"01M8DZ1WRK3PJQ9WT0GC7GVP4H"},{"cosine":0.7016895413398743,"id":"01M8DZ25VD1MDV2Q86EJKP3S2Q"}],"reason":null,"status":"pending"}
 
 $ engramma proposals --cell work
- SYCB9NAG mcp:claude-code — Auth: JWT
+ EJKP3S2Q mcp:claude-code — Auth: JWT
       reason: Read in commit 4f1c
-      decided by user@cli at 2026-11-27T06:54:23Z
- TSYG6ZND mcp:cursor — Package manager
+      decided by user@cli at 2026-11-27T07:38:43Z
+ 2ERQ7WQS mcp:cursor — Package manager
       reason: The user said so in this chat
-      decided by reviewer:local at 2026-11-27T06:54:25Z
-[queued] ESK21ECB mcp:chatgpt — CFO di Acme
+      decided by reviewer:local at 2026-11-27T07:38:45Z
+[queued] ES9N8MH0 mcp:chatgpt — CFO di Acme
       reason: Read on acme.example.com/news
-[queued] KS4HT3CM mcp:cursor — Stand-up
+[queued] DMDJ7SAF mcp:cursor — Stand-up
       reason: The user said so, once
-[queued] DRZZJYS9 mcp:claude-code — Contratti Acme
+[queued] XTJBET9A mcp:claude-code — Contratti Acme
       reason: The user corrected it
-      correction of 1STBPSJ4
-[queued] EC8QWD86 mcp:codex — Contratti Acme
+      correction of D8TY108R
+[queued] 7M5TN869 mcp:codex — Contratti Acme
       reason: The user corrected it on the phone
-      correction of 1STBPSJ4
+      correction of D8TY108R
 [exit 0]
 
-$ engramma proposals accept 01M8DWHFQ2QYHGD9VTDRZZJYS9 --cell work
-accepted: 01M8DWHFQ2QYHGD9VTDRZZJYS9
+$ engramma proposals accept 01M8DZ2N7J3A42WB3CXTJBET9A --cell work
+accepted: 01M8DZ2N7J3A42WB3CXTJBET9A
 embedded: 4 (pending: 0)
 [exit 0]
 
 $ engramma proposals --cell work
- SYCB9NAG mcp:claude-code — Auth: JWT
+ EJKP3S2Q mcp:claude-code — Auth: JWT
       reason: Read in commit 4f1c
-      decided by user@cli at 2026-11-27T06:54:23Z
- TSYG6ZND mcp:cursor — Package manager
+      decided by user@cli at 2026-11-27T07:38:43Z
+ 2ERQ7WQS mcp:cursor — Package manager
       reason: The user said so in this chat
-      decided by reviewer:local at 2026-11-27T06:54:25Z
-[queued] ESK21ECB mcp:chatgpt — CFO di Acme
+      decided by reviewer:local at 2026-11-27T07:38:45Z
+[queued] ES9N8MH0 mcp:chatgpt — CFO di Acme
       reason: Read on acme.example.com/news
-[queued] KS4HT3CM mcp:cursor — Stand-up
+[queued] DMDJ7SAF mcp:cursor — Stand-up
       reason: The user said so, once
- DRZZJYS9 mcp:claude-code — Contratti Acme
+ XTJBET9A mcp:claude-code — Contratti Acme
       reason: The user corrected it
-      correction of 1STBPSJ4
-      decided by user@cli at 2026-11-27T06:54:31Z
-[queued] EC8QWD86 mcp:codex — Contratti Acme
+      correction of D8TY108R
+      decided by user@cli at 2026-11-27T07:38:51Z
+[queued] 7M5TN869 mcp:codex — Contratti Acme
       reason: The user corrected it on the phone
-      correction of 1STBPSJ4
+      correction of D8TY108R
 [exit 0]
 
 $ engramma conflicts --cell work
@@ -942,7 +942,7 @@ no conflict copies
 [exit 0]
 
 $ engramma search "Which contracts does Acme sign?" --cell work --k 4
-1. [active] Contratti Acme (DRZZJYS9)
+1. [active] Contratti Acme (XTJBET9A)
    score 1.0000 (raw 0.6500)
    lists: text, vector
    terms: contract, acme, sign
@@ -955,7 +955,7 @@ $ engramma search "Which contracts does Acme sign?" --cell work --k 4
    validity: always → now
    source: mcp:claude-code
 
-2. [active] Gaia abita a Milano (VNZ05F2R)
+2. [active] Gaia abita a Milano (GC7GVP4H)
    score 0.5640 (raw 0.3666)
    lists: vector, graph
    semantic rank: 6
@@ -963,12 +963,12 @@ $ engramma search "Which contracts does Acme sign?" --cell work --k 4
    cosine: 0.7100
    support: weak
    winning chunk: 0
-   via: [[note:01M8DWGS9GKVH761NAM2C7Z0RZ]] -mentions-> [[Giulia]] -mentions-> (note VNZ05F2R)
+   via: [[note:01M8DZ1WT6W5RQ1CR8QTQRWRCK]] -mentions-> [[Giulia]] -mentions-> (note GC7GVP4H)
    graph weight: 0.35 (gap 0.80, lists agreeing)
    validity: 2026-09-01 → now
    source: user
 
-3. [active] Il lavoro di Giulia (M2C7Z0RZ)
+3. [active] Il lavoro di Giulia (QTQRWRCK)
    score 0.2018 (raw 0.1312)
    lists: text, vector
    terms: acme
@@ -981,7 +981,7 @@ $ engramma search "Which contracts does Acme sign?" --cell work --k 4
    validity: always → now
    source: user
 
-4. [active] Ufficio a Milano (9XAKZPNT)
+4. [active] Ufficio a Milano (F339GJK6)
    score 0.1135 (raw 0.0738)
    lists: vector, graph
    semantic rank: 4
@@ -989,15 +989,15 @@ $ engramma search "Which contracts does Acme sign?" --cell work --k 4
    cosine: 0.7459
    support: weak
    winning chunk: 0
-   via: [[note:01M8DWGS9GKVH761NAM2C7Z0RZ]] -mentions-> [[Giulia]] -mentions-> (note VNZ05F2R) -mentions-> [[Milano]] -mentions-> (note 9XAKZPNT)
+   via: [[note:01M8DZ1WT6W5RQ1CR8QTQRWRCK]] -mentions-> [[Giulia]] -mentions-> (note GC7GVP4H) -mentions-> [[Milano]] -mentions-> (note F339GJK6)
    graph weight: 0.35 (gap 0.80, lists agreeing)
    validity: 2026-09-01 → now
    source: user
 [exit 0]
 
-$ engramma get 01M8DWGSBRB4DG90W61STBPSJ4 --cell work
+$ engramma get 01M8DZ1WTPS0FB7FY8D8TY108R --cell work
 ---
-id: 01M8DWGSBRB4DG90W61STBPSJ4
+id: 01M8DZ1WTPS0FB7FY8D8TY108R
 type: fact
 title: Contratti Acme
 tags: [lavoro/acme]
@@ -1005,15 +1005,15 @@ source: user
 confidence: stated
 status: superseded
 valid_to: 2026-11-27
-created_at: 2026-11-27T06:54:07Z
-updated_at: 2026-11-27T06:54:31Z
+created_at: 2026-11-27T07:38:25Z
+updated_at: 2026-11-27T07:38:51Z
 ---
 Acme firma solo contratti annuali.
 
 [exit 0]
 
-$ engramma history 01M8DWGSBRB4DG90W61STBPSJ4 --cell work
-v1  2026-11-27T06:54:07Z  Contratti Acme  [decide, user@cli]
+$ engramma history 01M8DZ1WTPS0FB7FY8D8TY108R --cell work
+v1  2026-11-27T07:38:25Z  Contratti Acme  [decide, user@cli]
 [exit 0]
 
 $ engramma verify --cell work
@@ -1023,28 +1023,28 @@ vector coverage: granite-embedding-97m-multilingual-r2@835ad140 [ready] 14/14 no
 
 ### S11b · the second correction is refused: exit 4, and it stays in the queue
 
-$ engramma proposals accept 01M8DWHGEXKKNZ91Y1EC8QWD86 --cell work
-engramma: correction rejected: 01M8DWGSBRB4DG90W61STBPSJ4 is not the current version — already corrected by 01M8DWHFQ2QYHGD9VTDRZZJYS9 — reject the proposal (`engramma proposals reject <id>`) or propose again on the current note (01M8DWHFQ2QYHGD9VTDRZZJYS9)
+$ engramma proposals accept 01M8DZ2NYYGH1BXSDY7M5TN869 --cell work
+engramma: correction rejected: 01M8DZ1WTPS0FB7FY8D8TY108R is not the current version — already corrected by 01M8DZ2N7J3A42WB3CXTJBET9A — reject the proposal (`engramma proposals reject <id>`) or propose again on the current note (01M8DZ2N7J3A42WB3CXTJBET9A)
 [exit 4]
 
 $ engramma proposals --cell work
- SYCB9NAG mcp:claude-code — Auth: JWT
+ EJKP3S2Q mcp:claude-code — Auth: JWT
       reason: Read in commit 4f1c
-      decided by user@cli at 2026-11-27T06:54:23Z
- TSYG6ZND mcp:cursor — Package manager
+      decided by user@cli at 2026-11-27T07:38:43Z
+ 2ERQ7WQS mcp:cursor — Package manager
       reason: The user said so in this chat
-      decided by reviewer:local at 2026-11-27T06:54:25Z
-[queued] ESK21ECB mcp:chatgpt — CFO di Acme
+      decided by reviewer:local at 2026-11-27T07:38:45Z
+[queued] ES9N8MH0 mcp:chatgpt — CFO di Acme
       reason: Read on acme.example.com/news
-[queued] KS4HT3CM mcp:cursor — Stand-up
+[queued] DMDJ7SAF mcp:cursor — Stand-up
       reason: The user said so, once
- DRZZJYS9 mcp:claude-code — Contratti Acme
+ XTJBET9A mcp:claude-code — Contratti Acme
       reason: The user corrected it
-      correction of 1STBPSJ4
-      decided by user@cli at 2026-11-27T06:54:31Z
-[queued] EC8QWD86 mcp:codex — Contratti Acme
+      correction of D8TY108R
+      decided by user@cli at 2026-11-27T07:38:51Z
+[queued] 7M5TN869 mcp:codex — Contratti Acme
       reason: The user corrected it on the phone
-      correction of 1STBPSJ4
+      correction of D8TY108R
 [exit 0]
 
 $ engramma conflicts --cell work
@@ -1052,7 +1052,7 @@ no conflict copies
 [exit 0]
 
 $ engramma search "Which contracts does Acme sign?" --cell work --k 3
-1. [active] Contratti Acme (DRZZJYS9)
+1. [active] Contratti Acme (XTJBET9A)
    score 1.0000 (raw 0.6500)
    lists: text, vector
    terms: contract, acme, sign
@@ -1065,7 +1065,7 @@ $ engramma search "Which contracts does Acme sign?" --cell work --k 3
    validity: always → now
    source: mcp:claude-code
 
-2. [active] Gaia abita a Milano (VNZ05F2R)
+2. [active] Gaia abita a Milano (GC7GVP4H)
    score 0.5640 (raw 0.3666)
    lists: vector, graph
    semantic rank: 6
@@ -1073,12 +1073,12 @@ $ engramma search "Which contracts does Acme sign?" --cell work --k 3
    cosine: 0.7100
    support: weak
    winning chunk: 0
-   via: [[note:01M8DWGS9GKVH761NAM2C7Z0RZ]] -mentions-> [[Giulia]] -mentions-> (note VNZ05F2R)
+   via: [[note:01M8DZ1WT6W5RQ1CR8QTQRWRCK]] -mentions-> [[Giulia]] -mentions-> (note GC7GVP4H)
    graph weight: 0.35 (gap 0.80, lists agreeing)
    validity: 2026-09-01 → now
    source: user
 
-3. [active] Il lavoro di Giulia (M2C7Z0RZ)
+3. [active] Il lavoro di Giulia (QTQRWRCK)
    score 0.2018 (raw 0.1312)
    lists: text, vector
    terms: acme
@@ -1092,9 +1092,9 @@ $ engramma search "Which contracts does Acme sign?" --cell work --k 3
    source: user
 [exit 0]
 
-$ engramma get 01M8DWGSBRB4DG90W61STBPSJ4 --cell work
+$ engramma get 01M8DZ1WTPS0FB7FY8D8TY108R --cell work
 ---
-id: 01M8DWGSBRB4DG90W61STBPSJ4
+id: 01M8DZ1WTPS0FB7FY8D8TY108R
 type: fact
 title: Contratti Acme
 tags: [lavoro/acme]
@@ -1102,15 +1102,15 @@ source: user
 confidence: stated
 status: superseded
 valid_to: 2026-11-27
-created_at: 2026-11-27T06:54:07Z
-updated_at: 2026-11-27T06:54:31Z
+created_at: 2026-11-27T07:38:25Z
+updated_at: 2026-11-27T07:38:51Z
 ---
 Acme firma solo contratti annuali.
 
 [exit 0]
 
-$ engramma history 01M8DWGSBRB4DG90W61STBPSJ4 --cell work
-v1  2026-11-27T06:54:07Z  Contratti Acme  [decide, user@cli]
+$ engramma history 01M8DZ1WTPS0FB7FY8D8TY108R --cell work
+v1  2026-11-27T07:38:25Z  Contratti Acme  [decide, user@cli]
 [exit 0]
 
 $ engramma verify --cell work
@@ -1135,7 +1135,7 @@ vector coverage: granite-embedding-97m-multilingual-r2@835ad140 [ready] 14/14 no
 [exit 0]
 
 $ engramma search "How do we authenticate?" --cell work --k 3
-1. [active] Auth: JWT (SYCB9NAG)
+1. [active] Auth: JWT (EJKP3S2Q)
    score 1.0000 (raw 0.6500)
    lists: vector
    semantic rank: 1
@@ -1146,7 +1146,7 @@ $ engramma search "How do we authenticate?" --cell work --k 3
    validity: always → now
    source: mcp:claude-code
 
-2. [active] Gaia abita a Milano (VNZ05F2R)
+2. [active] Gaia abita a Milano (GC7GVP4H)
    score 0.9358 (raw 0.6082)
    lists: vector, graph
    semantic rank: 6
@@ -1154,12 +1154,12 @@ $ engramma search "How do we authenticate?" --cell work --k 3
    cosine: 0.7328
    support: strong
    winning chunk: 0
-   via: [[note:01M8DWGSD7S0HJCF5P9XAKZPNT]] -mentions-> [[Milano]] -mentions-> (note VNZ05F2R)
+   via: [[note:01M8DZ1WVRCMXFXCPYF339GJK6]] -mentions-> [[Milano]] -mentions-> (note GC7GVP4H)
    graph weight: 0.35 (gap 0.48)
    validity: 2026-09-01 → now
    source: user
 
-3. [active] Il lavoro di Giulia (M2C7Z0RZ)
+3. [active] Il lavoro di Giulia (QTQRWRCK)
    score 0.5306 (raw 0.3449)
    lists: vector, graph
    semantic rank: 4
@@ -1167,7 +1167,7 @@ $ engramma search "How do we authenticate?" --cell work --k 3
    cosine: 0.7470
    support: weak
    winning chunk: 0
-   via: [[note:01M8DWGSD7S0HJCF5P9XAKZPNT]] -mentions-> [[Milano]] -mentions-> (note VNZ05F2R) -mentions-> [[Giulia]] -mentions-> (note M2C7Z0RZ)
+   via: [[note:01M8DZ1WVRCMXFXCPYF339GJK6]] -mentions-> [[Milano]] -mentions-> (note GC7GVP4H) -mentions-> [[Giulia]] -mentions-> (note QTQRWRCK)
    graph weight: 0.35 (gap 0.48)
    validity: always → now
    source: user
@@ -1176,7 +1176,7 @@ $ engramma search "How do we authenticate?" --cell work --k 3
 ### S13 · what a reader gets in each story
 
 $ engramma search "How do we authenticate?" --cell work --k 3
-1. [active] Auth: JWT (SYCB9NAG)
+1. [active] Auth: JWT (EJKP3S2Q)
    score 1.0000 (raw 0.6500)
    lists: vector
    semantic rank: 1
@@ -1187,7 +1187,7 @@ $ engramma search "How do we authenticate?" --cell work --k 3
    validity: always → now
    source: mcp:claude-code
 
-2. [active] Gaia abita a Milano (VNZ05F2R)
+2. [active] Gaia abita a Milano (GC7GVP4H)
    score 0.9358 (raw 0.6082)
    lists: vector, graph
    semantic rank: 6
@@ -1195,12 +1195,12 @@ $ engramma search "How do we authenticate?" --cell work --k 3
    cosine: 0.7328
    support: strong
    winning chunk: 0
-   via: [[note:01M8DWGSD7S0HJCF5P9XAKZPNT]] -mentions-> [[Milano]] -mentions-> (note VNZ05F2R)
+   via: [[note:01M8DZ1WVRCMXFXCPYF339GJK6]] -mentions-> [[Milano]] -mentions-> (note GC7GVP4H)
    graph weight: 0.35 (gap 0.48)
    validity: 2026-09-01 → now
    source: user
 
-3. [active] Il lavoro di Giulia (M2C7Z0RZ)
+3. [active] Il lavoro di Giulia (QTQRWRCK)
    score 0.5306 (raw 0.3449)
    lists: vector, graph
    semantic rank: 4
@@ -1208,14 +1208,14 @@ $ engramma search "How do we authenticate?" --cell work --k 3
    cosine: 0.7470
    support: weak
    winning chunk: 0
-   via: [[note:01M8DWGSD7S0HJCF5P9XAKZPNT]] -mentions-> [[Milano]] -mentions-> (note VNZ05F2R) -mentions-> [[Giulia]] -mentions-> (note M2C7Z0RZ)
+   via: [[note:01M8DZ1WVRCMXFXCPYF339GJK6]] -mentions-> [[Milano]] -mentions-> (note GC7GVP4H) -mentions-> [[Giulia]] -mentions-> (note QTQRWRCK)
    graph weight: 0.35 (gap 0.48)
    validity: always → now
    source: user
 [exit 0]
 
 $ engramma search "Which package manager?" --cell work --k 3
-1. [active] Package manager (TSYG6ZND)
+1. [active] Package manager (2ERQ7WQS)
    score 1.0000 (raw 0.6500)
    lists: text, vector
    terms: packag, manag
@@ -1228,7 +1228,7 @@ $ engramma search "Which package manager?" --cell work --k 3
    validity: always → now
    source: mcp:cursor
 
-2. [active] Gaia abita a Milano (VNZ05F2R)
+2. [active] Gaia abita a Milano (GC7GVP4H)
    score 0.5385 (raw 0.3500)
    lists: vector, graph
    semantic rank: 7
@@ -1236,12 +1236,12 @@ $ engramma search "Which package manager?" --cell work --k 3
    cosine: 0.7052
    support: weak
    winning chunk: 0
-   via: [[note:01M8DWGS9GKVH761NAM2C7Z0RZ]] -mentions-> [[Giulia]] -mentions-> (note VNZ05F2R)
+   via: [[note:01M8DZ1WT6W5RQ1CR8QTQRWRCK]] -mentions-> [[Giulia]] -mentions-> (note GC7GVP4H)
    graph weight: 0.35 (gap 0.83, lists agreeing)
    validity: 2026-09-01 → now
    source: user
 
-3. [active] Contratti Acme (DRZZJYS9)
+3. [active] Contratti Acme (XTJBET9A)
    score 0.1742 (raw 0.1132)
    lists: vector
    semantic rank: 2
@@ -1254,7 +1254,7 @@ $ engramma search "Which package manager?" --cell work --k 3
 [exit 0]
 
 $ engramma search "Who is Acme's CFO?" --cell work --k 3
-1. [active] Contratti Acme (DRZZJYS9)
+1. [active] Contratti Acme (XTJBET9A)
    score 1.0000 (raw 0.6500)
    lists: text, vector
    terms: acme
@@ -1267,7 +1267,7 @@ $ engramma search "Who is Acme's CFO?" --cell work --k 3
    validity: always → now
    source: mcp:claude-code
 
-2. [active] Gaia abita a Milano (VNZ05F2R)
+2. [active] Gaia abita a Milano (GC7GVP4H)
    score 0.6070 (raw 0.3945)
    lists: vector, graph
    semantic rank: 5
@@ -1275,12 +1275,12 @@ $ engramma search "Who is Acme's CFO?" --cell work --k 3
    cosine: 0.7350
    support: weak
    winning chunk: 0
-   via: [[note:01M8DWGS9GKVH761NAM2C7Z0RZ]] -mentions-> [[Giulia]] -mentions-> (note VNZ05F2R)
+   via: [[note:01M8DZ1WT6W5RQ1CR8QTQRWRCK]] -mentions-> [[Giulia]] -mentions-> (note GC7GVP4H)
    graph weight: 0.35 (gap 0.72, lists agreeing)
    validity: 2026-09-01 → now
    source: user
 
-3. [active] Il lavoro di Giulia (M2C7Z0RZ)
+3. [active] Il lavoro di Giulia (QTQRWRCK)
    score 0.2777 (raw 0.1805)
    lists: text, vector
    terms: acme
@@ -1296,8 +1296,8 @@ $ engramma search "Who is Acme's CFO?" --cell work --k 3
 
 ### S14 · a real revert of the first correction: the second is decidable again
 
-$ engramma revert 01M8DWHGV1XNGKGMG2T98PQTWN --cell work --dry-run
-would revert: the proposal goes back to the queue: DRZZJYS9
+$ engramma revert 01M8DZ2PBWWEVDCV7V8YJXM41S --cell work --dry-run
+would revert: the proposal goes back to the queue: XTJBET9A
 [exit 0]
 
 $ engramma verify --cell work
@@ -1305,39 +1305,39 @@ log verified: 21 operations, hash chain, reconstruction and FTS index in place
 vector coverage: granite-embedding-97m-multilingual-r2@835ad140 [ready] 14/14 notes
 [exit 0]
 
-$ engramma revert 01M8DWHGV1XNGKGMG2T98PQTWN --cell work --yes
-reverted: the proposal goes back to the queue: DRZZJYS9
+$ engramma revert 01M8DZ2PBWWEVDCV7V8YJXM41S --cell work --yes
+reverted: the proposal goes back to the queue: XTJBET9A
 [exit 0]
 
 $ engramma proposals --cell work
- SYCB9NAG mcp:claude-code — Auth: JWT
+ EJKP3S2Q mcp:claude-code — Auth: JWT
       reason: Read in commit 4f1c
-      decided by user@cli at 2026-11-27T06:54:23Z
- TSYG6ZND mcp:cursor — Package manager
+      decided by user@cli at 2026-11-27T07:38:43Z
+ 2ERQ7WQS mcp:cursor — Package manager
       reason: The user said so in this chat
-      decided by reviewer:local at 2026-11-27T06:54:25Z
-[queued] ESK21ECB mcp:chatgpt — CFO di Acme
+      decided by reviewer:local at 2026-11-27T07:38:45Z
+[queued] ES9N8MH0 mcp:chatgpt — CFO di Acme
       reason: Read on acme.example.com/news
-[queued] KS4HT3CM mcp:cursor — Stand-up
+[queued] DMDJ7SAF mcp:cursor — Stand-up
       reason: The user said so, once
-[queued] DRZZJYS9 mcp:claude-code — Contratti Acme
+[queued] XTJBET9A mcp:claude-code — Contratti Acme
       reason: The user corrected it
-      correction of 1STBPSJ4
-[queued] EC8QWD86 mcp:codex — Contratti Acme
+      correction of D8TY108R
+[queued] 7M5TN869 mcp:codex — Contratti Acme
       reason: The user corrected it on the phone
-      correction of 1STBPSJ4
+      correction of D8TY108R
 [exit 0]
 
 $ engramma decisions --cell work
-T05HRD53  accept  user@cli  2026-11-27T06:54:23Z
-      proposal SYCB9NAG
+J1CCVBGT  accept  user@cli  2026-11-27T07:38:43Z
+      proposal EJKP3S2Q
       why: accepted from the CLI
-GK6WRHDE  accept  reviewer:local  2026-11-27T06:54:25Z
-      proposal TSYG6ZND
+DV16X35R  accept  reviewer:local  2026-11-27T07:38:45Z
+      proposal 2ERQ7WQS
       why: A stable fact the user stated
       reviewer local model ? confidence 0.9 prompt a3b3df60
-T98PQTWN  accept  user@cli  2026-11-27T06:54:31Z
-      proposal DRZZJYS9
+8YJXM41S  accept  user@cli  2026-11-27T07:38:51Z
+      proposal XTJBET9A
       why: accepted from the CLI
       reverted
 [exit 0]
@@ -1346,88 +1346,88 @@ $ engramma conflicts --cell work
 no conflict copies
 [exit 0]
 
-$ engramma get 01M8DWGSBRB4DG90W61STBPSJ4 --cell work
+$ engramma get 01M8DZ1WTPS0FB7FY8D8TY108R --cell work
 ---
-id: 01M8DWGSBRB4DG90W61STBPSJ4
+id: 01M8DZ1WTPS0FB7FY8D8TY108R
 type: fact
 title: Contratti Acme
 tags: [lavoro/acme]
 source: user
 confidence: stated
 status: active
-created_at: 2026-11-27T06:54:07Z
-updated_at: 2026-11-27T06:54:35Z
+created_at: 2026-11-27T07:38:25Z
+updated_at: 2026-11-27T07:38:55Z
 ---
 Acme firma solo contratti annuali.
 
 [exit 0]
 
-$ engramma proposals accept 01M8DWHGEXKKNZ91Y1EC8QWD86 --cell work
-accepted: 01M8DWHGEXKKNZ91Y1EC8QWD86
+$ engramma proposals accept 01M8DZ2NYYGH1BXSDY7M5TN869 --cell work
+accepted: 01M8DZ2NYYGH1BXSDY7M5TN869
 embedded: 0 (pending: 0)
 [exit 0]
 
 ### S14b · you keep one correction and refuse the other
 
-$ engramma proposals accept 01M8DWHFQ2QYHGD9VTDRZZJYS9 --cell work
-engramma: correction rejected: 01M8DWGSBRB4DG90W61STBPSJ4 is not the current version — already corrected by 01M8DWHGEXKKNZ91Y1EC8QWD86 — reject the proposal (`engramma proposals reject <id>`) or propose again on the current note (01M8DWHGEXKKNZ91Y1EC8QWD86)
+$ engramma proposals accept 01M8DZ2N7J3A42WB3CXTJBET9A --cell work
+engramma: correction rejected: 01M8DZ1WTPS0FB7FY8D8TY108R is not the current version — already corrected by 01M8DZ2NYYGH1BXSDY7M5TN869 — reject the proposal (`engramma proposals reject <id>`) or propose again on the current note (01M8DZ2NYYGH1BXSDY7M5TN869)
 [exit 4]
 
-$ engramma proposals reject 01M8DWHFQ2QYHGD9VTDRZZJYS9 --cell work --reason "The user said two-year contracts on the phone"
-rejected (tombstone): 01M8DWHFQ2QYHGD9VTDRZZJYS9
+$ engramma proposals reject 01M8DZ2N7J3A42WB3CXTJBET9A --cell work --reason "The user said two-year contracts on the phone"
+rejected (tombstone): 01M8DZ2N7J3A42WB3CXTJBET9A
 [exit 0]
 
 $ engramma proposals --cell work
- SYCB9NAG mcp:claude-code — Auth: JWT
+ EJKP3S2Q mcp:claude-code — Auth: JWT
       reason: Read in commit 4f1c
-      decided by user@cli at 2026-11-27T06:54:23Z
- TSYG6ZND mcp:cursor — Package manager
+      decided by user@cli at 2026-11-27T07:38:43Z
+ 2ERQ7WQS mcp:cursor — Package manager
       reason: The user said so in this chat
-      decided by reviewer:local at 2026-11-27T06:54:25Z
-[queued] ESK21ECB mcp:chatgpt — CFO di Acme
+      decided by reviewer:local at 2026-11-27T07:38:45Z
+[queued] ES9N8MH0 mcp:chatgpt — CFO di Acme
       reason: Read on acme.example.com/news
-[queued] KS4HT3CM mcp:cursor — Stand-up
+[queued] DMDJ7SAF mcp:cursor — Stand-up
       reason: The user said so, once
- DRZZJYS9 mcp:claude-code — Contratti Acme
+ XTJBET9A mcp:claude-code — Contratti Acme
       reason: The user corrected it
-      correction of 1STBPSJ4
-      decided by user@cli at 2026-11-27T06:54:36Z
- EC8QWD86 mcp:codex — Contratti Acme
+      correction of D8TY108R
+      decided by user@cli at 2026-11-27T07:38:55Z
+ 7M5TN869 mcp:codex — Contratti Acme
       reason: The user corrected it on the phone
-      correction of 1STBPSJ4
-      decided by user@cli at 2026-11-27T06:54:35Z
+      correction of D8TY108R
+      decided by user@cli at 2026-11-27T07:38:55Z
 [exit 0]
 
 $ engramma decisions --cell work
-T05HRD53  accept  user@cli  2026-11-27T06:54:23Z
-      proposal SYCB9NAG
+J1CCVBGT  accept  user@cli  2026-11-27T07:38:43Z
+      proposal EJKP3S2Q
       why: accepted from the CLI
-GK6WRHDE  accept  reviewer:local  2026-11-27T06:54:25Z
-      proposal TSYG6ZND
+DV16X35R  accept  reviewer:local  2026-11-27T07:38:45Z
+      proposal 2ERQ7WQS
       why: A stable fact the user stated
       reviewer local model ? confidence 0.9 prompt a3b3df60
-T98PQTWN  accept  user@cli  2026-11-27T06:54:31Z
-      proposal DRZZJYS9
+8YJXM41S  accept  user@cli  2026-11-27T07:38:51Z
+      proposal XTJBET9A
       why: accepted from the CLI
       reverted
-ZC19AJZR  accept  user@cli  2026-11-27T06:54:35Z
-      proposal EC8QWD86
+F93NSESW  accept  user@cli  2026-11-27T07:38:55Z
+      proposal 7M5TN869
       why: accepted from the CLI
-JA37NTHP  reject  user@cli  2026-11-27T06:54:36Z
-      proposal DRZZJYS9
+QX14B2R2  reject  user@cli  2026-11-27T07:38:55Z
+      proposal XTJBET9A
       why: The user said two-year contracts on the phone
 [exit 0]
 
-$ engramma history 01M8DWHFQ2QYHGD9VTDRZZJYS9 --cell work
-proposed by mcp:claude-code at 2026-11-27T06:54:30Z — The user corrected it
-decided by user@cli at 2026-11-27T06:54:36Z
-v1  2026-11-27T06:54:30Z  Contratti Acme  [decide, user@cli]
-v2  2026-11-27T06:54:31Z  Contratti Acme  [revert_decision, user@cli]
-v3  2026-11-27T06:54:35Z  Contratti Acme  [decide, user@cli]
+$ engramma history 01M8DZ2N7J3A42WB3CXTJBET9A --cell work
+proposed by mcp:claude-code at 2026-11-27T07:38:50Z — The user corrected it
+decided by user@cli at 2026-11-27T07:38:55Z
+v1  2026-11-27T07:38:50Z  Contratti Acme  [decide, user@cli]
+v2  2026-11-27T07:38:51Z  Contratti Acme  [revert_decision, user@cli]
+v3  2026-11-27T07:38:55Z  Contratti Acme  [decide, user@cli]
 [exit 0]
 
 $ engramma search "Which contracts does Acme sign?" --cell work --k 3
-1. [active] Contratti Acme (EC8QWD86)
+1. [active] Contratti Acme (7M5TN869)
    score 1.0000 (raw 0.6500)
    lists: text, vector
    terms: contract, acme, sign
@@ -1440,7 +1440,7 @@ $ engramma search "Which contracts does Acme sign?" --cell work --k 3
    validity: always → now
    source: mcp:codex
 
-2. [active] Gaia abita a Milano (VNZ05F2R)
+2. [active] Gaia abita a Milano (GC7GVP4H)
    score 0.5639 (raw 0.3666)
    lists: vector, graph
    semantic rank: 6
@@ -1448,12 +1448,12 @@ $ engramma search "Which contracts does Acme sign?" --cell work --k 3
    cosine: 0.7100
    support: weak
    winning chunk: 0
-   via: [[note:01M8DWGS9GKVH761NAM2C7Z0RZ]] -mentions-> [[Giulia]] -mentions-> (note VNZ05F2R)
+   via: [[note:01M8DZ1WT6W5RQ1CR8QTQRWRCK]] -mentions-> [[Giulia]] -mentions-> (note GC7GVP4H)
    graph weight: 0.35 (gap 0.80, lists agreeing)
    validity: 2026-09-01 → now
    source: user
 
-3. [active] Il lavoro di Giulia (M2C7Z0RZ)
+3. [active] Il lavoro di Giulia (QTQRWRCK)
    score 0.2016 (raw 0.1310)
    lists: text, vector
    terms: acme
@@ -1475,7 +1475,7 @@ vector coverage: granite-embedding-97m-multilingual-r2@835ad140 [ready] 13/13 no
 ### S15 · the graph path the engine prints
 
 $ engramma search "What about Gaia?" --cell work --k 3
-1. [active] Gaia abita a Milano (VNZ05F2R)
+1. [active] Gaia abita a Milano (GC7GVP4H)
    score 1.0000 (raw 0.6500)
    lists: text, vector
    terms: gai
@@ -1488,7 +1488,7 @@ $ engramma search "What about Gaia?" --cell work --k 3
    validity: 2026-09-01 → now
    source: user
 
-2. [active] Ufficio a Milano (9XAKZPNT)
+2. [active] Ufficio a Milano (F339GJK6)
    score 0.5385 (raw 0.3500)
    lists: vector, graph
    semantic rank: 7
@@ -1496,12 +1496,12 @@ $ engramma search "What about Gaia?" --cell work --k 3
    cosine: 0.7136
    support: weak
    winning chunk: 0
-   via: [[note:01M8DWGS6Z49KHF1AGVNZ05F2R]] -mentions-> [[Milano]] -mentions-> (note 9XAKZPNT)
+   via: [[note:01M8DZ1WRK3PJQ9WT0GC7GVP4H]] -mentions-> [[Milano]] -mentions-> (note F339GJK6)
    graph weight: 0.35 (gap 0.69, lists agreeing)
    validity: 2026-09-01 → now
    source: user
 
-3. [active] Il lavoro di Giulia (M2C7Z0RZ)
+3. [active] Il lavoro di Giulia (QTQRWRCK)
    score 0.3106 (raw 0.2019)
    lists: vector
    semantic rank: 2
@@ -1532,35 +1532,35 @@ initialized: <tmp>/root
 [exit 0]
 
 $ engramma add <tmp>/notes/ufficio-torino.md --no-embed --source user --confidence stated --title "Ufficio a Torino" --tag ufficio --valid-from 2026-01-05
-added: 01M8DWHP0RBAPS8ZCD4VKY5J3R
+added: 01M8DZ2V7YZN6TH48KSWYHTHQF
 [exit 0]
 
 $ engramma add <tmp>/notes/gaia-milano.md --no-embed --source user --confidence stated --title "Gaia abita a Milano" --tag casa/milano --valid-from 2026-09-01
-added: 01M8DWHP1BJ5SSKDBKEYXN8AJ6
+added: 01M8DZ2V8JG8ZT36K0K90X5GBR
 [exit 0]
 
 $ engramma add <tmp>/notes/trasloco.md --no-embed --source user --confidence stated --title "Trasloco: scatoloni da Torino" --tag casa
-added: 01M8DWHP1ZVC925G72TPKA2E6S
+added: 01M8DZ2V96ZCH2XJCTACYZ7SBR
 [exit 0]
 
 $ engramma add <tmp>/notes/nuovo-ufficio.md --no-embed --source user --confidence stated --title "Nuovo ufficio" --tag ufficio --valid-from 2027-04-01
-added: 01M8DWHP2H5SEN9GVG6EMX2M63
+added: 01M8DZ2V9SR7S3ZFFD156918E2
 [exit 0]
 
 $ engramma add <tmp>/notes/lavoro-giulia.md --no-embed --source user --confidence stated --title "Il lavoro di Giulia" --tag amici
-added: 01M8DWHP33Z3ZAQ4CZYVQ4BTXV
+added: 01M8DZ2VACY314E1YS529NK2MW
 [exit 0]
 
 $ engramma add <tmp>/notes/acme-contratti.md --no-embed --source user --confidence stated --title "Contratti Acme" --tag lavoro/acme
-added: 01M8DWHP3PZS5QH1SKRV7ZKG2W
+added: 01M8DZ2VB0JR76DYT7XJQ6PFCZ
 [exit 0]
 
 $ engramma add <tmp>/notes/acme-cfo.md --no-embed --source website --confidence external --title "CFO di Acme" --tag lavoro/acme
-added: 01M8DWHP48BC9Y94CHD5D446AF
+added: 01M8DZ2VBMQP1TQ8PE8R1QR3Z0
 [exit 0]
 
-$ engramma supersede 01M8DWHP0RBAPS8ZCD4VKY5J3R <tmp>/notes/ufficio-milano.md --source user --confidence stated --title "Ufficio a Milano" --tag ufficio --valid-from 2026-09-01
-superseded: 01M8DWHP0RBAPS8ZCD4VKY5J3R → 01M8DWHP4X9WE8M72ZWE8TNEAR
+$ engramma supersede 01M8DZ2V7YZN6TH48KSWYHTHQF <tmp>/notes/ufficio-milano.md --source user --confidence stated --title "Ufficio a Milano" --tag ufficio --valid-from 2026-09-01
+superseded: 01M8DZ2V7YZN6TH48KSWYHTHQF → 01M8DZ2VC9843NJSJK7Q7TM1PN
 [exit 0]
 
 $ engramma model pull granite-embedding-97m-multilingual-r2
@@ -1589,7 +1589,7 @@ model ready: granite-embedding-97m-multilingual-r2@835ad140
 [exit 0]
 
 $ engramma search "How do we authenticate?" --k 2
-1. [active] Gaia abita a Milano (EYXN8AJ6)
+1. [active] Gaia abita a Milano (K90X5GBR)
    score 1.0000 (raw 0.8498)
    lists: vector, graph
    semantic rank: 4
@@ -1597,12 +1597,12 @@ $ engramma search "How do we authenticate?" --k 2
    cosine: 0.7328
    support: strong
    winning chunk: 0
-   via: [[note:01M8DWHP33Z3ZAQ4CZYVQ4BTXV]] -mentions-> [[Giulia]] -mentions-> (note EYXN8AJ6)
+   via: [[note:01M8DZ2VACY314E1YS529NK2MW]] -mentions-> [[Giulia]] -mentions-> (note K90X5GBR)
    graph weight: 0.35 (gap 0.01)
    validity: 2026-09-01 → now
    source: user
 
-2. [active] Ufficio a Milano (WE8TNEAR)
+2. [active] Ufficio a Milano (7Q7TM1PN)
    score 0.7649 (raw 0.6500)
    lists: vector
    semantic rank: 1
@@ -1624,34 +1624,34 @@ $ claude -p "<remember one thing…>" \
 [exit 0]
   mcp_servers: ["engramma:connected"]
   tool_use: mcp__engramma__memory_propose {"text":"Auth moved to JWT; the sessions table was dropped.","title":"Auth: JWT","tags":["auth"],"confidence":"stated","reason":"Read in commit 4f1c"}
-  tool_result: {"decided_by":null,"existing":null,"id":"01M8DWJBSG8KXBQ91QBT6ZT3CS","note":null,"possible_duplicates":[{"cosine":0.7148450613021851,"id":"01M8DWHP33Z3ZAQ4CZYVQ4BTXV"},{"cosine":0.712465226650238,"id":"01M8DWHP1ZVC925G72TPKA2E6S"},{"cosine":0.7101773619651794,"id":"01M8DWHP1BJ5SSKDBKEYXN8AJ6"},{"cosine":0.6961331963539124,"id":"01M8DWHP3PZS5QH1SKRV7ZKG2W"},{"cosine":0.6889673471450806,"id":"01M8DWHP4X9WE8M72ZWE8TNEAR"}],"reason":null,"status":"pending"}
+  tool_result: {"decided_by":null,"existing":null,"id":"01M8DZ3FTKZC91JFXTJRC60CRY","note":null,"possible_duplicates":[{"cosine":0.7148450613021851,"id":"01M8DZ2VACY314E1YS529NK2MW"},{"cosine":0.712465226650238,"id":"01M8DZ2V96ZCH2XJCTACYZ7SBR"},{"cosine":0.7101773619651794,"id":"01M8DZ2V8JG8ZT36K0K90X5GBR"},{"cosine":0.6961331963539124,"id":"01M8DZ2VB0JR76DYT7XJQ6PFCZ"},{"cosine":0.6889673471450806,"id":"01M8DZ2VC9843NJSJK7Q7TM1PN"}],"reason":null,"status":"pending"}
   result: {"is_error":false,"num_turns":2,"result":"done"}
 
 $ engramma proposals
-[queued] BT6ZT3CS mcp:claude-code — Auth: JWT
+[queued] JRC60CRY mcp:claude-code — Auth: JWT
       reason: Read in commit 4f1c
 [exit 0]
 
-$ engramma proposals show 01M8DWJBSG8KXBQ91QBT6ZT3CS
+$ engramma proposals show 01M8DZ3FTKZC91JFXTJRC60CRY
 ---
-id: 01M8DWJBSG8KXBQ91QBT6ZT3CS
+id: 01M8DZ3FTKZC91JFXTJRC60CRY
 type: fact
 title: 'Auth: JWT'
 tags: [auth]
 source: mcp:claude-code
 confidence: stated
 status: quarantined
-created_at: 2026-11-27T06:54:59Z
-updated_at: 2026-11-27T06:54:59Z
+created_at: 2026-11-27T07:39:17Z
+updated_at: 2026-11-27T07:39:17Z
 ---
 Auth moved to JWT; the sessions table was dropped.
 
-proposed by mcp:claude-code at 2026-11-27T06:54:59Z
+proposed by mcp:claude-code at 2026-11-27T07:39:17Z
 reason: Read in commit 4f1c
 [exit 0]
 
 $ engramma search "How do we authenticate?" --k 2
-1. [active] Gaia abita a Milano (EYXN8AJ6)
+1. [active] Gaia abita a Milano (K90X5GBR)
    score 1.0000 (raw 0.8498)
    lists: vector, graph
    semantic rank: 4
@@ -1659,12 +1659,12 @@ $ engramma search "How do we authenticate?" --k 2
    cosine: 0.7328
    support: strong
    winning chunk: 0
-   via: [[note:01M8DWHP33Z3ZAQ4CZYVQ4BTXV]] -mentions-> [[Giulia]] -mentions-> (note EYXN8AJ6)
+   via: [[note:01M8DZ2VACY314E1YS529NK2MW]] -mentions-> [[Giulia]] -mentions-> (note K90X5GBR)
    graph weight: 0.35 (gap 0.01)
    validity: 2026-09-01 → now
    source: user
 
-2. [active] Ufficio a Milano (WE8TNEAR)
+2. [active] Ufficio a Milano (7Q7TM1PN)
    score 0.7649 (raw 0.6500)
    lists: vector
    semantic rank: 1
@@ -1676,20 +1676,20 @@ $ engramma search "How do we authenticate?" --k 2
    source: user
 [exit 0]
 
-$ engramma proposals accept 01M8DWJBSG8KXBQ91QBT6ZT3CS
-accepted: 01M8DWJBSG8KXBQ91QBT6ZT3CS
+$ engramma proposals accept 01M8DZ3FTKZC91JFXTJRC60CRY
+accepted: 01M8DZ3FTKZC91JFXTJRC60CRY
 embedded: 1 (pending: 0)
 [exit 0]
 
 $ engramma proposals
- BT6ZT3CS mcp:claude-code — Auth: JWT
+ JRC60CRY mcp:claude-code — Auth: JWT
       reason: Read in commit 4f1c
-      decided by user@cli at 2026-11-27T06:55:04Z
+      decided by user@cli at 2026-11-27T07:39:23Z
 [exit 0]
 
 $ engramma decisions
-GZE197BZ  accept  user@cli  2026-11-27T06:55:04Z
-      proposal BT6ZT3CS
+ZRSN9Y0Z  accept  user@cli  2026-11-27T07:39:23Z
+      proposal JRC60CRY
       why: accepted from the CLI
 [exit 0]
 
@@ -1698,7 +1698,7 @@ embedded: 0 notes
 [exit 0]
 
 $ engramma search "How do we authenticate?" --k 2
-1. [active] Auth: JWT (BT6ZT3CS)
+1. [active] Auth: JWT (JRC60CRY)
    score 1.0000 (raw 0.6500)
    lists: vector
    semantic rank: 1
@@ -1709,7 +1709,7 @@ $ engramma search "How do we authenticate?" --k 2
    validity: always → now
    source: mcp:claude-code
 
-2. [active] Gaia abita a Milano (EYXN8AJ6)
+2. [active] Gaia abita a Milano (K90X5GBR)
    score 0.9358 (raw 0.6082)
    lists: vector, graph
    semantic rank: 5
@@ -1717,7 +1717,7 @@ $ engramma search "How do we authenticate?" --k 2
    cosine: 0.7328
    support: strong
    winning chunk: 0
-   via: [[note:01M8DWHP33Z3ZAQ4CZYVQ4BTXV]] -mentions-> [[Giulia]] -mentions-> (note EYXN8AJ6)
+   via: [[note:01M8DZ2VACY314E1YS529NK2MW]] -mentions-> [[Giulia]] -mentions-> (note K90X5GBR)
    graph weight: 0.35 (gap 0.48)
    validity: 2026-09-01 → now
    source: user
@@ -1725,7 +1725,7 @@ $ engramma search "How do we authenticate?" --k 2
 
 $ engramma mcp --cells default --write default --actor codex   (the configuration Codex's config.toml would carry)
   memory_search({"query":"How do we authenticate?","limit":3}) ->
-    {"hits":[{"explain":{"bm25_rank":null,"confidence":"stated","cosine":0.806820809841156,"fused_score":1,"lists":["vector"],"matched_terms":[],"semantic_rank":1,"source":"mcp:claude-code","support":"strong","valid_from":null,"valid_to":null,"via":null,"winning_chunk":0},"note":{"body":"Auth moved to JWT; the sessions table was dropped.","confidence":"stated","created_at":"2026-11-27T06:54:59Z","id":"01M8DWJBSG8KXBQ91QBT6ZT3CS","source":"mcp:claude-code","status":"active","tags":["auth"],"title":"Auth: JWT","type":"fact","updated_at":"2026-11-27T06:55:04Z","valid_from":null,"valid_to":null},"raw_score":0.65,"score":1},{"explain":{"bm25_rank":null,"confidence":"stated","cosine":0.7328379154205322,"fused_score":0.3973055111939374,"lists":["vector","graph"],"matched_terms":[],"semantic_rank":5,"source":"user","support":"strong","valid_from":"2026-09-01","valid_to":null,"via":"[[note:01M8DWHP33Z3ZAQ4CZYVQ4BTXV]] -mentions-> [[Giulia]] -mentions-> (note EYXN8AJ6)","winning_chunk":0},"note":{"body":"Gaia ha traslocato a [[Milano]] con [[Giulia]] a settembre 2026.\n","confidence":"stated","created_at":"2026-11-27T06:54:37Z","id":"01M8DWHP1BJ5SSKDBKEYXN8AJ6","source":"user","status":"active","tags":["casa/milano"],"title":"Gaia abita a Milano","type":"fact","updated_at":"2026-11-27T06:54:37Z","valid_from":"2026-09-01","valid_to":null},"raw_score":0.6082485822760593,"score":0.9357670496554757},{"explain":{"bm25_rank":null,"confidence":"stated","cosine":0.7474904656410217,"fused_score":0.5166710933869655,"lists":["vector"],"matched_terms":[],"semantic_rank":2,"source":"user","support":"weak","valid_from":"2026-09-01","valid_to":null,"via":null,"winning_chunk":0},"note":{"body":"L'ufficio è a [[Milano]], in zona Isola.\n","confidence":"stated","created_at":"2026-11-27T06:54:37Z","id":"01M8DWHP4X9WE8M72ZWE8TNEAR","source":"user","status":"active","tags":["ufficio"],"title":"Ufficio a Milano","type":"fact","updated_at":"2026-11-27T06:54:37Z","valid_from":"2026-09-01","valid_to":null},"raw_score":0.3358362107015276,"score":0.5166710933869655}],"mode":"hybrid","query":"How do we authenticate?"}
+    {"hits":[{"explain":{"bm25_rank":null,"confidence":"stated","cosine":0.806820809841156,"fused_score":1,"lists":["vector"],"matched_terms":[],"semantic_rank":1,"source":"mcp:claude-code","support":"strong","valid_from":null,"valid_to":null,"via":null,"winning_chunk":0},"note":{"body":"Auth moved to JWT; the sessions table was dropped.","confidence":"stated","created_at":"2026-11-27T07:39:17Z","id":"01M8DZ3FTKZC91JFXTJRC60CRY","source":"mcp:claude-code","status":"active","tags":["auth"],"title":"Auth: JWT","type":"fact","updated_at":"2026-11-27T07:39:23Z","valid_from":null,"valid_to":null},"raw_score":0.65,"score":1},{"explain":{"bm25_rank":null,"confidence":"stated","cosine":0.7328379154205322,"fused_score":0.3973055111939374,"lists":["vector","graph"],"matched_terms":[],"semantic_rank":5,"source":"user","support":"strong","valid_from":"2026-09-01","valid_to":null,"via":"[[note:01M8DZ2VACY314E1YS529NK2MW]] -mentions-> [[Giulia]] -mentions-> (note K90X5GBR)","winning_chunk":0},"note":{"body":"Gaia ha traslocato a [[Milano]] con [[Giulia]] a settembre 2026.\n","confidence":"stated","created_at":"2026-11-27T07:38:56Z","id":"01M8DZ2V8JG8ZT36K0K90X5GBR","source":"user","status":"active","tags":["casa/milano"],"title":"Gaia abita a Milano","type":"fact","updated_at":"2026-11-27T07:38:56Z","valid_from":"2026-09-01","valid_to":null},"raw_score":0.6082485822760593,"score":0.9357670496554757},{"explain":{"bm25_rank":null,"confidence":"stated","cosine":0.7474904656410217,"fused_score":0.5166710933869655,"lists":["vector"],"matched_terms":[],"semantic_rank":2,"source":"user","support":"weak","valid_from":"2026-09-01","valid_to":null,"via":null,"winning_chunk":0},"note":{"body":"L'ufficio è a [[Milano]], in zona Isola.\n","confidence":"stated","created_at":"2026-11-27T07:38:56Z","id":"01M8DZ2VC9843NJSJK7Q7TM1PN","source":"user","status":"active","tags":["ufficio"],"title":"Ufficio a Milano","type":"fact","updated_at":"2026-11-27T07:38:56Z","valid_from":"2026-09-01","valid_to":null},"raw_score":0.3358362107015276,"score":0.5166710933869655}],"mode":"hybrid","query":"How do we authenticate?"}
 
 $ engramma verify
 log verified: 12 operations, hash chain, reconstruction and FTS index in place
