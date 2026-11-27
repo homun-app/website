@@ -7,7 +7,7 @@ Every top-level command of the `engramma` binary, version `0.6.19-beta.1`, with 
 
 Global options, accepted by every command before the subcommand: `--root <ROOT>` (data root, default `~/.engramma`, or `$ENGRAMMA_ROOT`; cells live in `<root>/cells/<name>.sqlite`), `--cell <CELL>` (cell to operate on, default `default`; names are `[a-z0-9_-]+`), `--json` (stable JSON output), `-h, --help`, `-V, --version`.
 
-Exit codes: `0` success · `2` usage error · `3` note not found · `4` internal error · `5` pending work (a purge that could not finish) · `6` cell schema newer than the binary · `7` another sync service holds the root. Note ids accept a unique prefix or a suffix of at least 4 characters; the short ids the CLI prints are the last 8 of the ULID.
+Exit codes: `0` success · `2` usage error · `3` note not found · `4` internal error, or a decision the engine refuses (`STALE_TARGET`: the correction of a note that is no longer the current version, or a revert under a later correction) · `5` pending work (a purge that could not finish) · `6` cell schema newer than the binary · `7` another sync service holds the root. Note ids accept a unique prefix or a suffix of at least 4 characters; the short ids the CLI prints are the last 8 of the ULID.
 
 Commands that take a subcommand — `cell`, `proposals`, `conflicts`, `policy`, `model`, `devices`, `sync`, `mailbox`, `vault`, `oauth` — document their subcommands in their own list below. Each of those 41 subcommands also answers `engramma <parent> <sub> --help` with its own help, where its own options are (for example `proposals accept --no-embed`).
 

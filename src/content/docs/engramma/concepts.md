@@ -15,7 +15,7 @@ The unit of memory: a structured header plus a body in Markdown. `engramma get` 
 
 ```markdown
 ---
-id: 01M8DWJK5EEERPRG2H0GKBYJDC
+id: 01M8DZ3QN01TQ7W5N9AY3TSRFT
 type: fact
 title: Gaia abita a Milano
 tags: [casa/milano]
@@ -23,8 +23,8 @@ source: user
 confidence: stated
 status: active
 valid_from: 2026-09-01
-created_at: 2026-11-27T06:55:06Z
-updated_at: 2026-11-27T06:55:06Z
+created_at: 2026-11-27T07:39:25Z
+updated_at: 2026-11-27T07:39:25Z
 ---
 Gaia ha traslocato a [[Milano]] con [[Giulia]] a settembre 2026.
 ```
@@ -34,7 +34,7 @@ Gaia ha traslocato a [[Milano]] con [[Giulia]] a settembre 2026.
 - Versions: every edit is a row in the note's history; `engramma history <id> --diff` shows it line by line.
 
 ```console
-$ engramma history 01M8DWJK5EEERPRG2H0GKBYJDC --diff
+$ engramma history 01M8DZ3QN01TQ7W5N9AY3TSRFT --diff
 v1 → now  (current state)
   + A settembre hanno anche imbiancato la casa.
 ```
@@ -54,7 +54,7 @@ Every write must say where it comes from and how much to trust it:
 
 ```console
 $ engramma search "ufficio" --as-of 2026-08-01
-1. [superseded] Ufficio a Torino (RY10NQ4H)
+1. [superseded] Ufficio a Torino (9T31DV2N)
    ...
    validity: 2026-01-05 → 2026-09-01
 ```
@@ -70,7 +70,7 @@ A proposal, as the queue prints it:
 
 ```console
 $ engramma proposals
-[queued] BAG5TBJD mcp:claude-code — Corso di ceramica
+[queued] CJCTDEJB mcp:claude-code — Corso di ceramica
 ```
 
 ## The log, and verify

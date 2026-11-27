@@ -22,7 +22,7 @@ With it, a question in other words — or another language — finds the note:
 
 ```console
 $ engramma search "Where does she live now?"
-1. [active] Gaia abita a Milano (0GKBYJDC)
+1. [active] Gaia abita a Milano (AY3TSRFT)
    score 1.0000 (raw 0.6500)
    lists: vector
    semantic rank: 1
@@ -44,11 +44,11 @@ The graph carries a note the words never matched:
 
 ```console
 $ engramma search "trasloco di Gaia"
-2. [active] Il lavoro di Giulia (1QTYAGBA)
+2. [active] Il lavoro di Giulia (M2CV4HB1)
    score 0.2692 (raw 0.1750)
    lists: graph
    graph rank: 1
-   via: [[note:01M8DWJK5EEERPRG2H0GKBYJDC]] -mentions-> [[Giulia]] -mentions-> (note 1QTYAGBA)
+   via: [[note:01M8DZ3QN01TQ7W5N9AY3TSRFT]] -mentions-> [[Giulia]] -mentions-> (note M2CV4HB1)
    ...
 ```
 

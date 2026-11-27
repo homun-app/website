@@ -57,12 +57,12 @@ max_auto_per_hour: 10
 `engramma decisions` is the registry: who, when, what, why.
 
 ```console
-$ engramma proposals accept BAG5TBJD
-accepted: 01M8DWJP8ZA4A79E01BAG5TBJD
+$ engramma proposals accept CJCTDEJB
+accepted: 01M8DZ3TPM2HWMAFXTCJCTDEJB
 embedded: 2 (pending: 0)
 $ engramma decisions
-QFY2WY0N  accept  user@cli  2026-11-27T06:55:10Z
-      proposal BAG5TBJD
+2DVWWP9Z  accept  user@cli  2026-11-27T07:39:29Z
+      proposal CJCTDEJB
       why: accepted from the CLI
 ```
 
@@ -79,4 +79,22 @@ would revert 1 decisions:
 reverted 1, conflicts 0, purged 0
 ```
 
-The bulk form takes `--by` (an exact actor or a prefix, e.g. `reviewer:`) narrowed by `--since`/`--until`, with the preview first — `--dry-run` shows what would happen, and writes nothing. Decisions are signed by who decides, never by who proposed: `--by mcp:…` is a usage error, and `--proposed-by mcp:claude-code` selects the decisions taken on what that assistant proposed. A single decision goes back the same way, by id, and the proposal returns to the queue. A revert refuses to run under a later correction of the same note, and says which to revert first; purged content does not come back.
+The bulk form takes `--by` (an exact actor or a prefix, e.g. `reviewer:`) narrowed by `--since`/`--until`, with the preview first — `--dry-run` shows what would happen, and writes nothing. Decisions are signed by who decides, never by who proposed: `--by mcp:…` is a usage error, and `--proposed-by mcp:claude-code` selects the decisions taken on what that assistant proposed. A single decision goes back the same way, by id, and the proposal returns to the queue. Purged content does not come back.
+
+A revert is refused while a later correction stands on it. Two corrections in a row — one closes the note, the next closes the note the first made current — and the first cannot go back before the second: the revert names the correction to revert first.
+
+```console
+$ engramma revert 01M8DZ3ZSSWHPJRPCCFZZQJJB6 --dry-run
+would not revert: 01M8DZ40NB7EZTDAY2ARQ8MSHC corrects this note: revert that correction first
+$ engramma revert 01M8DZ3ZSSWHPJRPCCFZZQJJB6 --yes
+engramma: conflict: 01M8DZ40NB7EZTDAY2ARQ8MSHC corrects this note: revert that correction first
+```
+
+Once the later correction is reverted, the first one goes back too:
+
+```console
+$ engramma revert 01M8DZ410T87NPQS36H8CRFYV2 --yes
+reverted: the proposal goes back to the queue: ARQ8MSHC
+$ engramma revert 01M8DZ3ZSSWHPJRPCCFZZQJJB6 --yes
+reverted: the proposal goes back to the queue: Q5VJHFHV
+```

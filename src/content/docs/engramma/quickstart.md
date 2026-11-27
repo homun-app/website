@@ -18,7 +18,7 @@ A note is a body of Markdown plus a header the command builds for you. Every wri
 ```console
 $ printf 'Gaia ha traslocato a [[Milano]] con [[Giulia]] a settembre 2026.\n' > gaia.md
 $ engramma add gaia.md --source user --confidence stated --title "Gaia abita a Milano" --tag casa/milano --valid-from 2026-09-01
-added: 01M8DWJK5EEERPRG2H0GKBYJDC
+added: 01M8DZ3QN01TQ7W5N9AY3TSRFT
 ```
 
 `[[Milano]]` and `[[Giulia]]` are entities: the graph grows with your notes, and a question that mentions a name reaches notes that never spell it out.
@@ -27,7 +27,7 @@ added: 01M8DWJK5EEERPRG2H0GKBYJDC
 
 ```console
 $ engramma search "trasloco di Gaia"
-1. [active] Gaia abita a Milano (0GKBYJDC)
+1. [active] Gaia abita a Milano (AY3TSRFT)
    score 1.0000 (raw 0.6500)
    lists: text
    terms: trasloc, gai
@@ -38,7 +38,7 @@ $ engramma search "trasloco di Gaia"
    source: 
 ```
 
-Every result says which list found it (`lists`), the terms that matched (`terms`), the graph path when the graph carried it, its validity and its source. This search ran on words alone, before any model was configured: [the meaning model](/docs/engramma/how-it-works/) joins once you pull it. On such a search the beta prints `source:` empty (a known issue of 0.6.19): the source of the note is in the `--json` output.
+Every result says which list found it (`lists`), the terms that matched (`terms`), the graph path when the graph carried it, its validity and its source. This search ran on words alone, before any model was configured: [the meaning model](/docs/engramma/how-it-works/) joins once you pull it. On a search like this the hits found by words print `source:` empty, and `validity: always → now` even for a note that has a start date: a defect of the beta, declared to Engramma. The note's own source and validity are in the `--json` output.
 
 ```console
 $ engramma model pull granite-embedding-97m-multilingual-r2
@@ -54,7 +54,7 @@ Now a question in other words, with no term in common with the note, still finds
 
 ```console
 $ engramma search "where does Gaia live now?"
-1. [active] Gaia abita a Milano (0GKBYJDC)
+1. [active] Gaia abita a Milano (AY3TSRFT)
    score 1.0000 (raw 0.6500)
    lists: text, vector
    terms: gai
@@ -80,7 +80,7 @@ When assistants start proposing facts, this is where you decide:
 
 ```console
 $ engramma review
-review: http://127.0.0.1:61893/enter?token=...
+review: http://127.0.0.1:50396/enter?token=...
 ```
 
 It serves on `127.0.0.1` only, on any free port; `--open` opens the browser for you, Ctrl-C stops it. The queue, the decisions and the notes, on one page.

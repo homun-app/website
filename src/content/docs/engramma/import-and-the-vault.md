@@ -39,10 +39,10 @@ vault initialized: <dir>
 From then on, the folder and the cell tell each other the truth. Edit a file in the folder — here the note of Gaia, in any editor — and `vault sync` runs one scan-based reconciliation and prints the report:
 
 ```console
-$ printf '\nA novembre hanno anche cambiato la porta del bagno.\n' >> <dir>/fact/gaia-abita-a-milano-0GKBYJDC.md
+$ printf '\nA novembre hanno anche cambiato la porta del bagno.\n' >> <dir>/fact/gaia-abita-a-milano-AY3TSRFT.md
 $ engramma vault sync <dir>
 notes updated from files: 1
-  - fact/gaia-abita-a-milano-0GKBYJDC.md
+  - fact/gaia-abita-a-milano-AY3TSRFT.md
 ```
 
 `vault watch` reconciles on filesystem events (500 ms debounce) and every 60 seconds. A file is bound to its note by the `id` in the header, never by its path: rename or move a file, and the binding follows. In a conflict the cell wins, and the file's version becomes a `<name>.conflitto-<ts>.md` copy. A guard stops the sync when more than 20 files (or 10% of the notes) vanish at once — an unmounted folder — unless `--allow-deletions`.
