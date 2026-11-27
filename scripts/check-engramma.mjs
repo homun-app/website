@@ -4,7 +4,7 @@ import * as brand from "../src/data/brand.mjs";
 import {
 	ENGRAMMA_RELEASE, ENGRAMMA_SHORT_INSTALL, ENGRAMMA_HERO_TERMINAL, ENGRAMMA_HUB,
 	ENGRAMMA_RULES, ENGRAMMA_CONFLICT, ENGRAMMA_MEANING, ENGRAMMA_GRAPH, ENGRAMMA_TIME, ENGRAMMA_CONTROL,
-	ENGRAMMA_NUMBERS, ENGRAMMA_CLIENTS, ENGRAMMA_ROADMAP, ENGRAMMA_PLATFORMS_LINE,
+	ENGRAMMA_NUMBERS, ENGRAMMA_CLIENTS, ENGRAMMA_ROADMAP, ENGRAMMA_PLATFORMS_LINE, ENGRAMMA_CAPTURE_LINE
 } from "../src/data/engramma.mjs";
 
 const output = "dist/engramma/index.html";
@@ -40,7 +40,8 @@ assert.match(start, /Gatekeeper/, "The Gatekeeper note is at the bottom of the p
 // binary wrote it (scripts/fixtures/engramma-session.txt), on the notes of the page.
 const capture = readFileSync("scripts/fixtures/engramma-session.txt", "utf8").split("\n");
 // The capture is of the release the page ships, built from its tagged commit.
-const versionLine = `engramma ${ENGRAMMA_RELEASE.version} (commit 5d0e02a, schema 24)`;
+const versionLine = ENGRAMMA_CAPTURE_LINE;
+const capturedVersion = ENGRAMMA_CAPTURE_LINE.split(" ")[1];
 assert.ok(capture.includes(versionLine), `The capture must be of the released binary: "${versionLine}" is not in it`);
 assert.doesNotMatch(capture.join("\n"), /\/Users\/|\/home\//, "The capture is public: no personal path in it");
 // The CLI prints in English since 0.6.19: the labels it printed in Italian
@@ -195,7 +196,7 @@ assert.ok(codex.note.includes("Not re-run on this beta"), "Codex's note must say
 assert.ok(capture.some((row) => row.includes("--actor codex") && row.includes("the configuration Codex's config.toml would carry")), "The capture must show Codex as a driver on this release");
 assert.ok(plain(hero).includes("what Claude Code learned, Codex knows"), "The hero says what one memory is for");
 // Under the hub, the line that says how much of it is real.
-assert.ok(plain(hub).includes(`Replayed from a real session on ${ENGRAMMA_RELEASE.version}`), "The hub must say it replays a real session of this release");
+assert.ok(plain(hub).includes(`Replayed from a real session on ${capturedVersion}`), "The hub must say which release its session was captured on");
 assert.ok(plain(hub).includes("the clients were a driver carrying their configuration"), "The hub must say which stories had a driver for a client");
 
 // The roadmap: the phases of DESIGN § 12, "Your documents" in Next.

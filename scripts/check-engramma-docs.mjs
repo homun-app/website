@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { ENGRAMMA_RELEASE } from "../src/data/engramma.mjs";
+import { ENGRAMMA_RELEASE, ENGRAMMA_CAPTURE_LINE } from "../src/data/engramma.mjs";
 
 // The Engramma documentation speaks about a released binary: every command
 // and every option it cites must exist in the captured --help of that binary
@@ -69,7 +69,8 @@ assert.ok(options.size > 30, "the fixture must carry the options");
 // line is in both sessions, and nothing of what the CLI printed in Italian
 // before 0.6.19 survives.
 const italianLabels = ["registro verificato", "punteggio", "in coda", "decisa da", "rettifica"];
-const versionLine = `engramma ${ENGRAMMA_RELEASE.version} (commit 5d0e02a, schema 24)`;
+const versionLine = ENGRAMMA_CAPTURE_LINE;
+const capturedVersion = ENGRAMMA_CAPTURE_LINE.split(" ")[1];
 const ulid = /\b([0-9A-HJKMNP-TV-Z]{26})\b/g;
 const capturedIds = new Set();
 for (const path of ["scripts/fixtures/engramma-session.txt", "scripts/fixtures/engramma-docs-session.txt"]) {
@@ -82,7 +83,7 @@ for (const path of ["scripts/fixtures/engramma-session.txt", "scripts/fixtures/e
 // The docs say a revert is refused while a later correction stands on it:
 // the docs capture has to show it.
 assert.ok(readFileSync("scripts/fixtures/engramma-docs-session.txt", "utf8").includes("corrects this note: revert that correction first"), "the docs capture must show a revert refused under a later correction");
-assert.ok(help.startsWith(`Engramma ${ENGRAMMA_RELEASE.version} — the --help of every command`), "the fixture must be the help of the released binary");
+assert.ok(help.startsWith(`Engramma ${capturedVersion} — the --help of every command`), "the fixture must be the help of the captured binary");
 
 // ── What the docs cite ──────────────────────────────────────────────────────
 // Flags that belong to the other tools quoted in the client snippets, not to

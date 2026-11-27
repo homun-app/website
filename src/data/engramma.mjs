@@ -7,7 +7,7 @@
 // Nothing is typed by hand or translated: the CLI prints in English since
 // 0.6.19, and the page shows its lines as they are.
 const REPOSITORY = "https://github.com/homun-app/engramma";
-const VERSION = "0.6.19-beta.1";
+const VERSION = "0.6.20-beta.1";
 const TAG = `v${VERSION}`;
 const DOCS = `${REPOSITORY}/blob/main/docs`;
 const DESIGN = `${DOCS}/DESIGN.md`;
@@ -52,6 +52,9 @@ export const ENGRAMMA_INSTALL_COMMAND = `curl --proto '=https' --tlsv1.2 -LsSf \
 // A terminal line is a string, or a list where [tone, text] is coloured:
 // p the prompt, d dim, ok what the engine confirms, hl the value to read.
 const CAPTURED_WITH = "engramma 0.6.19-beta.1";
+// The version line of the binary the captures come from. It can lag behind
+// VERSION: a release that changes nothing the page shows does not redo them.
+export const ENGRAMMA_CAPTURE_LINE = `${CAPTURED_WITH} (commit 5d0e02a, schema 24)`;
 
 // The hero: a search that explains its first result, then the check.
 // `engramma search "where does Gaia live now?"` and `engramma verify`.
@@ -248,7 +251,7 @@ export const ENGRAMMA_DIFFERENT = [
 ];
 
 // Mirrors Engramma's docs/DESIGN.md § 12, in plain language. The releases are
-// all tagged in the repository (`fase-v0.1` … `fase-v0.6.19`, `v0.6.19-beta.1`).
+// all tagged in the repository (`fase-v0.1` … `fase-v0.6.20`, `v0.6.20-beta.1`).
 export const ENGRAMMA_ROADMAP = {
 	shipped: [
 		{
