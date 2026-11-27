@@ -16,7 +16,7 @@ Engramma is the memory inside [Homun](/), and it is the same engine you can use 
 
 **What it is not.** It does not decide what to remember — extracting facts from a conversation is the application's job, with its model. It does not call an LLM: it computes embeddings with a small dedicated model that runs inside the engine. It is not a generic database: the schema is the schema of memory.
 
-**Status.** Version `0.6.17-beta.1` is a developer preview: the engine is stable enough to trust with real notes — [the compatibility promise](/docs/engramma/compatibility/) is written down line by line, each line with the test that proves it — but the CLI's command surface may still move, and search scores may improve between versions.
+**Status.** Version `0.6.19-beta.1` is a developer preview: the engine is stable enough to trust with real notes — [the compatibility promise](/docs/engramma/compatibility/) is written down line by line, each line with the test that proves it — but the CLI's command surface may still move, and search scores may improve between versions.
 
 ## Where to go next
 

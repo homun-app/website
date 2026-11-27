@@ -15,18 +15,18 @@ The vector branch runs IBM Granite Embedding Multilingual R2 — 97M parameters,
 
 ```console
 $ engramma model pull granite-embedding-97m-multilingual-r2
-scaricato: granite-embedding-97m-multilingual-r2@835ad140 in <tmp>/models
+downloaded: granite-embedding-97m-multilingual-r2@835ad140 in <tmp>/models
 ```
 
 With it, a question in other words — or another language — finds the note:
 
 ```console
 $ engramma search "Where does she live now?"
-1. [active] Gaia abita a Milano (0R3XPKEG)
-   punteggio 1.0000 (grezzo 0.6500)
-   liste: vector
-   rango semantico: 1
-   coseno: 0.7958
+1. [active] Gaia abita a Milano (AY3TSRFT)
+   score 1.0000 (raw 0.6500)
+   lists: vector
+   semantic rank: 1
+   cosine: 0.7958
    ...
 ```
 
@@ -44,11 +44,11 @@ The graph carries a note the words never matched:
 
 ```console
 $ engramma search "trasloco di Gaia"
-2. [active] Il lavoro di Giulia (8TFNYAF3)
-   punteggio 0.2692 (grezzo 0.1750)
-   liste: graph
-   rango grafo: 1
-   via: [[note:01M89NXV30X3DWC6KM0R3XPKEG]] -mentions-> [[Giulia]] -mentions-> (nota 8TFNYAF3)
+2. [active] Il lavoro di Giulia (M2CV4HB1)
+   score 0.2692 (raw 0.1750)
+   lists: graph
+   graph rank: 1
+   via: [[note:01M8DZ3QN01TQ7W5N9AY3TSRFT]] -mentions-> [[Giulia]] -mentions-> (note M2CV4HB1)
    ...
 ```
 
@@ -56,11 +56,11 @@ $ engramma search "trasloco di Gaia"
 
 Every hit says:
 
-- `liste` — which lists found it: `text`, `vector`, `graph`, or a pair.
-- `termini` / `rango BM25` / `rango semantico` / `coseno` — the words that matched, and each list's rank.
+- `lists` — which lists found it: `text`, `vector`, `graph`, or a pair.
+- `terms` / `BM25 rank` / `semantic rank` / `cosine` — the words that matched, and each list's rank.
 - `via` — the graph path, when the graph carried the result.
-- `peso grafo` — how much the graph weighed on this question, and why (the gap between the top two, whether the lists agree).
-- `supporto` — `strong` when more than one signal confirms the hit, `weak` for vector-only results with a thin margin (`--strict` drops them).
-- `validità` and `fonte` — when it is true, and where it came from.
+- `graph weight` — how much the graph weighed on this question, and why (the gap between the top two, whether the lists agree).
+- `support` — `strong` when more than one signal confirms the hit, `weak` for vector-only results with a thin margin (`--strict` drops them).
+- `validity` and `source` — when it is true, and where it came from.
 
 With `--json` the same fields come machine-readable, per hit, under `explain`.

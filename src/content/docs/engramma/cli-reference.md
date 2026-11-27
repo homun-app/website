@@ -3,18 +3,18 @@ title: CLI reference
 slug: docs/engramma/cli-reference
 ---
 
-Every command and every option of the `engramma` binary, version `0.6.17-beta.1`, exactly as its own `--help` prints them — captured verbatim from the released binary. The help is in English; the output the CLI prints at run time is in Italian today.
+Every top-level command of the `engramma` binary, version `0.6.19-beta.1`, with every option its own `--help` prints — captured verbatim from the released binary. The help and the output the CLI prints at run time are both in English.
 
 Global options, accepted by every command before the subcommand: `--root <ROOT>` (data root, default `~/.engramma`, or `$ENGRAMMA_ROOT`; cells live in `<root>/cells/<name>.sqlite`), `--cell <CELL>` (cell to operate on, default `default`; names are `[a-z0-9_-]+`), `--json` (stable JSON output), `-h, --help`, `-V, --version`.
 
-Exit codes: `0` success · `2` usage error · `3` note not found · `4` internal error · `5` pending work (a purge that could not finish) · `6` cell schema newer than the binary · `7` another sync service holds the root. Note ids accept a unique prefix or a suffix of at least 4 characters; the short ids the CLI prints are the last 8 of the ULID.
+Exit codes: `0` success · `2` usage error · `3` note not found · `4` internal error, or a decision the engine refuses (`STALE_TARGET`: the correction of a note that is no longer the current version, or a revert under a later correction) · `5` pending work (a purge that could not finish) · `6` cell schema newer than the binary · `7` another sync service holds the root. Note ids accept a unique prefix or a suffix of at least 4 characters; the short ids the CLI prints are the last 8 of the ULID.
 
-Commands that take a subcommand — `cell`, `proposals`, `conflicts`, `policy`, `model`, `devices`, `sync`, `mailbox`, `vault`, `oauth` — document their subcommands in their own list below: the subcommands have no `--help` of their own (`engramma proposals accept --help` is refused), and their arguments are the ones the list describes.
+Commands that take a subcommand — `cell`, `proposals`, `conflicts`, `policy`, `model`, `devices`, `sync`, `mailbox`, `vault`, `oauth` — document their subcommands in their own list below. Each of those 41 subcommands also answers `engramma <parent> <sub> --help` with its own help, where its own options are (for example `proposals accept --no-embed`).
 
 ## The command list
 
 ```text
-Motore di memoria personale: note, grafo, tempo, ricerca
+Personal memory engine: notes, graph, time, search
 
 Usage: engramma [OPTIONS] <COMMAND>
 
@@ -361,14 +361,15 @@ The decisions registry: who, when, what, why (v0.5)
 Usage: engramma decisions [OPTIONS]
 
 Options:
-      --by <BY>        Only this actor (exact or prefix, e.g. `reviewer:`)
-      --root <ROOT>    Data root (default: ~/.engramma)
-      --cell <CELL>    Cell to operate on (default: "default") [default: default]
-      --since <SINCE>  Decided since this date (YYYY-MM-DD)
-      --json           Stable JSON output
-      --until <UNTIL>  Decided until this date (YYYY-MM-DD, inclusive)
-      --state <STATE>  Only this standing (active | reverted)
-  -h, --help           Print help
+      --by <BY>                    Only this actor (exact or prefix, e.g. `reviewer:`)
+      --root <ROOT>                Data root (default: ~/.engramma)
+      --cell <CELL>                Cell to operate on (default: "default") [default: default]
+      --proposed-by <PROPOSED_BY>  Only decisions on this proposer's proposals (exact or prefix, e.g. `mcp:`) (v0.6.18)
+      --json                       Stable JSON output
+      --since <SINCE>              Decided since this date (YYYY-MM-DD)
+      --until <UNTIL>              Decided until this date (YYYY-MM-DD, inclusive)
+      --state <STATE>              Only this standing (active | reverted)
+  -h, --help                       Print help
 ```
 
 ## `revert`
@@ -382,15 +383,16 @@ Arguments:
   [DECISION]  A decision op id (or its last-8 prefix)
 
 Options:
-      --by <BY>        Bulk: every decision of this actor (prefix), e.g. `reviewer:x`
-      --root <ROOT>    Data root (default: ~/.engramma)
-      --cell <CELL>    Cell to operate on (default: "default") [default: default]
-      --since <SINCE>  Bulk: only decisions taken since this date (YYYY-MM-DD)
-      --json           Stable JSON output
-      --until <UNTIL>  Bulk: only decisions taken until this date (YYYY-MM-DD)
-      --dry-run        Show what would happen, change nothing
-      --yes            Skip the interactive confirmation (for scripts)
-  -h, --help           Print help
+      --by <BY>                    Bulk: every decision of this actor (prefix), e.g. `reviewer:x`
+      --root <ROOT>                Data root (default: ~/.engramma)
+      --cell <CELL>                Cell to operate on (default: "default") [default: default]
+      --proposed-by <PROPOSED_BY>  Bulk: every decision taken on this proposer's proposals (exact or prefix), e.g. `mcp:claude-code` (v0.6.18)
+      --json                       Stable JSON output
+      --since <SINCE>              Bulk: only decisions taken since this date (YYYY-MM-DD)
+      --until <UNTIL>              Bulk: only decisions taken until this date (YYYY-MM-DD)
+      --dry-run                    Show what would happen, change nothing
+      --yes                        Skip the interactive confirmation (for scripts)
+  -h, --help                       Print help
 ```
 
 ## `review`
@@ -518,8 +520,8 @@ Options:
       --root <ROOT>            Data root (default: ~/.engramma)
       --cell <CELL>            Cell to operate on (default: "default") [default: default]
       --keep-snapshot          Also keep a snapshot FILE next to the cell (the v0.3.1 behavior: the logical state; purge scrubs it with the cell)
+      --experimental           v0.6.15 (F2): the compaction is experimental — without this flag the command refuses and says why (the declared defects of the cut are open: crates/engramma-core/tests/open-defects.txt). v0.6.19: `--sperimentale`, the beta's name, still answers
       --json                   Stable JSON output
-      --sperimentale           v0.6.15 (F2): the compaction is experimental — without this flag the command refuses and says why (the declared defects of the cut are open: crates/engramma-core/tests/open-defects.txt)
   -h, --help                   Print help
 ```
 

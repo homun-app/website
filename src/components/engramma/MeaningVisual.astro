@@ -12,7 +12,7 @@ const { question, hits } = ENGRAMMA_MEANING;
 		<div class="hit" style={`--w:${Math.round(cosine * 100)}%;--i:${index}`}>
 			<b>{title}</b>
 			<p class="body">{body}</p>
-			<div class="why">liste: {lists} · coseno: {cosine.toFixed(4)}{index === 0 && " · no word in common"}</div>
+			<div class="why">lists: {lists} · cosine: {cosine.toFixed(4)}{index === 0 && " · no word in common"}</div>
 			<div class="bar" aria-hidden="true"><i /></div>
 		</div>
 	))}

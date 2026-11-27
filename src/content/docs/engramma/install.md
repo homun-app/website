@@ -7,7 +7,7 @@ Engramma ships as a single `engramma` binary. The shell installer downloads the 
 
 ```sh
 curl --proto '=https' --tlsv1.2 -LsSf \
-  https://github.com/homun-app/engramma/releases/download/v0.6.17-beta.1/engramma-cli-installer.sh | sh
+  https://github.com/homun-app/engramma/releases/download/v0.6.19-beta.1/engramma-cli-installer.sh | sh
 ```
 
 The URL names the version on purpose: GitHub's `releases/latest` link skips prereleases, so while only `-beta` versions exist it points at nothing. Newer versions are on the [releases page](https://github.com/homun-app/engramma/releases).
@@ -60,7 +60,7 @@ Everything Engramma writes stays under one data root, `~/.engramma` by default. 
 ```console
 $ export ENGRAMMA_ROOT=~/engramma-demo
 $ engramma init
-inizializzato: /home/you/engramma-demo
+initialized: /home/you/engramma-demo
 ```
 
 Inside the root: `cells/<name>.sqlite` (one file per memory space), `config.json` (the embedder), `models` (the embedding model, unless `ENGRAMMA_MODEL_DIR` says otherwise), `oauth.db` (the grants of the HTTP server), `device.key` and `devices.db` (sync).

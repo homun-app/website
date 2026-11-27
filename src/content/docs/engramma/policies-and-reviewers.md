@@ -9,7 +9,7 @@ Who may propose, and how far the machine may go. The policy is per cell, it is a
 $ engramma policy show
 write: off
 min_confidence: 0.8
-kinds: tutti
+kinds: all
 allow_supersede: none
 max_auto_per_hour: 20
 ```
@@ -23,7 +23,7 @@ max_auto_per_hour: 20
 
 ```console
 $ engramma policy set write=propose
-politica aggiornata
+policy updated
 ```
 
 ## The reviewer, and its limits
@@ -42,7 +42,7 @@ Never automatic, whatever the policy: `confidence: external` proposals, and prop
 
 ```console
 $ engramma policy set write=auto reviewer=local min_confidence=0.8 kinds=fact,preference max_auto_per_hour=10
-politica aggiornata
+policy updated
 $ engramma policy show
 write: auto
 reviewer: local
@@ -57,27 +57,44 @@ max_auto_per_hour: 10
 `engramma decisions` is the registry: who, when, what, why.
 
 ```console
-$ engramma proposals accept 6W44X6B0
-accettata: 01M89P16DAY77XXPJY6W44X6B0
+$ engramma proposals accept CJCTDEJB
+accepted: 01M8DZ3TPM2HWMAFXTCJCTDEJB
+embedded: 2 (pending: 0)
 $ engramma decisions
-D9BWHR4V  accetta  user@cli  2026-11-25T15:43:48Z
-      proposta 6W44X6B0
-      perché: accettata dalla CLI
+2DVWWP9Z  accept  user@cli  2026-11-27T07:39:29Z
+      proposal CJCTDEJB
+      why: accepted from the CLI
 ```
 
 `revert` is the git revert of that registry — a **new** operation, history is never rewritten:
 
 ```console
 $ engramma revert --by user --dry-run
-annullerò 1 decisioni:
-  conflitti: 0 (non toccati)
-  purgate: 0 (annullate nel registro, il contenuto non torna)
+would revert 1 decisions:
+  conflicts: 0 (left alone)
+  purged: 0 (reverted in the registry, the content does not come back)
 $ engramma revert --by user --yes
-annullerò 1 decisioni:
+would revert 1 decisions:
   ...
-annullate 1, conflitti 0, purgate 0
+reverted 1, conflicts 0, purged 0
 ```
 
-The bulk form takes `--by` (an exact actor or a prefix, e.g. `reviewer:`) narrowed by `--since`/`--until`, with the preview first — `--dry-run` shows what would happen. A single decision goes back the same way, by id, and the proposal returns to the queue. A revert refuses to run over a later human correction of the same note, and says which operations stand in between; purged content does not come back.
+The bulk form takes `--by` (an exact actor or a prefix, e.g. `reviewer:`) narrowed by `--since`/`--until`, with the preview first — `--dry-run` shows what would happen, and writes nothing. Decisions are signed by who decides, never by who proposed: `--by mcp:…` is a usage error, and `--proposed-by mcp:claude-code` selects the decisions taken on what that assistant proposed. A single decision goes back the same way, by id, and the proposal returns to the queue. Purged content does not come back.
 
-One engine defect to know while this is a beta: with a **single decision id**, `revert <id> --dry-run` reverts for real — the dry-run check sits after the call. `--dry-run` is honored on the bulk path only. Until it is fixed, preview with `--by <actor> --dry-run`, or look before you leap.
+A revert is refused while a later correction stands on it. Two corrections in a row — one closes the note, the next closes the note the first made current — and the first cannot go back before the second: the revert names the correction to revert first.
+
+```console
+$ engramma revert 01M8DZ3ZSSWHPJRPCCFZZQJJB6 --dry-run
+would not revert: 01M8DZ40NB7EZTDAY2ARQ8MSHC corrects this note: revert that correction first
+$ engramma revert 01M8DZ3ZSSWHPJRPCCFZZQJJB6 --yes
+engramma: conflict: 01M8DZ40NB7EZTDAY2ARQ8MSHC corrects this note: revert that correction first
+```
+
+Once the later correction is reverted, the first one goes back too:
+
+```console
+$ engramma revert 01M8DZ410T87NPQS36H8CRFYV2 --yes
+reverted: the proposal goes back to the queue: ARQ8MSHC
+$ engramma revert 01M8DZ3ZSSWHPJRPCCFZZQJJB6 --yes
+reverted: the proposal goes back to the queue: Q5VJHFHV
+```

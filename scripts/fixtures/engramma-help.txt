@@ -1,13 +1,14 @@
-Engramma 0.6.17-beta.1 — the --help of every command
-Captured verbatim from the released binary (commit 1bfc611). The help
-is in English, like the CLI's own descriptions; the run-time output
-is in Italian. Commands that take a subcommand (cell, proposals,
-conflicts, policy, model, devices, sync, mailbox, vault, oauth) document
-their subcommands in their own list: the subcommands have no --help of
-their own, and `engramma <parent> <sub> --help` is refused.
+Engramma 0.6.19-beta.1 — the --help of every command
+Captured verbatim from the released binary (commit 5d0e02a). The help and
+the run-time output are both in English since 0.6.19. This file carries the
+help of the top-level commands, in the order of the main help. Commands that
+take a subcommand (cell, proposals, conflicts, policy, model, devices, sync,
+mailbox, vault, oauth) document their subcommands in their own list, and
+every one of their 41 subcommands answers `engramma <parent> <sub> --help`
+with its own help.
 
 ### engramma --help
-Motore di memoria personale: note, grafo, tempo, ricerca
+Personal memory engine: notes, graph, time, search
 
 Usage: engramma [OPTIONS] <COMMAND>
 
@@ -356,14 +357,15 @@ The decisions registry: who, when, what, why (v0.5)
 Usage: engramma decisions [OPTIONS]
 
 Options:
-      --by <BY>        Only this actor (exact or prefix, e.g. `reviewer:`)
-      --root <ROOT>    Data root (default: ~/.engramma)
-      --cell <CELL>    Cell to operate on (default: "default") [default: default]
-      --since <SINCE>  Decided since this date (YYYY-MM-DD)
-      --json           Stable JSON output
-      --until <UNTIL>  Decided until this date (YYYY-MM-DD, inclusive)
-      --state <STATE>  Only this standing (active | reverted)
-  -h, --help           Print help
+      --by <BY>                    Only this actor (exact or prefix, e.g. `reviewer:`)
+      --root <ROOT>                Data root (default: ~/.engramma)
+      --cell <CELL>                Cell to operate on (default: "default") [default: default]
+      --proposed-by <PROPOSED_BY>  Only decisions on this proposer's proposals (exact or prefix, e.g. `mcp:`) (v0.6.18)
+      --json                       Stable JSON output
+      --since <SINCE>              Decided since this date (YYYY-MM-DD)
+      --until <UNTIL>              Decided until this date (YYYY-MM-DD, inclusive)
+      --state <STATE>              Only this standing (active | reverted)
+  -h, --help                       Print help
 
 ### revert
 Cancel decisions — the git revert of the registry (v0.5)
@@ -374,15 +376,16 @@ Arguments:
   [DECISION]  A decision op id (or its last-8 prefix)
 
 Options:
-      --by <BY>        Bulk: every decision of this actor (prefix), e.g. `reviewer:x`
-      --root <ROOT>    Data root (default: ~/.engramma)
-      --cell <CELL>    Cell to operate on (default: "default") [default: default]
-      --since <SINCE>  Bulk: only decisions taken since this date (YYYY-MM-DD)
-      --json           Stable JSON output
-      --until <UNTIL>  Bulk: only decisions taken until this date (YYYY-MM-DD)
-      --dry-run        Show what would happen, change nothing
-      --yes            Skip the interactive confirmation (for scripts)
-  -h, --help           Print help
+      --by <BY>                    Bulk: every decision of this actor (prefix), e.g. `reviewer:x`
+      --root <ROOT>                Data root (default: ~/.engramma)
+      --cell <CELL>                Cell to operate on (default: "default") [default: default]
+      --proposed-by <PROPOSED_BY>  Bulk: every decision taken on this proposer's proposals (exact or prefix), e.g. `mcp:claude-code` (v0.6.18)
+      --json                       Stable JSON output
+      --since <SINCE>              Bulk: only decisions taken since this date (YYYY-MM-DD)
+      --until <UNTIL>              Bulk: only decisions taken until this date (YYYY-MM-DD)
+      --dry-run                    Show what would happen, change nothing
+      --yes                        Skip the interactive confirmation (for scripts)
+  -h, --help                       Print help
 
 ### policy
 The cell's policy: who may propose, how far the machine may go (v0.5)
@@ -573,8 +576,8 @@ Options:
       --root <ROOT>            Data root (default: ~/.engramma)
       --cell <CELL>            Cell to operate on (default: "default") [default: default]
       --keep-snapshot          Also keep a snapshot FILE next to the cell (the v0.3.1 behavior: the logical state; purge scrubs it with the cell)
+      --experimental           v0.6.15 (F2): the compaction is experimental — without this flag the command refuses and says why (the declared defects of the cut are open: crates/engramma-core/tests/open-defects.txt). v0.6.19: `--sperimentale`, the beta's name, still answers
       --json                   Stable JSON output
-      --sperimentale           v0.6.15 (F2): the compaction is experimental — without this flag the command refuses and says why (the declared defects of the cut are open: crates/engramma-core/tests/open-defects.txt)
   -h, --help                   Print help
 
 ### consolidate
