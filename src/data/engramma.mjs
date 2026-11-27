@@ -7,7 +7,7 @@
 // Nothing is typed by hand or translated: the CLI prints Italian labels today,
 // and the page shows them as they are.
 const REPOSITORY = "https://github.com/homun-app/engramma";
-const VERSION = "0.6.18-beta.1";
+const VERSION = "0.6.19-beta.1";
 const TAG = `v${VERSION}`;
 const DOCS = `${REPOSITORY}/blob/main/docs`;
 const DESIGN = `${DOCS}/DESIGN.md`;
@@ -241,7 +241,7 @@ export const ENGRAMMA_DIFFERENT = [
 ];
 
 // Mirrors Engramma's docs/DESIGN.md § 12, in plain language. The releases are
-// all tagged in the repository (`fase-v0.1` … `fase-v0.6.18`, `v0.6.18-beta.1`).
+// all tagged in the repository (`fase-v0.1` … `fase-v0.6.19`, `v0.6.19-beta.1`).
 export const ENGRAMMA_ROADMAP = {
 	shipped: [
 		{
